@@ -587,14 +587,46 @@ you should place your code here."
   (require 'ox-extra)
   (ox-extras-activate '(ignore-headlines))
 
+  ;; Lots of org src mode hacks here
+  (setq org-src-tab-acts-natively t)
   (setq org-src-preserve-indentation t)
   (setq org-src-window-setup 'current-window)
 
+  (defun win-is-right ()
+    "Figure out if the current window is to the left, right or middle"
+    (let* ((win-edges (window-edges))
+           (this-window-x-min (nth 0 win-edges))
+           (this-window-x-max (nth 2 win-edges))
+           (fr-width (frame-width)))
+      (cond
+       ((eq 0 this-window-x-min) nil)
+       ((eq (+ fr-width 4) this-window-x-max) t)
+       (t t))))
+
   (defun ek/org-edit-src-code ()
-    (interactive
-     (let ((org-src-window-setup 'other-window))
-       (org-edit-src-code))))
+    (interactive)
+    (if (win-is-right)
+        (org-edit-src-code)
+      (let ((org-src-window-setup 'other-window))
+        (org-edit-src-code))))
+
+  (defun ek/tangle-in-src-edit ()
+    (interactive)
+    (let ((was-right (win-is-right))
+          (current-prefix-arg '(4)))
+      (org-edit-src-exit)
+      (call-interactively 'org-babel-tangle)
+      (if was-right
+          (ek/org-edit-src-code)
+        (org-edit-src-code))))
+
+  ;; HACK - not restoring windows -> doesnt close other src edits
+  ;; makes both ek/org-edit-src and ek/tangle work as desired
+  (add-hook 'org-src-mode-hook (lambda () (setq org-src--saved-temp-window-config nil)))
+
   (define-key org-mode-map (kbd "C-c C-'") 'ek/org-edit-src-code)
+
+  (spacemacs/set-leader-keys-for-minor-mode 'org-src-mode (kbd "RET") 'ek/tangle-in-src-edit)
 
   ;; Set as a local variable to run emacs-lisp/dot blocks on file load
   (defun ek/exec-init ()
@@ -607,48 +639,29 @@ you should place your code here."
               (org-babel-execute-src-block)))))))
   )
 
+
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/org/notes.org")))
- '(safe-local-variable-values
-   (quote
-    ((org-babel-use-quick-and-dirty-noweb-expansion . t)
-     (org-use-property-inheritance . t)
-     (org-use-tag-inheritance)))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/org/notes.org")))
- '(safe-local-variable-values
-   (quote
-    ((eval ek/setup-src)
-     (eval ek/exec-init)
-     (org-babel-use-quick-and-dirty-noweb-expansion . t)
-     (org-use-property-inheritance . t)
-     (org-use-tag-inheritance))))
- '(send-mail-function (quote mailclient-send-it)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(org-agenda-files (quote ("~/org/notes.org")))
+   '(safe-local-variable-values
+     (quote
+      ((org-babel-use-quick-and-dirty-noweb-expansion . t)
+       (org-use-property-inheritance . t)
+       (org-use-tag-inheritance)))))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   )
 )
