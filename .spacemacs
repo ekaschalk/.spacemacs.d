@@ -52,6 +52,7 @@ values."
      syntax-checking
      version-control
      graphviz
+     ranger
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -135,11 +136,11 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Source Code Pro"
-                            :size 14
-                            :weight bold
-                            :width condensed
-                            :powerline-scale 1.1)
+   dotspacemacs-default-font '("Fira Code"
+                               :size 14
+                               :weight bold
+                               :width condensed
+                               :powerline-scale 1.1)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
@@ -296,6 +297,135 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+
+  (defconst fira-code-font-lock-keywords-alist
+    (mapcar (lambda (regex-char-pair)
+              `(,(car regex-char-pair)
+                (0 (prog1 ()
+                     (compose-region (match-beginning 1)
+                                     (match-end 1)
+                                     ;; The first argument to concat is a string containing a literal tab
+                                     ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))))))
+            '(("\\(www\\)"                   #Xe100)
+              ;; ("[^/]\\(\\*\\*\\)[^/]"        #Xe101)
+              ;; ("\\(\\*\\*\\*\\)"             #Xe102)
+              ;; ("\\(\\*\\*/\\)"               #Xe103)
+              ;; ("\\(\\*>\\)"                  #Xe104)
+              ;; ("[^*]\\(\\*/\\)"              #Xe105)
+              ("\\(\\\\\\\\\\)"              #Xe106)
+              ("\\(\\\\\\\\\\\\\\)"          #Xe107)
+              ("\\({-\\)"                    #Xe108)
+              ("\\(\\[\\]\\)"                #Xe109)
+              ("\\(::\\)"                    #Xe10a)
+              ("\\(:::\\)"                   #Xe10b)
+              ("[^=]\\(:=\\)"                #Xe10c)
+              ("\\(!!\\)"                    #Xe10d)
+              ("\\(!=\\)"                    #Xe10e)
+              ("\\(!==\\)"                   #Xe10f)
+              ("\\(-}\\)"                    #Xe110)
+              ("\\(--\\)"                    #Xe111)
+              ("\\(---\\)"                   #Xe112)
+              ("\\(-->\\)"                   #Xe113)
+              ("[^-]\\(->\\)"                #Xe114)
+              ("\\(->>\\)"                   #Xe115)
+              ("\\(-<\\)"                    #Xe116)
+              ("\\(-<<\\)"                   #Xe117)
+              ("\\(-~\\)"                    #Xe118)
+              ("\\(#{\\)"                    #Xe119)
+              ("\\(#\\[\\)"                  #Xe11a)
+              ("\\(##\\)"                    #Xe11b)
+              ("\\(###\\)"                   #Xe11c)
+              ("\\(####\\)"                  #Xe11d)
+              ("\\(#(\\)"                    #Xe11e)
+              ("\\(#\\?\\)"                  #Xe11f)
+              ("\\(#_\\)"                    #Xe120)
+              ("\\(#_(\\)"                   #Xe121)
+              ("\\(\\.-\\)"                  #Xe122)
+              ("\\(\\.=\\)"                  #Xe123)
+              ("\\(\\.\\.\\)"                #Xe124)
+              ("\\(\\.\\.<\\)"               #Xe125)
+              ("\\(\\.\\.\\.\\)"             #Xe126)
+              ("\\(\\?=\\)"                  #Xe127)
+              ("\\(\\?\\?\\)"                #Xe128)
+              ("\\(;;\\)"                    #Xe129)
+              ;; ("\\(/\\*\\)"                  #Xe12a)
+              ;; ("\\(/\\*\\*\\)"               #Xe12b)
+              ("\\(/=\\)"                    #Xe12c)
+              ("\\(/==\\)"                   #Xe12d)
+              ("\\(/>\\)"                    #Xe12e)
+              ("\\(//\\)"                    #Xe12f)
+              ("\\(///\\)"                   #Xe130)
+              ("\\(&&\\)"                    #Xe131)
+              ("\\(||\\)"                    #Xe132)
+              ("\\(||=\\)"                   #Xe133)
+              ("[^|]\\(|=\\)"                #Xe134)
+              ("\\(|>\\)"                    #Xe135)
+              ("\\(\\^=\\)"                  #Xe136)
+              ("\\(\\$>\\)"                  #Xe137)
+              ("\\(\\+\\+\\)"                #Xe138)
+              ("\\(\\+\\+\\+\\)"             #Xe139)
+              ("\\(\\+>\\)"                  #Xe13a)
+              ("\\(=:=\\)"                   #Xe13b)
+              ("[^!/]\\(==\\)[^>]"           #Xe13c)
+              ("\\(===\\)"                   #Xe13d)
+              ("\\(==>\\)"                   #Xe13e)
+              ("[^=]\\(=>\\)"                #Xe13f)
+              ("\\(=>>\\)"                   #Xe140)
+              ("\\(<=\\)"                    #Xe141)
+              ("\\(=<<\\)"                   #Xe142)
+              ("\\(=/=\\)"                   #Xe143)
+              ("\\(>-\\)"                    #Xe144)
+              ("\\(>=\\)"                    #Xe145)
+              ("\\(>=>\\)"                   #Xe146)
+              ("[^-=]\\(>>\\)"               #Xe147)
+              ("\\(>>-\\)"                   #Xe148)
+              ("\\(>>=\\)"                   #Xe149)
+              ("\\(>>>\\)"                   #Xe14a)
+              ;; ("\\(<\\*\\)"                  #Xe14b)
+              ;; ("\\(<\\*>\\)"                 #Xe14c)
+              ("\\(<|\\)"                    #Xe14d)
+              ("\\(<|>\\)"                   #Xe14e)
+              ("\\(<\\$\\)"                  #Xe14f)
+              ("\\(<\\$>\\)"                 #Xe150)
+              ("\\(<!--\\)"                  #Xe151)
+              ("\\(<-\\)"                    #Xe152)
+              ("\\(<--\\)"                   #Xe153)
+              ("\\(<->\\)"                   #Xe154)
+              ("\\(<\\+\\)"                  #Xe155)
+              ("\\(<\\+>\\)"                 #Xe156)
+              ("\\(<=\\)"                    #Xe157)
+              ("\\(<==\\)"                   #Xe158)
+              ("\\(<=>\\)"                   #Xe159)
+              ("\\(<=<\\)"                   #Xe15a)
+              ("\\(<>\\)"                    #Xe15b)
+              ("[^-=]\\(<<\\)"               #Xe15c)
+              ("\\(<<-\\)"                   #Xe15d)
+              ("\\(<<=\\)"                   #Xe15e)
+              ("\\(<<<\\)"                   #Xe15f)
+              ("\\(<~\\)"                    #Xe160)
+              ("\\(<~~\\)"                   #Xe161)
+              ("\\(</\\)"                    #Xe162)
+              ("\\(</>\\)"                   #Xe163)
+              ("\\(~@\\)"                    #Xe164)
+              ("\\(~-\\)"                    #Xe165)
+              ("\\(~=\\)"                    #Xe166)
+              ("\\(~>\\)"                    #Xe167)
+              ("[^<]\\(~~\\)"                #Xe168)
+              ("\\(~~>\\)"                   #Xe169)
+              ("\\(%%\\)"                    #Xe16a)
+              ;;("\\(x\\)"                     #Xe16b)
+              ("[^:=]\\(:\\)[^:=]"           #Xe16c)
+              ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d))))
+              ;; ("[^\\*/<>]\\(\\*\\)[^\\*/<>]" #Xe16f))))
+
+  (defun add-fira-code-symbol-keywords ()
+    (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
+
+  (add-hook 'org-mode-hook
+            #'add-fira-code-symbol-keywords)
+  (add-hook 'prog-mode-hook
+            #'add-fira-code-symbol-keywords)
   ;; Ruler
   (require 'fill-column-indicator)
   (setq fci-rule-width 1
@@ -422,10 +552,10 @@ you should place your code here."
   (venv-initialize-eshell) ;; if you want eshell support
 
   ;; Tangle Org files when we save them
-  ;; (defun tangle-on-save-org-mode-file()
-  ;;   (when (string= (message "%s" major-mode) "org-mode")
-  ;;     (org-babel-tangle)))
-  ;; (add-hook 'after-save-hook 'tangle-on-save-org-mode-file)
+  (defun tangle-on-save-org-mode-file()
+    (when (string= major-mode "org-mode")
+      (org-babel-tangle)))
+  (add-hook 'after-save-hook 'tangle-on-save-org-mode-file)
 
   ;; fix temporary anaconda-mode reponse failures
   (require 'anaconda-mode)
@@ -456,6 +586,25 @@ you should place your code here."
   ;; Allows tagging headers with 'ignore' tag to remove header in export
   (require 'ox-extra)
   (ox-extras-activate '(ignore-headlines))
+
+  (setq org-src-preserve-indentation t)
+  (setq org-src-window-setup 'current-window)
+
+  (defun ek/org-edit-src-code ()
+    (interactive
+     (let ((org-src-window-setup 'other-window))
+       (org-edit-src-code))))
+  (define-key org-mode-map (kbd "C-c C-'") 'ek/org-edit-src-code)
+
+  ;; Set as a local variable to run emacs-lisp/dot blocks on file load
+  (defun ek/exec-init ()
+    (save-excursion 
+      (org-element-map (org-element-parse-buffer 'element) 'src-block
+        (lambda (src)
+          (when (string= "emacs-lisp" (org-element-property :language src))
+            (unless (string= "exec-init" (org-element-property :name src))
+              (goto-char (org-element-property :begin src))
+              (org-babel-execute-src-block)))))))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -477,3 +626,29 @@ you should place your code here."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/org/notes.org")))
+ '(safe-local-variable-values
+   (quote
+    ((eval ek/setup-src)
+     (eval ek/exec-init)
+     (org-babel-use-quick-and-dirty-noweb-expansion . t)
+     (org-use-property-inheritance . t)
+     (org-use-tag-inheritance))))
+ '(send-mail-function (quote mailclient-send-it)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+)
