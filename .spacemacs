@@ -53,6 +53,7 @@ values."
      version-control
      graphviz
      ranger
+     (shell :variables shell-default-shell 'eshell)
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -622,6 +623,19 @@ you should place your code here."
         (org-edit-src-code))
       (goto-char pos)))
 
+  (defun ek/test-in-src-edit ()
+    (interactive)
+    (let ((pos (point))  ;; excursion wont work here
+          (was-right (win-is-right))
+          (current-prefix-arg '(4)))
+      (org-edit-src-exit)
+      (let ((cmd (format "py.test -k %s&" (ek/file-path))))
+        (if was-right
+            (ek/org-edit-src-code)
+          (org-edit-src-code))
+        (goto-char pos)
+        (shell-command cmd))))
+
   ;; HACK - not restoring windows -> doesnt close other src edits
   ;; makes both ek/org-edit-src and ek/tangle work as desired
   (add-hook 'org-src-mode-hook (lambda () (setq org-src--saved-temp-window-config nil)))
@@ -629,6 +643,7 @@ you should place your code here."
   (define-key org-mode-map (kbd "C-c C-'") 'ek/org-edit-src-code)
 
   (spacemacs/set-leader-keys-for-minor-mode 'org-src-mode (kbd "RET") 'ek/tangle-in-src-edit)
+  (spacemacs/set-leader-keys-for-minor-mode 'org-src-mode (kbd "t") 'ek/test-in-src-edit)
 
   ;; Set as a local variable to run emacs-lisp/dot blocks on file load
   (defun ek/exec-init ()
