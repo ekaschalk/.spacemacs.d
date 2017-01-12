@@ -612,13 +612,15 @@ you should place your code here."
 
   (defun ek/tangle-in-src-edit ()
     (interactive)
-    (let ((was-right (win-is-right))
+    (let ((pos (point))  ;; excursion wont work here
+          (was-right (win-is-right))
           (current-prefix-arg '(4)))
       (org-edit-src-exit)
       (call-interactively 'org-babel-tangle)
       (if was-right
           (ek/org-edit-src-code)
-        (org-edit-src-code))))
+        (org-edit-src-code))
+      (goto-char pos)))
 
   ;; HACK - not restoring windows -> doesnt close other src edits
   ;; makes both ek/org-edit-src and ek/tangle work as desired
