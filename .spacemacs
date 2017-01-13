@@ -515,6 +515,9 @@ you should place your code here."
   (add-to-list 'org-structure-template-alist
                '("c" " :PROPERTIES:\n :HTML_CONTAINER_CLASS: hsCollapsed\n :END:\n"))  ;; collapse by default in bigblow html theme
 
+  (add-to-list 'org-structure-template-alist
+               '("f" "# -*- org-use-tag-inheritance: nil org-babel-use-quick-and-dirty-noweb-expansion: t-*-\n#+BEGIN_QUOTE\n#+PROPERTY: header-args :eval never-export :noweb no-export\n#+PROPERTY: header-args:python :tangle (ek/file-path)\n#+END_QUOTE\n"))
+
   ;; Org truncate lines
   (setq toggle-truncate-lines nil)
 
@@ -652,12 +655,21 @@ you should place your code here."
       (org-element-map (org-element-parse-buffer 'element) 'src-block
         (lambda (src)
           (when (string= "emacs-lisp" (org-element-property :language src))
-            (unless (string= "exec-init" (org-element-property :name src))
+            (unless (string= "startup-proj" (org-element-property :name src))
               (goto-char (org-element-property :begin src))
               (org-babel-execute-src-block)))))))
+
+  ;; This should eventually be done through locals rather than emacs settings
+  (defun ek/startup-proj ()
+    ;; Run init blocks for func defs
+    (ek/exec-init)
+    ;; Run init funcs
+    (ek/setup-src)
+    )
+
+
+  ;;;;;;;;
   )
-
-
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
 (defun dotspacemacs/emacs-custom-settings ()
@@ -665,21 +677,32 @@ you should place your code here."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(org-agenda-files (quote ("~/org/notes.org")))
-   '(safe-local-variable-values
-     (quote
-      ((org-babel-use-quick-and-dirty-noweb-expansion . t)
-       (org-use-property-inheritance . t)
-       (org-use-tag-inheritance)))))
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/org/notes.org")))
+ '(safe-local-variable-values
+   (quote
+    ((eval org-babel-execute-src-block)
+     (eval
+      (org-babel-goto-named-src-block "startup-proj")
+      (org-babel-execute-maybe))
+     (eval org-babel-goto-named-src-block "startup-proj")
+     (eval org-babel-execute-maybe)
+     (eval org-babel-goto-named-src-block
+           (quote startup-proj))
+     (eval ek/setup-src)
+     (eval ek/exec-init)
+     (eval ek/startup-proj)
+     (org-babel-use-quick-and-dirty-noweb-expansion . t)
+     (org-use-property-inheritance . t)
+     (org-use-tag-inheritance)))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 )
