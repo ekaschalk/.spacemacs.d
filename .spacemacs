@@ -629,6 +629,7 @@ you should place your code here."
           (was-right (win-is-right))
           (current-prefix-arg '(4)))
       (org-edit-src-exit)
+      (call-interactively 'org-babel-tangle)
       (let ((cmd (format "py.test -k %s&" (ek/file-path))))
         (if was-right
             (ek/org-edit-src-code)
