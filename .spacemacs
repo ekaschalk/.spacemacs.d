@@ -54,6 +54,7 @@ values."
      graphviz
      ranger
      (shell :variables shell-default-shell 'eshell)
+     restclient
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -129,9 +130,8 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(zenburn
-                         leuven
-                         anti-zenburn
+   dotspacemacs-themes '(spacemacs-dark
+                         zenburn
                          )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
@@ -486,7 +486,8 @@ you should place your code here."
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
-     (dot . t)))
+     (dot . t)
+     (http . t)))
 
   ;; Remove y/n check on execute src blocks
   (setq org-confirm-babel-evaluate nil)
@@ -546,7 +547,14 @@ you should place your code here."
   ;;         (pyvenv-workon (with-temp-buffer
   ;;                          (insert-file-contents pfile)
   ;;                          (nth 0 (split-string (buffer-string))))))))
-  ;; (add-hook 'org-mode-hook 'pyvenv-autoload)
+
+  (defun pyvenv-autoload ()
+    (when (string= buffer-file-name "c:/Dev/pop-synth/project.org")
+      (pyvenv-workon "pop-synthvenv"))
+    (when (string= buffer-file-name "c:/Dev/health/health.org")
+      (pyvenv-workon "healthvenv")))
+
+  (add-hook 'org-mode-hook 'pyvenv-autoload)
 
   ;; For virtualenvs in org-babel
   (require 'virtualenvwrapper)
@@ -562,10 +570,10 @@ you should place your code here."
   (add-hook 'after-save-hook 'tangle-on-save-org-mode-file)
 
   ;; fix temporary anaconda-mode reponse failures
-  (require 'anaconda-mode)
-  (remove-hook 'anaconda-mode-response-read-fail-hook
-               'anaconda-mode-show-unreadable-response)
-  (setq company-idle-delay 0.5)
+  ;; (require 'anaconda-mode)
+  ;; (remove-hook 'anaconda-mode-response-read-fail-hook
+  ;;              'anaconda-mode-show-unreadable-response)
+  ;; (setq company-idle-delay 0.5)
 
   ;; Hide all org blocks on file load
   (defvar org-blocks-hidden nil)
@@ -640,6 +648,7 @@ you should place your code here."
         (goto-char pos)
         (shell-command cmd))))
 
+
   ;; HACK - not restoring windows -> doesnt close other src edits
   ;; makes both ek/org-edit-src and ek/tangle work as desired
   (add-hook 'org-src-mode-hook (lambda () (setq org-src--saved-temp-window-config nil)))
@@ -648,6 +657,9 @@ you should place your code here."
 
   (spacemacs/set-leader-keys-for-minor-mode 'org-src-mode (kbd "RET") 'ek/tangle-in-src-edit)
   (spacemacs/set-leader-keys-for-minor-mode 'org-src-mode (kbd "t") 'ek/test-in-src-edit)
+
+  ;; Required for asynchronous python execution
+  (add-hook 'org-mode-hook 'flyspell-mode)
 
   ;; Set as a local variable to run emacs-lisp/dot blocks on file load
   (defun ek/exec-init ()
@@ -664,10 +676,62 @@ you should place your code here."
     ;; Run init blocks for func defs
     (ek/exec-init)
     ;; Run init funcs
-    (ek/setup-src)
-    )
+    (ek/setup-src))
+
+  (setq ispell-program-name "aspell")
+  ;;(setq ispell-personal-dictionary "C:/Users/ekasc/~/.aspell.LANG.pws")
+
+  ;; (setq org-html-htmlize-output-type 'css)
+
+  (setq tramp-default-method "plink")
+  (setq vc-ignore-dir-regexp
+        (format "\\(%s\\)\\|\\(%s\\)"
+                vc-ignore-dir-regexp
+                tramp-file-name-regexp))
+
+  ;; (require 'flycheck)
+
+;;   (flycheck-def-args-var flycheck-python-mypy-args python-mypy)
+
+;;   (flycheck-define-checker python-mypy
+;;     "Mypy syntax checker. Requires mypy>=0.3.1.
+;; Customize `flycheck-python-mypy-args` to add specific args to default
+;; executable.
+;; E.g. when processing Python2 files, add \"--py2\".
+;; See URL `http://mypy-lang.org/'."
+
+;;     :command ("mypy --ignore-missing-imports --fast-parser --python-version 3.6"
+;;               (eval flycheck-python-mypy-args)
+;;               source-original)
+;;     :error-patterns
+;;     ((error line-start (file-name) ":" line ": error:" (message) line-end))
+;;     :modes python-mode)
+
+;;   (add-to-list 'flycheck-checkers 'python-mypy t)
 
 
+
+
+  (defun mypy-show-region ()
+    "Show type of variable at point."
+    (interactive)
+    (let ((here (region-beginning))
+          (there (region-end))
+          (filename (buffer-file-name)))
+      (let ((hereline (line-number-at-pos here))
+            (herecol (save-excursion (goto-char here) (current-column)))
+            (thereline (line-number-at-pos there))
+            (therecol (save-excursion (goto-char there) (current-column))))
+        (org-edit-src-exit)
+        (shell-command
+         (format "mypy --ignore-missing-imports --fast-parser --python-version 3.6 %s&" (ek/file-path)))
+        (org-edit-src-code))))
+         ;; (format "cd ~/src/mypy; python3 ./scripts/find_type.py %s %s %s %s %s python3 -m mypy -i mypy"
+                 ;; filename hereline herecol thereline therecol)))))
+
+  ;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
+
+  ;; (provide 'flycheck-mypy)
   ;;;;;;;;
   )
 ;; Do not write anything past this comment. This is where Emacs will
@@ -682,10 +746,18 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(evil-want-Y-yank-to-eol nil)
  '(org-agenda-files (quote ("~/org/notes.org")))
  '(safe-local-variable-values
    (quote
-    ((eval org-babel-execute-src-block)
+    ((eval when
+           (locate-library "rainbow-mode")
+           (require
+            (quote rainbow-mode))
+           (rainbow-mode))
+     (eval org-babel-execute-src-block)
      (eval
       (org-babel-goto-named-src-block "startup-proj")
       (org-babel-execute-maybe))
