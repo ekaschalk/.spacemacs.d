@@ -95,6 +95,17 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+  (spacemacs/toggle-highlight-long-lines-globally-on)
+  (fringe-mode '(1 . 1))  ; Minimal left padding and ~ end newline markers
+  (rainbow-delimiters-mode-enable)  ; Paren color based on depth
+  (global-highlight-parentheses-mode 1)  ; Highlight containing parens
+  (hungry-delete-mode 1)  ; in edit mode back gets all contiguous whitespace
+  (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1)))  ; SPC splits past 80
+  (spacemacs/toggle-aggressive-indent-globally-on)  ; auto-indentation
+  (spacemacs/toggle-mode-line-minor-modes-off)  ; unicode symbols next to major
+  (linum-relative-global-mode 1)  ; very useful for multi-line vim motions
+  ;; (spacemacs/toggle-centered-point-globally-on)  ; XXX - experimenting with
+
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
 
   (defconst fira-code-font-lock-keywords-alist
@@ -215,7 +226,7 @@ you should place your code here."
               ;;("\\(x\\)"                     #Xe16b)
               ("[^:=]\\(:\\)[^:=]"           #Xe16c)
               ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d))))
-              ;; ("[^\\*/<>]\\(\\*\\)[^\\*/<>]" #Xe16f))))
+  ;; ("[^\\*/<>]\\(\\*\\)[^\\*/<>]" #Xe16f))))
 
   (defun add-fira-code-symbol-keywords ()
     (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
@@ -489,23 +500,23 @@ you should place your code here."
 
   ;; (require 'flycheck)
 
-;;   (flycheck-def-args-var flycheck-python-mypy-args python-mypy)
+  ;;   (flycheck-def-args-var flycheck-python-mypy-args python-mypy)
 
-;;   (flycheck-define-checker python-mypy
-;;     "Mypy syntax checker. Requires mypy>=0.3.1.
-;; Customize `flycheck-python-mypy-args` to add specific args to default
-;; executable.
-;; E.g. when processing Python2 files, add \"--py2\".
-;; See URL `http://mypy-lang.org/'."
+  ;;   (flycheck-define-checker python-mypy
+  ;;     "Mypy syntax checker. Requires mypy>=0.3.1.
+  ;; Customize `flycheck-python-mypy-args` to add specific args to default
+  ;; executable.
+  ;; E.g. when processing Python2 files, add \"--py2\".
+  ;; See URL `http://mypy-lang.org/'."
 
-;;     :command ("mypy --ignore-missing-imports --fast-parser --python-version 3.6"
-;;               (eval flycheck-python-mypy-args)
-;;               source-original)
-;;     :error-patterns
-;;     ((error line-start (file-name) ":" line ": error:" (message) line-end))
-;;     :modes python-mode)
+  ;;     :command ("mypy --ignore-missing-imports --fast-parser --python-version 3.6"
+  ;;               (eval flycheck-python-mypy-args)
+  ;;               source-original)
+  ;;     :error-patterns
+  ;;     ((error line-start (file-name) ":" line ": error:" (message) line-end))
+  ;;     :modes python-mode)
 
-;;   (add-to-list 'flycheck-checkers 'python-mypy t)
+  ;;   (add-to-list 'flycheck-checkers 'python-mypy t)
 
 
   (setq-default
@@ -526,8 +537,8 @@ you should place your code here."
         (shell-command
          (format "mypy --ignore-missing-imports --fast-parser --python-version 3.6 %s&" (ek/file-path)))
         (org-edit-src-code))))
-         ;; (format "cd ~/src/mypy; python3 ./scripts/find_type.py %s %s %s %s %s python3 -m mypy -i mypy"
-                 ;; filename hereline herecol thereline therecol)))))
+  ;; (format "cd ~/src/mypy; python3 ./scripts/find_type.py %s %s %s %s %s python3 -m mypy -i mypy"
+  ;; filename hereline herecol thereline therecol)))))
 
   ;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
 
