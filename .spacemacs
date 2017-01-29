@@ -1,34 +1,14 @@
 ;; -*- mode: emacs-lisp -*-
 (defun dotspacemacs/layers ()
-  "Configuration Layers declaration.
-You should not put any user code in this function besides modifying the variable
-values."
   (setq-default
-   ;;;; Never changing
    dotspacemacs-distribution 'spacemacs
    dotspacemacs-enable-lazy-installation 'unused
    dotspacemacs-ask-for-lazy-installation t
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
-   '(;;;; Core
-     auto-completion
-     better-defaults
-     helm
-     git
-     org
-     ranger
-     syntax-checking
-     version-control
-     (shell :variables shell-default-shell 'eshell)
-     ;;;; Languages
-     emacs-lisp
-     html
-     python
-     ;;;; Org-babel specific languages
-     graphviz
-     restclient
-     ;;;; Private
-     ;; dash-functional-new
+   '((shell :variables shell-default-shell 'eshell)                      ; Shell
+     better-defaults helm git org ranger syntax-checking version-control ; Core
+     emacs-lisp html python graphviz restclient                          ; Lang
      )
    dotspacemacs-additional-packages '(virtualenvwrapper)
    dotspacemacs-frozen-packages '()
@@ -36,11 +16,6 @@ values."
    dotspacemacs-install-packages 'used-but-keep-unused))
 
 (defun dotspacemacs/init ()
-  "Initialization function.
-This function is called at the very startup of Spacemacs initialization
-before layers configuration.
-You should not put any user code in there besides modifying the variable
-values."
   (setq-default
    dotspacemacs-elpa-https t
    dotspacemacs-elpa-timeout 5
@@ -49,18 +24,10 @@ values."
    dotspacemacs-editing-style 'vim
    dotspacemacs-verbose-loading nil
    dotspacemacs-startup-banner 'official
-   ;; List of items to show in startup buffer or an association list of of
-   ;; the form `(list-type . list-size)`. If nil it is disabled.
-   ;; Possible values for list-type are:
-   ;; `recents' `bookmarks' `projects' `agenda' `todos'."
-   dotspacemacs-startup-lists '((recents . 5)  ; XXX
-                                (projects . 7))
+   dotspacemacs-startup-lists '()
    dotspacemacs-startup-buffer-responsive t
    dotspacemacs-scratch-mode 'org-mode
-   dotspacemacs-themes  ; XXX
-   '(spacemacs-dark
-     zenburn
-     )
+   dotspacemacs-themes '(spacemacs-dark zenburn)
    dotspacemacs-colorize-cursor-according-to-state t
    dotspacemacs-default-font '("Fira Code"
                                :size 14
@@ -68,51 +35,47 @@ values."
                                :width condensed
                                :powerline-scale 1.1)
    dotspacemacs-leader-key "SPC"
-   dotspacemacs-emacs-leader-key "M-m"  ; XXX
+   dotspacemacs-emacs-command-key "SPC"
+   dotspacemacs-ex-command-key ":"
+   dotspacemacs-emacs-leader-key "M-m"
    dotspacemacs-major-mode-leader-key ","
    dotspacemacs-major-mode-emacs-leader-key "C-M-m"
-   dotspacemacs-emacs-command-key "SPC"
    dotspacemacs-distinguish-gui-tab nil
-   dotspacemacs-remap-Y-to-y$ nil
+   dotspacemacs-remap-Y-to-y$ t
    dotspacemacs-retain-visual-state-on-shift t
    dotspacemacs-visual-line-move-text nil
    dotspacemacs-ex-substitute-global nil
    dotspacemacs-default-layout-name "Default"
    dotspacemacs-display-default-layout nil
-   dotspacemacs-auto-resume-layouts nil  ; XXX
+   dotspacemacs-auto-resume-layouts nil
    dotspacemacs-large-file-size 1
    dotspacemacs-auto-save-file-location 'cache
    dotspacemacs-max-rollback-slots 5
    dotspacemacs-helm-resize nil
    dotspacemacs-helm-no-header nil
    dotspacemacs-helm-position 'bottom
-   ;; If non nil the paste micro-state is enabled. When enabled pressing `p`
-   ;; several times cycle between the kill ring content. (default nil)
-   dotspacemacs-enable-paste-transient-state nil  ; XXX - cycles kill ring
+   dotspacemacs-enable-paste-transient-state nil
    dotspacemacs-which-key-delay 0.4
    dotspacemacs-which-key-position 'bottom
    dotspacemacs-loading-progress-bar t
    dotspacemacs-fullscreen-at-startup t
    dotspacemacs-fullscreen-use-non-native nil
    dotspacemacs-maximized-at-startup nil
-   dotspacemacs-active-transparency 90  ; XXX
-   dotspacemacs-inactive-transparency 90  ; XXX
+   dotspacemacs-active-transparency 90
+   dotspacemacs-inactive-transparency 90
    dotspacemacs-show-transient-state-title t
    dotspacemacs-show-transient-state-color-guide t
    dotspacemacs-mode-line-unicode-symbols t
    dotspacemacs-smooth-scrolling t
    dotspacemacs-line-numbers nil
-   dotspacemacs-folding-method 'evil  ; XXX - 'origami is other, research
-   dotspacemacs-smartparens-strict-mode nil  ; XXX - research this one
-   ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
-   ;; over any automatically added closing parenthesis, bracket, quote, etc…
-   ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
-   dotspacemacs-smart-closing-parenthesis nil  ; XXX dont understand
+   dotspacemacs-folding-method 'evil
+   dotspacemacs-smartparens-strict-mode t  ; XXX Trying out
+   dotspacemacs-smart-closing-parenthesis t  ; XXX Trying out
    dotspacemacs-highlight-delimiters 'all
    dotspacemacs-persistent-server nil
-   dotspacemacs-search-tools '("ag" "pt" "ack" "grep")
+   dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
    dotspacemacs-default-package-repository nil
-   dotspacemacs-whitespace-cleanup nil  ; XXX 'all or 'trailing - on save
+   dotspacemacs-whitespace-cleanup 'trailing
    ))
 
 (defun dotspacemacs/user-init ()
@@ -498,7 +461,7 @@ you should place your code here."
 
   ;; Set as a local variable to run emacs-lisp/dot blocks on file load
   (defun ek/exec-init ()
-    (save-excursion 
+    (save-excursion
       (org-element-map (org-element-parse-buffer 'element) 'src-block
         (lambda (src)
           (when (string= "emacs-lisp" (org-element-property :language src))
