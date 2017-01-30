@@ -27,7 +27,7 @@
    dotspacemacs-startup-lists '()
    dotspacemacs-startup-buffer-responsive t
    dotspacemacs-scratch-mode 'org-mode
-   dotspacemacs-themes '(spacemacs-dark zenburn)
+   dotspacemacs-themes '(spacemacs-dark spacemacs-light zenburn)
    dotspacemacs-colorize-cursor-according-to-state t
    dotspacemacs-default-font '("Fira Code"
                                :size 14
@@ -102,9 +102,23 @@ you should place your code here."
   (hungry-delete-mode 1)  ; in edit mode back gets all contiguous whitespace
   (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1)))  ; SPC splits past 80
   (spacemacs/toggle-aggressive-indent-globally-on)  ; auto-indentation
-  (spacemacs/toggle-mode-line-minor-modes-off)  ; unicode symbols next to major
+  (spacemacs/toggle-mode-line-minor-modes-off)  ; no unicode symbs next to major
   (linum-relative-global-mode 1)  ; very useful for multi-line vim motions
-  ;; (spacemacs/toggle-centered-point-globally-on)  ; XXX - experimenting with
+  ;; (spacemacs/toggle-centered-point-globally-off)  ; XXX - experimenting with
+
+  ;; Fixes 200% windows resolution not scaling
+  (add-to-list 'default-frame-alist '(font . "Fira Code"))
+  (set-face-attribute 'default t :font "Fira Code")
+
+  ;; (defun ek/fix ()
+  ;;   (mapc (lambda (x) (zoom-frm-in)) '(1 2 3 4 5 6 7 8 9 10 11 12 13)))
+
+  ;; Need to read up on
+  ;; smart-parens: https://github.com/Fuco1/smartparens/wiki
+  ;; Emacs-client and other investigations
+  ;; http://psung.blogspot.com/2009/05/using-itsalltext-with-emacsemacsclient.html
+  ;; https://github.com/docwhat/itsalltext
+  ;; probably have to do the other fira code trick
 
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
 
@@ -492,11 +506,11 @@ you should place your code here."
 
   ;; (setq org-html-htmlize-output-type 'css)
 
-  (setq tramp-default-method "plink")
-  (setq vc-ignore-dir-regexp
-        (format "\\(%s\\)\\|\\(%s\\)"
-                vc-ignore-dir-regexp
-                tramp-file-name-regexp))
+  ;; (setq tramp-default-method "plink")
+  ;; (setq vc-ignore-dir-regexp
+  ;;       (format "\\(%s\\)\\|\\(%s\\)"
+  ;;               vc-ignore-dir-regexp
+  ;;               tramp-file-name-regexp))
 
   ;; (require 'flycheck)
 
@@ -559,29 +573,13 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(ansi-color-faces-vector
    [default default default italic underline success warning error])
- '(evil-want-Y-yank-to-eol nil)
- '(org-agenda-files (quote ("~/org/notes.org")))
+ '(evil-want-Y-yank-to-eol t)
+ '(package-selected-packages
+   (quote
+    (zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(safe-local-variable-values
    (quote
-    ((eval when
-           (locate-library "rainbow-mode")
-           (require
-            (quote rainbow-mode))
-           (rainbow-mode))
-     (eval org-babel-execute-src-block)
-     (eval
-      (org-babel-goto-named-src-block "startup-proj")
-      (org-babel-execute-maybe))
-     (eval org-babel-goto-named-src-block "startup-proj")
-     (eval org-babel-execute-maybe)
-     (eval org-babel-goto-named-src-block
-           (quote startup-proj))
-     (eval ek/setup-src)
-     (eval ek/exec-init)
-     (eval ek/startup-proj)
-     (org-babel-use-quick-and-dirty-noweb-expansion . t)
-     (org-use-property-inheritance . t)
-     (org-use-tag-inheritance)))))
+    ())))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -589,3 +587,17 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  )
 )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (yapfify xterm-color web-mode virtualenvwrapper tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
