@@ -80,7 +80,6 @@
    ))
 
 (defun dotspacemacs/user-init ()
-  (defvar outline-minor-mode-prefix (kbd "SPC o"))
   )
 
 (defun dotspacemacs/user-config ()
@@ -96,6 +95,7 @@
 
 ;;; Outshine
   (require 'outshine)
+  (spacemacs/set-leader-keys "o" (cdr (nth 1 (cdr outline-mode-map))))
   (setq outshine-use-speed-commands t)
   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
   (add-hook 'prog-mode-hook 'outline-minor-mode)
@@ -309,7 +309,7 @@
        ("\\(\\.-\\)"                  #Xe122) ("\\(\\.=\\)"                  #Xe123)
        ("\\(\\.\\.\\)"                #Xe124) ("\\(\\.\\.<\\)"               #Xe125)
        ("\\(\\.\\.\\.\\)"             #Xe126) ("\\(\\?=\\)"                  #Xe127)
-       ("\\(\\?\\?\\)"                #Xe128) ("\\(;;\\)"                    #Xe129)
+       ("\\(\\?\\?\\)"                #Xe128) ;;("\\(;;\\)"                    #Xe129)
        ("\\(/=\\)"                    #Xe12c) ("\\(/==\\)"                   #Xe12d)
        ("\\(/>\\)"                    #Xe12e) ("\\(//\\)"                    #Xe12f)
        ("\\(///\\)"                   #Xe130) ("\\(&&\\)"                    #Xe131)
