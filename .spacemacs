@@ -11,7 +11,7 @@
      graphviz restclient                                                 ; Babel
      emacs-lisp html python                                              ; Langs
      )
-   dotspacemacs-additional-packages '(virtualenvwrapper)
+   dotspacemacs-additional-packages '(outshine virtualenvwrapper)
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused))
@@ -79,10 +79,12 @@
    dotspacemacs-whitespace-cleanup 'trailing
    ))
 
-(defun dotspacemacs/user-init ())
+(defun dotspacemacs/user-init ()
+  (defvar outline-minor-mode-prefix "\M-#")
+  )
 
 (defun dotspacemacs/user-config ()
-;;; *Experimenting*
+;;; Experimenting
   ;; (add-hook 'python-mode-hook #'(lambda () (modify-syntax-entry ?_ "w")))
   ;; (spacemacs/toggle-centered-point-globally-on)
   ;; Need to read up on
@@ -92,11 +94,16 @@
   ;; https://github.com/docwhat/itsalltext
   ;; probably have to do the other fira code trick
 
-;;; *Evil*
+;;; Outshine
+  (require 'outshine)
+  (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+  (add-hook 'prog-mode-hook 'outline-minor-mode)
+
+;;; Evil
   (setq-default evil-escape-key-sequence "jk"
                 evil-escape-unordered-key-sequence "true")
 
-;;; *Toggles*
+;;; Toggles
   (spacemacs/toggle-highlight-long-lines-globally-on)
   (fringe-mode '(1 . 1))  ; Minimal left padding and ~ end newline markers
   (rainbow-delimiters-mode-enable)  ; Paren color based on depth
@@ -107,18 +114,18 @@
   (spacemacs/toggle-mode-line-minor-modes-off)  ; no unicode symbs next to major
   (linum-relative-global-mode 1)  ; very useful for multi-line vim motions
 
-;;; *Windows Frame Size Fix*
+;;; Windows Frame Size Fix
   (add-to-list 'default-frame-alist '(font . "Fira Code"))
   (set-face-attribute 'default t :font "Fira Code")
   (defun ek/fix () (mapc (lambda (x) (zoom-frm-out)) '(1 2)))  ; 80 chars zoom
 
-;;; *Projectile*
+;;; Projectile
   (setq projectile-indexing-method 'native)  ; respect .projectile files
 
-;;; *Aspell*
+;;; Aspell
   (setq ispell-program-name "aspell")
 
-;;; *Python*
+;;; Python
   ;; Virtual Environments
   (require 'virtualenvwrapper)
   (pyvenv-mode 1)
@@ -143,7 +150,7 @@
 
   ;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
 
-;;; *Org*
+;;; Org
   ;; Core
   (require 'ox-extra)
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
@@ -265,7 +272,7 @@
   (spacemacs/set-leader-keys-for-minor-mode 'org-src-mode (kbd "RET") 'ek/tangle-in-src-edit)
   (spacemacs/set-leader-keys-for-minor-mode 'org-src-mode (kbd "t") 'ek/test-in-src-edit)
 
-;;; *Font Ligatures*
+;;; Font Ligatures
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
 
   (defconst fira-code-font-lock-keywords-alist
@@ -345,18 +352,30 @@
   )
 
 (defun dotspacemacs/emacs-custom-settings ()
-  (custom-set-variables
-   '(ansi-color-faces-vector
-     [default default default italic underline success warning error])
-   '(evil-want-Y-yank-to-eol t)
-   '(package-selected-packages
-     (quote
-      (window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
-   '(safe-local-variable-values
-     (quote
-      ((eval ek/startup-proj)
-       (org-babel-use-quick-and-dirty-noweb-expansion . t)
-       (org-use-tag-inheritance)))))
-  (custom-set-faces
-   )
-  )
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(evil-want-Y-yank-to-eol t)
+ '(package-selected-packages
+   (quote
+    (outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+ '(safe-local-variable-values
+   (quote
+    ((eval ek/startup-proj)
+     (org-babel-use-quick-and-dirty-noweb-expansion . t)
+     (org-use-tag-inheritance)))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+)
