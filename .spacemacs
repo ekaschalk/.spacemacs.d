@@ -80,7 +80,7 @@
    ))
 
 (defun dotspacemacs/user-init ()
-  (defvar outline-minor-mode-prefix "\M-#")
+  (defvar outline-minor-mode-prefix (kbd "SPC o"))
   )
 
 (defun dotspacemacs/user-config ()
@@ -96,6 +96,7 @@
 
 ;;; Outshine
   (require 'outshine)
+  (setq outshine-use-speed-commands t)
   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
   (add-hook 'prog-mode-hook 'outline-minor-mode)
 
