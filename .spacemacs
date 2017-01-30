@@ -95,7 +95,12 @@
 
 ;;; Outshine
   (require 'outshine)
-  (spacemacs/set-leader-keys "o" (cdr (nth 1 (cdr outline-mode-map))))
+  (let ((map outline-mode-prefix-map))
+    ;; (substitute-key-definition 'old-def 'new-def map)
+    (define-key map "j" 'outline-forward-same-level)
+    (spacemacs/set-leader-keys "o" map)
+    )
+
   (setq outshine-use-speed-commands t)
   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
   (add-hook 'prog-mode-hook 'outline-minor-mode)
