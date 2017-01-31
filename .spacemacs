@@ -377,10 +377,13 @@
 
   (defconst emacs-lisp-outline-levels
     (mapcar 'match-outline-levels
-            '(("\\(^;;;\\)"        ?■)
-              ("\\(^;;;;\\)"        ?○)
-              ("\\(^;;;;;\\)"       ?✸)
-              ("\\(^;;;;;;\\)"       ?✿))))
+            '(("\\(^;;;\\)"                  ?■)
+              ("\\(^;;;;\\)"                 ?○)
+              ("\\(^;;;;;\\)"                ?✸)
+              ("\\(^;;;;;;\\)"               ?✿))))
+
+  ;; Fixes 'LATIN SUBSCRIPT SMALL LETTER J' unicode not picking up a font
+  (set-fontset-font "fontset-default" '(#x2c7c . #x2c7c) "Courier New")
 
   (defconst python-outline-levels
     (mapcar 'match-outline-levels
@@ -388,11 +391,17 @@
               ("\\(^# \\*\\*\\)"             ?○)
               ("\\(^# \\*\\*\\*\\)"          ?✸)
               ("\\(^# \\*\\*\\*\\*\\)"       ?✿)
-              ("\\(_0\\)"                    ?₀)
-              ("\\(_1\\)"                    ?₁)
-              ("\\(_2\\)"                    ?₂)
-              ("\\(_3\\)"                    ?₃)
-              ("\\(_4\\)"                    ?₄)
+              ("\\(_0\\)[ \t\n]"             ?₀)
+              ("\\(_1\\)[ \t\n]"             ?₁)
+              ("\\(_2\\)[ \t\n]"             ?₂)
+              ("\\(_3\\)[ \t\n]"             ?₃)
+              ("\\(_4\\)[ \t\n]"             ?₄)
+              ("\\(_i\\)[ \t\n]"             ?ᵢ)
+              ("\\(_j\\)[ \t\n]"             ?ⱼ)
+              ("\\(_k\\)[ \t\n]"             ?ₖ)
+              ("\\(_m\\)[ \t\n]"             ?ₘ)
+              ("\\(_n\\)[ \t\n]"             ?ₙ)
+              ("\\(_x\\)[ \t\n]"             ?ₓ)
               ("\\(alpha\\)"            ?\u03B1) ; α
               ("\\(beta\\)"             ?\u03B2) ; β
               ("\\(gamma\\)"            ?\u03B3) ; γ
@@ -417,20 +426,20 @@
               )))
 
   ;; Greeks not done through pretty symbols since that breaks subscripts
+  ;; Symbola font is used for these unicode characters
   (add-hook 'python-mode-hook
             (lambda ()
               (mapc (lambda (pair) (push pair prettify-symbols-alist))
                     '(("for" . ?∀)
                       ("in" . ?∊)
                       ("not in" . ?∉)
-                      ("not" . ?～)
+                      ("not" . ?❗)
 
                       ("**2" . ?²)
                       ("int" . ?ℤ)
                       ("sum" . ?∑)
                       ("None" . ?∅)
                       ))))
-              ;; ;; (push '("_x" . ?ᵪ) prettify-symbols-alist)
 
   (defun add-fira-code-symbol-keywords ()
     (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
