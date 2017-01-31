@@ -416,19 +416,21 @@
               ("\\(omega\\)"            ?\u03C9) ; ω
               )))
 
+  ;; Greeks not done through pretty symbols since that breaks subscripts
   (add-hook 'python-mode-hook
             (lambda ()
-              (push '("for" . ?∀) prettify-symbols-alist)
-              (push '("in" . ?∊) prettify-symbols-alist)
-              (push '("not in" . ?∉) prettify-symbols-alist)
-              (push '("not" . ?～) prettify-symbols-alist)
+              (mapc (lambda (pair) (push pair prettify-symbols-alist))
+                    '(("for" . ?∀)
+                      ("in" . ?∊)
+                      ("not in" . ?∉)
+                      ("not" . ?～)
 
-              ;; (push '("_x" . ?ᵪ) prettify-symbols-alist)
-
-              (push '("**2" . ?²) prettify-symbols-alist)
-              (push '("int" . ?ℤ) prettify-symbols-alist)
-              (push '("sum" . ?∑) prettify-symbols-alist)
-              (push '("None" . ?∅) prettify-symbols-alist)))
+                      ("**2" . ?²)
+                      ("int" . ?ℤ)
+                      ("sum" . ?∑)
+                      ("None" . ?∅)
+                      ))))
+              ;; ;; (push '("_x" . ?ᵪ) prettify-symbols-alist)
 
   (defun add-fira-code-symbol-keywords ()
     (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
