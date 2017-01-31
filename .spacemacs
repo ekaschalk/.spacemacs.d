@@ -8,10 +8,11 @@
    dotspacemacs-configuration-layers
    '((shell :variables shell-default-shell 'eshell)                      ; Shell
      better-defaults helm git org ranger syntax-checking version-control ; Core
+     theming
      graphviz restclient                                                 ; Babel
      emacs-lisp html python                                              ; Langs
      )
-   dotspacemacs-additional-packages '(outshine virtualenvwrapper)
+   dotspacemacs-additional-packages '(outshine navi-mode virtualenvwrapper)
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused))
@@ -83,7 +84,18 @@
   )
 
 (defun dotspacemacs/user-config ()
-;;; Experimenting
+;;; Spacemacs org -> outline highlighting
+  (custom-theme-set-faces
+   'spacemacs-dark
+   '(outline-1 ((t (:inherit org-level-1))))
+   '(outline-2 ((t (:inherit org-level-2)))))
+
+  ;; https://github.com/akatov/pretty-mode/blob/master/pretty-mode.el
+
+  ;; list-faces-display
+  ;; https://github.com/syl20bnr/spacemacs/tree/master/layers/%2Bthemes/theming
+
+;;; Do later
   ;; (add-hook 'python-mode-hook #'(lambda () (modify-syntax-entry ?_ "w")))
   ;; (spacemacs/toggle-centered-point-globally-on)
   ;; Need to read up on
@@ -92,18 +104,22 @@
   ;; http://psung.blogspot.com/2009/05/using-itsalltext-with-emacsemacsclient.html
   ;; https://github.com/docwhat/itsalltext
   ;; probably have to do the other fira code trick
+  ;; (substitute-key-definition 'old-def 'new-def map)
 
 ;;; Outshine
   (require 'outshine)
+  ;; (remove-hook 'navi-mode-hook 'evil-mode)
+
   (let ((map outline-mode-prefix-map))
-    ;; (substitute-key-definition 'old-def 'new-def map)
     (define-key map "j" 'outline-forward-same-level)
+    (define-key map "k" 'outline-backward-same-level)
     (spacemacs/set-leader-keys "o" map)
     )
 
   (setq outshine-use-speed-commands t)
   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
   (add-hook 'prog-mode-hook 'outline-minor-mode)
+
 
 ;;; Evil
   (setq-default evil-escape-key-sequence "jk"
@@ -119,6 +135,7 @@
   (spacemacs/toggle-aggressive-indent-globally-on)  ; auto-indentation
   (spacemacs/toggle-mode-line-minor-modes-off)  ; no unicode symbs next to major
   (linum-relative-global-mode 1)  ; very useful for multi-line vim motions
+  (global-prettify-symbols-mode 1)  ; eg. lambda
 
 ;;; Windows Frame Size Fix
   (add-to-list 'default-frame-alist '(font . "Fira Code"))
@@ -348,13 +365,75 @@
        ("\\(%%\\)"                    #Xe16a) ("[^:=]\\(:\\)[^:=]"           #Xe16c)
        ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d))))
 
+  (defun match-outline-levels (regex-char-pair)
+    `(,(car regex-char-pair)
+      (0 (prog1 ()
+           (compose-region
+            (match-beginning 1)
+            (match-end 1)
+            ,(concat "	"
+                     (list (cadr regex-char-pair))))))))
+
+  (defconst emacs-lisp-outline-levels
+    (mapcar 'match-outline-levels
+            '(("\\(^;;;\\)"        ?■)
+              ("\\(^;;;;\\)"        ?○)
+              ("\\(^;;;;;\\)"       ?✸)
+              ("\\(^;;;;;;\\)"       ?✿))))
+
+  (defconst python-outline-levels
+    (mapcar 'match-outline-levels
+            '(("\\(^# \\*\\)"                ?■)
+              ("\\(^# \\*\\*\\)"             ?○)
+              ("\\(^# \\*\\*\\*\\)"          ?✸)
+              ("\\(^# \\*\\*\\*\\*\\)"       ?✿))))
+
   (defun add-fira-code-symbol-keywords ()
     (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
+  (defun emacs-lisp-outline-levels-keywords ()
+    (font-lock-add-keywords nil emacs-lisp-outline-levels))
+  (defun python-outline-levels-keywords ()
+    (font-lock-add-keywords nil python-outline-levels))
 
   (add-hook 'org-mode-hook
             #'add-fira-code-symbol-keywords)
   (add-hook 'prog-mode-hook
             #'add-fira-code-symbol-keywords)
+
+  (add-hook 'emacs-lisp-mode-hook
+            #'emacs-lisp-outline-levels-keywords)
+  (add-hook 'python-mode-hook
+            #'python-outline-levels-keywords)
+
+;;; The final outline
+;;;; The final outline
+;;;;; The final outline
+
+  ;; (add-hook 'emacs-lisp-mode-hook
+  ;;           (lambda ()
+  ;;             (push '("xxx" . ?■) prettify-symbols-alist)
+  ;;             (push '(";;;" . ?■) prettify-symbols-alist)))
+
+  ;; (setq outline-regexp "■ ")
+  ;; (add-hook 'python-mode-hook
+  ;; (add-hook 'prog-mode-hook
+  ;;        (lambda ()
+  ;; (setq comment-start "■")
+  ;; (setq outline-regexp "■")
+  ;; (setq outshine-normalized-outline-regexp-base "■")
+  ;; (setq outshine-normalized-comment-start "■")
+  ;;         (push '(";;;" . ?■) prettify-symbols-alist)))
+
+  ;; (add-hook 'python-mode-hook
+  ;;           (lambda ()
+  ;;             (setq outline-regexp "■ ")
+  ;;             ;; (push '("**2" . ?²) prettify-symbols-alist)
+  ;;             (push '("int" . ?ℤ) prettify-symbols-alist)
+  ;;             (push '("sum" . ?∑) prettify-symbols-alist)
+  ;;             (push '("None" . ?∅) prettify-symbols-alist)
+  ;;             (push '(";;;" . ?■) prettify-symbols-alist)))
+
+  ;; (setq outline-regexp ";;[;]\\{1,8\\} ")
   )
 
 (defun dotspacemacs/emacs-custom-settings ()
@@ -362,26 +441,26 @@
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(evil-want-Y-yank-to-eol t)
- '(package-selected-packages
-   (quote
-    (outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
- '(safe-local-variable-values
-   (quote
-    ((eval ek/startup-proj)
-     (org-babel-use-quick-and-dirty-noweb-expansion . t)
-     (org-use-tag-inheritance)))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-)
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(ansi-color-faces-vector
+     [default default default italic underline success warning error])
+   '(evil-want-Y-yank-to-eol t)
+   '(package-selected-packages
+     (quote
+      (navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+   '(safe-local-variable-values
+     (quote
+      ((eval ek/startup-proj)
+       (org-babel-use-quick-and-dirty-noweb-expansion . t)
+       (org-use-tag-inheritance)))))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   )
+  )
