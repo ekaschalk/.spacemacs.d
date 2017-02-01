@@ -382,26 +382,23 @@
               ("\\(^;;;;;\\)"                ?✸)
               ("\\(^;;;;;;\\)"               ?✿))))
 
-  ;; Fixes 'LATIN SUBSCRIPT SMALL LETTER J' unicode not picking up a font
-  (set-fontset-font "fontset-default" '(#x2c7c . #x2c7c) "Courier New")
-
   (defconst python-outline-levels
     (mapcar 'match-outline-levels
-            '(("\\(^# \\*\\)"                ?■)
-              ("\\(^# \\*\\*\\)"             ?○)
-              ("\\(^# \\*\\*\\*\\)"          ?✸)
-              ("\\(^# \\*\\*\\*\\*\\)"       ?✿)
-              ("\\(_0\\)[ \t\n]"             ?₀)
-              ("\\(_1\\)[ \t\n]"             ?₁)
-              ("\\(_2\\)[ \t\n]"             ?₂)
-              ("\\(_3\\)[ \t\n]"             ?₃)
-              ("\\(_4\\)[ \t\n]"             ?₄)
-              ("\\(_i\\)[ \t\n]"             ?ᵢ)
-              ("\\(_j\\)[ \t\n]"             ?ⱼ)
-              ("\\(_k\\)[ \t\n]"             ?ₖ)
-              ("\\(_m\\)[ \t\n]"             ?ₘ)
-              ("\\(_n\\)[ \t\n]"             ?ₙ)
-              ("\\(_x\\)[ \t\n]"             ?ₓ)
+            '(("\\(^# \\*\\)[ \t\n]"         ?■)
+              ("\\(^# \\*\\*\\)[ \t\n]"      ?○)
+              ("\\(^# \\*\\*\\*\\)[ \t\n]"   ?✸)
+              ("\\(^# \\*\\*\\*\\*\\)[^\\*]" ?✿)
+              ("\\(_0\\)[: \t\n]"             ?₀)
+              ("\\(_1\\)[: \t\n]"             ?₁)
+              ("\\(_2\\)[: \t\n]"             ?₂)
+              ("\\(_3\\)[: \t\n]"             ?₃)
+              ("\\(_4\\)[: \t\n]"             ?₄)
+              ("\\(_i\\)[: \t\n]"             ?ᵢ)
+              ("\\(_j\\)[: \t\n]"             ?ⱼ)
+              ("\\(_k\\)[: \t\n]"             ?ₖ)
+              ("\\(_m\\)[: \t\n]"             ?ₘ)
+              ("\\(_n\\)[: \t\n]"             ?ₙ)
+              ("\\(_x\\)[: \t\n]"             ?ₓ)
               ("\\(alpha\\)"            ?\u03B1) ; α
               ("\\(beta\\)"             ?\u03B2) ; β
               ("\\(gamma\\)"            ?\u03B3) ; γ
@@ -412,34 +409,56 @@
               ("\\(iota\\)"             ?\u03B9) ; ι
               ("\\(kappa\\)"            ?\u03BA) ; κ
               ("\\(mu\\)"               ?\u03BC) ; μ
-              ("\\(nu\\)"               ?\u03BD) ; ν
               ("\\(xi\\)"               ?\u03BE) ; ξ
               ("\\(omicron\\)"          ?\u03BF) ; ο
-              ("\\(pi\\)"               ?\u03C0) ; π
+              ;; ("\\(pi\\)"               ?\u03C0) ; π
               ("\\(rho\\)"              ?\u03C1) ; ρ
               ("\\(sigma\\)"            ?\u03C3) ; σ
               ("\\(tau\\)"              ?\u03C4) ; τ
               ("\\(phi\\)"              ?\u03C6) ; φ
               ("\\(chi\\)"              ?\u03C7) ; χ
-              ("\\(psi\\)"              ?\u03C8) ; ψ
               ("\\(omega\\)"            ?\u03C9) ; ω
               )))
+  ;; TODO Force space before everything eg.  ca_pi_talize
 
   ;; Greeks not done through pretty symbols since that breaks subscripts
   ;; Symbola font is used for these unicode characters
+  ;; https://en.wikipedia.org/wiki/Mathematical_operators_and_symbols_in_Unicode
+
+  ;; Fixes eg. 'LATIN SUBSCRIPT SMALL LETTER J' unicode not picking up a font
+  (set-fontset-font "fontset-default" '(#x2c7c . #x2c7c) "Courier New")
+  (set-fontset-font "fontset-default" '(#x1d518 . #x1d518) "Symbola")
+  (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d4e2) "Symbola")
+  (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d54a) "Symbola")
+  (set-fontset-font "fontset-default" '(#x1d54a . #x1d572) "Symbola")
+
   (add-hook 'python-mode-hook
             (lambda ()
               (mapc (lambda (pair) (push pair prettify-symbols-alist))
-                    '(("for" . ?∀)
-                      ("in" . ?∊)
-                      ("not in" . ?∉)
-                      ("not" . ?❗)
-
-                      ("**2" . ?²)
-                      ("int" . ?ℤ)
-                      ("sum" . ?∑)
-                      ("None" . ?∅)
-                      ))))
+                    '(;; Syntax
+                      ("not" .      ?❗)
+                      ("for" .      ?∀)
+                      ("in" .       ?∊)
+                      ("not in" .   ?∉)
+                      ("return" .   ?⟼)
+                      ;; Base Types
+                      ("None" .     ?∅)
+                      ("int" .      ?ℤ)
+                      ("float" .    ?ℝ)
+                      ("str" .      ?𝕊)
+                      ;; Mypy Containers
+                      ("Dict" .     ?𝔇)
+                      ("List" .     ?ℒ)
+                      ("Callable" . ?ℱ)
+                      ("Iterable" . ?𝔊)
+                      ("Set" .      ?Ω)
+                      ;; Mypy Compositions
+                      ("Any" .      ??)
+                      ("Tuple" .    ?⨂)
+                      ("Union" .    ?⋃)
+                      ;; Other
+                      ("**2" .      ?²)
+                      ("sum" .      ?∑)))))
 
   (defun add-fira-code-symbol-keywords ()
     (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
