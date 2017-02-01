@@ -88,11 +88,10 @@
   ;; TODO probably safe to renable ;; ligature
   ;; TODO a(xi)s, ca(pi)talize are broken from current greek font-lock
   ;; TODO redfine python's outline-regexp: ";;;\\*+\\|\\`" to not use stars
-  ;; LOOK AT- https://github.com/tj64/org-dp (org mode declarative programming)
-  ;; Remember- SPC n is narrow functions, spc n w = widen
-  ;; Remember- t and T are same as f and F but go to before char
+  ;; TODO Define navi-mode font-lock so all outline-levels replaced
 
 ;;;; Yassnippets
+  ;; LOOK AT- https://github.com/tj64/org-dp (org mode declarative programming)
   ;; http://spacemacs.org/layers/+completion/auto-completion/README.html
   ;; http://joaotavora.github.io/yasnippet/
   ;; https://github.com/joaotavora/yasnippet
@@ -116,88 +115,59 @@
   (add-hook 'prog-mode-hook 'outline-minor-mode)
 
 ;;;;; Navi bindings
-  ;; (remove-hook 'navi-mode-hook 'evil-mode)
-  ;; (define-key outline-minor-mode-map
-  ;;   (kbd "M-n") 'outshine-navi)
   (let ((map (make-sparse-keymap)))
-    ;; navi-switch-to-twin-buffer
-    ;; navi-search-and-switch
-    ;; navi-quit-and-switch
-    ;; navi-generic-command
-    ;; navi-undo
-
-    ;; Call with prefix C-1, C-2, C-3...
-    ;; f 	:FUN 	functions, macros etc.
-    ;; v 	:VAR 	vars, consts, customs etc.
-    ;; x 	:OBJ 	OOP (classes, methods etc)
-    ;; a 	:ALL 	all
-    (evil-define-key '(normal visual motion) map
-      ;; "f" (lambda () (interactive) (navi-generic-command 36 1))
-      "f" (lambda ()
-            (interactive)
-            (navi-generic-command 36 current-prefix-arg))
-      )
-    ;; (mapc (lambda (key) (define-key map (format "%s" key) 'navi-generic-command))
-    ;;       '(f v x 1 2 3 4))
-
-    (define-key map (kbd "TAB") 'navi-cycle-subtree)
-
     (define-key map (kbd "TAB") 'navi-cycle-subtree)
     (define-key map (kbd "<backtab>") 'navi-cycle-buffer)
-    ;; (define-key map (kbd "w") 'navi-widen)
-    ;; (define-key map (kbd "b") 'navi-narrow-to-thing-at-point)
-    ;; (define-key map (kbd "u") 'navi-undo)
-    ;; (define-key map (kbd "e") 'navi-edit-as-org)
 
     (define-key map (kbd "M-h") 'navi-promote-subtree)
-    (define-key map (kbd "M-S-j") 'navi-move-up-subtree)
-    (define-key map (kbd "M-S-k") 'navi-move-down-subtree)
+    (define-key map (kbd "M-j") 'navi-move-down-subtree)
+    (define-key map (kbd "M-k") 'navi-move-up-subtree)
     (define-key map (kbd "M-l") 'navi-demote-subtree)
 
-    (setq navi-mode-map map)
-    )
+    (evil-define-key '(normal visual motion) map
+      "f" (lambda () (interactive) (navi-generic-command ?f current-prefix-arg)) ;Fun
+      "v" (lambda () (interactive) (navi-generic-command ?v current-prefix-arg)) ;Var
+      "x" (lambda () (interactive) (navi-generic-command ?x current-prefix-arg)) ;Obj
+      "a" (lambda () (interactive) (navi-generic-command ?a current-prefix-arg)) ;All
+      "1" (lambda () (interactive) (navi-generic-command ?1 current-prefix-arg))
+      "2" (lambda () (interactive) (navi-generic-command ?2 current-prefix-arg))
+      "3" (lambda () (interactive) (navi-generic-command ?3 current-prefix-arg))
+      "4" (lambda () (interactive) (navi-generic-command ?4 current-prefix-arg))
+
+      ;; TODO scrolling on occurs (lambda () (evil-scroll-line-to-top))
+      ;; TODO starts out on current outline in navi-mode
+      ;; TODO outline narrow to buffer operates moves to parent heading
+
+      "d" 'occur-mode-display-occurrence ; Goto in other buffer
+      "o" 'navi-goto-occurrence-other-window ; Goto and switch to buffer
+      "u" 'navi-undo
+      "n" 'navi-narrow-to-thing-at-point
+      "w" 'navi-widen
+      "q" (lambda () (interactive) (navi-quit-and-switch) (delete-window)))
+
+    (setq navi-mode-map map))
+
 ;;;;; Outshine bindings
-  (evil-define-key '(normal visual motion) outline-minor-mode-map
-    "gh" 'outline-up-heading
-    "gj" 'outline-forward-same-level
-    "gk" 'outline-backward-same-level
-    "gl" 'outline-next-visible-heading
-    "gu" 'outline-previous-visible-heading
-    )
+  (let ((map outline-minor-mode-map))
+    (define-key map (kbd "M-n")
+      (lambda () (interactive) (outshine-navi) (navi-generic-command ?2 nil)))
+    (define-key map (kbd "M-RET") 'outshine-insert-heading)
+    (define-key map (kbd "<backtab>") 'outshine-cycle-buffer)
+    (define-key map (kbd "M-h") 'outline-promote)
+    (define-key map (kbd "M-l") 'outline-demote)
 
-  ;; Cycle Buffer
-  (define-key outline-minor-mode-map
-    (kbd "<backtab>") 'outshine-cycle-buffer)
-  ;; Insert Heading
-  (define-key outline-minor-mode-map
-    (kbd "M-RET") 'outshine-insert-heading)
-  ;; Promote/Moveup/Movedown/Demote Subtree
-  (define-key outline-minor-mode-map
-    (kbd "M-h") 'outline-promote)
-  ;; (define-key outline-minor-mode-map  ; TODO
-  ;;   (kbd "M-S-j") 'outline-move-subtree-up)
-  ;; (define-key outline-minor-mode-map
-  ;;   (kbd "M-S-k") 'outline-move-subtree-down)
-  (define-key outline-minor-mode-map
-    (kbd "M-l") 'outline-demote)
-  ;; Navi Switch
-  (define-key outline-minor-mode-map
-    (kbd "M-n") 'outshine-navi)
-  ;; Narrow to Subtree
-  (define-key outline-minor-mode-map
-    (kbd "M-b") 'outshine-narrow-to-subtree)
+    (evil-define-key '(normal visual motion) map
+      "gh" 'outline-up-heading
+      "gj" 'outline-forward-same-level
+      "gk" 'outline-backward-same-level
+      "gl" 'outline-next-visible-heading
+      "gu" 'outline-previous-visible-heading
 
-;;;;; Scratch
-  ;; (define-key outline-minor-mode-map
-  ;;   (kbd "M-h") (lambda ()
-  ;;                 (interactive)
-  ;;                 (setq current-prefix-arg '(1))
-  ;;                 (call-interactively 'outline-promote)))
-  ;; (define-key outline-minor-mode-map
-  ;;   (kbd "M-l") (lambda ()
-  ;;                 (interactive)
-  ;;                 (setq current-prefix-arg '(1))
-  ;;                 (call-interactively 'outline-demote)))
+      (kbd "SPC n n") 'outshine-narrow-to-subtree
+
+      (kbd "SPC n j") 'outline-move-subtree-down
+      (kbd "SPC n k") 'outline-move-subtree-up))
+
 ;;;; Evil
   (setq-default evil-escape-key-sequence "jk"
                 evil-escape-unordered-key-sequence "true")
