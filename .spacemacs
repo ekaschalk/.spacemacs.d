@@ -81,11 +81,24 @@
    dotspacemacs-whitespace-cleanup 'trailing
    ))
 
-(defun dotspacemacs/user-init ()
-  )
+(defun dotspacemacs/user-init ())
 
-;;; Spacemacs-config
+;;; Spacemacs-Config
 (defun dotspacemacs/user-config ()
+  ;; TODO probably safe to renable ;; ligature
+  ;; TODO a(xi)s, ca(pi)talize are broken from current greek font-lock
+  ;; TODO redfine python's outline-regexp: ";;;\\*+\\|\\`" to not use stars
+  ;; Remember- SPC n is narrow functions, spc n w = widen
+  ;; Remember- t and T are same as f and F but go to before char
+
+;;;; Yassnippets
+  ;; http://spacemacs.org/layers/+completion/auto-completion/README.html
+  ;; http://joaotavora.github.io/yasnippet/
+  ;; https://github.com/joaotavora/yasnippet
+  ;; https://github.com/AndreaCrotti/yasnippet-snippets
+  ;; https://github.com/AndreaCrotti/yasnippet-snippets/tree/master/python-mode
+  ;; https://www.emacswiki.org/emacs/Yasnippet
+  ;; http://jr0cket.co.uk/2016/07/spacemacs-adding-your-own-yasnippets.html
 
 ;;;; Windows Frame Size Fix
   ;; This needs to occur early in config, not ideal solution
@@ -97,16 +110,53 @@
   (require 'outshine)
   ;; (remove-hook 'navi-mode-hook 'evil-mode)
 
-  (let ((map outline-mode-prefix-map))
-    (define-key map "j" 'outline-forward-same-level)
-    (define-key map "k" 'outline-backward-same-level)
-    (spacemacs/set-leader-keys "o" map)
+  (evil-define-key '(normal visual motion) outline-minor-mode-map
+    "gh" 'outline-up-heading
+    "gj" 'outline-forward-same-level
+    "gk" 'outline-backward-same-level
+    "gl" 'outline-next-visible-heading
+    "gu" 'outline-previous-visible-heading
     )
+
+  ;; TODO TO BIND
+
+  ;; Cycle Buffer
+  (define-key outline-minor-mode-map
+    (kbd "<backtab>") 'outshine-cycle-buffer)
+  ;; Insert Heading
+  (define-key outline-minor-mode-map
+    (kbd "M-RET") 'outshine-insert-heading)
+  ;; Promote/Moveup/Movedown/Demote Subtree
+  (define-key outline-minor-mode-map
+    (kbd "M-h") 'outline-promote)
+  (define-key outline-minor-mode-map
+    (kbd "M-j") 'outline-move-subtree-up)
+  (define-key outline-minor-mode-map
+    (kbd "M-k") 'outline-move-subtree-down)
+  (define-key outline-minor-mode-map
+    (kbd "M-l") 'outline-demote)
+
+  (let ((map outline-mode-prefix-map))
+    (define-key map "b" 'outshine-narrow-to-subtree)
+    (define-key map "n" 'outshine-navi)
+    ;; (define-key map "o" 'outorg-edit-as-org)
+
+    (spacemacs/set-leader-keys "o" map))
 
   (setq outshine-use-speed-commands t)
   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
   (add-hook 'prog-mode-hook 'outline-minor-mode)
-
+;;;;; Scratch
+  ;; (define-key outline-minor-mode-map
+  ;;   (kbd "M-h") (lambda ()
+  ;;                 (interactive)
+  ;;                 (setq current-prefix-arg '(1))
+  ;;                 (call-interactively 'outline-promote)))
+  ;; (define-key outline-minor-mode-map
+  ;;   (kbd "M-l") (lambda ()
+  ;;                 (interactive)
+  ;;                 (setq current-prefix-arg '(1))
+  ;;                 (call-interactively 'outline-demote)))
 ;;;; Evil
   (setq-default evil-escape-key-sequence "jk"
                 evil-escape-unordered-key-sequence "true")
@@ -436,16 +486,19 @@
             (lambda ()
               (mapc (lambda (pair) (push pair prettify-symbols-alist))
                     '(;; Syntax
-                      ("not" .      ?❗)
+                      ("not" .      ?❗) ; ¬
                       ("for" .      ?∀)
                       ("in" .       ?∊)
                       ("not in" .   ?∉)
-                      ("return" .   ?⟼)
+                      ("return" .  ?⟼)
+                      ("yield" .   ?⟻)
                       ;; Base Types
                       ("None" .     ?∅)
                       ("int" .      ?ℤ)
                       ("float" .    ?ℝ)
                       ("str" .      ?𝕊)
+                      ("True" .     ?⟙)
+                      ("False" .    ?⟘)
                       ;; Mypy Containers
                       ("Dict" .     ?𝔇)
                       ("List" .     ?ℒ)
@@ -453,7 +506,7 @@
                       ("Iterable" . ?𝔊)
                       ("Set" .      ?Ω)
                       ;; Mypy Compositions
-                      ("Any" .      ??)
+                      ("Any" .      ?❔) ; ？ ❓
                       ("Tuple" .    ?⨂)
                       ("Union" .    ?⋃)
                       ;; Other
@@ -479,7 +532,7 @@
 ;; http://psung.blogspot.com/2009/05/using-itsalltext-with-emacsemacsclient.html
 ;; https://github.com/docwhat/itsalltext
 
-;;; Spacemacs-autogen
+;;; Spacemacs-Autogen
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
