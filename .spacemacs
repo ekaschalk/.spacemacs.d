@@ -108,8 +108,16 @@
 
 ;;;; Outshine-mode
   (require 'outshine)
+  (require 'navi-mode)
+
+  (setq outshine-use-speed-commands t)
+  (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+  (add-hook 'prog-mode-hook 'outline-minor-mode)
+
+;;;;; Navi bindings
   ;; (remove-hook 'navi-mode-hook 'evil-mode)
 
+;;;;; Outshine bindings
   (evil-define-key '(normal visual motion) outline-minor-mode-map
     "gh" 'outline-up-heading
     "gj" 'outline-forward-same-level
@@ -117,8 +125,6 @@
     "gl" 'outline-next-visible-heading
     "gu" 'outline-previous-visible-heading
     )
-
-  ;; TODO TO BIND
 
   ;; Cycle Buffer
   (define-key outline-minor-mode-map
@@ -135,17 +141,13 @@
     (kbd "M-k") 'outline-move-subtree-down)
   (define-key outline-minor-mode-map
     (kbd "M-l") 'outline-demote)
+  ;; Navi Switch
+  (define-key outline-minor-mode-map
+    (kbd "M-n") 'outshine-navi)
+  ;; Narrow to Subtree
+  (define-key outline-minor-mode-map
+    (kbd "M-b") 'outshine-narrow-to-subtree)
 
-  (let ((map outline-mode-prefix-map))
-    (define-key map "b" 'outshine-narrow-to-subtree)
-    (define-key map "n" 'outshine-navi)
-    ;; (define-key map "o" 'outorg-edit-as-org)
-
-    (spacemacs/set-leader-keys "o" map))
-
-  (setq outshine-use-speed-commands t)
-  (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-  (add-hook 'prog-mode-hook 'outline-minor-mode)
 ;;;;; Scratch
   ;; (define-key outline-minor-mode-map
   ;;   (kbd "M-h") (lambda ()
