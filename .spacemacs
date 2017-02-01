@@ -1,4 +1,5 @@
 ;; -*- mode: emacs-lisp -*-
+;;; Spacemacs-Layers
 (defun dotspacemacs/layers ()
   (setq-default
    dotspacemacs-distribution 'spacemacs
@@ -16,7 +17,7 @@
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused))
-
+;;; Spacemacs-Init
 (defun dotspacemacs/init ()
   (setq-default
    dotspacemacs-elpa-https t
@@ -83,31 +84,16 @@
 (defun dotspacemacs/user-init ()
   )
 
+;;; Spacemacs-config
 (defun dotspacemacs/user-config ()
-;;; Spacemacs org -> outline highlighting
-  (custom-theme-set-faces
-   'spacemacs-dark
-   '(outline-1 ((t (:inherit org-level-1))))
-   '(outline-2 ((t (:inherit org-level-2))))
-   '(outline-3 ((t (:inherit org-level-3))))
-   '(outline-4 ((t (:inherit org-level-4)))))
 
+;;;; Windows Frame Size Fix
+  ;; This needs to occur early in config, not ideal solution
+  (add-to-list 'default-frame-alist '(font . "Fira Code"))
+  (set-face-attribute 'default t :font "Fira Code")
+  (defun ek/fix () (mapc (lambda (x) (zoom-frm-out)) '(1 2)))  ; 80 chars zoom
 
-
-  ;; https://github.com/akatov/pretty-mode/blob/master/pretty-mode.el
-
-;;; Do later
-  ;; (add-hook 'python-mode-hook #'(lambda () (modify-syntax-entry ?_ "w")))
-  ;; (spacemacs/toggle-centered-point-globally-on)
-  ;; Need to read up on
-  ;; smart-parens: https://github.com/Fuco1/smartparens/wiki
-  ;; Emacs-client and other investigations
-  ;; http://psung.blogspot.com/2009/05/using-itsalltext-with-emacsemacsclient.html
-  ;; https://github.com/docwhat/itsalltext
-  ;; probably have to do the other fira code trick
-  ;; (substitute-key-definition 'old-def 'new-def map)
-
-;;; Outshine
+;;;; Outshine-mode
   (require 'outshine)
   ;; (remove-hook 'navi-mode-hook 'evil-mode)
 
@@ -121,12 +107,11 @@
   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
   (add-hook 'prog-mode-hook 'outline-minor-mode)
 
-
-;;; Evil
+;;;; Evil
   (setq-default evil-escape-key-sequence "jk"
                 evil-escape-unordered-key-sequence "true")
 
-;;; Toggles
+;;;; Toggles
   (spacemacs/toggle-highlight-long-lines-globally-on)
   (fringe-mode '(1 . 1))  ; Minimal left padding and ~ end newline markers
   (rainbow-delimiters-mode-enable)  ; Paren color based on depth
@@ -136,21 +121,10 @@
   (spacemacs/toggle-aggressive-indent-globally-on)  ; auto-indentation
   (spacemacs/toggle-mode-line-minor-modes-off)  ; no unicode symbs next to major
   (linum-relative-global-mode 1)  ; very useful for multi-line vim motions
-  (global-prettify-symbols-mode 1)  ; eg. lambda
+  (global-prettify-symbols-mode 1)  ; eg. lambda, python lots of config
 
-;;; Windows Frame Size Fix
-  (add-to-list 'default-frame-alist '(font . "Fira Code"))
-  (set-face-attribute 'default t :font "Fira Code")
-  (defun ek/fix () (mapc (lambda (x) (zoom-frm-out)) '(1 2)))  ; 80 chars zoom
-
-;;; Projectile
-  (setq projectile-indexing-method 'native)  ; respect .projectile files
-
-;;; Aspell
-  (setq ispell-program-name "aspell")
-
-;;; Python
-  ;; Virtual Environments
+;;;; Python
+;;;;; Virtual Environments
   (require 'virtualenvwrapper)
   (pyvenv-mode 1)
   (venv-initialize-interactive-shells)
@@ -164,7 +138,7 @@
 
   (add-hook 'org-mode-hook 'pyvenv-autoload)
 
-  ;; Mypy
+;;;;; Mypy
   (defun mypy-show-region ()
     (interactive)
     (org-edit-src-exit)
@@ -174,8 +148,8 @@
 
   ;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
 
-;;; Org
-  ;; Core
+;;;; Org
+;;;;; Core
   (require 'ox-extra)
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
         org-priority-faces '((65 :foreground "red")
@@ -183,18 +157,17 @@
                              (67 :foreground "blue")))
   (ox-extras-activate '(ignore-headlines))
 
-  ;; Babel
+;;;;; Babel
   (setq org-confirm-babel-evaluate nil
         org-src-fontify-natively t
         org-src-tab-acts-natively t
         org-src-preserve-indentation t
         org-src-window-setup 'current-window)
-  (org-babel-do-load-languages 'org-babel-load-languages
-                               '((python . t)
-                                 (dot . t)
-                                 (http . t)))
-
-  ;; Exporting
+  (org-babel-do-load-languages
+   'org-babel-load-languages '((python . t)
+                               (dot . t)
+                               (http . t)))
+;;;;; Exporting
   (require 'ox-bibtex)
   (add-to-list 'org-latex-packages-alist '("" "minted"))
   (setq org-html-htmlize-output-type 'inline-css
@@ -209,7 +182,7 @@
           "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
           "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
-  ;; Templates
+;;;;; Templates
   (mapc (lambda (x) (add-to-list 'org-structure-template-alist x))
         (list
          ;; Common
@@ -233,7 +206,8 @@
                  " :noweb no-export\n#+PROPERTY: header-args:python"
                  " :tangle (ek/file-path)\n#+END_QUOTE\n"))))
 
-  ;; Funcs Core
+;;;;; Funcs
+;;;;;; Toggle blocks
   (defvar org-blocks-hidden nil)
   (defun org-toggle-blocks ()
     (interactive)
@@ -242,12 +216,12 @@
       (org-hide-block-all))
     (setq-local org-blocks-hidden (not org-blocks-hidden)))
 
+;;;;;; Tangling
   (defun tangle-on-save-org-mode-file()
     (when (and (string= major-mode "org-mode")
                (string= buffer-file-name "c:/~/dev/pop-synth/base.org"))
       (org-babel-tangle)))
 
-  ;; Python babel utilities
   (defun ek/tangle-in-src-edit ()
     (interactive)
     (let ((pos (point)) (vpos (window-start)))
@@ -272,7 +246,7 @@
         (goto-char pos)
         (shell-command cmd))))
 
-  ;; Project initation
+;;;;;; Projects
   (defun ek/exec-init ()
     (save-excursion
       (org-element-map (org-element-parse-buffer 'element) 'src-block
@@ -286,17 +260,28 @@
     (ek/exec-init)  ; Run proj-specific init blocks
     (ek/setup-src))  ; Run proj-specific setup-src
 
-  ;; Hooks
+;;;;;; Hooks and Keymappings
   (add-hook 'org-mode-hook 'flyspell-mode)  ; Async python, spelling
   (add-hook 'org-mode-hook 'org-toggle-blocks)
   (add-hook 'after-save-hook 'tangle-on-save-org-mode-file)
 
-  ;; Keymappings
-  (define-key org-mode-map (kbd "C-c t") 'org-toggle-blocks)
-  (spacemacs/set-leader-keys-for-minor-mode 'org-src-mode (kbd "RET") 'ek/tangle-in-src-edit)
-  (spacemacs/set-leader-keys-for-minor-mode 'org-src-mode (kbd "t") 'ek/test-in-src-edit)
+  (define-key org-mode-map
+    (kbd "C-c t") 'org-toggle-blocks)
+  (spacemacs/set-leader-keys-for-minor-mode 'org-src-mode
+    (kbd "RET") 'ek/tangle-in-src-edit)
+  (spacemacs/set-leader-keys-for-minor-mode 'org-src-mode
+    (kbd "t") 'ek/test-in-src-edit)
 
-;;; Font Ligatures
+;;;; Display
+;;;;; Themes
+  (custom-theme-set-faces
+   'spacemacs-dark
+   '(outline-1 ((t (:inherit org-level-1 :underline t))))
+   '(outline-2 ((t (:inherit org-level-2 :underline t))))
+   '(outline-3 ((t (:inherit org-level-3 :underline t))))
+   '(outline-4 ((t (:inherit org-level-4 :underline t)))))
+
+;;;;; Font Ligatures
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
 
   (defconst fira-code-font-lock-keywords-alist
@@ -375,19 +360,19 @@
             ,(concat "	"
                      (list (cadr regex-char-pair))))))))
 
-  (defconst emacs-lisp-outline-levels
+  (defconst emacs-lisp-prettify-pairs
     (mapcar 'match-outline-levels
-            '(("\\(^;;;\\)"                  ?■)
-              ("\\(^;;;;\\)"                 ?○)
-              ("\\(^;;;;;\\)"                ?✸)
-              ("\\(^;;;;;;\\)"               ?✿))))
+            '(("\\(^;;;\\)"                   ?■)
+              ("\\(^;;;;\\)"                  ?○)
+              ("\\(^;;;;;\\)"                 ?✸)
+              ("\\(^;;;;;;\\)"                ?✿))))
 
-  (defconst python-outline-levels
+  (defconst python-prettify-pairs
     (mapcar 'match-outline-levels
-            '(("\\(^# \\*\\)[ \t\n]"         ?■)
-              ("\\(^# \\*\\*\\)[ \t\n]"      ?○)
-              ("\\(^# \\*\\*\\*\\)[ \t\n]"   ?✸)
-              ("\\(^# \\*\\*\\*\\*\\)[^\\*]" ?✿)
+            '(("\\(^# \\*\\)[ \t\n]"          ?■)
+              ("\\(^# \\*\\*\\)[ \t\n]"       ?○)
+              ("\\(^# \\*\\*\\*\\)[ \t\n]"    ?✸)
+              ("\\(^# \\*\\*\\*\\*\\)[^\\*]"  ?✿)
               ("\\(_0\\)[: \t\n]"             ?₀)
               ("\\(_1\\)[: \t\n]"             ?₁)
               ("\\(_2\\)[: \t\n]"             ?₂)
@@ -411,7 +396,7 @@
               ("\\(mu\\)"               ?\u03BC) ; μ
               ("\\(xi\\)"               ?\u03BE) ; ξ
               ("\\(omicron\\)"          ?\u03BF) ; ο
-              ;; ("\\(pi\\)"               ?\u03C0) ; π
+              ;; ("\\(pi\\)"               ?\u03C0) ; π TODO: breaks eg capitalize
               ("\\(rho\\)"              ?\u03C1) ; ρ
               ("\\(sigma\\)"            ?\u03C3) ; σ
               ("\\(tau\\)"              ?\u03C4) ; τ
@@ -419,13 +404,28 @@
               ("\\(chi\\)"              ?\u03C7) ; χ
               ("\\(omega\\)"            ?\u03C9) ; ω
               )))
-  ;; TODO Force space before everything eg.  ca_pi_talize
 
+  (defun add-fira-code-symbol-keywords ()
+    (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
+  (defun emacs-lisp-prettify-keywords ()
+    (font-lock-add-keywords nil emacs-lisp-prettify-pairs))
+  (defun python-prettify-keywords ()
+    (font-lock-add-keywords nil python-prettify-pairs))
+
+  (add-hook 'org-mode-hook
+            #'add-fira-code-symbol-keywords)
+  (add-hook 'prog-mode-hook
+            #'add-fira-code-symbol-keywords)
+
+  (add-hook 'emacs-lisp-mode-hook
+            #'emacs-lisp-prettify-keywords)
+  (add-hook 'python-mode-hook
+            #'python-prettify-keywords)
+
+;;;;; Prettify Symbols
   ;; Greeks not done through pretty symbols since that breaks subscripts
-  ;; Symbola font is used for these unicode characters
+  ;; Fixes for unicode not picking up a default font on some chars
   ;; https://en.wikipedia.org/wiki/Mathematical_operators_and_symbols_in_Unicode
-
-  ;; Fixes eg. 'LATIN SUBSCRIPT SMALL LETTER J' unicode not picking up a font
   (set-fontset-font "fontset-default" '(#x2c7c . #x2c7c) "Courier New")
   (set-fontset-font "fontset-default" '(#x1d518 . #x1d518) "Symbola")
   (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d4e2) "Symbola")
@@ -460,25 +460,26 @@
                       ("**2" .      ?²)
                       ("sum" .      ?∑)))))
 
-  (defun add-fira-code-symbol-keywords ()
-    (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
-  (defun emacs-lisp-outline-levels-keywords ()
-    (font-lock-add-keywords nil emacs-lisp-outline-levels))
-  (defun python-outline-levels-keywords ()
-    (font-lock-add-keywords nil python-outline-levels))
-
-  (add-hook 'org-mode-hook
-            #'add-fira-code-symbol-keywords)
-  (add-hook 'prog-mode-hook
-            #'add-fira-code-symbol-keywords)
-
-  (add-hook 'emacs-lisp-mode-hook
-            #'emacs-lisp-outline-levels-keywords)
-  (add-hook 'python-mode-hook
-            #'python-outline-levels-keywords)
-
   )
 
+;;;; Misc
+;;;;; Projectile
+(setq projectile-indexing-method 'native)  ; respect .projectile files
+
+;;;;; Aspell
+(setq ispell-program-name "aspell")
+
+;;;; Future
+;;;;; Considering
+;; (add-hook 'python-mode-hook #'(lambda () (modify-syntax-entry ?_ "w")))
+;; smart-parens: https://github.com/Fuco1/smartparens/wiki
+;; (substitute-key-definition 'old-def 'new-def map)
+
+;;;;; Emacs-client
+;; http://psung.blogspot.com/2009/05/using-itsalltext-with-emacsemacsclient.html
+;; https://github.com/docwhat/itsalltext
+
+;;; Spacemacs-autogen
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
