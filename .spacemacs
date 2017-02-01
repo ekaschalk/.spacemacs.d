@@ -88,6 +88,7 @@
   ;; TODO probably safe to renable ;; ligature
   ;; TODO a(xi)s, ca(pi)talize are broken from current greek font-lock
   ;; TODO redfine python's outline-regexp: ";;;\\*+\\|\\`" to not use stars
+  ;; LOOK AT- https://github.com/tj64/org-dp (org mode declarative programming)
   ;; Remember- SPC n is narrow functions, spc n w = widen
   ;; Remember- t and T are same as f and F but go to before char
 
@@ -116,7 +117,45 @@
 
 ;;;;; Navi bindings
   ;; (remove-hook 'navi-mode-hook 'evil-mode)
+  ;; (define-key outline-minor-mode-map
+  ;;   (kbd "M-n") 'outshine-navi)
+  (let ((map (make-sparse-keymap)))
+    ;; navi-switch-to-twin-buffer
+    ;; navi-search-and-switch
+    ;; navi-quit-and-switch
+    ;; navi-generic-command
+    ;; navi-undo
 
+    ;; Call with prefix C-1, C-2, C-3...
+    ;; f 	:FUN 	functions, macros etc.
+    ;; v 	:VAR 	vars, consts, customs etc.
+    ;; x 	:OBJ 	OOP (classes, methods etc)
+    ;; a 	:ALL 	all
+    (evil-define-key '(normal visual motion) map
+      ;; "f" (lambda () (interactive) (navi-generic-command 36 1))
+      "f" (lambda ()
+            (interactive)
+            (navi-generic-command 36 current-prefix-arg))
+      )
+    ;; (mapc (lambda (key) (define-key map (format "%s" key) 'navi-generic-command))
+    ;;       '(f v x 1 2 3 4))
+
+    (define-key map (kbd "TAB") 'navi-cycle-subtree)
+
+    (define-key map (kbd "TAB") 'navi-cycle-subtree)
+    (define-key map (kbd "<backtab>") 'navi-cycle-buffer)
+    ;; (define-key map (kbd "w") 'navi-widen)
+    ;; (define-key map (kbd "b") 'navi-narrow-to-thing-at-point)
+    ;; (define-key map (kbd "u") 'navi-undo)
+    ;; (define-key map (kbd "e") 'navi-edit-as-org)
+
+    (define-key map (kbd "M-h") 'navi-promote-subtree)
+    (define-key map (kbd "M-S-j") 'navi-move-up-subtree)
+    (define-key map (kbd "M-S-k") 'navi-move-down-subtree)
+    (define-key map (kbd "M-l") 'navi-demote-subtree)
+
+    (setq navi-mode-map map)
+    )
 ;;;;; Outshine bindings
   (evil-define-key '(normal visual motion) outline-minor-mode-map
     "gh" 'outline-up-heading
@@ -135,10 +174,10 @@
   ;; Promote/Moveup/Movedown/Demote Subtree
   (define-key outline-minor-mode-map
     (kbd "M-h") 'outline-promote)
-  (define-key outline-minor-mode-map
-    (kbd "M-j") 'outline-move-subtree-up)
-  (define-key outline-minor-mode-map
-    (kbd "M-k") 'outline-move-subtree-down)
+  ;; (define-key outline-minor-mode-map  ; TODO
+  ;;   (kbd "M-S-j") 'outline-move-subtree-up)
+  ;; (define-key outline-minor-mode-map
+  ;;   (kbd "M-S-k") 'outline-move-subtree-down)
   (define-key outline-minor-mode-map
     (kbd "M-l") 'outline-demote)
   ;; Navi Switch
