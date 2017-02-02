@@ -85,11 +85,6 @@
 
 ;;; Spacemacs-Config
 (defun dotspacemacs/user-config ()
-  ;; TODO probably safe to renable ;; ligature
-  ;; TODO a(xi)s, ca(pi)talize are broken from current greek font-lock
-  ;; TODO redfine python's outline-regexp: ";;;\\*+\\|\\`" to not use stars
-  ;; TODO Define navi-mode font-lock so all outline-levels replaced
-
 ;;;; Yassnippets
   ;; LOOK AT- https://github.com/tj64/org-dp (org mode declarative programming)
   ;; http://spacemacs.org/layers/+completion/auto-completion/README.html
@@ -105,6 +100,13 @@
   (add-to-list 'default-frame-alist '(font . "Fira Code"))
   (set-face-attribute 'default t :font "Fira Code")
   (defun ek/fix () (mapc (lambda (x) (zoom-frm-out)) '(1 2)))  ; 80 chars zoom
+
+;;;; Todos
+  ;; TODO a(xi)s, ca(pi)talize are broken from current greek font-lock
+  ;; TODO redfine python's outline-regexp: ";;;\\*+\\|\\`" to not use stars
+
+  ;; TODO outline narrow to buffer operates moves to parent heading
+  ;; TODO insert subheading
 
 ;;;; Outshine-mode
   (require 'outshine)
@@ -134,23 +136,35 @@
       "3" (lambda () (interactive) (navi-generic-command ?3 current-prefix-arg))
       "4" (lambda () (interactive) (navi-generic-command ?4 current-prefix-arg))
 
-      ;; TODO scrolling on occurs (lambda () (evil-scroll-line-to-top))
-      ;; TODO starts out on current outline in navi-mode
-      ;; TODO outline narrow to buffer operates moves to parent heading
-
-      "d" 'occur-mode-display-occurrence ; Goto in other buffer
-      "o" 'navi-goto-occurrence-other-window ; Goto and switch to buffer
       "u" 'navi-undo
       "n" 'navi-narrow-to-thing-at-point
       "w" 'navi-widen
-      "q" (lambda () (interactive) (navi-quit-and-switch) (delete-window)))
+
+      "d" (lambda () (interactive) (occur-mode-display-occurrence)
+            (other-window 1) (recenter 3) (other-window 1))
+      "o" (lambda () (interactive) (navi-goto-occurrence-other-window)
+            (recenter 3))  ; 3 lines from top is good spacig
+      "q" (lambda () (interactive) (navi-quit-and-switch)
+            (delete-other-windows) (recenter 3)))
 
     (setq navi-mode-map map))
 
 ;;;;; Outshine bindings
   (let ((map outline-minor-mode-map))
     (define-key map (kbd "M-n")
-      (lambda () (interactive) (outshine-navi) (navi-generic-command ?2 nil)))
+      (lambda ()  ; Navi opens at current heading, if heading isnt hidden
+        (interactive)
+        (let ((line nil))
+          (widen)  ; Broken on narrowed buffers
+          (save-excursion
+            (outline-previous-visible-heading 1)
+            (setq line
+                  (replace-regexp-in-string "\n$" ""
+                                            (thing-at-point 'line t))))
+          (outshine-navi)
+          (navi-generic-command ?3 nil)  ; 3 heading levels
+          (search-forward-regexp line))))
+
     (define-key map (kbd "M-RET") 'outshine-insert-heading)
     (define-key map (kbd "<backtab>") 'outshine-cycle-buffer)
     (define-key map (kbd "M-h") 'outline-promote)
@@ -421,12 +435,25 @@
             ,(concat "	"
                      (list (cadr regex-char-pair))))))))
 
+
+;;;;; Custom Ligatures
   (defconst emacs-lisp-prettify-pairs
     (mapcar 'match-outline-levels
             '(("\\(^;;;\\)"                   ?■)
               ("\\(^;;;;\\)"                  ?○)
               ("\\(^;;;;;\\)"                 ?✸)
               ("\\(^;;;;;;\\)"                ?✿))))
+  ;; '(("\\(^;;;\\)"                   ?■)
+  ;;   ("\\(^;;;;\\)"                  ?○)
+  ;;   ("\\(^;;;;;\\)"                 ?✸)
+  ;;   ("\\(^;;;;;;\\)"                ?✿))))
+
+  (defconst navi-prettify-pairs
+    (mapcar 'match-outline-levels
+            '(("\\(;;;\\)"                   ?■)
+              ("\\(;;;;\\)"                  ?○)
+              ("\\(;;;;;\\)"                 ?✸)
+              ("\\(;;;;;;\\)"                ?✿))))
 
   (defconst python-prettify-pairs
     (mapcar 'match-outline-levels
@@ -472,12 +499,16 @@
     (font-lock-add-keywords nil emacs-lisp-prettify-pairs))
   (defun python-prettify-keywords ()
     (font-lock-add-keywords nil python-prettify-pairs))
+  (defun navi-prettify-keywords ()
+    (font-lock-add-keywords nil navi-prettify-pairs))
 
   (add-hook 'org-mode-hook
             #'add-fira-code-symbol-keywords)
   (add-hook 'prog-mode-hook
             #'add-fira-code-symbol-keywords)
 
+  ;; (add-hook 'navi-mode-hook
+  ;;           #'navi-prettify-keywords)
   (add-hook 'emacs-lisp-mode-hook
             #'emacs-lisp-prettify-keywords)
   (add-hook 'python-mode-hook
@@ -492,6 +523,15 @@
   (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d4e2) "Symbola")
   (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d54a) "Symbola")
   (set-fontset-font "fontset-default" '(#x1d54a . #x1d572) "Symbola")
+
+  ;; (add-hook 'navi-mode-hook
+  ;;           (lambda ()
+  ;;             (mapc (lambda (pair) (push pair prettify-symbols-alist))
+  ;;                   '(;; Syntax
+  ;;                     (":;;;" .                   ?■)
+  ;;                     (":;;;;" .                 ?○)
+  ;;                     (":;;;;;" .                ?✸)
+  ;;                     (":;;;;;;" .               ?✿)))))
 
   (add-hook 'python-mode-hook
             (lambda ()
