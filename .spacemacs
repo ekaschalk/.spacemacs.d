@@ -7,10 +7,16 @@
    dotspacemacs-ask-for-lazy-installation t
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
-   '((shell :variables shell-default-shell 'eshell)                      ; Shell
-     better-defaults helm git org ranger syntax-checking version-control ; Core
-     graphviz restclient                                                 ; Babel
-     emacs-lisp html python                                              ; Langs
+   '((shell :variables
+            shell-default-shell 'eshell)
+     (auto-completion :variables
+                      auto-completion-return-key-behavior 'cycle
+                      auto-completion-tab-key-behavior 'complete
+                      ;; auto-completion-enable-sort-by-usage t
+                      auto-completion-enable-snippets-in-popup t)
+     better-defaults helm git org ranger syntax-checking version-control
+     graphviz restclient
+     emacs-lisp html python
      )
    dotspacemacs-additional-packages '(outshine navi-mode virtualenvwrapper)
    dotspacemacs-frozen-packages '()
@@ -84,17 +90,15 @@
 
 ;;; Spacemacs-Config
 (defun dotspacemacs/user-config ()
-;;;; Yassnippets
-  ;; LOOK AT- https://github.com/tj64/org-dp (org mode declarative programming)
-  ;; http://spacemacs.org/layers/+completion/auto-completion/README.html
-  ;; http://joaotavora.github.io/yasnippet/
-  ;; https://github.com/joaotavora/yasnippet
-  ;; https://github.com/AndreaCrotti/yasnippet-snippets
-  ;; https://github.com/AndreaCrotti/yasnippet-snippets/tree/master/python-mode
-  ;; https://www.emacswiki.org/emacs/Yasnippet
-  ;; http://jr0cket.co.uk/2016/07/spacemacs-adding-your-own-yasnippets.html
-  ;; TODO (for project - rewrite to use named tuples?)
-  ;;      http://mypy.readthedocs.io/en/latest/kinds_of_types.html#named-tuples
+
+;;;; Auto-completion
+  ;; (global-company-mode) ; Non-major modes get completion
+
+  (custom-set-faces
+   '(company-tooltip-common
+     ((t (:inherit company-tooltip :weight bold :underline nil))))
+   '(company-tooltip-common-selection
+     ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 
 ;;;; Windows Frame Size Fix
   ;; This needs to occur early in config, not ideal solution
@@ -102,9 +106,8 @@
   (set-face-attribute 'default t :font "Fira Code")
   (defun ek/fix () (mapc (lambda (x) (zoom-frm-out)) '(1 2)))  ; 80 chars zoom
 
-;;;; Todos
-
 ;;;; Outshine-mode
+  ;; TODO Add promote/demote outline heading, not outline subtree
   (require 'outshine)
   (require 'navi-mode)
 
@@ -122,7 +125,7 @@
   (add-to-list 'navi-keywords
                '("python" .
                  ((:FUN . "\\(^[ ]*def[a-zA-Z0-9_ ]*\\|^[ ]*class[a-zA-Z0-9_ ]*\\)")
-                   (:OBJ . "^[ ]*\\(class[a-zA-Z0-9_ ]*\\)"))))
+                  (:OBJ . "^[ ]*\\(class[a-zA-Z0-9_ ]*\\)"))))
 
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "TAB") 'navi-cycle-subtree)
@@ -174,18 +177,6 @@
           (outshine-navi)
           (navi-generic-command ?3 nil)  ; 3 heading levels
           (search-forward-regexp line))))
-
-    (define-key map (kbd "C-M-<return>")  ; insert-subheading
-      (lambda ()
-        (interactive)
-        (let ((line nil) (str nil))
-          (save-excursion
-            (outline-previous-visible-heading 1)
-            (setq level (outshine-calc-outline-level))
-            (setq str (outshine-calc-outline-string-at-level (+ 1 level))))
-          (evil-unimpaired/insert-space-below 1)
-          (evil-next-line 1)
-          (insert str))))
 
     (define-key map (kbd "C-M-<return>")  ; insert-subheading
       (lambda ()
@@ -514,7 +505,7 @@
               ("\\(theta\\)"            ?\u03B8) ; θ
               ("\\(iota\\)"             ?\u03B9) ; ι
               ("\\(kappa\\)"            ?\u03BA) ; κ
-              ("\\(mu\\)"               ?\u03BC) ; μ
+              ;; ("\\(mu\\)"               ?\u03BC) ; μ breaks accumulate
               ;; ("\\(xi\\)"               ?\u03BE) ; ξ breaks axis
               ("\\(omicron\\)"          ?\u03BF) ; ο
               ;; ("\\(pi\\)"               ?\u03C0) ; π breaks eg capitalize
@@ -611,26 +602,26 @@
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(ansi-color-faces-vector
-     [default default default italic underline success warning error])
-   '(evil-want-Y-yank-to-eol t)
-   '(package-selected-packages
-     (quote
-      (navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
-   '(safe-local-variable-values
-     (quote
-      ((eval ek/startup-proj)
-       (org-babel-use-quick-and-dirty-noweb-expansion . t)
-       (org-use-tag-inheritance)))))
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   )
-  )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(evil-want-Y-yank-to-eol t)
+ '(package-selected-packages
+   (quote
+    (helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+ '(safe-local-variable-values
+   (quote
+    ((eval ek/startup-proj)
+     (org-babel-use-quick-and-dirty-noweb-expansion . t)
+     (org-use-tag-inheritance)))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+)
