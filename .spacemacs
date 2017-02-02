@@ -9,7 +9,6 @@
    dotspacemacs-configuration-layers
    '((shell :variables shell-default-shell 'eshell)                      ; Shell
      better-defaults helm git org ranger syntax-checking version-control ; Core
-     theming
      graphviz restclient                                                 ; Babel
      emacs-lisp html python                                              ; Langs
      )
@@ -102,13 +101,11 @@
   (defun ek/fix () (mapc (lambda (x) (zoom-frm-out)) '(1 2)))  ; 80 chars zoom
 
 ;;;; Todos
-  ;; TODO a(xi)s, ca(pi)talize are broken from current greek font-lock
   ;; TODO redfine python's outline-regexp: ";;;\\*+\\|\\`" to not use stars
-
   ;; outshine-set-local-outline-regexp-and-level
-  ;; TODO outline narrow to buffer operates moves to parent heading
-  ;; TODO promote/demote single heading
-  ;; TODO narrow to subtree is messing up indenting
+
+  ;; TODO (for project - rewrite to use named tuples?)
+  ;;      http://mypy.readthedocs.io/en/latest/kinds_of_types.html#named-tuples
 
 ;;;; Outshine-mode
   (require 'outshine)
@@ -127,6 +124,9 @@
     (define-key map (kbd "M-j") 'navi-move-down-subtree)
     (define-key map (kbd "M-k") 'navi-move-up-subtree)
     (define-key map (kbd "M-l") 'navi-demote-subtree)
+    (define-key map (kbd "M-n")
+      (lambda () (interactive) (navi-goto-occurrence-other-window)
+        (recenter 3)))  ; Also binded to "o", this one is for consistency
 
     (evil-define-key '(normal visual motion) map
       "f" (lambda () (interactive) (navi-generic-command ?f current-prefix-arg)) ;Fun
@@ -167,7 +167,7 @@
           (navi-generic-command ?3 nil)  ; 3 heading levels
           (search-forward-regexp line))))
 
-    (define-key map (kbd "C-M-<return>")
+    (define-key map (kbd "C-M-<return>")  ; insert-subheading
       (lambda ()
         (interactive)
         (let ((line nil) (str nil))
@@ -177,14 +177,19 @@
             (setq str (outshine-calc-outline-string-at-level (+ 1 level))))
           (evil-unimpaired/insert-space-below 1)
           (evil-next-line 1)
-          (insert str)
-          )
-        ))
+          (insert str))))
 
-    ;; Can use this for M-S-promote and insert subheading
-    ;; outline-previous-visible-heading
-    ;; outshine-calc-outline-level
-    ;; outshine-calc-outline-string-at-level
+    (define-key map (kbd "C-M-<return>")  ; insert-subheading
+      (lambda ()
+        (interactive)
+        (let ((line nil) (str nil))
+          (save-excursion
+            (outline-previous-visible-heading 1)
+            (setq level (outshine-calc-outline-level))
+            (setq str (outshine-calc-outline-string-at-level (+ 1 level))))
+          (evil-unimpaired/insert-space-below 1)
+          (evil-next-line 1)
+          (insert str))))
 
     (define-key map (kbd "M-RET") 'outshine-insert-heading)
     (define-key map (kbd "<backtab>") 'outshine-cycle-buffer)
@@ -198,8 +203,11 @@
       "gl" 'outline-next-visible-heading
       "gu" 'outline-previous-visible-heading
 
-      (kbd "SPC n n") 'outshine-narrow-to-subtree
-
+      (kbd "SPC n n") (lambda ()
+                        (interactive)
+                        (save-excursion
+                          (outline-previous-visible-heading 1)
+                          (outshine-narrow-to-subtree)))
       (kbd "SPC n j") 'outline-move-subtree-down
       (kbd "SPC n k") 'outline-move-subtree-up))
 
@@ -464,10 +472,6 @@
               ("\\(^;;;;\\)"                  ?○)
               ("\\(^;;;;;\\)"                 ?✸)
               ("\\(^;;;;;;\\)"                ?✿))))
-  ;; '(("\\(^;;;\\)"                   ?■)
-  ;;   ("\\(^;;;;\\)"                  ?○)
-  ;;   ("\\(^;;;;;\\)"                 ?✸)
-  ;;   ("\\(^;;;;;;\\)"                ?✿))))
 
   (defconst navi-prettify-pairs
     (mapcar 'match-outline-levels
@@ -503,9 +507,9 @@
               ("\\(iota\\)"             ?\u03B9) ; ι
               ("\\(kappa\\)"            ?\u03BA) ; κ
               ("\\(mu\\)"               ?\u03BC) ; μ
-              ("\\(xi\\)"               ?\u03BE) ; ξ
+              ;; ("\\(xi\\)"               ?\u03BE) ; ξ breaks axis
               ("\\(omicron\\)"          ?\u03BF) ; ο
-              ;; ("\\(pi\\)"               ?\u03C0) ; π TODO: breaks eg capitalize
+              ;; ("\\(pi\\)"               ?\u03C0) ; π breaks eg capitalize
               ("\\(rho\\)"              ?\u03C1) ; ρ
               ("\\(sigma\\)"            ?\u03C3) ; σ
               ("\\(tau\\)"              ?\u03C4) ; τ
@@ -528,8 +532,6 @@
   (add-hook 'prog-mode-hook
             #'add-fira-code-symbol-keywords)
 
-  ;; (add-hook 'navi-mode-hook
-  ;;           #'navi-prettify-keywords)
   (add-hook 'emacs-lisp-mode-hook
             #'emacs-lisp-prettify-keywords)
   (add-hook 'python-mode-hook
@@ -544,15 +546,6 @@
   (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d4e2) "Symbola")
   (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d54a) "Symbola")
   (set-fontset-font "fontset-default" '(#x1d54a . #x1d572) "Symbola")
-
-  ;; (add-hook 'navi-mode-hook
-  ;;           (lambda ()
-  ;;             (mapc (lambda (pair) (push pair prettify-symbols-alist))
-  ;;                   '(;; Syntax
-  ;;                     (":;;;" .                   ?■)
-  ;;                     (":;;;;" .                 ?○)
-  ;;                     (":;;;;;" .                ?✸)
-  ;;                     (":;;;;;;" .               ?✿)))))
 
   (add-hook 'python-mode-hook
             (lambda ()
