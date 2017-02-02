@@ -105,8 +105,10 @@
   ;; TODO a(xi)s, ca(pi)talize are broken from current greek font-lock
   ;; TODO redfine python's outline-regexp: ";;;\\*+\\|\\`" to not use stars
 
+  ;; outshine-set-local-outline-regexp-and-level
   ;; TODO outline narrow to buffer operates moves to parent heading
-  ;; TODO insert subheading
+  ;; TODO promote/demote single heading
+  ;; TODO narrow to subtree is messing up indenting
 
 ;;;; Outshine-mode
   (require 'outshine)
@@ -143,7 +145,7 @@
       "d" (lambda () (interactive) (occur-mode-display-occurrence)
             (other-window 1) (recenter 3) (other-window 1))
       "o" (lambda () (interactive) (navi-goto-occurrence-other-window)
-            (recenter 3))  ; 3 lines from top is good spacig
+            (recenter 3))  ; 3 lines from top is good spacing
       "q" (lambda () (interactive) (navi-quit-and-switch)
             (delete-other-windows) (recenter 3)))
 
@@ -164,6 +166,25 @@
           (outshine-navi)
           (navi-generic-command ?3 nil)  ; 3 heading levels
           (search-forward-regexp line))))
+
+    (define-key map (kbd "C-M-<return>")
+      (lambda ()
+        (interactive)
+        (let ((line nil) (str nil))
+          (save-excursion
+            (outline-previous-visible-heading 1)
+            (setq level (outshine-calc-outline-level))
+            (setq str (outshine-calc-outline-string-at-level (+ 1 level))))
+          (evil-unimpaired/insert-space-below 1)
+          (evil-next-line 1)
+          (insert str)
+          )
+        ))
+
+    ;; Can use this for M-S-promote and insert subheading
+    ;; outline-previous-visible-heading
+    ;; outshine-calc-outline-level
+    ;; outshine-calc-outline-string-at-level
 
     (define-key map (kbd "M-RET") 'outshine-insert-heading)
     (define-key map (kbd "<backtab>") 'outshine-cycle-buffer)
