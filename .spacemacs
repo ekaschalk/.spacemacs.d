@@ -93,6 +93,8 @@
   ;; https://github.com/AndreaCrotti/yasnippet-snippets/tree/master/python-mode
   ;; https://www.emacswiki.org/emacs/Yasnippet
   ;; http://jr0cket.co.uk/2016/07/spacemacs-adding-your-own-yasnippets.html
+  ;; TODO (for project - rewrite to use named tuples?)
+  ;;      http://mypy.readthedocs.io/en/latest/kinds_of_types.html#named-tuples
 
 ;;;; Windows Frame Size Fix
   ;; This needs to occur early in config, not ideal solution
@@ -101,11 +103,6 @@
   (defun ek/fix () (mapc (lambda (x) (zoom-frm-out)) '(1 2)))  ; 80 chars zoom
 
 ;;;; Todos
-  ;; TODO redfine python's outline-regexp: ";;;\\*+\\|\\`" to not use stars
-  ;; outshine-set-local-outline-regexp-and-level
-
-  ;; TODO (for project - rewrite to use named tuples?)
-  ;;      http://mypy.readthedocs.io/en/latest/kinds_of_types.html#named-tuples
 
 ;;;; Outshine-mode
   (require 'outshine)
@@ -116,6 +113,17 @@
   (add-hook 'prog-mode-hook 'outline-minor-mode)
 
 ;;;;; Navi bindings
+  (add-to-list 'navi-key-mappings
+               '("python" .
+                 ((:FUN . "f")
+                  ;; (:VAR . "v")
+                  (:OBJ . "x"))))
+
+  (add-to-list 'navi-keywords
+               '("python" .
+                 ((:FUN . "\\(^[ ]*def[a-zA-Z0-9_ ]*\\|^[ ]*class[a-zA-Z0-9_ ]*\\)")
+                   (:OBJ . "^[ ]*\\(class[a-zA-Z0-9_ ]*\\)"))))
+
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "TAB") 'navi-cycle-subtree)
     (define-key map (kbd "<backtab>") 'navi-cycle-buffer)
