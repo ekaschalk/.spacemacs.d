@@ -655,13 +655,15 @@ Run this in the code block that is running."
   (add-to-list 'org-ctrl-c-ctrl-c-hook 'org-babel-async-execute:python)
 
 ;;;; Org
-
+;;;;; Core
   (require 'ox-extra)
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
         org-priority-faces '((65 :foreground "red")
                              (66 :foreground "yellow")
                              (67 :foreground "blue")))
   (ox-extras-activate '(ignore-headlines))
+
+  (setq org-refile-targets (quote ((nil :regexp . "Week of"))))
 
 ;;;;; Babel
   (setq org-confirm-babel-evaluate nil
@@ -971,24 +973,23 @@ Run this in the code block that is running."
                       ("**2" .      ?²)
                       ("sum" .      ?∑)))))
 
-  )
-
 ;;;; Misc
 ;;;;; Projectile
-(setq projectile-indexing-method 'native)  ; respect .projectile files
+  (setq projectile-indexing-method 'native)  ; respect .projectile files
 
 ;;;;; Aspell
-(setq ispell-program-name "aspell")
+  (setq ispell-program-name "aspell")
 
 ;;;; Future
 ;;;;; Considering
-;; (add-hook 'python-mode-hook #'(lambda () (modify-syntax-entry ?_ "w")))
-;; smart-parens: https://github.com/Fuco1/smartparens/wiki
-;; (substitute-key-definition 'old-def 'new-def map)
+  ;; (add-hook 'python-mode-hook #'(lambda () (modify-syntax-entry ?_ "w")))
+  ;; smart-parens: https://github.com/Fuco1/smartparens/wiki
+  ;; (substitute-key-definition 'old-def 'new-def map)
 
 ;;;;; Emacs-client
-;; http://psung.blogspot.com/2009/05/using-itsalltext-with-emacsemacsclient.html
-;; https://github.com/docwhat/itsalltext
+  ;; http://psung.blogspot.com/2009/05/using-itsalltext-with-emacsemacsclient.html
+  ;; https://github.com/docwhat/itsalltext
+  )
 
 ;;; Spacemacs-Autogen
 (defun dotspacemacs/emacs-custom-settings ()
