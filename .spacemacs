@@ -91,7 +91,7 @@
 ;;; Spacemacs-Config
 (defun dotspacemacs/user-config ()
 
-;;;; Working on
+;;;; TODOS
 
 ;;;; Auto-completion
   ;; (global-company-mode) ; Non-major modes get completion
@@ -259,6 +259,13 @@
   ;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
 
 ;;;;; Include Org Integration
+  (defun org-hide-init ()
+    (when (derived-mode-p 'org-mode)
+      (save-excursion
+        (goto-char (point-min))
+        (when (search-forward-regexp "^* Init" nil 'noerror)
+          (org-cycle)))))
+
   (defun file-contents (filename)
     "Return the contents of FILENAME."
     (with-temp-buffer
@@ -292,7 +299,9 @@
             (if (looking-at ".*:lines *\\(\"[-0-9]+\"\\)")
                 (replace-match lines :fixedcase :literal nil 1)
               (goto-char (line-end-position))
-              (insert " :lines " lines)))))))
+              (insert " :lines " lines))))))
+    (org-hide-init)
+    )
 
   ;; #+INCLUDE-DOCS: "src/core/grammar.py"
   (defun python-include-docstrings ()
@@ -312,7 +321,8 @@
               (org-babel-execute-src-block)
               (org-babel-goto-named-result "extract-python-docstrings")
               (setq py-docstrings
-                    (org-element-property :value (org-element-at-point))))
+                    (org-element-property :value (org-element-at-point)))
+              )
 
             (forward-line)
             (when (looking-at ".*begin_src python")
@@ -320,7 +330,12 @@
                      (start (org-element-property :begin src))
                      (end (org-element-property :end src)))
                 (delete-region start (- end 1))))  ; was deleting extra \n
-            (insert "#+begin_src python\n" py-docstrings "\n#+end_src\n"))))))
+            (save-excursion
+              (insert "#+begin_src python\n" py-docstrings "\n#+end_src\n"))
+            (org-cycle) ; Dont expand the imputed python source
+            ))))
+    (org-hide-init)
+    )
 
   (add-hook 'before-save-hook #'update-python-includes)
   (add-hook 'before-save-hook #'python-include-docstrings)
