@@ -91,9 +91,10 @@
 ;;; Spacemacs-Config
 (defun dotspacemacs/user-config ()
 
+;;;; Working on
+
 ;;;; Auto-completion
   ;; (global-company-mode) ; Non-major modes get completion
-
   (custom-set-faces
    '(company-tooltip-common
      ((t (:inherit company-tooltip :weight bold :underline nil))))
@@ -163,20 +164,26 @@
     (setq navi-mode-map map))
 
 ;;;;; Outshine bindings
+  (defun my-outshine-navi ()
+    (interactive)
+    (let ((line nil))
+      (widen)  ; Broken on narrowed buffers
+      (save-excursion
+        (outline-previous-visible-heading 1)
+        (setq line
+              (replace-regexp-in-string "\n$" ""
+                                        (thing-at-point 'line t))))
+      (outshine-navi)
+      (navi-generic-command ?2 nil)  ; default to 2 heading levels
+      (search-forward-regexp line)))
+
+  ;; Org doesnt use outline minor mode but can utilize navi
+  ;; TODO remove tags from string in org mode
+  (define-key org-mode-map (kbd "M-n") 'my-outshine-navi)
+
+  ;; Outline minor mode vim keybindings
   (let ((map outline-minor-mode-map))
-    (define-key map (kbd "M-n")
-      (lambda ()  ; Navi opens at current heading, if heading isnt hidden
-        (interactive)
-        (let ((line nil))
-          (widen)  ; Broken on narrowed buffers
-          (save-excursion
-            (outline-previous-visible-heading 1)
-            (setq line
-                  (replace-regexp-in-string "\n$" ""
-                                            (thing-at-point 'line t))))
-          (outshine-navi)
-          (navi-generic-command ?3 nil)  ; 3 heading levels
-          (search-forward-regexp line))))
+    (define-key map (kbd "M-n") 'my-outshine-navi)
 
     (define-key map (kbd "C-M-<return>")  ; insert-subheading
       (lambda ()
@@ -250,6 +257,42 @@
     (org-edit-src-code))
 
   ;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
+
+;;;;; Include Org Integration
+  (defun file-contents (filename)
+    "Return the contents of FILENAME."
+    (with-temp-buffer
+      (insert-file-contents filename)
+      (buffer-string)))
+
+  (defun update-python-includes ()
+    "Format is #+INCLUDE: \"file\" :src python :func \"func_def\""
+    (interactive)
+    (when (derived-mode-p 'org-mode)
+      (save-excursion
+        (goto-char (point-min))
+        (while (search-forward-regexp
+                "^\\s-*#\\+INCLUDE: *\"\\([^\"]+\\)\".*:func"
+                nil 'noerror)
+          (let* ((file (expand-file-name (match-string-no-properties 1))))
+            (when (looking-at ".*\"\\([a-zA-Z_]+\\)\"")
+              (setq py-incl-func (match-string-no-properties 1)))
+
+            (setq py-incl-module (concat py-incl-func "\n" (file-contents file)))
+
+            (save-excursion
+              (org-babel-goto-named-src-block "extract-python-func-lines")
+              (org-babel-execute-src-block)
+              (org-babel-goto-named-result "extract-python-func-lines")
+              (setq lines
+                    (s-chomp (org-element-property :value (org-element-at-point)))))
+
+            (if (looking-at ".*:lines *\\(\"[-0-9]+\"\\)")
+                (replace-match lines :fixedcase :literal nil 1)
+              (goto-char (line-end-position))
+              (insert " :lines " lines)))))))
+
+  (add-hook 'before-save-hook #'update-python-includes)
 
 ;;;; Org
 ;;;;; Core
@@ -363,7 +406,7 @@
     (ek/exec-init)  ; Run proj-specific init blocks
     (ek/setup-src))  ; Run proj-specific setup-src
 
-;;;;;; Hooks and Keymappings
+;;;;; Hooks and Keymappings
   (add-hook 'org-mode-hook 'flyspell-mode)  ; Async python, spelling
   (add-hook 'org-mode-hook 'org-toggle-blocks)
   (add-hook 'after-save-hook 'tangle-on-save-org-mode-file)
