@@ -94,12 +94,15 @@
 ;;; Spacemacs-Config
 (defun dotspacemacs/user-config ()
 
+
+;;;; Navigation
+;;;;; Avy Keybindings
+  (global-set-key (kbd "C-h") 'avy-pop-mark)
+  (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
+  (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
+  (global-set-key (kbd "C-l") 'evil-avy-goto-line)
+
 ;;;; TODOS
-;;;;; TODO Best keybindings for avy jump commands
-  ;; http://develop.spacemacs.org/doc/DOCUMENTATION.html#binding-keys
-  ;; C-j seems to be same as M-j
-  ;; http://kitchingroup.cheme.cmu.edu/blog/2015/09/28/A-cursor-goto-hydra-for-emacs/
-  ;; https://github.com/magicdirac/avy-flycheck
 ;;;;; TODO learn smartparens better
   ;; understand forward same, down up, etc.. sexp
 ;;;;; TODO enumerate important yasnippets
@@ -282,27 +285,27 @@
   (add-hook 'org-mode-hook 'pyvenv-autoload)
 
 ;;;;; Mypy
-;;   (setq flycheck-python-mypy-args
-;;         '("--ignore-missing-imports" "--fast-parser" "--python-version 3.6"))
+  ;;   (setq flycheck-python-mypy-args
+  ;;         '("--ignore-missing-imports" "--fast-parser" "--python-version 3.6"))
 
-;;   (flycheck-def-args-var flycheck-python-mypy-args python-mypy)
+  ;;   (flycheck-def-args-var flycheck-python-mypy-args python-mypy)
 
-;;   (flycheck-define-checker python-mypy
-;;     "Mypy syntax checker. Requires mypy>=0.3.1.
-;; Customize `flycheck-python-mypy-args` to add specific args to default
-;; executable.
-;; E.g. when processing Python2 files, add \"--py2\".
-;; See URL `http://mypy-lang.org/'."
+  ;;   (flycheck-define-checker python-mypy
+  ;;     "Mypy syntax checker. Requires mypy>=0.3.1.
+  ;; Customize `flycheck-python-mypy-args` to add specific args to default
+  ;; executable.
+  ;; E.g. when processing Python2 files, add \"--py2\".
+  ;; See URL `http://mypy-lang.org/'."
 
-;;     :command ("mypy"
-;;               (eval flycheck-python-mypy-args)
-;;               source-original)
-;;     :error-patterns
-;;     ((error line-start (file-name) ":" line ": error:" (message) line-end))
-;;     :modes python-mode)
+  ;;     :command ("mypy"
+  ;;               (eval flycheck-python-mypy-args)
+  ;;               source-original)
+  ;;     :error-patterns
+  ;;     ((error line-start (file-name) ":" line ": error:" (message) line-end))
+  ;;     :modes python-mode)
 
-;;   ;; (add-to-list 'flycheck-disabled-checkers 'python-pylint)
-;;   (add-to-list 'flycheck-checkers 'python-mypy t)
+  ;;   ;; (add-to-list 'flycheck-disabled-checkers 'python-pylint)
+  ;;   (add-to-list 'flycheck-checkers 'python-mypy t)
 
   (defun mypy-show-region ()
     (interactive)
