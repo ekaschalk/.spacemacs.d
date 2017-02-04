@@ -95,25 +95,30 @@
 (defun dotspacemacs/user-config ()
 
 ;;;; TODOS
-  ;; TODO Best keybindings for avy jump commands
+;;;;; TODO Best keybindings for avy jump commands
   ;; http://develop.spacemacs.org/doc/DOCUMENTATION.html#binding-keys
-  ;; TODO learn smartparens better
-  ;; TODO remember undo-tree (spc a u) (its literally a tree)
-  ;; TODO enumerate import yasnippets
-  ;; TODO multi-cursors? https://github.com/magnars/multiple-cursors.el
-  ;; TODO yank-pop?
+  ;; C-j seems to be same as M-j
+  ;; http://kitchingroup.cheme.cmu.edu/blog/2015/09/28/A-cursor-goto-hydra-for-emacs/
+  ;; https://github.com/magicdirac/avy-flycheck
+;;;;; TODO learn smartparens better
+  ;; understand forward same, down up, etc.. sexp
+;;;;; TODO enumerate important yasnippets
+;;;;; TODO multi-cursors?
+  ;; https://github.com/magnars/multiple-cursors.el
+;;;;; TODO yank-pop?
   ;; http://irreal.org/blog/
   ;; http://cestlaz.github.io/posts/using-emacs-22-emacsclient/#.WJWFJn-JYvg
-  ;; TODO spc x r has amazing regex utilities
-  ;; TODO Neotree toggles
-  ;; TODO spc a o is a portal to org-mode global funcs
-  ;; TODO https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org#saveload-layouts-into-a-file
+;;;;; TODO Neotree config
+;;;;; TODO layouts/workspaces
+  ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org#saveload-layouts-into-a-file
   ;; so workspaces are sub-layouts, not the other way around. spc l w for transient state
-  ;; TODO helm transient state, C-z versus tab
-  ;; TODO bookmarks
-  ;; TODO move big blobs to layers
-  ;; TODO called strict mode on smart parens frusturating for novieces so must learn
-  ;; TODO expand region with spc v
+;;;;; TODO helm transient state, C-z versus tab
+;;;;; TODO bookmarks
+;;;;; TODO move big blobs to layers
+;;;;; TODO Smart-parens
+  ;; called strict mode on smart parens frusturating for novieces so must learn
+;;;;; TODO expand region with spc v
+;;;;; TODO bind Q to universal buffer kill in navi mode
 
 ;;;; Auto-completion
   ;; (global-company-mode) ; Non-major modes get completion
