@@ -1,5 +1,5 @@
 ;; -*- mode: emacs-lisp -*-
-;;;; Spacemacs-Layers
+;;; Spacemacs-Layers
 (defun dotspacemacs/layers ()
   (setq-default
    dotspacemacs-distribution 'spacemacs
@@ -10,7 +10,7 @@
    '((shell :variables
             shell-default-shell 'eshell)
      (auto-completion :variables
-                      auto-completion-return-key-behavior 'cycle
+                      auto-completion-return-key-behavior 'complete
                       auto-completion-tab-key-behavior 'complete
                       ;; auto-completion-enable-sort-by-usage t
                       auto-completion-enable-snippets-in-popup t)
@@ -82,8 +82,8 @@
    dotspacemacs-smooth-scrolling t
    dotspacemacs-line-numbers nil
    dotspacemacs-folding-method 'evil
-   dotspacemacs-smartparens-strict-mode nil
-   dotspacemacs-smart-closing-parenthesis nil
+   dotspacemacs-smartparens-strict-mode t
+   dotspacemacs-smart-closing-parenthesis t
    dotspacemacs-highlight-delimiters 'all
    dotspacemacs-persistent-server nil
    dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
@@ -98,38 +98,41 @@
 
 ;;;; Navigation
 ;;;;; Avy Keybindings
-  (global-key (kbd "C-h") 'avy-pop-mark)
-  (global-key (kbd "C-j") 'evil-avy-goto-char-2)
-  (global-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
-  (global-key (kbd "C-l") 'evil-avy-goto-line)
+  (global-set-key (kbd "C-h") 'avy-pop-mark)
+  (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
+  (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
+  (global-set-key (kbd "C-l") 'evil-avy-goto-line)
 
-;;;;; Multi-cursors
-  ;; https://github.com/hlissner/evil-multiedit - can investigate
-  ;; https://github.com/syl20bnr/spacemacs/issues/2669 - issue tracker on evil-mc
-  (global-evil-mc-mode 1)  ; not perfect but can perform deletions, g r prefix
+;;;;; Lisp state
+  ;; TO LEARN:
+  ;; a = absorb
+  ;; b = forward barf, B = backwards barf
+
+  ;; PROGRESS:
+  ;; s = forward slurp, S = backwards slurp
+  ;; (setq) var -> (setq var) after slurp
+
+  ;; BASIC COMMANDS:
+  ;; w=wrap, W=unwrap
+  ;; dx=delete expr, dX=backwards delete expr
+  ;; e=unwrap expr and kill after point
+  ;; y=yank expr
 
 ;;;; TODOS
-;;;;; TODO Is M-j M-k for moving subtrees broken?
+;;;;; Remember to use
+  ;; Bookmarks, lisp state, workspaces and g t for swapping
+  ;; K on point in elisp pulls up docs for thing!
+
+;;;;; Learning
+;;;;;; TODO GNUS
+;;;;;; TODO enumerate important yasnippets
+;;;;;; TODO move big blobs to layers
+
+;;;;; Fix these
+;;;;;; TODO bind Q to universal buffer kill in navi mode
+;;;;;; TODO Is M-j M-k for moving subtrees broken?
   ;; For navi mode it works but point has to move up/down lines with it
-;;;;; TODO Narrow only jumps up heading if point not already on heading
-;;;;; TODO learn smartparens better
-  ;; understand forward same, down up, etc.. sexp
-;;;;; TODO Make enter also autocomplete?
-;;;;; TODO enumerate important yasnippets
-;;;;; TODO yank-pop?
-  ;; http://irreal.org/blog/
-  ;; http://cestlaz.github.io/posts/using-emacs-22-emacsclient/#.WJWFJn-JYvg
-;;;;; TODO Neotree config
-;;;;; TODO layouts/workspaces
-  ;; https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org#saveload-layouts-into-a-file
-  ;; so workspaces are sub-layouts, not the other way around. spc l w for transient state
-;;;;; TODO helm transient state, C-z versus tab
-;;;;; TODO bookmarks
-;;;;; TODO move big blobs to layers
-;;;;; TODO Smart-parens
-  ;; called strict mode on smart parens frusturating for novieces so must learn
-;;;;; TODO expand region with spc v
-;;;;; TODO bind Q to universal buffer kill in navi mode
+;;;;;; TODO Narrow only jumps up heading if point not already on heading
 
 ;;;; Auto-completion
   ;; (global-company-mode) ; Non-major modes get completion
@@ -1051,35 +1054,35 @@ Run this in the code block that is running."
 ;;;;; Emacs-client
   ;; http://psung.blogspot.com/2009/05/using-itsalltext-with-emacsemacsclient.html
   ;; https://github.com/docwhat/itsalltext
-  )
+
 
 ;;; Spacemacs-Autogen
-(defun dotspacemacs/emacs-custom-settings ()
-  "Emacs custom settings.
+  (defun dotspacemacs/emacs-custom-settings ()
+    "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(ansi-color-faces-vector
-     [default default default italic underline success warning error])
-   '(evil-want-Y-yank-to-eol t)
-   '(package-selected-packages
-     (quote
-      (multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
-   '(safe-local-variable-values
-     (quote
-      ((eval ek/startup-proj)
-       (org-babel-use-quick-and-dirty-noweb-expansion . t)
-       (org-use-tag-inheritance)))))
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
-   '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
-  )
+    (custom-set-variables
+     ;; custom-set-variables was added by Custom.
+     ;; If you edit it by hand, you could mess it up, so be careful.
+     ;; Your init file should contain only one such instance.
+     ;; If there is more than one, they won't work right.
+     '(ansi-color-faces-vector
+       [default default default italic underline success warning error])
+     '(evil-want-Y-yank-to-eol t)
+     '(package-selected-packages
+       (quote
+        (multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+     '(safe-local-variable-values
+       (quote
+        ((eval ek/startup-proj)
+         (org-babel-use-quick-and-dirty-noweb-expansion . t)
+         (org-use-tag-inheritance)))))
+    (custom-set-faces
+     ;; custom-set-faces was added by Custom.
+     ;; If you edit it by hand, you could mess it up, so be careful.
+     ;; Your init file should contain only one such instance.
+     ;; If there is more than one, they won't work right.
+     '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+     '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+    ))
