@@ -18,8 +18,9 @@
              python-sort-imports-on-save t
              python-test-runner 'pytest)
      better-defaults helm git org ranger syntax-checking version-control
-     graphviz restclient
+     markdown graphviz restclient
      emacs-lisp html
+     org-python
      )
    dotspacemacs-additional-packages '(outshine
                                       navi-mode
@@ -326,86 +327,86 @@
   ;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
 
 ;;;;; Include Org Integration
-  (defun org-hide-init ()
-    (when (derived-mode-p 'org-mode)
-      (save-window-excursion
-        (save-excursion
-          (goto-char (point-min))
-          (when (search-forward-regexp "^* Init" nil 'noerror)
-            (org-cycle))))))
+  ;; (defun org-hide-init ()
+  ;;   (when (derived-mode-p 'org-mode)
+  ;;     (save-window-excursion
+  ;;       (save-excursion
+  ;;         (goto-char (point-min))
+  ;;         (when (search-forward-regexp "^* Init" nil 'noerror)
+  ;;           (org-cycle))))))
 
-  (defun file-contents (filename)
-    "Return the contents of FILENAME."
-    (with-temp-buffer
-      (insert-file-contents filename)
-      (buffer-string)))
+  ;; (defun file-contents (filename)
+  ;;   "Return the contents of FILENAME."
+  ;;   (with-temp-buffer
+  ;;     (insert-file-contents filename)
+  ;;     (buffer-string)))
 
-  ;; #+INCLUDE: "src/file.py" :src python :func "statements"
-  ;; or
-  ;; #+INCLUDE: "src/file.py" :src python :func "fields" :lines "36-40"
-  (defun update-python-includes ()
-    "Format is #+INCLUDE: \"file\" :src python :func \"func_def\""
-    (interactive)
-    (when (derived-mode-p 'org-mode)
-      (save-excursion
-        (goto-char (point-min))
-        (while (search-forward-regexp
-                "^\\s-*#\\+INCLUDE: *\"\\([^\"]+\\)\".*:func"
-                nil 'noerror)
-          (let* ((file (expand-file-name (match-string-no-properties 1))))
-            (when (looking-at ".*\"\\([a-zA-Z_]+\\)\"")
-              (setq py-incl-func (match-string-no-properties 1)))
+  ;; ;; #+INCLUDE: "src/file.py" :src python :func "statements"
+  ;; ;; or
+  ;; ;; #+INCLUDE: "src/file.py" :src python :func "fields" :lines "36-40"
+  ;; (defun update-python-includes ()
+  ;;   "Format is #+INCLUDE: \"file\" :src python :func \"func_def\""
+  ;;   (interactive)
+  ;;   (when (derived-mode-p 'org-mode)
+  ;;     (save-excursion
+  ;;       (goto-char (point-min))
+  ;;       (while (search-forward-regexp
+  ;;               "^\\s-*#\\+INCLUDE: *\"\\([^\"]+\\)\".*:func"
+  ;;               nil 'noerror)
+  ;;         (let* ((file (expand-file-name (match-string-no-properties 1))))
+  ;;           (when (looking-at ".*\"\\([a-zA-Z_]+\\)\"")
+  ;;             (setq py-incl-func (match-string-no-properties 1)))
 
-            (setq py-incl-module (concat py-incl-func "\n" (file-contents file)))
+  ;;           (setq py-incl-module (concat py-incl-func "\n" (file-contents file)))
 
-            (save-excursion
-              (org-babel-goto-named-src-block "extract-python-func-lines")
-              (org-babel-execute-src-block)
-              (org-babel-goto-named-result "extract-python-func-lines")
-              (setq lines
-                    (s-chomp (org-element-property :value (org-element-at-point)))))
+  ;;           (save-excursion
+  ;;             (org-babel-goto-named-src-block "extract-python-func-lines")
+  ;;             (org-babel-execute-src-block)
+  ;;             (org-babel-goto-named-result "extract-python-func-lines")
+  ;;             (setq lines
+  ;;                   (s-chomp (org-element-property :value (org-element-at-point)))))
 
-            (if (looking-at ".*:lines *\\(\"[-0-9]+\"\\)")
-                (replace-match lines :fixedcase :literal nil 1)
-              (goto-char (line-end-position))
-              (insert " :lines " lines))))))
-    (org-hide-init))
+  ;;           (if (looking-at ".*:lines *\\(\"[-0-9]+\"\\)")
+  ;;               (replace-match lines :fixedcase :literal nil 1)
+  ;;             (goto-char (line-end-position))
+  ;;             (insert " :lines " lines))))))
+  ;;   (org-hide-init))
 
-  ;; #+INCLUDE-DOCS: "src/file.py"
-  (defun python-include-docstrings ()
-    "Format is #+INCLUDE: \"file\""
-    (interactive)
-    (when (derived-mode-p 'org-mode)
-      (save-excursion
-        (goto-char (point-min))
-        (while (search-forward-regexp
-                "^\\s-*#\\+INCLUDE-DOCS: *\"\\([^\"]+\\)\""
-                nil 'noerror)
-          (let* ((file (expand-file-name (match-string-no-properties 1))))
-            (setq py-incl-module (file-contents file))
+  ;; ;; #+INCLUDE-DOCS: "src/file.py"
+  ;; (defun python-include-docstrings ()
+  ;;   "Format is #+INCLUDE: \"file\""
+  ;;   (interactive)
+  ;;   (when (derived-mode-p 'org-mode)
+  ;;     (save-excursion
+  ;;       (goto-char (point-min))
+  ;;       (while (search-forward-regexp
+  ;;               "^\\s-*#\\+INCLUDE-DOCS: *\"\\([^\"]+\\)\""
+  ;;               nil 'noerror)
+  ;;         (let* ((file (expand-file-name (match-string-no-properties 1))))
+  ;;           (setq py-incl-module (file-contents file))
 
-            (save-excursion
-              (org-babel-goto-named-src-block "extract-python-docstrings")
-              (org-babel-execute-src-block)
-              (org-babel-goto-named-result "extract-python-docstrings")
-              (setq py-docstrings
-                    (org-element-property :value (org-element-at-point)))
-              )
+  ;;           (save-excursion
+  ;;             (org-babel-goto-named-src-block "extract-python-docstrings")
+  ;;             (org-babel-execute-src-block)
+  ;;             (org-babel-goto-named-result "extract-python-docstrings")
+  ;;             (setq py-docstrings
+  ;;                   (org-element-property :value (org-element-at-point)))
+  ;;             )
 
-            (forward-line)
-            (when (looking-at ".*begin_src python")
-              (let* ((src (org-element-at-point))
-                     (start (org-element-property :begin src))
-                     (end (org-element-property :end src)))
-                (delete-region start (- end 1))))  ; was deleting extra \n
-            (save-excursion
-              (insert "#+begin_src python\n" py-docstrings "\n#+end_src\n"))
-            (org-cycle) ; Dont expand the imputed python source
-            ))))
-    (org-hide-init))
+  ;;           (forward-line)
+  ;;           (when (looking-at ".*begin_src python")
+  ;;             (let* ((src (org-element-at-point))
+  ;;                    (start (org-element-property :begin src))
+  ;;                    (end (org-element-property :end src)))
+  ;;               (delete-region start (- end 1))))  ; was deleting extra \n
+  ;;           (save-excursion
+  ;;             (insert "#+begin_src python\n" py-docstrings "\n#+end_src\n"))
+  ;;           (org-cycle) ; Dont expand the imputed python source
+  ;;           ))))
+  ;;   (org-hide-init))
 
-  (add-hook 'before-save-hook #'update-python-includes)
-  (add-hook 'before-save-hook #'python-include-docstrings)
+  ;; (add-hook 'before-save-hook #'update-python-includes)
+  ;; (add-hook 'before-save-hook #'python-include-docstrings)
 
 ;;;;; Asynchronous Python Source execution
   ;; * Numbered lines in code blocks
@@ -1086,3 +1087,32 @@ This function is called at the very end of Spacemacs initialization."
      '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
      '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
     ))
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(evil-want-Y-yank-to-eol t)
+ '(package-selected-packages
+   (quote
+    (mmm-mode markdown-toc markdown-mode gh-md multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+ '(safe-local-variable-values
+   (quote
+    ((eval ek/startup-proj)
+     (org-babel-use-quick-and-dirty-noweb-expansion . t)
+     (org-use-tag-inheritance)))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+)
