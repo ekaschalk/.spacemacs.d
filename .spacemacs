@@ -1,5 +1,5 @@
 ;; -*- mode: emacs-lisp -*-
-;;; Spacemacs-Layers
+;;;; Spacemacs-Layers
 (defun dotspacemacs/layers ()
   (setq-default
    dotspacemacs-distribution 'spacemacs
@@ -21,7 +21,9 @@
      graphviz restclient
      emacs-lisp html
      )
-   dotspacemacs-additional-packages '(outshine navi-mode virtualenvwrapper)
+   dotspacemacs-additional-packages '(outshine
+                                      navi-mode
+                                      virtualenvwrapper)
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused))
@@ -94,20 +96,26 @@
 ;;; Spacemacs-Config
 (defun dotspacemacs/user-config ()
 
-
 ;;;; Navigation
 ;;;;; Avy Keybindings
-  (global-set-key (kbd "C-h") 'avy-pop-mark)
-  (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
-  (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
-  (global-set-key (kbd "C-l") 'evil-avy-goto-line)
+  (global-key (kbd "C-h") 'avy-pop-mark)
+  (global-key (kbd "C-j") 'evil-avy-goto-char-2)
+  (global-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
+  (global-key (kbd "C-l") 'evil-avy-goto-line)
+
+;;;;; Multi-cursors
+  ;; https://github.com/hlissner/evil-multiedit - can investigate
+  ;; https://github.com/syl20bnr/spacemacs/issues/2669 - issue tracker on evil-mc
+  (global-evil-mc-mode 1)  ; not perfect but can perform deletions, g r prefix
 
 ;;;; TODOS
+;;;;; TODO Is M-j M-k for moving subtrees broken?
+  ;; For navi mode it works but point has to move up/down lines with it
+;;;;; TODO Narrow only jumps up heading if point not already on heading
 ;;;;; TODO learn smartparens better
   ;; understand forward same, down up, etc.. sexp
+;;;;; TODO Make enter also autocomplete?
 ;;;;; TODO enumerate important yasnippets
-;;;;; TODO multi-cursors?
-  ;; https://github.com/magnars/multiple-cursors.el
 ;;;;; TODO yank-pop?
   ;; http://irreal.org/blog/
   ;; http://cestlaz.github.io/posts/using-emacs-22-emacsclient/#.WJWFJn-JYvg
@@ -1061,7 +1069,7 @@ This function is called at the very end of Spacemacs initialization."
    '(evil-want-Y-yank-to-eol t)
    '(package-selected-packages
      (quote
-      (helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+      (multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
    '(safe-local-variable-values
      (quote
       ((eval ek/startup-proj)
@@ -1072,5 +1080,6 @@ This function is called at the very end of Spacemacs initialization."
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
-   )
+   '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+   '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
   )
