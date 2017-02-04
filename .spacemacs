@@ -14,9 +14,12 @@
                       auto-completion-tab-key-behavior 'complete
                       ;; auto-completion-enable-sort-by-usage t
                       auto-completion-enable-snippets-in-popup t)
+     (python :variables
+             python-sort-imports-on-save t
+             python-test-runner 'pytest)
      better-defaults helm git org ranger syntax-checking version-control
      graphviz restclient
-     emacs-lisp html python
+     emacs-lisp html
      )
    dotspacemacs-additional-packages '(outshine navi-mode virtualenvwrapper)
    dotspacemacs-frozen-packages '()
@@ -92,6 +95,25 @@
 (defun dotspacemacs/user-config ()
 
 ;;;; TODOS
+  ;; TODO Best keybindings for avy jump commands
+  ;; http://develop.spacemacs.org/doc/DOCUMENTATION.html#binding-keys
+  ;; TODO learn smartparens better
+  ;; TODO remember undo-tree (spc a u) (its literally a tree)
+  ;; TODO enumerate import yasnippets
+  ;; TODO multi-cursors? https://github.com/magnars/multiple-cursors.el
+  ;; TODO yank-pop?
+  ;; http://irreal.org/blog/
+  ;; http://cestlaz.github.io/posts/using-emacs-22-emacsclient/#.WJWFJn-JYvg
+  ;; TODO spc x r has amazing regex utilities
+  ;; TODO Neotree toggles
+  ;; TODO spc a o is a portal to org-mode global funcs
+  ;; TODO https://github.com/syl20bnr/spacemacs/blob/master/doc/DOCUMENTATION.org#saveload-layouts-into-a-file
+  ;; so workspaces are sub-layouts, not the other way around. spc l w for transient state
+  ;; TODO helm transient state, C-z versus tab
+  ;; TODO bookmarks
+  ;; TODO move big blobs to layers
+  ;; TODO called strict mode on smart parens frusturating for novieces so must learn
+  ;; TODO expand region with spc v
 
 ;;;; Auto-completion
   ;; (global-company-mode) ; Non-major modes get completion
@@ -108,8 +130,9 @@
   (set-face-attribute 'default t :font "Fira Code")
   (defun ek/fix ()
     (interactive)
-    (spacemacs/toggle-fullscreen-frame-on)  ; 80 chars zoom
-    (mapc (lambda (x) (zoom-frm-in)) '(1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9)))
+    ;; (spacemacs/toggle-fullscreen-frame-on)  ; 80 chars zoom
+    (mapc (lambda (x) (zoom-frm-out)) '(1 2)))
+  ;; (mapc (lambda (x) (zoom-frm-in)) '(1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9)))
   (global-set-key (kbd "<f2>") 'ek/fix)
 
 ;;;; Outshine-mode
@@ -235,7 +258,7 @@
   (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1)))  ; SPC splits past 80
   (spacemacs/toggle-aggressive-indent-globally-on)  ; auto-indentation
   (spacemacs/toggle-mode-line-minor-modes-off)  ; no unicode symbs next to major
-  (linum-relative-global-mode 1)  ; very useful for multi-line vim motions
+  ;; (linum-relative-global-mode -1)  ; very useful for multi-line vim motions
   (global-prettify-symbols-mode 1)  ; eg. lambda, python lots of config
 
 ;;;; Python
@@ -254,12 +277,32 @@
   (add-hook 'org-mode-hook 'pyvenv-autoload)
 
 ;;;;; Mypy
+;;   (setq flycheck-python-mypy-args
+;;         '("--ignore-missing-imports" "--fast-parser" "--python-version 3.6"))
+
+;;   (flycheck-def-args-var flycheck-python-mypy-args python-mypy)
+
+;;   (flycheck-define-checker python-mypy
+;;     "Mypy syntax checker. Requires mypy>=0.3.1.
+;; Customize `flycheck-python-mypy-args` to add specific args to default
+;; executable.
+;; E.g. when processing Python2 files, add \"--py2\".
+;; See URL `http://mypy-lang.org/'."
+
+;;     :command ("mypy"
+;;               (eval flycheck-python-mypy-args)
+;;               source-original)
+;;     :error-patterns
+;;     ((error line-start (file-name) ":" line ": error:" (message) line-end))
+;;     :modes python-mode)
+
+;;   ;; (add-to-list 'flycheck-disabled-checkers 'python-pylint)
+;;   (add-to-list 'flycheck-checkers 'python-mypy t)
+
   (defun mypy-show-region ()
     (interactive)
-    (org-edit-src-exit)
     (shell-command
-     (format "mypy --ignore-missing-imports --fast-parser --python-version 3.6 %s&" (ek/file-path)))
-    (org-edit-src-code))
+     (format "mypy --ignore-missing-imports --fast-parser --python-version 3.6 %s&" (buffer-file-name))))
 
   ;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
 
@@ -1000,26 +1043,26 @@ Run this in the code block that is running."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(evil-want-Y-yank-to-eol t)
- '(package-selected-packages
-   (quote
-    (helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
- '(safe-local-variable-values
-   (quote
-    ((eval ek/startup-proj)
-     (org-babel-use-quick-and-dirty-noweb-expansion . t)
-     (org-use-tag-inheritance)))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-)
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(ansi-color-faces-vector
+     [default default default italic underline success warning error])
+   '(evil-want-Y-yank-to-eol t)
+   '(package-selected-packages
+     (quote
+      (helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+   '(safe-local-variable-values
+     (quote
+      ((eval ek/startup-proj)
+       (org-babel-use-quick-and-dirty-noweb-expansion . t)
+       (org-use-tag-inheritance)))))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   )
+  )
