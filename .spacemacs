@@ -103,9 +103,14 @@
 
 ;;;; Windows Frame Size Fix
   ;; This needs to occur early in config, not ideal solution
+  (spacemacs/toggle-fullscreen-frame-on)
   (add-to-list 'default-frame-alist '(font . "Fira Code"))
   (set-face-attribute 'default t :font "Fira Code")
-  (defun ek/fix () (mapc (lambda (x) (zoom-frm-out)) '(1 2)))  ; 80 chars zoom
+  (defun ek/fix ()
+    (interactive)
+    (spacemacs/toggle-fullscreen-frame-on)  ; 80 chars zoom
+    (mapc (lambda (x) (zoom-frm-in)) '(1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9)))
+  (global-set-key (kbd "<f2>") 'ek/fix)
 
 ;;;; Outshine-mode
   ;; TODO Add promote/demote outline heading, not outline subtree
@@ -261,10 +266,11 @@
 ;;;;; Include Org Integration
   (defun org-hide-init ()
     (when (derived-mode-p 'org-mode)
-      (save-excursion
-        (goto-char (point-min))
-        (when (search-forward-regexp "^* Init" nil 'noerror)
-          (org-cycle)))))
+      (save-window-excursion
+        (save-excursion
+          (goto-char (point-min))
+          (when (search-forward-regexp "^* Init" nil 'noerror)
+            (org-cycle))))))
 
   (defun file-contents (filename)
     "Return the contents of FILENAME."
@@ -301,8 +307,7 @@
                 (replace-match lines :fixedcase :literal nil 1)
               (goto-char (line-end-position))
               (insert " :lines " lines))))))
-    (org-hide-init)
-    )
+    (org-hide-init))
 
   ;; #+INCLUDE-DOCS: "src/file.py"
   (defun python-include-docstrings ()
@@ -335,12 +340,10 @@
               (insert "#+begin_src python\n" py-docstrings "\n#+end_src\n"))
             (org-cycle) ; Dont expand the imputed python source
             ))))
-    (org-hide-init)
-    )
+    (org-hide-init))
 
   (add-hook 'before-save-hook #'update-python-includes)
   (add-hook 'before-save-hook #'python-include-docstrings)
-
 
 ;;;;; Asynchronous Python Source execution
   ;; * Numbered lines in code blocks
