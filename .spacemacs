@@ -7,6 +7,7 @@
 ;;;;;; TODO Improve M-n q window deletion handling
 ;;;;;; TODO Possible collapse outlined buffers by default
 ;;;; Todos
+;;;;;; TODO Git gutters?
 ;;;;;; TODO GNUS
 ;;;;;; TODO enumerate important yasnippets
 ;;;;;; TODO Outshine/navi moved to layer
@@ -27,9 +28,9 @@
 ;; e=unwrap expr and kill after point
 ;; y=yank expr
 ;;; Spacemacs-Layers
-;;;; Configuration
+;;;; Config
 (defun dotspacemacs/layers ()
-  (setq-default
+  (setq-default  ; This can't be composed like user-config
    dotspacemacs-distribution 'spacemacs
    dotspacemacs-enable-lazy-installation 'unused
    dotspacemacs-ask-for-lazy-installation t
@@ -40,10 +41,9 @@
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused
-;;;; Layers
    dotspacemacs-configuration-layers
    '(
-;;;;; Core
+;;;; Core
      better-defaults
      helm
      git
@@ -57,17 +57,17 @@
                       auto-completion-return-key-behavior 'complete
                       auto-completion-tab-key-behavior 'complete
                       auto-completion-enable-snippets-in-popup t)
-;;;;; Languages
+;;;; Languages
      emacs-lisp
      html
      (python :variables
              python-sort-imports-on-save t
              python-test-runner 'pytest)
-;;;;; Rarely Used
+;;;; Rarely Used
      markdown
      graphviz
      restclient
-;;;;; Local
+;;;; Local
      org-python  ; [[file:.layers/org-python/packages.el]]
 
      )))
@@ -390,7 +390,8 @@
 
 ;;;; Navigation
 (defun dotspacemacs/user-config/navigation ()
-  (dotspacemacs/user-config/navigation/avy))
+  (dotspacemacs/user-config/navigation/avy)
+  (dotspacemacs/user-config/navigation/file-links))
 
 ;;;;; Avy
 (defun dotspacemacs/user-config/navigation/avy ()
@@ -398,6 +399,11 @@
   (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
   (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
   (global-set-key (kbd "C-l") 'evil-avy-goto-line))
+
+;;;;; File-links
+(defun dotspacemacs/user-config/navigation/file-links ()
+  (define-key evil-normal-state-local-map (kbd "SPC a o f")
+    'org-open-at-point-global))
 
 ;;;; Misc
 (defun dotspacemacs/user-config/misc ()
@@ -421,33 +427,157 @@
 (defun dotspacemacs/user-config/misc/projectile ()
   (setq projectile-indexing-method 'native))  ; respect .projectile files
 
-;;;; To - delete:
-(defun dotspacemacs/user-config ()
-  ;; Group 1
-  (dotspacemacs/user-config/display)
+;;;; Python
+(defun dotspacemacs/user-config/python ()
+  (dotspacemacs/user-config/python/venvs))
+;;;;; Venvs
+(defun dotspacemacs/user-config/python/venvs ()
+  (require 'virtualenvwrapper)
+  (pyvenv-mode 1)
+  (venv-initialize-interactive-shells)
+  (venv-initialize-eshell)
 
-  ;; Rest
-  (dotspacemacs/user-config/configuration)
-  (dotspacemacs/user-config/navigation)
-  (dotspacemacs/user-config/misc)
+  (defun pyvenv-autoload ()
+    (when (string= buffer-file-name "c:/~/dev/pop-synth/base.org")
+      (pyvenv-workon "pop-synthvenv"))
+    (when (string= buffer-file-name "c:/~/dev/health/base.org")
+      (pyvenv-workon "healthvenv")))
 
-  (define-key evil-normal-state-local-map (kbd "SPC a o f")
-    'org-open-at-point-global)
+  (add-hook 'org-mode-hook 'pyvenv-autoload))
 
-;;;; MOVE-TO-LAYER Outshine-mode
-  ;; TODO Add promote/demote outline heading, not outline subtree
-  ;; TODO Use this to reset python outline-regexp?
-  ;; Local Variables:
-  ;; outline-regexp: ";;;\\*+\\|\\`"
-  ;; End:
+;;;;; todo Mypy
+;;   (setq flycheck-python-mypy-args
+;;         '("--ignore-missing-imports" "--fast-parser" "--python-version 3.6"))
+
+;;   (flycheck-def-args-var flycheck-python-mypy-args python-mypy)
+
+;;   (flycheck-define-checker python-mypy
+;;     "Mypy syntax checker. Requires mypy>=0.3.1.
+;; Customize `flycheck-python-mypy-args` to add specific args to default
+;; executable.
+;; E.g. when processing Python2 files, add \"--py2\".
+;; See URL `http://mypy-lang.org/'."
+
+;;     :command ("mypy"
+;;               (eval flycheck-python-mypy-args)
+;;               source-original)
+;;     :error-patterns
+;;     ((error line-start (file-name) ":" line ": error:" (message) line-end))
+;;     :modes python-mode)
+
+;;   ;; (add-to-list 'flycheck-disabled-checkers 'python-pylint)
+;;   (add-to-list 'flycheck-checkers 'python-mypy t)
+
+;; (defun mypy-show-region ()
+;;   (interactive)
+;;   (shell-command
+;;    (format "mypy --ignore-missing-imports --fast-parser --python-version 3.6 %s&" (buffer-file-name))))
+
+;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
+
+;;;; Org
+(defun dotspacemacs/user-config/org ()
+  (dotspacemacs/user-config/org/core)
+  (dotspacemacs/user-config/org/babel)
+  (dotspacemacs/user-config/org/exporting)
+  (dotspacemacs/user-config/org/templates))
+
+;;;;; Core
+(defun dotspacemacs/user-config/org/core ()
+  (require 'ox-extra)
+  (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
+        org-priority-faces '((65 :foreground "red")
+                             (66 :foreground "yellow")
+                             (67 :foreground "blue")))
+  (ox-extras-activate '(ignore-headlines))
+
+  (setq org-refile-targets (quote ((nil :regexp . "Week of"))))
+
+  (defvar org-blocks-hidden nil)
+  (defun org-toggle-blocks ()
+    (interactive)
+    (if org-blocks-hidden
+        (org-show-block-all)
+      (org-hide-block-all))
+    (setq-local org-blocks-hidden (not org-blocks-hidden)))
+
+  (add-hook 'org-mode-hook 'flyspell-mode)  ; Async python, spelling
+  (add-hook 'org-mode-hook 'org-toggle-blocks)
+
+  (define-key org-mode-map
+    (kbd "C-c t") 'org-toggle-blocks)
+  )
+
+;;;;; Babel
+(defun dotspacemacs/user-config/org/babel ()
+  (setq org-confirm-babel-evaluate nil
+        org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-src-preserve-indentation t
+        org-src-window-setup 'current-window)
+  (org-babel-do-load-languages
+   'org-babel-load-languages '((python . t)
+                               (dot . t)
+                               (http . t))))
+
+;;;;; Exporting
+(defun dotspacemacs/user-config/org/exporting ()
+  (require 'ox-bibtex)
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-html-htmlize-output-type 'inline-css
+        org-latex-listings 'minted
+        org-latex-minted-options
+        '(("frame" "lines")
+          ("fontsize" "\\scriptsize")
+          ("xleftmargin" "\\parindent")
+          ("linenos" ""))
+        org-latex-pdf-process
+        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")))
+
+;;;;; Templates
+(defun dotspacemacs/user-config/org/templates ()
+  (mapc (lambda (x) (add-to-list 'org-structure-template-alist x))
+        (list
+         ;; Common
+         '("n" "#+NAME: ?")
+         ;; Emacs-Lisp
+         '("e" "#+begin_src emacs-lisp\n\n#+end_src")
+         ;; Python
+         '("p" "#+begin_src python\n\n#+end_src")
+         '("pd" "#+begin_src python :tangle no :results output\n\n#+end_src")
+         '("pt" "#+begin_src python :results silent :exports none\n\n#+end_src")
+         ;; Misc
+         '("c" " :PROPERTIES:\n :HTML_CONTAINER_CLASS: hsCollapsed\n :END:\n")
+         `("d" ,(concat
+                 "#+begin_src dot :tangle no :exports results :file static/imgs/"
+                 "\n\n#+end_src"))
+         ;; Project File header
+         `("f" ,(concat
+                 "# -*- org-use-tag-inheritance: nil"
+                 " org-babel-use-quick-and-dirty-noweb-expansion: t-*-\n"
+                 "#+BEGIN_QUOTE\n#+PROPERTY: header-args :eval never-export"
+                 " :noweb no-export\n#+PROPERTY: header-args:python"
+                 " :tangle (ek/file-path)\n#+END_QUOTE\n")))))
+
+;;;; Outshine
+;; TODO Add promote/demote outline heading, not outline subtree
+;; TODO move to its own layer
+;; TODO remove tags from outline string in org mode navi outline
+;; TODO Use this to reset python outline-regexp?
+;; Local Variables:
+;; outline-regexp: ";;;\\*+\\|\\`"
+;; End:
+(defun dotspacemacs/user-config/outshine ()
   (require 'outshine)
   (require 'navi-mode)
 
-  (setq outshine-use-speed-commands t)
-  (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-  (add-hook 'prog-mode-hook 'outline-minor-mode)
+  (dotspacemacs/user-config/outshine/navi-mode)
+  (dotspacemacs/user-config/outshine/outshine-mode))
 
-;;;;; Navi bindings
+;;;;; Navi-mode
+(defun dotspacemacs/user-config/outshine/navi-mode ()
   (add-to-list 'navi-key-mappings
                '("python" .
                  ((:FUN . "f")
@@ -492,9 +622,10 @@
       "q" (lambda () (interactive) (navi-quit-and-switch)
             (delete-other-windows) (recenter 3)))
 
-    (setq navi-mode-map map))
+    (setq navi-mode-map map)))
 
-;;;;; Outshine bindings
+;;;;; Outshine-mode
+(defun dotspacemacs/user-config/outshine/outshine-mode ()
   (defun my-outshine-navi ()
     (interactive)
     (let ((line nil))
@@ -509,7 +640,6 @@
       (search-forward-regexp line)))
 
   ;; Org doesnt use outline minor mode but can utilize navi
-  ;; TODO remove tags from string in org mode
   (define-key org-mode-map (kbd "M-n") 'my-outshine-navi)
 
   ;; Outline minor mode vim keybindings
@@ -548,159 +678,51 @@
       (kbd "SPC n j") 'outline-move-subtree-down
       (kbd "SPC n k") 'outline-move-subtree-up))
 
-
-;;;; MOVE-TO-LAYER Python
-;;;;; Virtual Environments
-  (require 'virtualenvwrapper)
-  (pyvenv-mode 1)
-  (venv-initialize-interactive-shells)
-  (venv-initialize-eshell)
-
-  (defun pyvenv-autoload ()
-    (when (string= buffer-file-name "c:/~/dev/pop-synth/base.org")
-      (pyvenv-workon "pop-synthvenv"))
-    (when (string= buffer-file-name "c:/~/dev/health/base.org")
-      (pyvenv-workon "healthvenv")))
-
-  (add-hook 'org-mode-hook 'pyvenv-autoload)
-
-;;;;; Mypy
-  ;;   (setq flycheck-python-mypy-args
-  ;;         '("--ignore-missing-imports" "--fast-parser" "--python-version 3.6"))
-
-  ;;   (flycheck-def-args-var flycheck-python-mypy-args python-mypy)
-
-  ;;   (flycheck-define-checker python-mypy
-  ;;     "Mypy syntax checker. Requires mypy>=0.3.1.
-  ;; Customize `flycheck-python-mypy-args` to add specific args to default
-  ;; executable.
-  ;; E.g. when processing Python2 files, add \"--py2\".
-  ;; See URL `http://mypy-lang.org/'."
-
-  ;;     :command ("mypy"
-  ;;               (eval flycheck-python-mypy-args)
-  ;;               source-original)
-  ;;     :error-patterns
-  ;;     ((error line-start (file-name) ":" line ": error:" (message) line-end))
-  ;;     :modes python-mode)
-
-  ;;   ;; (add-to-list 'flycheck-disabled-checkers 'python-pylint)
-  ;;   (add-to-list 'flycheck-checkers 'python-mypy t)
-
-  (defun mypy-show-region ()
-    (interactive)
-    (shell-command
-     (format "mypy --ignore-missing-imports --fast-parser --python-version 3.6 %s&" (buffer-file-name))))
-
-  ;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
-
-;;;; ?? Org
-;;;;; Core
-  (require 'ox-extra)
-  (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
-        org-priority-faces '((65 :foreground "red")
-                             (66 :foreground "yellow")
-                             (67 :foreground "blue")))
-  (ox-extras-activate '(ignore-headlines))
-
-  (setq org-refile-targets (quote ((nil :regexp . "Week of"))))
-
-;;;;; Babel
-  (setq org-confirm-babel-evaluate nil
-        org-src-fontify-natively t
-        org-src-tab-acts-natively t
-        org-src-preserve-indentation t
-        org-src-window-setup 'current-window)
-  (org-babel-do-load-languages
-   'org-babel-load-languages '((python . t)
-                               (dot . t)
-                               (http . t)))
-;;;;; Exporting
-  (require 'ox-bibtex)
-  (add-to-list 'org-latex-packages-alist '("" "minted"))
-  (setq org-html-htmlize-output-type 'inline-css
-        org-latex-listings 'minted
-        org-latex-minted-options
-        '(("frame" "lines")
-          ("fontsize" "\\scriptsize")
-          ("xleftmargin" "\\parindent")
-          ("linenos" ""))
-        org-latex-pdf-process
-        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-
-;;;;; Templates
-  (mapc (lambda (x) (add-to-list 'org-structure-template-alist x))
-        (list
-         ;; Common
-         '("n" "#+NAME: ?")
-         ;; Emacs-Lisp
-         '("e" "#+begin_src emacs-lisp\n\n#+end_src")
-         ;; Python
-         '("p" "#+begin_src python\n\n#+end_src")
-         '("pd" "#+begin_src python :tangle no :results output\n\n#+end_src")
-         '("pt" "#+begin_src python :results silent :exports none\n\n#+end_src")
-         ;; Misc
-         '("c" " :PROPERTIES:\n :HTML_CONTAINER_CLASS: hsCollapsed\n :END:\n")
-         `("d" ,(concat
-                 "#+begin_src dot :tangle no :exports results :file static/imgs/"
-                 "\n\n#+end_src"))
-         ;; Project File header
-         `("f" ,(concat
-                 "# -*- org-use-tag-inheritance: nil"
-                 " org-babel-use-quick-and-dirty-noweb-expansion: t-*-\n"
-                 "#+BEGIN_QUOTE\n#+PROPERTY: header-args :eval never-export"
-                 " :noweb no-export\n#+PROPERTY: header-args:python"
-                 " :tangle (ek/file-path)\n#+END_QUOTE\n"))))
-
-;;;;; Toggle blocks
-  (defvar org-blocks-hidden nil)
-  (defun org-toggle-blocks ()
-    (interactive)
-    (if org-blocks-hidden
-        (org-show-block-all)
-      (org-hide-block-all))
-    (setq-local org-blocks-hidden (not org-blocks-hidden)))
-
-;;;;; Hooks and Keymappings
-  (add-hook 'org-mode-hook 'flyspell-mode)  ; Async python, spelling
-  (add-hook 'org-mode-hook 'org-toggle-blocks)
-
-  (define-key org-mode-map
-    (kbd "C-c t") 'org-toggle-blocks)
-
-;;;; Compose Config
-
-
+  (setq outshine-use-speed-commands t)
+  (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+  (add-hook 'prog-mode-hook 'outline-minor-mode)
   )
+
+;;;; Composed
+(defun dotspacemacs/user-config ()
+  ;; Group 1
+  (dotspacemacs/user-config/display)
+
+  ;; Rest
+  (dotspacemacs/user-config/configuration)
+  (dotspacemacs/user-config/misc)
+  (dotspacemacs/user-config/navigation)
+  (dotspacemacs/user-config/org)
+  (dotspacemacs/user-config/python)
+  (dotspacemacs/user-config/outshine))
+
 ;;; Spacemacs-Autogen
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(evil-want-Y-yank-to-eol t)
- '(package-selected-packages
-   (quote
-    (mmm-mode markdown-toc markdown-mode gh-md multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
- '(safe-local-variable-values
-   (quote
-    ((eval ek/startup-proj)
-     (org-babel-use-quick-and-dirty-noweb-expansion . t)
-     (org-use-tag-inheritance)))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
-)
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(ansi-color-faces-vector
+     [default default default italic underline success warning error])
+   '(evil-want-Y-yank-to-eol t)
+   '(package-selected-packages
+     (quote
+      (mmm-mode markdown-toc markdown-mode gh-md multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+   '(safe-local-variable-values
+     (quote
+      ((eval ek/startup-proj)
+       (org-babel-use-quick-and-dirty-noweb-expansion . t)
+       (org-use-tag-inheritance)))))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+   '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+  )
