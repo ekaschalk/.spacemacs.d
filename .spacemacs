@@ -140,6 +140,228 @@
 (defun dotspacemacs/user-init ())
 
 ;;; Spacemacs-Config
+;;;; Display
+(defun dotspacemacs/user-config/display ()
+  ;; Group 1
+  (dotspacemacs/user-config/display/windows-frame-size-fix)
+
+  ;; Group 2
+  (dotspacemacs/user-config/display/fira-code-ligatures)
+  (dotspacemacs/user-config/display/my-ligatures)
+
+  ;; Rest
+  (dotspacemacs/user-config/display/prettify-symbols)
+  (dotspacemacs/user-config/display/select-ligatures)
+  (dotspacemacs/user-config/display/theme-updates)
+  )
+
+;;;;; Windows-frame-size-fix
+(defun dotspacemacs/user-config/display/windows-frame-size-fix ()
+  (add-to-list 'default-frame-alist '(font . "Fira Code"))
+  (set-face-attribute 'default t :font "Fira Code")
+  (defun ek/fix ()
+    (interactive)
+    (mapc (lambda (x) (zoom-frm-out)) '(1 2)))
+  (global-set-key (kbd "<f2>") 'ek/fix))
+
+;;;;; Theme-updates
+(defun dotspacemacs/user-config/display/theme-updates ()
+  (custom-theme-set-faces
+   'spacemacs-dark
+   '(outline-1 ((t (:inherit org-level-1 :underline t))))
+   '(outline-2 ((t (:inherit org-level-2 :underline t))))
+   '(outline-3 ((t (:inherit org-level-3 :underline t))))
+   '(outline-4 ((t (:inherit org-level-4 :underline t))))))
+
+;;;;; Fira-code-ligatures
+(defun dotspacemacs/user-config/display/fira-code-ligatures ()
+  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+
+  (defconst fira-code-font-lock-keywords-alist
+    (mapcar
+     (lambda (regex-char-pair)
+       `(,(car regex-char-pair)
+         (0 (prog1 ()
+              (compose-region
+               (match-beginning 1)
+               (match-end 1)
+               ,(concat "	"
+                        (list (decode-char 'ucs (cadr regex-char-pair)))))))))
+     '(;; ("[^/]\\(\\*\\*\\)[^/]"        #Xe101) ("\\(\\*\\*\\*\\)"             #Xe102)
+       ;; ("\\(\\*\\*/\\)"               #Xe103) ("\\(\\*>\\)"                  #Xe104)
+       ;; ("[^*]\\(\\*/\\)"              #Xe105) ("\\(\\[\\]\\)"                #Xe109)
+       ;; ("\\(/\\*\\)"                  #Xe12a) ("\\(/\\*\\*\\)"               #Xe12b)
+       ;; ("\\(<\\*\\)"                  #Xe14b) ("\\(<\\*>\\)"                 #Xe14c)
+       ;; ("\\(x\\)"                     #Xe16b)
+       ("\\(www\\)"                   #Xe100) ("\\(\\\\\\\\\\)"              #Xe106)
+       ("\\(\\\\\\\\\\\\\\)"          #Xe107) ("\\({-\\)"                    #Xe108)
+       ("\\(::\\)"                    #Xe10a) ("\\(:::\\)"                   #Xe10b)
+       ("[^=]\\(:=\\)"                #Xe10c) ("\\(!!\\)"                    #Xe10d)
+       ("\\(!=\\)"                    #Xe10e) ("\\(!==\\)"                   #Xe10f)
+       ("\\(-}\\)"                    #Xe110) ("\\(--\\)"                    #Xe111)
+       ("\\(---\\)"                   #Xe112) ("\\(-->\\)"                   #Xe113)
+       ("[^-]\\(->\\)"                #Xe114) ("\\(->>\\)"                   #Xe115)
+       ("\\(-<\\)"                    #Xe116) ("\\(-<<\\)"                   #Xe117)
+       ("\\(-~\\)"                    #Xe118) ("\\(#{\\)"                    #Xe119)
+       ("\\(#\\[\\)"                  #Xe11a) ("\\(##\\)"                    #Xe11b)
+       ("\\(###\\)"                   #Xe11c) ("\\(####\\)"                  #Xe11d)
+       ("\\(#(\\)"                    #Xe11e) ("\\(#\\?\\)"                  #Xe11f)
+       ("\\(#_\\)"                    #Xe120) ("\\(#_(\\)"                   #Xe121)
+       ("\\(\\.-\\)"                  #Xe122) ("\\(\\.=\\)"                  #Xe123)
+       ("\\(\\.\\.\\)"                #Xe124) ("\\(\\.\\.<\\)"               #Xe125)
+       ("\\(\\.\\.\\.\\)"             #Xe126) ("\\(\\?=\\)"                  #Xe127)
+       ("\\(\\?\\?\\)"                #Xe128) ;;("\\(;;\\)"                    #Xe129)
+       ("\\(/=\\)"                    #Xe12c) ("\\(/==\\)"                   #Xe12d)
+       ("\\(/>\\)"                    #Xe12e) ("\\(//\\)"                    #Xe12f)
+       ("\\(///\\)"                   #Xe130) ("\\(&&\\)"                    #Xe131)
+       ("\\(||\\)"                    #Xe132) ("\\(||=\\)"                   #Xe133)
+       ("[^|]\\(|=\\)"                #Xe134) ("\\(|>\\)"                    #Xe135)
+       ("\\(\\^=\\)"                  #Xe136) ("\\(\\$>\\)"                  #Xe137)
+       ("\\(\\+\\+\\)"                #Xe138) ("\\(\\+\\+\\+\\)"             #Xe139)
+       ("\\(\\+>\\)"                  #Xe13a) ("\\(=:=\\)"                   #Xe13b)
+       ("[^!/]\\(==\\)[^>]"           #Xe13c) ("\\(===\\)"                   #Xe13d)
+       ("\\(==>\\)"                   #Xe13e) ("[^=]\\(=>\\)"                #Xe13f)
+       ("\\(=>>\\)"                   #Xe140) ("\\(<=\\)"                    #Xe141)
+       ("\\(=<<\\)"                   #Xe142) ("\\(=/=\\)"                   #Xe143)
+       ("\\(>-\\)"                    #Xe144) ("\\(>=\\)"                    #Xe145)
+       ("\\(>=>\\)"                   #Xe146) ("[^-=]\\(>>\\)"               #Xe147)
+       ("\\(>>-\\)"                   #Xe148) ("\\(>>=\\)"                   #Xe149)
+       ("\\(>>>\\)"                   #Xe14a) ("\\(<|\\)"                    #Xe14d)
+       ("\\(<|>\\)"                   #Xe14e) ("\\(<\\$\\)"                  #Xe14f)
+       ("\\(<\\$>\\)"                 #Xe150) ("\\(<!--\\)"                  #Xe151)
+       ("\\(<-\\)"                    #Xe152) ("\\(<--\\)"                   #Xe153)
+       ("\\(<->\\)"                   #Xe154) ("\\(<\\+\\)"                  #Xe155)
+       ("\\(<\\+>\\)"                 #Xe156) ("\\(<=\\)"                    #Xe157)
+       ("\\(<==\\)"                   #Xe158) ("\\(<=>\\)"                   #Xe159)
+       ("\\(<=<\\)"                   #Xe15a) ("\\(<>\\)"                    #Xe15b)
+       ("[^-=]\\(<<\\)"               #Xe15c) ("\\(<<-\\)"                   #Xe15d)
+       ("\\(<<=\\)"                   #Xe15e) ("\\(<<<\\)"                   #Xe15f)
+       ("\\(<~\\)"                    #Xe160) ("\\(<~~\\)"                   #Xe161)
+       ("\\(</\\)"                    #Xe162) ("\\(</>\\)"                   #Xe163)
+       ("\\(~@\\)"                    #Xe164) ("\\(~-\\)"                    #Xe165)
+       ("\\(~=\\)"                    #Xe166) ("\\(~>\\)"                    #Xe167)
+       ("[^<]\\(~~\\)"                #Xe168) ("\\(~~>\\)"                   #Xe169)
+       ("\\(%%\\)"                    #Xe16a) ("[^:=]\\(:\\)[^:=]"           #Xe16c)
+       ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d))))
+
+  (defun add-fira-code-symbol-keywords ()
+    (font-lock-add-keywords nil fira-code-font-lock-keywords-alist)))
+
+;;;;; My-ligatures
+(defun dotspacemacs/user-config/display/my-ligatures ()
+  (defun match-outline-levels (regex-char-pair)
+    `(,(car regex-char-pair)
+      (0 (prog1 ()
+           (compose-region
+            (match-beginning 1)
+            (match-end 1)
+            ,(concat "	"
+                     (list (cadr regex-char-pair))))))))
+
+  (defconst emacs-lisp-prettify-pairs
+    (mapcar 'match-outline-levels
+            '(("\\(^;;;\\)"                   ?■)
+              ("\\(^;;;;\\)"                  ?○)
+              ("\\(^;;;;;\\)"                 ?✸)
+              ("\\(^;;;;;;\\)"                ?✿))))
+
+  (defconst python-prettify-pairs
+    (mapcar 'match-outline-levels
+            '(("\\(^# \\*\\)[ \t\n]"          ?■)
+              ("\\(^# \\*\\*\\)[ \t\n]"       ?○)
+              ("\\(^# \\*\\*\\*\\)[ \t\n]"    ?✸)
+              ("\\(^# \\*\\*\\*\\*\\)[^\\*]"  ?✿)
+              ("\\(_0\\)[: \t\n]"             ?₀)
+              ("\\(_1\\)[: \t\n]"             ?₁)
+              ("\\(_2\\)[: \t\n]"             ?₂)
+              ("\\(_3\\)[: \t\n]"             ?₃)
+              ("\\(_4\\)[: \t\n]"             ?₄)
+              ("\\(_i\\)[: \t\n]"             ?ᵢ)
+              ("\\(_j\\)[: \t\n]"             ?ⱼ)
+              ("\\(_k\\)[: \t\n]"             ?ₖ)
+              ("\\(_m\\)[: \t\n]"             ?ₘ)
+              ("\\(_n\\)[: \t\n]"             ?ₙ)
+              ("\\(_x\\)[: \t\n]"             ?ₓ)
+              ("\\(alpha\\)"            ?\u03B1) ; α
+              ("\\(beta\\)"             ?\u03B2) ; β
+              ("\\(gamma\\)"            ?\u03B3) ; γ
+              ("\\(delta\\)"            ?\u03B4) ; δ
+              ("\\(epsilon\\)"          ?\u03B5) ; ε
+              ("\\(zeta\\)"             ?\u03B6) ; ζ
+              ("\\(theta\\)"            ?\u03B8) ; θ
+              ("\\(iota\\)"             ?\u03B9) ; ι
+              ("\\(kappa\\)"            ?\u03BA) ; κ
+              ;; ("\\(mu\\)"               ?\u03BC) ; μ breaks accumulate
+              ;; ("\\(xi\\)"               ?\u03BE) ; ξ breaks axis
+              ("\\(omicron\\)"          ?\u03BF) ; ο
+              ;; ("\\(pi\\)"               ?\u03C0) ; π breaks eg capitalize
+              ("\\(rho\\)"              ?\u03C1) ; ρ
+              ("\\(sigma\\)"            ?\u03C3) ; σ
+              ("\\(tau\\)"              ?\u03C4) ; τ
+              ("\\(phi\\)"              ?\u03C6) ; φ
+              ("\\(chi\\)"              ?\u03C7) ; χ
+              ("\\(omega\\)"            ?\u03C9) ; ω
+              )))
+
+  (defun emacs-lisp-prettify-keywords ()
+    (font-lock-add-keywords nil emacs-lisp-prettify-pairs))
+  (defun python-prettify-keywords ()
+    (font-lock-add-keywords nil python-prettify-pairs)))
+
+;;;;; Select-ligatures
+(defun dotspacemacs/user-config/display/select-ligatures ()
+  (add-hook 'org-mode-hook
+            #'add-fira-code-symbol-keywords)
+  (add-hook 'prog-mode-hook
+            #'add-fira-code-symbol-keywords)
+
+  (add-hook 'emacs-lisp-mode-hook
+            #'emacs-lisp-prettify-keywords)
+  (add-hook 'python-mode-hook
+            #'python-prettify-keywords))
+
+;;;;; Prettify-symbols
+  ;; Greeks not done through pretty symbols since that breaks subscripts
+  ;; Fixes for unicode not picking up a default font on some chars
+  ;; https://en.wikipedia.org/wiki/Mathematical_operators_and_symbols_in_Unicode
+(defun dotspacemacs/user-config/display/prettify-symbols ()
+  (set-fontset-font "fontset-default" '(#x2c7c . #x2c7c) "Courier New")
+  (set-fontset-font "fontset-default" '(#x1d518 . #x1d518) "Symbola")
+  (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d4e2) "Symbola")
+  (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d54a) "Symbola")
+  (set-fontset-font "fontset-default" '(#x1d54a . #x1d572) "Symbola")
+
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (mapc (lambda (pair) (push pair prettify-symbols-alist))
+                    '(;; Syntax
+                      ("not" .      ?❗) ; ¬
+                      ("for" .      ?∀)
+                      ("in" .       ?∊)
+                      ("not in" .   ?∉)
+                      ("return" .  ?⟼)
+                      ("yield" .   ?⟻)
+                      ;; Base Types
+                      ("None" .     ?∅)
+                      ("int" .      ?ℤ)
+                      ("float" .    ?ℝ)
+                      ("str" .      ?𝕊)
+                      ("True" .     ?𝕋)
+                      ("False" .    ?𝔽)
+                      ;; Mypy Containers
+                      ("Dict" .     ?𝔇)
+                      ("List" .     ?ℒ)
+                      ("Callable" . ?ℱ)
+                      ("Iterable" . ?𝔊)
+                      ("Set" .      ?Ω)
+                      ;; Mypy Compositions
+                      ("Any" .      ?❔) ; ？ ❓
+                      ("Tuple" .    ?⨂)
+                      ("Union" .    ?⋃)
+                      ;; Other
+                      ("**2" .      ?²)
+                      ("sum" .      ?∑))))))
+
 ;;;; Configuration
 (defun dotspacemacs/user-config/configuration ()
   (dotspacemacs/user-config/configuration/evil)
@@ -170,7 +392,7 @@
 (defun dotspacemacs/user-config/navigation ()
   (dotspacemacs/user-config/navigation/avy))
 
-;;;;; Avy Keybindings
+;;;;; Avy
 (defun dotspacemacs/user-config/navigation/avy ()
   (global-set-key (kbd "C-h") 'avy-pop-mark)
   (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
@@ -179,9 +401,13 @@
 
 ;;;; Misc
 (defun dotspacemacs/user-config/misc ()
+  (dotspacemacs/user-config/misc/aspell)
   (dotspacemacs/user-config/misc/auto-completion)
-  (dotspacemacs/user-config/misc/projectile)
-  (dotspacemacs/user-config/misc/aspell))
+  (dotspacemacs/user-config/misc/projectile))
+
+;;;;; Aspell
+(defun dotspacemacs/user-config/misc/aspell ()
+  (setq ispell-program-name "aspell"))
 
 ;;;;; Auto-completion
 (defun dotspacemacs/user-config/misc/auto-completion ()
@@ -195,27 +421,15 @@
 (defun dotspacemacs/user-config/misc/projectile ()
   (setq projectile-indexing-method 'native))  ; respect .projectile files
 
-;;;;; Aspell
-(defun dotspacemacs/user-config/misc/aspell ()
-  (setq ispell-program-name "aspell"))
-
 ;;;; To - delete:
 (defun dotspacemacs/user-config ()
+  ;; Group 1
+  (dotspacemacs/user-config/display)
+
+  ;; Rest
   (dotspacemacs/user-config/configuration)
   (dotspacemacs/user-config/navigation)
   (dotspacemacs/user-config/misc)
-
-;;;; ?? Windows Frame Size Fix
-  ;; This needs to occur early in config, not ideal solution
-  (spacemacs/toggle-fullscreen-frame-on)
-  (add-to-list 'default-frame-alist '(font . "Fira Code"))
-  (set-face-attribute 'default t :font "Fira Code")
-  (defun ek/fix ()
-    (interactive)
-    ;; (spacemacs/toggle-fullscreen-frame-on)  ; 80 chars zoom
-    (mapc (lambda (x) (zoom-frm-out)) '(1 2)))
-  ;; (mapc (lambda (x) (zoom-frm-in)) '(1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9)))
-  (global-set-key (kbd "<f2>") 'ek/fix)
 
 ;;;; MOVE-TO-LAYER Outshine-mode
   ;; TODO Add promote/demote outline heading, not outline subtree
@@ -447,204 +661,10 @@
   (add-hook 'org-mode-hook 'org-toggle-blocks)
 
   (define-key org-mode-map
-    (kbd "C-c t") 'org-toggle-blocks)
-
-;;;; ?? Display
-;;;;; Themes
-  (custom-theme-set-faces
-   'spacemacs-dark
-   '(outline-1 ((t (:inherit org-level-1 :underline t))))
-   '(outline-2 ((t (:inherit org-level-2 :underline t))))
-   '(outline-3 ((t (:inherit org-level-3 :underline t))))
-   '(outline-4 ((t (:inherit org-level-4 :underline t)))))
-
-;;;;; Font Ligatures
-  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-
-  (defconst fira-code-font-lock-keywords-alist
-    (mapcar
-     (lambda (regex-char-pair)
-       `(,(car regex-char-pair)
-         (0 (prog1 ()
-              (compose-region
-               (match-beginning 1)
-               (match-end 1)
-               ,(concat "	"
-                        (list (decode-char 'ucs (cadr regex-char-pair)))))))))
-     '(;; ("[^/]\\(\\*\\*\\)[^/]"        #Xe101) ("\\(\\*\\*\\*\\)"             #Xe102)
-       ;; ("\\(\\*\\*/\\)"               #Xe103) ("\\(\\*>\\)"                  #Xe104)
-       ;; ("[^*]\\(\\*/\\)"              #Xe105) ("\\(\\[\\]\\)"                #Xe109)
-       ;; ("\\(/\\*\\)"                  #Xe12a) ("\\(/\\*\\*\\)"               #Xe12b)
-       ;; ("\\(<\\*\\)"                  #Xe14b) ("\\(<\\*>\\)"                 #Xe14c)
-       ;; ("\\(x\\)"                     #Xe16b)
-       ("\\(www\\)"                   #Xe100) ("\\(\\\\\\\\\\)"              #Xe106)
-       ("\\(\\\\\\\\\\\\\\)"          #Xe107) ("\\({-\\)"                    #Xe108)
-       ("\\(::\\)"                    #Xe10a) ("\\(:::\\)"                   #Xe10b)
-       ("[^=]\\(:=\\)"                #Xe10c) ("\\(!!\\)"                    #Xe10d)
-       ("\\(!=\\)"                    #Xe10e) ("\\(!==\\)"                   #Xe10f)
-       ("\\(-}\\)"                    #Xe110) ("\\(--\\)"                    #Xe111)
-       ("\\(---\\)"                   #Xe112) ("\\(-->\\)"                   #Xe113)
-       ("[^-]\\(->\\)"                #Xe114) ("\\(->>\\)"                   #Xe115)
-       ("\\(-<\\)"                    #Xe116) ("\\(-<<\\)"                   #Xe117)
-       ("\\(-~\\)"                    #Xe118) ("\\(#{\\)"                    #Xe119)
-       ("\\(#\\[\\)"                  #Xe11a) ("\\(##\\)"                    #Xe11b)
-       ("\\(###\\)"                   #Xe11c) ("\\(####\\)"                  #Xe11d)
-       ("\\(#(\\)"                    #Xe11e) ("\\(#\\?\\)"                  #Xe11f)
-       ("\\(#_\\)"                    #Xe120) ("\\(#_(\\)"                   #Xe121)
-       ("\\(\\.-\\)"                  #Xe122) ("\\(\\.=\\)"                  #Xe123)
-       ("\\(\\.\\.\\)"                #Xe124) ("\\(\\.\\.<\\)"               #Xe125)
-       ("\\(\\.\\.\\.\\)"             #Xe126) ("\\(\\?=\\)"                  #Xe127)
-       ("\\(\\?\\?\\)"                #Xe128) ;;("\\(;;\\)"                    #Xe129)
-       ("\\(/=\\)"                    #Xe12c) ("\\(/==\\)"                   #Xe12d)
-       ("\\(/>\\)"                    #Xe12e) ("\\(//\\)"                    #Xe12f)
-       ("\\(///\\)"                   #Xe130) ("\\(&&\\)"                    #Xe131)
-       ("\\(||\\)"                    #Xe132) ("\\(||=\\)"                   #Xe133)
-       ("[^|]\\(|=\\)"                #Xe134) ("\\(|>\\)"                    #Xe135)
-       ("\\(\\^=\\)"                  #Xe136) ("\\(\\$>\\)"                  #Xe137)
-       ("\\(\\+\\+\\)"                #Xe138) ("\\(\\+\\+\\+\\)"             #Xe139)
-       ("\\(\\+>\\)"                  #Xe13a) ("\\(=:=\\)"                   #Xe13b)
-       ("[^!/]\\(==\\)[^>]"           #Xe13c) ("\\(===\\)"                   #Xe13d)
-       ("\\(==>\\)"                   #Xe13e) ("[^=]\\(=>\\)"                #Xe13f)
-       ("\\(=>>\\)"                   #Xe140) ("\\(<=\\)"                    #Xe141)
-       ("\\(=<<\\)"                   #Xe142) ("\\(=/=\\)"                   #Xe143)
-       ("\\(>-\\)"                    #Xe144) ("\\(>=\\)"                    #Xe145)
-       ("\\(>=>\\)"                   #Xe146) ("[^-=]\\(>>\\)"               #Xe147)
-       ("\\(>>-\\)"                   #Xe148) ("\\(>>=\\)"                   #Xe149)
-       ("\\(>>>\\)"                   #Xe14a) ("\\(<|\\)"                    #Xe14d)
-       ("\\(<|>\\)"                   #Xe14e) ("\\(<\\$\\)"                  #Xe14f)
-       ("\\(<\\$>\\)"                 #Xe150) ("\\(<!--\\)"                  #Xe151)
-       ("\\(<-\\)"                    #Xe152) ("\\(<--\\)"                   #Xe153)
-       ("\\(<->\\)"                   #Xe154) ("\\(<\\+\\)"                  #Xe155)
-       ("\\(<\\+>\\)"                 #Xe156) ("\\(<=\\)"                    #Xe157)
-       ("\\(<==\\)"                   #Xe158) ("\\(<=>\\)"                   #Xe159)
-       ("\\(<=<\\)"                   #Xe15a) ("\\(<>\\)"                    #Xe15b)
-       ("[^-=]\\(<<\\)"               #Xe15c) ("\\(<<-\\)"                   #Xe15d)
-       ("\\(<<=\\)"                   #Xe15e) ("\\(<<<\\)"                   #Xe15f)
-       ("\\(<~\\)"                    #Xe160) ("\\(<~~\\)"                   #Xe161)
-       ("\\(</\\)"                    #Xe162) ("\\(</>\\)"                   #Xe163)
-       ("\\(~@\\)"                    #Xe164) ("\\(~-\\)"                    #Xe165)
-       ("\\(~=\\)"                    #Xe166) ("\\(~>\\)"                    #Xe167)
-       ("[^<]\\(~~\\)"                #Xe168) ("\\(~~>\\)"                   #Xe169)
-       ("\\(%%\\)"                    #Xe16a) ("[^:=]\\(:\\)[^:=]"           #Xe16c)
-       ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d))))
-
-  (defun match-outline-levels (regex-char-pair)
-    `(,(car regex-char-pair)
-      (0 (prog1 ()
-           (compose-region
-            (match-beginning 1)
-            (match-end 1)
-            ,(concat "	"
-                     (list (cadr regex-char-pair))))))))
-
-
-;;;;; Custom Ligatures
-  (defconst emacs-lisp-prettify-pairs
-    (mapcar 'match-outline-levels
-            '(("\\(^;;;\\)"                   ?■)
-              ("\\(^;;;;\\)"                  ?○)
-              ("\\(^;;;;;\\)"                 ?✸)
-              ("\\(^;;;;;;\\)"                ?✿))))
-
-  (defconst python-prettify-pairs
-    (mapcar 'match-outline-levels
-            '(("\\(^# \\*\\)[ \t\n]"          ?■)
-              ("\\(^# \\*\\*\\)[ \t\n]"       ?○)
-              ("\\(^# \\*\\*\\*\\)[ \t\n]"    ?✸)
-              ("\\(^# \\*\\*\\*\\*\\)[^\\*]"  ?✿)
-              ("\\(_0\\)[: \t\n]"             ?₀)
-              ("\\(_1\\)[: \t\n]"             ?₁)
-              ("\\(_2\\)[: \t\n]"             ?₂)
-              ("\\(_3\\)[: \t\n]"             ?₃)
-              ("\\(_4\\)[: \t\n]"             ?₄)
-              ("\\(_i\\)[: \t\n]"             ?ᵢ)
-              ("\\(_j\\)[: \t\n]"             ?ⱼ)
-              ("\\(_k\\)[: \t\n]"             ?ₖ)
-              ("\\(_m\\)[: \t\n]"             ?ₘ)
-              ("\\(_n\\)[: \t\n]"             ?ₙ)
-              ("\\(_x\\)[: \t\n]"             ?ₓ)
-              ("\\(alpha\\)"            ?\u03B1) ; α
-              ("\\(beta\\)"             ?\u03B2) ; β
-              ("\\(gamma\\)"            ?\u03B3) ; γ
-              ("\\(delta\\)"            ?\u03B4) ; δ
-              ("\\(epsilon\\)"          ?\u03B5) ; ε
-              ("\\(zeta\\)"             ?\u03B6) ; ζ
-              ("\\(theta\\)"            ?\u03B8) ; θ
-              ("\\(iota\\)"             ?\u03B9) ; ι
-              ("\\(kappa\\)"            ?\u03BA) ; κ
-              ;; ("\\(mu\\)"               ?\u03BC) ; μ breaks accumulate
-              ;; ("\\(xi\\)"               ?\u03BE) ; ξ breaks axis
-              ("\\(omicron\\)"          ?\u03BF) ; ο
-              ;; ("\\(pi\\)"               ?\u03C0) ; π breaks eg capitalize
-              ("\\(rho\\)"              ?\u03C1) ; ρ
-              ("\\(sigma\\)"            ?\u03C3) ; σ
-              ("\\(tau\\)"              ?\u03C4) ; τ
-              ("\\(phi\\)"              ?\u03C6) ; φ
-              ("\\(chi\\)"              ?\u03C7) ; χ
-              ("\\(omega\\)"            ?\u03C9) ; ω
-              )))
-
-  (defun add-fira-code-symbol-keywords ()
-    (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
-  (defun emacs-lisp-prettify-keywords ()
-    (font-lock-add-keywords nil emacs-lisp-prettify-pairs))
-  (defun python-prettify-keywords ()
-    (font-lock-add-keywords nil python-prettify-pairs))
-
-  (add-hook 'org-mode-hook
-            #'add-fira-code-symbol-keywords)
-  (add-hook 'prog-mode-hook
-            #'add-fira-code-symbol-keywords)
-
-  (add-hook 'emacs-lisp-mode-hook
-            #'emacs-lisp-prettify-keywords)
-  (add-hook 'python-mode-hook
-            #'python-prettify-keywords)
-
-;;;;; Prettify Symbols
-  ;; Greeks not done through pretty symbols since that breaks subscripts
-  ;; Fixes for unicode not picking up a default font on some chars
-  ;; https://en.wikipedia.org/wiki/Mathematical_operators_and_symbols_in_Unicode
-  (set-fontset-font "fontset-default" '(#x2c7c . #x2c7c) "Courier New")
-  (set-fontset-font "fontset-default" '(#x1d518 . #x1d518) "Symbola")
-  (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d4e2) "Symbola")
-  (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d54a) "Symbola")
-  (set-fontset-font "fontset-default" '(#x1d54a . #x1d572) "Symbola")
-
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (mapc (lambda (pair) (push pair prettify-symbols-alist))
-                    '(;; Syntax
-                      ("not" .      ?❗) ; ¬
-                      ("for" .      ?∀)
-                      ("in" .       ?∊)
-                      ("not in" .   ?∉)
-                      ("return" .  ?⟼)
-                      ("yield" .   ?⟻)
-                      ;; Base Types
-                      ("None" .     ?∅)
-                      ("int" .      ?ℤ)
-                      ("float" .    ?ℝ)
-                      ("str" .      ?𝕊)
-                      ("True" .     ?𝕋)
-                      ("False" .    ?𝔽)
-                      ;; Mypy Containers
-                      ("Dict" .     ?𝔇)
-                      ("List" .     ?ℒ)
-                      ("Callable" . ?ℱ)
-                      ("Iterable" . ?𝔊)
-                      ("Set" .      ?Ω)
-                      ;; Mypy Compositions
-                      ("Any" .      ?❔) ; ？ ❓
-                      ("Tuple" .    ?⨂)
-                      ("Union" .    ?⋃)
-                      ;; Other
-                      ("**2" .      ?²)
-                      ("sum" .      ?∑)))))
-
-  )
+    (kbd "C-c t") 'org-toggle-blocks))
 
 ;;;; Compose Config
+
 
 ;;; Spacemacs-Autogen
 (defun dotspacemacs/emacs-custom-settings ()
