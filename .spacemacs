@@ -50,7 +50,10 @@
      org
      ranger
      syntax-checking
-     version-control
+     ;; version-control
+     (version-control :variables
+                      version-control-global-margin t
+                      version-control-diff-tool 'git-gutter)
      (shell :variables
             shell-default-shell 'eshell)
      (auto-completion :variables
