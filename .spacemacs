@@ -68,7 +68,7 @@
      graphviz
      restclient
 ;;;;; Local
-     org-python
+     org-python  ; [[file:.layers/org-python/packages.el]]
 
      )))
 ;;; Spacemacs-Init
@@ -431,8 +431,15 @@
   (dotspacemacs/user-config/navigation)
   (dotspacemacs/user-config/misc)
 
+  (define-key evil-normal-state-local-map (kbd "SPC a o f")
+    'org-open-at-point-global)
+
 ;;;; MOVE-TO-LAYER Outshine-mode
   ;; TODO Add promote/demote outline heading, not outline subtree
+  ;; TODO Use this to reset python outline-regexp?
+  ;; Local Variables:
+  ;; outline-regexp: ";;;\\*+\\|\\`"
+  ;; End:
   (require 'outshine)
   (require 'navi-mode)
 
@@ -661,11 +668,12 @@
   (add-hook 'org-mode-hook 'org-toggle-blocks)
 
   (define-key org-mode-map
-    (kbd "C-c t") 'org-toggle-blocks))
+    (kbd "C-c t") 'org-toggle-blocks)
 
 ;;;; Compose Config
 
 
+  )
 ;;; Spacemacs-Autogen
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
