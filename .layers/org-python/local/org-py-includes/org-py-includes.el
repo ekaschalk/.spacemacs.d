@@ -20,6 +20,7 @@
 ;; #+INCLUDE: "src/file.py" :src python :func "statements"
 ;; or
 ;; #+INCLUDE: "src/file.py" :src python :func "fields" :lines "36-40"
+;;;###autoload
 (defun update-python-includes ()
   "Format is #+INCLUDE: \"file\" :src python :func \"func_def\""
   (interactive)
@@ -49,6 +50,7 @@
   (org-hide-init))
 
 ;; #+INCLUDE-DOCS: "src/file.py"
+;;;###autoload
 (defun python-include-docstrings ()
   "Format is #+INCLUDE: \"file\""
   (interactive)
@@ -131,6 +133,7 @@
 (defvar org-babel-async-python-show-line-numbers t
   "Determines if line numbers are shown after an exception.")
 
+;;;###autoload
 (defun org-babel-async-execute:python (&optional arg)
   "Execute the python src-block at point asynchronously.
 :var headers are supported.
@@ -373,7 +376,7 @@ To make C-c C-c use this, try this.
               (when org-babel-async-python-show-line-numbers
                 (number-line-src-block)))))))))
 
-
+;;;###autoload
 (defun org-babel-kill-async ()
   "Kill the current async process.
 Run this in the code block that is running."

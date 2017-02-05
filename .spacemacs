@@ -5,11 +5,12 @@
 ;;;;;; TODO M-j M-k for moving subtrees
 ;;;;;; TODO Narrow only jumps up heading if point not already on heading
 ;;;;;; TODO Improve M-n q window deletion handling
+;;;;;; TODO Possible collapse outlined buffers by default
 ;;;; Todos
 ;;;;;; TODO GNUS
 ;;;;;; TODO enumerate important yasnippets
-;;;;;; TODO move all blobs to layers
-
+;;;;;; TODO Outshine/navi moved to layer
+;;;;;; TODO font-lock stuff not sure if should move
 ;;;; Remember to Use
 ;;;;; Lisp state
 ;; LEARN:
@@ -25,8 +26,6 @@
 ;; dx=delete expr, dX=backwards delete expr
 ;; e=unwrap expr and kill after point
 ;; y=yank expr
-
-
 ;;; Spacemacs-Layers
 ;;;; Configuration
 (defun dotspacemacs/layers ()
@@ -34,7 +33,7 @@
    dotspacemacs-distribution 'spacemacs
    dotspacemacs-enable-lazy-installation 'unused
    dotspacemacs-ask-for-lazy-installation t
-   dotspacemacs-configuration-layer-path '(".layers")
+   dotspacemacs-configuration-layer-path '(".layers/")
    dotspacemacs-additional-packages '(outshine
                                       navi-mode
                                       virtualenvwrapper)
@@ -141,23 +140,72 @@
 (defun dotspacemacs/user-init ())
 
 ;;; Spacemacs-Config
-(defun dotspacemacs/user-config ()
+;;;; Configuration
+(defun dotspacemacs/user-config/configuration ()
+  (dotspacemacs/user-config/configuration/evil)
+  (dotspacemacs/user-config/configuration/editing)
+  (dotspacemacs/user-config/configuration/visual))
+
+;;;;; Evil
+(defun dotspacemacs/user-config/configuration/evil ()
+  (setq-default evil-escape-key-sequence "jk"
+                evil-escape-unordered-key-sequence "true"))
+
+;;;;; Editing
+(defun dotspacemacs/user-config/configuration/editing ()
+  (hungry-delete-mode 1)  ; in edit mode back gets all contiguous whitespace
+  (spacemacs/toggle-aggressive-indent-globally-on)  ; auto-indentation
+  (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1))))  ; SPC splits past 80
+
+;;;;; Visual
+(defun dotspacemacs/user-config/configuration/visual ()
+  (spacemacs/toggle-highlight-long-lines-globally-on)
+  (fringe-mode '(1 . 1))  ; Minimal left padding and ~ end newline markers
+  (rainbow-delimiters-mode-enable)  ; Paren color based on depth
+  (global-highlight-parentheses-mode 1)  ; Highlight containing parens
+  (spacemacs/toggle-mode-line-minor-modes-off)  ; no unicode symbs next to major
+  (global-prettify-symbols-mode 1))  ; eg. lambda, python lots of config
 
 ;;;; Navigation
+(defun dotspacemacs/user-config/navigation ()
+  (dotspacemacs/user-config/navigation/avy))
+
 ;;;;; Avy Keybindings
+(defun dotspacemacs/user-config/navigation/avy ()
   (global-set-key (kbd "C-h") 'avy-pop-mark)
   (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
   (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
-  (global-set-key (kbd "C-l") 'evil-avy-goto-line)
+  (global-set-key (kbd "C-l") 'evil-avy-goto-line))
 
-;;;; Auto-completion
+;;;; Misc
+(defun dotspacemacs/user-config/misc ()
+  (dotspacemacs/user-config/misc/auto-completion)
+  (dotspacemacs/user-config/misc/projectile)
+  (dotspacemacs/user-config/misc/aspell))
+
+;;;;; Auto-completion
+(defun dotspacemacs/user-config/misc/auto-completion ()
   (custom-set-faces
    '(company-tooltip-common
      ((t (:inherit company-tooltip :weight bold :underline nil))))
    '(company-tooltip-common-selection
-     ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+     ((t (:inherit company-tooltip-selection :weight bold :underline nil))))))
 
-;;;; Windows Frame Size Fix
+;;;;; Projectile
+(defun dotspacemacs/user-config/misc/projectile ()
+  (setq projectile-indexing-method 'native))  ; respect .projectile files
+
+;;;;; Aspell
+(defun dotspacemacs/user-config/misc/aspell ()
+  (setq ispell-program-name "aspell"))
+
+;;;; To - delete:
+(defun dotspacemacs/user-config ()
+  (dotspacemacs/user-config/configuration)
+  (dotspacemacs/user-config/navigation)
+  (dotspacemacs/user-config/misc)
+
+;;;; ?? Windows Frame Size Fix
   ;; This needs to occur early in config, not ideal solution
   (spacemacs/toggle-fullscreen-frame-on)
   (add-to-list 'default-frame-alist '(font . "Fira Code"))
@@ -169,7 +217,7 @@
   ;; (mapc (lambda (x) (zoom-frm-in)) '(1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9)))
   (global-set-key (kbd "<f2>") 'ek/fix)
 
-;;;; Outshine-mode
+;;;; MOVE-TO-LAYER Outshine-mode
   ;; TODO Add promote/demote outline heading, not outline subtree
   (require 'outshine)
   (require 'navi-mode)
@@ -279,25 +327,8 @@
       (kbd "SPC n j") 'outline-move-subtree-down
       (kbd "SPC n k") 'outline-move-subtree-up))
 
-;;;; Evil
-  (setq-default evil-escape-key-sequence "jk"
-                evil-escape-unordered-key-sequence "true")
 
-;;;; Toggles
-;;;;; Visual
-  (spacemacs/toggle-highlight-long-lines-globally-on)
-  (fringe-mode '(1 . 1))  ; Minimal left padding and ~ end newline markers
-  (rainbow-delimiters-mode-enable)  ; Paren color based on depth
-  (global-highlight-parentheses-mode 1)  ; Highlight containing parens
-  (spacemacs/toggle-mode-line-minor-modes-off)  ; no unicode symbs next to major
-  (global-prettify-symbols-mode 1)  ; eg. lambda, python lots of config
-
-;;;;; Editing
-  (hungry-delete-mode 1)  ; in edit mode back gets all contiguous whitespace
-  (spacemacs/toggle-aggressive-indent-globally-on)  ; auto-indentation
-  (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1)))  ; SPC splits past 80
-
-;;;; Python
+;;;; MOVE-TO-LAYER Python
 ;;;;; Virtual Environments
   (require 'virtualenvwrapper)
   (pyvenv-mode 1)
@@ -342,7 +373,7 @@
 
   ;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
 
-;;;; Org
+;;;; ?? Org
 ;;;;; Core
   (require 'ox-extra)
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
@@ -418,7 +449,7 @@
   (define-key org-mode-map
     (kbd "C-c t") 'org-toggle-blocks)
 
-;;;; Display
+;;;; ?? Display
 ;;;;; Themes
   (custom-theme-set-faces
    'spacemacs-dark
@@ -611,12 +642,9 @@
                       ("**2" .      ?²)
                       ("sum" .      ?∑)))))
 
-;;;; Misc
-;;;;; Projectile
-  (setq projectile-indexing-method 'native)  ; respect .projectile files
+  )
 
-;;;;; Aspell
-  (setq ispell-program-name "aspell"))
+;;;; Compose Config
 
 ;;; Spacemacs-Autogen
 (defun dotspacemacs/emacs-custom-settings ()
