@@ -50,10 +50,9 @@
      org
      ranger
      syntax-checking
-     ;; version-control
      (version-control :variables
                       version-control-global-margin t
-                      version-control-diff-tool 'git-gutter)
+                      version-control-diff-tool 'git-gutter+)
      (shell :variables
             shell-default-shell 'eshell)
      (auto-completion :variables
@@ -448,7 +447,7 @@
 
   (add-hook 'org-mode-hook 'pyvenv-autoload))
 
-;;;;; todo Mypy
+;;;;; Mypy
 ;;   (setq flycheck-python-mypy-args
 ;;         '("--ignore-missing-imports" "--fast-parser" "--python-version 3.6"))
 
@@ -565,8 +564,8 @@
                  " :tangle (ek/file-path)\n#+END_QUOTE\n")))))
 
 ;;;; Outshine
-;; TODO Add promote/demote outline heading, not outline subtree
 ;; TODO move to its own layer
+;; TODO Add promote/demote outline heading, not outline subtree
 ;; TODO remove tags from outline string in org mode navi outline
 ;; TODO Use this to reset python outline-regexp?
 ;; Local Variables:
