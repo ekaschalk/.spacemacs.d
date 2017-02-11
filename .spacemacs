@@ -2,16 +2,15 @@
 ;;; Working on
 ;;;; Improvements
 ;;;;;; TODO bind Q to universal buffer kill in navi mode
-;;;;;; TODO M-j M-k for moving subtrees
 ;;;;;; TODO Narrow only jumps up heading if point not already on heading
 ;;;;;; TODO Improve M-n q window deletion handling
+;;;;;; TODO Navi cycle on subtree also shows parents if needed
 ;;;;;; TODO Possible collapse outlined buffers by default
+;;;;;; TODO remove tags from outline string in org mode navi outline
 ;;;; Todos
-;;;;;; TODO Git gutters?
+;;;;;; TODO Git gutters
 ;;;;;; TODO GNUS
-;;;;;; TODO enumerate important yasnippets
 ;;;;;; TODO Outshine/navi moved to layer
-;;;;;; TODO font-lock stuff not sure if should move
 ;;;; Remember to Use
 ;;;;; Lisp state
 ;; LEARN:
@@ -27,7 +26,8 @@
 ;; dx=delete expr, dX=backwards delete expr
 ;; e=unwrap expr and kill after point
 ;; y=yank expr
-;;;; Which-Config
+
+;;; Which-Config
 (setq is-linuxp (eq system-type 'gnu/linux))
 (defun if-linux (x y) (if is-linuxp x y))
 (defun if-linux-call (x y) (if is-linuxp (funcall x) (funcall y)))
@@ -86,7 +86,7 @@
 ;;;; Configuration
 (defun dotspacemacs/init ()
   (setq-default
-   dotspacemacs-themes '(spacemacs-dark spacemacs-light zenburn)
+   dotspacemacs-themes '(spacemacs-dark spacemacs-light)
    dotspacemacs-default-font `("Fira Code"
                                :size ,(if-linux 16 12)
                                :weight bold
@@ -175,12 +175,24 @@
 
 ;;;;; Theme-updates
 (defun dotspacemacs/user-config/display/theme-updates ()
-  (custom-theme-set-faces
-   'spacemacs-dark
-   '(outline-1 ((t (:inherit org-level-1 :underline t))))
-   '(outline-2 ((t (:inherit org-level-2 :underline t))))
-   '(outline-3 ((t (:inherit org-level-3 :underline t))))
-   '(outline-4 ((t (:inherit org-level-4 :underline t))))))
+  (defun update-outline-font-faces ()
+    (custom-theme-set-faces
+     (car custom-enabled-themes)
+     '(outline-1 ((t (:inherit org-level-1 :underline t))))
+     '(outline-2 ((t (:inherit org-level-2 :underline t))))
+     '(outline-3 ((t (:inherit org-level-3 :underline t))))
+     '(outline-4 ((t (:inherit org-level-4 :underline t))))))
+
+  (update-outline-font-faces)
+  (add-hook 'spacemacs-post-theme-change-hook 'update-outline-font-faces)
+
+  ;; (custom-theme-set-faces
+  ;;  'spacemacs-light
+  ;;  '(outline-1 ((t (:inherit org-level-1 :underline t))))
+  ;;  '(outline-2 ((t (:inherit org-level-2 :underline t))))
+  ;;  '(outline-3 ((t (:inherit org-level-3 :underline t))))
+  ;;  '(outline-4 ((t (:inherit org-level-4 :underline t)))))
+  )
 
 ;;;;; Fira-code-ligatures
 (defun dotspacemacs/user-config/display/fira-code-ligatures ()
@@ -471,36 +483,6 @@
 
   (add-hook 'org-mode-hook 'pyvenv-autoload))
 
-;;;;; Mypy
-;;   (setq flycheck-python-mypy-args
-;;         '("--ignore-missing-imports" "--fast-parser" "--python-version 3.6"))
-
-;;   (flycheck-def-args-var flycheck-python-mypy-args python-mypy)
-
-;;   (flycheck-define-checker python-mypy
-;;     "Mypy syntax checker. Requires mypy>=0.3.1.
-;; Customize `flycheck-python-mypy-args` to add specific args to default
-;; executable.
-;; E.g. when processing Python2 files, add \"--py2\".
-;; See URL `http://mypy-lang.org/'."
-
-;;     :command ("mypy"
-;;               (eval flycheck-python-mypy-args)
-;;               source-original)
-;;     :error-patterns
-;;     ((error line-start (file-name) ":" line ": error:" (message) line-end))
-;;     :modes python-mode)
-
-;;   ;; (add-to-list 'flycheck-disabled-checkers 'python-pylint)
-;;   (add-to-list 'flycheck-checkers 'python-mypy t)
-
-;; (defun mypy-show-region ()
-;;   (interactive)
-;;   (shell-command
-;;    (format "mypy --ignore-missing-imports --fast-parser --python-version 3.6 %s&" (buffer-file-name))))
-
-;; (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
-
 ;;;; Org
 (defun dotspacemacs/user-config/org ()
   (dotspacemacs/user-config/org/core)
@@ -610,10 +592,6 @@
                  " :tangle (ek/file-path)\n#+END_QUOTE\n")))))
 
 ;;;; Outshine
-;; TODO move to its own layer
-;; TODO Add promote/demote outline heading, not outline subtree
-;; TODO remove tags from outline string in org mode navi outline
-;; TODO Use this to reset python outline-regexp?
 (defun dotspacemacs/user-config/outshine ()
   (require 'outshine)
   (require 'navi-mode)
@@ -626,7 +604,6 @@
   (add-to-list 'navi-key-mappings
                '("python" .
                  ((:FUN . "f")
-                  ;; (:VAR . "v")
                   (:OBJ . "x"))))
 
   (add-to-list 'navi-keywords
@@ -642,9 +619,7 @@
     (define-key map (kbd "M-j") 'navi-move-down-subtree)
     (define-key map (kbd "M-k") 'navi-move-up-subtree)
     (define-key map (kbd "M-l") 'navi-demote-subtree)
-    (define-key map (kbd "M-n")
-      (lambda () (interactive) (navi-goto-occurrence-other-window)
-        (recenter 3)))  ; Also binded to "o", this one is for consistency
+    (define-key map (kbd "M-n") 'navi-goto-occurrence-other-window)  ; also "o"
 
     (evil-define-key '(normal visual motion) map
       "f" (lambda () (interactive) (navi-generic-command ?f current-prefix-arg)) ;Fun
@@ -660,11 +635,21 @@
       "n" 'navi-narrow-to-thing-at-point
       "w" 'navi-widen
 
-      "d" (lambda () (interactive) (occur-mode-display-occurrence)
+      ;; Possibly cycle tree to show on quite and switch
+      ;; Possibly enter means cycle everything but selected subtree
+      ;; or enter narrows to subtree and gotos occurence
+
+      "d" 'occur-mode-display-occurrence
+      "D" (lambda () (interactive) (occur-mode-display-occurrence)
             (other-window 1) (recenter 3) (other-window 1))
-      "o" (lambda () (interactive) (navi-goto-occurrence-other-window)
-            (recenter 3))  ; 3 lines from top is good spacing
+
+      "o" 'navi-goto-occurrence-other-window
+      "O" (lambda () (interactive) (navi-goto-occurrence-other-window)
+            (recenter 3))
+
       "q" (lambda () (interactive) (navi-quit-and-switch)
+            (recenter 3))
+      "Q" (lambda () (interactive) (navi-quit-and-switch)
             (delete-other-windows) (recenter 3)))
 
     (setq navi-mode-map map)))
