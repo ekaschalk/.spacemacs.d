@@ -27,6 +27,15 @@
 ;; dx=delete expr, dX=backwards delete expr
 ;; e=unwrap expr and kill after point
 ;; y=yank expr
+;;;; Which-Config
+(setq is-linuxp (eq system-type 'gnu/linux))
+(defun if-linux (x y) (if is-linuxp x y))
+(defun if-linux-call (x y) (if is-linuxp (funcall x) (funcall y)))
+(defun when-linux (x) (when is-linuxp x))
+(defun when-linux-call (x) (when is-linuxp (funcall x)))
+(defun unless-linux (x) (unless is-linuxp x))
+(defun unless-linux-call (x) (unless is-linuxp (funcall x)))
+
 ;;; Spacemacs-Layers
 ;;;; Config
 (defun dotspacemacs/layers ()
@@ -78,8 +87,8 @@
 (defun dotspacemacs/init ()
   (setq-default
    dotspacemacs-themes '(spacemacs-dark spacemacs-light zenburn)
-   dotspacemacs-default-font '("Fira Code"
-                               :size 12
+   dotspacemacs-default-font `("Fira Code"
+                               :size ,(if-linux 16 12)
                                :weight bold
                                :width condensed
                                :powerline-scale 1.1)
@@ -119,7 +128,7 @@
    dotspacemacs-which-key-delay 0.4
    dotspacemacs-which-key-position 'bottom
    dotspacemacs-loading-progress-bar t
-   dotspacemacs-fullscreen-at-startup t
+   dotspacemacs-fullscreen-at-startup (if-linux nil t)
    dotspacemacs-fullscreen-use-non-native nil
    dotspacemacs-maximized-at-startup nil
    dotspacemacs-active-transparency 90
@@ -145,7 +154,7 @@
 ;;;; Display
 (defun dotspacemacs/user-config/display ()
   ;; Group 1
-  (dotspacemacs/user-config/display/windows-frame-size-fix)
+  (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
 
   ;; Group 2
   (dotspacemacs/user-config/display/fira-code-ligatures)
@@ -161,10 +170,8 @@
 (defun dotspacemacs/user-config/display/windows-frame-size-fix ()
   (add-to-list 'default-frame-alist '(font . "Fira Code"))
   (set-face-attribute 'default t :font "Fira Code")
-  (defun ek/fix ()
-    (interactive)
-    (mapc (lambda (x) (zoom-frm-out)) '(1 2)))
-  (global-set-key (kbd "<f2>") 'ek/fix))
+  (global-set-key (kbd "<f2>")
+                  (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
 
 ;;;;; Theme-updates
 (defun dotspacemacs/user-config/display/theme-updates ()
@@ -568,9 +575,6 @@
 ;; TODO Add promote/demote outline heading, not outline subtree
 ;; TODO remove tags from outline string in org mode navi outline
 ;; TODO Use this to reset python outline-regexp?
-;; Local Variables:
-;; outline-regexp: ";;;\\*+\\|\\`"
-;; End:
 (defun dotspacemacs/user-config/outshine ()
   (require 'outshine)
   (require 'navi-mode)
@@ -696,7 +700,27 @@
   (dotspacemacs/user-config/navigation)
   (dotspacemacs/user-config/org)
   (dotspacemacs/user-config/python)
-  (dotspacemacs/user-config/outshine))
+  (dotspacemacs/user-config/outshine)
+
+  (when (eq system-type 'gnu/linux)
+    (dolist (hook '(python-mode-hook))
+      (add-hook hook (lambda () (flyspell-mode -1))))
+    '(setq org-file-apps
+           (quote
+            ((auto-mode . emacs)
+             ("\\.mm\\'" . default)
+             ("\\.x?html?\\'" . "/usr/bin/firefox %s")
+             ("\\.pdf\\'" . default))))
+    (defun python-shell-completion-native-try ()
+      "Return non-nil if can trigger native completion."
+      (with-eval-after-load 'python
+        '(let ((python-shell-completion-native-enable t)
+               (python-shell-completion-native-output-timeout
+                python-shell-completion-native-try-output-timeout))
+           (python-shell-completion-native-get-completions
+            (get-buffer-process (current-buffer))
+            nil "_")))))
+  )
 
 ;;; Spacemacs-Autogen
 (defun dotspacemacs/emacs-custom-settings ()
