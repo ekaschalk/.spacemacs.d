@@ -512,13 +512,29 @@
 ;;;;; Core
 (defun dotspacemacs/user-config/org/core ()
   (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines))
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
         org-priority-faces '((65 :foreground "red")
                              (66 :foreground "yellow")
                              (67 :foreground "blue")))
-  (ox-extras-activate '(ignore-headlines))
 
   (setq org-refile-targets (quote ((nil :regexp . "Week of"))))
+
+  (add-hook
+   'outline-minor-mode-hook
+   (lambda ()
+     (let ((display-table
+            (if buffer-display-table
+                buffer-display-table
+              (make-display-table))))
+       (unless buffer-display-table
+         (setq buffer-display-table display-table))
+       (set-display-table-slot
+        display-table 4
+        (vconcat
+         (mapcar (lambda (c) (make-glyph-code c 'font-lock-keyword-face)) "▼"))))))
+
+  (setq org-ellipsis "▼")
 
   (defvar org-blocks-hidden nil)
   (defun org-toggle-blocks ()
@@ -530,9 +546,7 @@
 
   (add-hook 'org-mode-hook 'flyspell-mode)  ; Async python, spelling
   (add-hook 'org-mode-hook 'org-toggle-blocks)
-
-  (define-key org-mode-map
-    (kbd "C-c t") 'org-toggle-blocks)
+  (define-key org-mode-map (kbd "C-c t") 'org-toggle-blocks)
   )
 
 ;;;;; Core-linux
