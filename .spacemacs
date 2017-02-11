@@ -438,7 +438,24 @@
 
 ;;;; Python
 (defun dotspacemacs/user-config/python ()
+  (when-linux-call 'dotspacemacs/user-config/python/linux)
   (dotspacemacs/user-config/python/venvs))
+
+;;;;; Linux
+(defun dotspacemacs/user-config/python/linux ()
+  (defun python-shell-completion-native-try-output-timeout ()
+    "Return non-nil if can trigger native completion."
+    (with-eval-after-load 'python
+      '(let ((python-shell-completion-native-enable t)
+             (python-shell-completion-native-output-timeout
+              python-shell-completion-native-try-output-timeout))
+         (python-shell-completion-native-get-completions
+          (get-buffer-process (current-buffer))
+          nil "_"))))
+
+  (dolist (hook '(python-mode-hook))
+    (add-hook hook (lambda () (flyspell-mode -1)))))
+
 ;;;;; Venvs
 (defun dotspacemacs/user-config/python/venvs ()
   (require 'virtualenvwrapper)
@@ -487,6 +504,7 @@
 ;;;; Org
 (defun dotspacemacs/user-config/org ()
   (dotspacemacs/user-config/org/core)
+  (when-linux-call 'dotspacemacs/user-config/org/core-linux)
   (dotspacemacs/user-config/org/babel)
   (dotspacemacs/user-config/org/exporting)
   (dotspacemacs/user-config/org/templates))
@@ -516,6 +534,13 @@
   (define-key org-mode-map
     (kbd "C-c t") 'org-toggle-blocks)
   )
+
+;;;;; Core-linux
+(defun dotspacemacs/user-config/org/core-linux ()
+  (setq org-file-apps '((auto-mode . emacs)
+                        ("\\.mm\\'" . default)
+                        ("\\.x?html?\\'" . "/usr/bin/firefox %s")
+                        ("\\.pdf\\'" . default))))
 
 ;;;;; Babel
 (defun dotspacemacs/user-config/org/babel ()
@@ -700,27 +725,7 @@
   (dotspacemacs/user-config/navigation)
   (dotspacemacs/user-config/org)
   (dotspacemacs/user-config/python)
-  (dotspacemacs/user-config/outshine)
-
-  (when (eq system-type 'gnu/linux)
-    (dolist (hook '(python-mode-hook))
-      (add-hook hook (lambda () (flyspell-mode -1))))
-    '(setq org-file-apps
-           (quote
-            ((auto-mode . emacs)
-             ("\\.mm\\'" . default)
-             ("\\.x?html?\\'" . "/usr/bin/firefox %s")
-             ("\\.pdf\\'" . default))))
-    (defun python-shell-completion-native-try ()
-      "Return non-nil if can trigger native completion."
-      (with-eval-after-load 'python
-        '(let ((python-shell-completion-native-enable t)
-               (python-shell-completion-native-output-timeout
-                python-shell-completion-native-try-output-timeout))
-           (python-shell-completion-native-get-completions
-            (get-buffer-process (current-buffer))
-            nil "_")))))
-  )
+  (dotspacemacs/user-config/outshine))
 
 ;;; Spacemacs-Autogen
 (defun dotspacemacs/emacs-custom-settings ()
