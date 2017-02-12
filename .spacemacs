@@ -624,23 +624,23 @@
 
       "u" 'navi-undo
       "n" (lambda () (interactive) (navi-narrow-to-thing-at-point)
-            (other-window 1) (outline-show-entry) (other-winow 1))
+            (other-window 1) (outline-show-entry) (outline-show-branches) (other-winow 1))
       "w" 'navi-widen
 
       "d" (lambda () (interactive) (occur-mode-display-occurrence)
-            (other-window 1) (outline-show-entry) (other-window 1))
+            (other-window 1) (outline-show-entry) (outline-show-branches) (other-window 1))
       "D" (lambda () (interactive) (occur-mode-display-occurrence)
-            (other-window 1) (outline-show-entry) (recenter 3) (other-window 1))
+            (other-window 1) (outline-show-entry) (outline-show-branches) (recenter 3) (other-window 1))
 
       "o" (lambda () (interactive) (navi-goto-occurrence-other-window)
-            (outline-show-entry))
+            (outline-show-entry) (outline-show-branches))
       "O" (lambda () (interactive) (navi-goto-occurrence-other-window)
-            (outline-show-entry) (recenter 3))
+            (outline-show-entry) (outline-show-branches) (recenter 3))
 
       "q" (lambda () (interactive) (navi-quit-and-switch)
-            (outline-show-entry) (recenter 3))
+            (outline-show-entry) (outline-show-branches) (recenter 3))
       "Q" (lambda () (interactive) (navi-quit-and-switch)
-            (delete-other-windows) (outline-show-entry) (recenter 3)))
+            (delete-other-windows) (outline-show-entry) (outline-show-branches) (recenter 3)))
 
     (setq navi-mode-map map)))
 
