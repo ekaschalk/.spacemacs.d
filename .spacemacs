@@ -624,7 +624,7 @@
 
       "u" 'navi-undo
       "n" (lambda () (interactive) (navi-narrow-to-thing-at-point)
-            (other-window 1) (outline-show-entry) (outline-show-branches) (other-winow 1))
+            (other-window 1) (outline-show-entry) (outline-show-branches) (other-window 1))
       "w" 'navi-widen
 
       "d" (lambda () (interactive) (occur-mode-display-occurrence)
