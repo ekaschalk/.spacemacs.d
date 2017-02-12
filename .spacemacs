@@ -176,9 +176,9 @@
      (car custom-enabled-themes)
      '(org-level-3 ((t (:height 1.03 :foreground "light slate gray"
                                 :weight ultra-bold))))
-     '(outline-1 ((t (:inherit org-level-1 :underline t :box t))))
-     '(outline-2 ((t (:inherit org-level-2 :underline t :box t))))
-     '(outline-3 ((t (:inherit org-level-3 :underline t :box t :height 1.03))))
+     '(outline-1 ((t (:inherit org-level-1 :box t))))
+     '(outline-2 ((t (:inherit org-level-2 :box t))))
+     '(outline-3 ((t (:inherit org-level-3 :box t :height 1.03))))
      '(outline-4 ((t (:inherit org-level-4 :underline t))))))
 
   (update-outline-font-faces)
@@ -624,13 +624,16 @@
 
       "u" 'navi-undo
       "n" (lambda () (interactive) (navi-narrow-to-thing-at-point)
-            (other-window 1) (outline-show-entry) (outline-show-branches) (other-window 1))
+            (other-window 1) (outline-show-entry) (outline-show-branches)
+            (other-window 1))
       "w" 'navi-widen
 
       "d" (lambda () (interactive) (occur-mode-display-occurrence)
-            (other-window 1) (outline-show-entry) (outline-show-branches) (other-window 1))
+            (other-window 1) (outline-show-entry) (outline-show-branches)
+            (other-window 1))
       "D" (lambda () (interactive) (occur-mode-display-occurrence)
-            (other-window 1) (outline-show-entry) (outline-show-branches) (recenter 3) (other-window 1))
+            (other-window 1) (outline-show-entry) (outline-show-branches)
+            (recenter 3) (other-window 1))
 
       "o" (lambda () (interactive) (navi-goto-occurrence-other-window)
             (outline-show-entry) (outline-show-branches))
@@ -640,7 +643,8 @@
       "q" (lambda () (interactive) (navi-quit-and-switch)
             (outline-show-entry) (outline-show-branches) (recenter 3))
       "Q" (lambda () (interactive) (navi-quit-and-switch)
-            (delete-other-windows) (outline-show-entry) (outline-show-branches) (recenter 3)))
+            (delete-other-windows) (outline-show-entry) (outline-show-branches)
+            (recenter 3)))
 
     (setq navi-mode-map map)))
 
