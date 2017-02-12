@@ -1,10 +1,6 @@
 ;; -*- mode: emacs-lisp -*-
 ;;; Working on
 ;;;; Improvements
-;;;;;; TODO bind Q to universal buffer kill in navi mode
-;;;;;; TODO Narrow only jumps up heading if point not already on heading
-;;;;;; TODO Improve M-n q window deletion handling
-;;;;;; TODO Navi cycle on subtree also shows parents if needed
 ;;;;;; TODO Possible collapse outlined buffers by default
 ;;;;;; TODO remove tags from outline string in org mode navi outline
 ;;;; Todos
@@ -614,7 +610,7 @@
     (define-key map (kbd "M-j") 'navi-move-down-subtree)
     (define-key map (kbd "M-k") 'navi-move-up-subtree)
     (define-key map (kbd "M-l") 'navi-demote-subtree)
-    (define-key map (kbd "M-n") 'navi-goto-occurrence-other-window)  ; also "o"
+    (define-key map (kbd "M-n") 'navi-goto-occurrence-other-window)
 
     (evil-define-key '(normal visual motion) map
       "f" (lambda () (interactive) (navi-generic-command ?f current-prefix-arg)) ;Fun
@@ -627,25 +623,24 @@
       "4" (lambda () (interactive) (navi-generic-command ?4 current-prefix-arg))
 
       "u" 'navi-undo
-      "n" 'navi-narrow-to-thing-at-point
+      "n" (lambda () (interactive) (navi-narrow-to-thing-at-point)
+            (other-window 1) (outline-show-entry) (other-winow 1))
       "w" 'navi-widen
 
-      ;; Possibly cycle tree to show on quite and switch
-      ;; Possibly enter means cycle everything but selected subtree
-      ;; or enter narrows to subtree and gotos occurence
-
-      "d" 'occur-mode-display-occurrence
+      "d" (lambda () (interactive) (occur-mode-display-occurrence)
+            (other-window 1) (outline-show-entry) (other-window 1))
       "D" (lambda () (interactive) (occur-mode-display-occurrence)
-            (other-window 1) (recenter 3) (other-window 1))
+            (other-window 1) (outline-show-entry) (recenter 3) (other-window 1))
 
-      "o" 'navi-goto-occurrence-other-window
+      "o" (lambda () (interactive) (navi-goto-occurrence-other-window)
+            (outline-show-entry))
       "O" (lambda () (interactive) (navi-goto-occurrence-other-window)
-            (recenter 3))
+            (outline-show-entry) (recenter 3))
 
       "q" (lambda () (interactive) (navi-quit-and-switch)
-            (recenter 3))
+            (outline-show-entry) (recenter 3))
       "Q" (lambda () (interactive) (navi-quit-and-switch)
-            (delete-other-windows) (recenter 3)))
+            (delete-other-windows) (outline-show-entry) (recenter 3)))
 
     (setq navi-mode-map map)))
 
@@ -654,14 +649,15 @@
   (defun my-outshine-navi ()
     (interactive)
     (let ((line nil))
-      (widen)  ; Broken on narrowed buffers
+      (widen)  ; Otherwise broken on narrowed buffers
       (save-excursion
-        (outline-previous-visible-heading 1)
+        (unless (outline-on-heading-p t)
+          (outline-previous-visible-heading 1))
         (setq line
               (replace-regexp-in-string "\n$" ""
                                         (thing-at-point 'line t))))
       (outshine-navi)
-      (navi-generic-command ?2 nil)  ; default to 2 heading levels
+      (navi-generic-command ?3 nil)  ; default to 3 heading levels
       (search-forward-regexp line)))
 
   ;; Org doesnt use outline minor mode but can utilize navi
@@ -698,7 +694,8 @@
       (kbd "SPC n n") (lambda ()
                         (interactive)
                         (save-excursion
-                          (outline-previous-visible-heading 1)
+                          (unless (outline-on-heading-p t)
+                            (outline-previous-visible-heading 1))
                           (outshine-narrow-to-subtree)))
       (kbd "SPC n j") 'outline-move-subtree-down
       (kbd "SPC n k") 'outline-move-subtree-up))
