@@ -178,20 +178,15 @@
   (defun update-outline-font-faces ()
     (custom-theme-set-faces
      (car custom-enabled-themes)
-     '(outline-1 ((t (:inherit org-level-1 :underline t))))
-     '(outline-2 ((t (:inherit org-level-2 :underline t))))
-     '(outline-3 ((t (:inherit org-level-3 :underline t))))
+     '(outline-1 ((t (:inherit org-level-1 :underline t :box t))))
+     '(outline-2 ((t (:inherit org-level-2 :underline t :box t))))
+     '(outline-3 ((t (:inherit org-level-3 :underline t :box t
+                               :height 1.03 :foreground "light slate gray"
+                               :weight ultra-bold))))
      '(outline-4 ((t (:inherit org-level-4 :underline t))))))
 
   (update-outline-font-faces)
   (add-hook 'spacemacs-post-theme-change-hook 'update-outline-font-faces)
-
-  ;; (custom-theme-set-faces
-  ;;  'spacemacs-light
-  ;;  '(outline-1 ((t (:inherit org-level-1 :underline t))))
-  ;;  '(outline-2 ((t (:inherit org-level-2 :underline t))))
-  ;;  '(outline-3 ((t (:inherit org-level-3 :underline t))))
-  ;;  '(outline-4 ((t (:inherit org-level-4 :underline t)))))
   )
 
 ;;;;; Fira-code-ligatures
