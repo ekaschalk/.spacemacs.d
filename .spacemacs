@@ -178,11 +178,11 @@
   (defun update-outline-font-faces ()
     (custom-theme-set-faces
      (car custom-enabled-themes)
+     '(org-level-3 ((t (:height 1.03 :foreground "light slate gray"
+                                :weight ultra-bold))))
      '(outline-1 ((t (:inherit org-level-1 :underline t :box t))))
      '(outline-2 ((t (:inherit org-level-2 :underline t :box t))))
-     '(outline-3 ((t (:inherit org-level-3 :underline t :box t
-                               :height 1.03 :foreground "light slate gray"
-                               :weight ultra-bold))))
+     '(outline-3 ((t (:inherit org-level-3 :underline t :box t :height 1.03))))
      '(outline-4 ((t (:inherit org-level-4 :underline t))))))
 
   (update-outline-font-faces)
