@@ -409,6 +409,7 @@
 (defun dotspacemacs/user-config/navigation/avy ()
   (global-set-key (kbd "C-h") 'avy-pop-mark)
   (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
+  (define-key python-mode-map (kbd "C-j") 'evil-avy-goto-char-2)
   (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
   (global-set-key (kbd "C-l") 'evil-avy-goto-line))
 
@@ -442,7 +443,29 @@
 ;;;; Python
 (defun dotspacemacs/user-config/python ()
   (when-linux-call 'dotspacemacs/user-config/python/linux)
+  (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
   (dotspacemacs/user-config/python/venvs))
+
+;;;;; Windows-pytest
+(defun dotspacemacs/user-config/python/windows-pytest ()
+  (defun ek-pytest-module ()
+    (interactive)
+    (shell-command (format "py.test -x -s %s&" buffer-file-name)))
+
+  (defun ek-pytest-one ()
+    (interactive)
+    (save-excursion
+      (let ((test-name
+             (progn
+               (re-search-backward "^[ ]*def \\([a-zA-Z0-9_]*\\)")
+               (match-string 1))))
+        (shell-command
+         (format "py.test -x -s %s::%s&" buffer-file-name test-name)))))
+
+  (spacemacs/set-leader-keys-for-major-mode
+    'python-mode (kbd "t m") 'ek-pytest-module)
+  (spacemacs/set-leader-keys-for-major-mode
+    'python-mode (kbd "t t") 'ek-pytest-one))
 
 ;;;;; Linux
 (defun dotspacemacs/user-config/python/linux ()
@@ -484,6 +507,10 @@
 
 ;;;;; Core
 (defun dotspacemacs/user-config/org/core ()
+  ;; Agenda in-progress
+  (setq org-agenda-files '("c:/~/.org" "c:/~/dev/pop-synth/base.org"))
+
+
   (require 'ox-extra)
   (ox-extras-activate '(ignore-headlines))
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
@@ -621,6 +648,8 @@
       "2" (lambda () (interactive) (navi-generic-command ?2 current-prefix-arg))
       "3" (lambda () (interactive) (navi-generic-command ?3 current-prefix-arg))
       "4" (lambda () (interactive) (navi-generic-command ?4 current-prefix-arg))
+
+      ;; TODO Check out org-reveal
 
       "u" 'navi-undo
       "n" (lambda () (interactive) (navi-narrow-to-thing-at-point)
