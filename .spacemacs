@@ -9,7 +9,46 @@
 (defun unless-linux-call (x) (unless is-linuxp (funcall x)))
 
 ;;; Spacemacs-Layers
-;;;; Config
+;;;; Core
+(setq dotspacemacs/layers/core
+      '(better-defaults
+        helm
+        git
+        org
+        ranger
+        syntax-checking
+        (version-control :variables
+                         version-control-global-margin t
+                         version-control-diff-tool 'git-gutter+)
+        (shell :variables
+               shell-default-shell 'eshell)
+        (auto-completion :variables
+                         auto-completion-return-key-behavior 'complete
+                         auto-completion-tab-key-behavior 'complete
+                         auto-completion-enable-snippets-in-popup t)))
+
+;;;; Langs
+(setq dotspacemacs/layers/langs
+      `(emacs-lisp
+        html
+        (python :variables
+                python-sort-imports-on-save t
+                python-test-runner 'pytest)))
+;;;; Rare
+(setq dotspacemacs/layers/rare
+      '(markdown
+        graphviz
+        restclient))
+
+;;;; Local
+(setq dotspacemacs/layers/local
+      '(org-python))  ; [[file:.layers/org-python/packages.el]]
+
+;;;; Windows
+(setq dotspacemacs/layers/windows
+      (unless-linux '(pandoc)))
+
+;;;; Composed
 (defun dotspacemacs/layers ()
   (setq-default  ; This can't be composed like user-config
    dotspacemacs-distribution 'spacemacs
@@ -23,38 +62,10 @@
    dotspacemacs-excluded-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused
    dotspacemacs-configuration-layers
-   '(
-;;; Core
-     better-defaults
-     helm
-     git
-     org
-     ranger
-     syntax-checking
-     (version-control :variables
-                      version-control-global-margin t
-                      version-control-diff-tool 'git-gutter+)
-     (shell :variables
-            shell-default-shell 'eshell)
-     (auto-completion :variables
-                      auto-completion-return-key-behavior 'complete
-                      auto-completion-tab-key-behavior 'complete
-                      auto-completion-enable-snippets-in-popup t)
-;;;; Languages
-     emacs-lisp
-     html
-     (python :variables
-             python-sort-imports-on-save t
-             python-test-runner 'pytest)
-;;;; Rarely Used
-     markdown
-     graphviz
-     pandoc
-     restclient
-;;;; Local
-     org-python  ; [[file:.layers/org-python/packages.el]]
+   (append dotspacemacs/layers/core dotspacemacs/layers/langs
+           dotspacemacs/layers/rare dotspacemacs/layers/local
+           dotspacemacs/layers/windows)))
 
-     )))
 ;;; Spacemacs-Init
 ;;;; Configuration
 (defun dotspacemacs/init ()
