@@ -9,7 +9,8 @@
 (defun unless-linux-call (x) (unless is-linuxp (funcall x)))
 
 ;;; Spacemacs-Layers
-;;;; Core
+;;;; Packages
+;;;;; Core
 (setq dotspacemacs/layers/core
       '(better-defaults
         helm
@@ -27,26 +28,26 @@
                          auto-completion-tab-key-behavior 'complete
                          auto-completion-enable-snippets-in-popup t)))
 
-;;;; Langs
+;;;;; Langs
 (setq dotspacemacs/layers/langs
       `(emacs-lisp
         html
         (python :variables
                 python-sort-imports-on-save t
                 python-test-runner 'pytest)))
-;;;; Rare
+;;;;; Rare
 (setq dotspacemacs/layers/rare
       '(markdown
         graphviz
         restclient))
 
+;;;;; Windows
+(setq dotspacemacs/layers/windows
+      (unless-linux '(pandoc)))
+
 ;;;; Local
 (setq dotspacemacs/layers/local
       '(org-python))  ; [[file:.layers/org-python/packages.el]]
-
-;;;; Windows
-(setq dotspacemacs/layers/windows
-      (unless-linux '(pandoc)))
 
 ;;;; Composed
 (defun dotspacemacs/layers ()
@@ -396,10 +397,15 @@
 ;;;;; Avy
 (defun dotspacemacs/user-config/navigation/avy ()
   (global-set-key (kbd "C-h") 'avy-pop-mark)
+
   (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
-  (require 'python)
-  (define-key python-mode-map (kbd "C-j") 'evil-avy-goto-char-2)
+  (define-key org-mode-map (kbd "C-j") 'evil-avy-goto-char-2)
+  (evil-define-key '(normal insert visual replace operator motion emacs)
+    python-mode-map (kbd "C-j") 'evil-avy-goto-char-2)
+
   (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
+  (define-key org-mode-map (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
+
   (global-set-key (kbd "C-l") 'evil-avy-goto-line))
 
 ;;;;; File-links
