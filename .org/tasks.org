@@ -26,9 +26,31 @@
  11 min run 9min mile with forest. 35min walk after.
 * Emacs
 ** Working on
-*** TODO Update ligatures
 *** TODO Maybe look at promote/demote in outline being made correct
 *** TODO use org-reveal and clean up the outshine/navi config
+*** TODO Setup dropbox for .org rather than github (so have privacy and mobile access)
+*** TODO Going through schu config
+#+begin_src emacs-lisp
+(defun my/org-follow-entry-link ()
+  "Follow the defined link for this entry."
+  (interactive)
+  (if (org-entry-get (point) "LINK")
+      (org-open-link-from-string (org-entry-get (point) "LINK"))
+    (org-open-at-point)))
+
+(defun my/org-link-projects (location)
+  "Add link properties between the current subtree and the one specified by LOCATION."
+  (interactive
+   (list (let ((org-refile-use-cache nil))
+     (org-refile-get-location "Location"))))
+  (let ((link1 (org-store-link nil)) link2)
+    (save-window-excursion
+      (org-refile 4 nil location)
+      (setq link2 (org-store-link nil))
+      (org-set-property "LINK" link1))
+    (org-set-property "LINK" link2)))
+#+end_src
+
 ** Learning
 *** Lisp state
 a = absorb
