@@ -1,29 +1,5 @@
 ;; -*- mode: emacs-lisp -*-
-;;; Working on
-;;;; Improvements
-;;;;;; TODO Possible collapse outlined buffers by default
-;;;;;; TODO remove tags from outline string in org mode navi outline
-;;;; Todos
-;;;;;; TODO Git gutters
-;;;;;; TODO GNUS
-;;;;;; TODO Outshine/navi moved to layer
-;;;; Remember to Use
-;;;;; Lisp state
-;; LEARN:
-;; a = absorb
-;; b = forward barf, B = backwards barf
-
-;; PROGRESS ON:
-;; s = forward slurp, S = backwards slurp
-;; (setq) var -> (setq var) after slurp
-
-;; BASIC COMMANDS:
-;; w=wrap, W=unwrap
-;; dx=delete expr, dX=backwards delete expr
-;; e=unwrap expr and kill after point
-;; y=yank expr
-
-;;; Which-Config
+;;; OS-Config
 (setq is-linuxp (eq system-type 'gnu/linux))
 (defun if-linux (x y) (if is-linuxp x y))
 (defun if-linux-call (x y) (if is-linuxp (funcall x) (funcall y)))
@@ -48,7 +24,7 @@
    dotspacemacs-install-packages 'used-but-keep-unused
    dotspacemacs-configuration-layers
    '(
-;;;; Core
+;;; Core
      better-defaults
      helm
      git
