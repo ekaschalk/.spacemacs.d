@@ -26,9 +26,9 @@
  11 min run 9min mile with forest. 35min walk after.
 * Emacs
 ** Working on
-*** TODO Add 'g u' chord to org-mode
-*** TODO Key chords for avy navigation and possibly others
-*** TODO convert layer categories to separate functions
+*** TODO Update ligatures
+*** TODO Maybe look at promote/demote in outline being made correct
+*** TODO use org-reveal and clean up the outshine/navi config
 ** Learning
 *** Lisp state
 a = absorb

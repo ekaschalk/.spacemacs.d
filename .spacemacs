@@ -49,7 +49,7 @@
 (setq dotspacemacs/layers/local
       '(org-python))  ; [[file:.layers/org-python/packages.el]]
 
-;;;; Composed
+;;;; Spacemacs
 (defun dotspacemacs/layers ()
   (setq-default  ; This can't be composed like user-config
    dotspacemacs-distribution 'spacemacs
@@ -342,6 +342,7 @@
                       ("not in" .   ?∉)
                       ("return" .  ?⟼)
                       ("yield" .   ?⟻)
+                      ("def" .      ?ℱ)
                       ;; Base Types
                       ("None" .     ?∅)
                       ("int" .      ?ℤ)
@@ -349,15 +350,13 @@
                       ("str" .      ?𝕊)
                       ("True" .     ?𝕋)
                       ("False" .    ?𝔽)
-                      ;; Mypy Containers
+                      ;; Mypy
                       ("Dict" .     ?𝔇)
                       ("List" .     ?ℒ)
-                      ("Callable" . ?ℱ)
-                      ("Iterable" . ?𝔊)
-                      ("Set" .      ?Ω)
-                      ;; Mypy Compositions
-                      ("Any" .      ?❔) ; ？ ❓
                       ("Tuple" .    ?⨂)
+                      ("Set" .      ?Ω)
+                      ("Iterable" . ?𝔊)
+                      ("Any" .      ?❔) ; ？ ❓
                       ("Union" .    ?⋃)
                       ;; Other
                       ("**2" .      ?²)
@@ -397,16 +396,17 @@
 ;;;;; Avy
 (defun dotspacemacs/user-config/navigation/avy ()
   (global-set-key (kbd "C-h") 'avy-pop-mark)
-
   (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
-  (define-key org-mode-map (kbd "C-j") 'evil-avy-goto-char-2)
-  (evil-define-key '(normal insert visual replace operator motion emacs)
-    python-mode-map (kbd "C-j") 'evil-avy-goto-char-2)
-
   (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
-  (define-key org-mode-map (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
+  (global-set-key (kbd "C-l") 'evil-avy-goto-line)
 
-  (global-set-key (kbd "C-l") 'evil-avy-goto-line))
+  (with-eval-after-load 'org
+    (define-key org-mode-map (kbd "C-j") 'evil-avy-goto-char-2)
+    (define-key org-mode-map (kbd "C-k") 'evil-avy-goto-word-or-subword-1))
+
+  (with-eval-after-load 'python
+    (evil-define-key '(normal insert visual replace operator motion emacs)
+      python-mode-map (kbd "C-j") 'evil-avy-goto-char-2)))
 
 ;;;;; File-links
 (defun dotspacemacs/user-config/navigation/file-links ()
@@ -542,6 +542,9 @@
   (add-hook 'org-mode-hook 'flyspell-mode)  ; Async python, spelling
   (add-hook 'org-mode-hook 'org-toggle-blocks)
   (define-key org-mode-map (kbd "C-c t") 'org-toggle-blocks)
+
+  (evil-define-key '(normal visual motion) org-mode-map
+    "gu" 'outline-previous-visible-heading)
   )
 
 ;;;;; Core-linux
@@ -798,7 +801,7 @@
         ;; We don't want our advice to stick around afterwards
         (advice-remove #'org-pandoc-sentinel 'hugo-advice))))
   )
-;;;; Composed
+;;;; Spacemacs
 (defun dotspacemacs/user-config ()
   ;; Group 1
   (dotspacemacs/user-config/display)
