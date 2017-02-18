@@ -73,6 +73,7 @@
 ;;;; Rarely Used
      markdown
      graphviz
+     pandoc
      restclient
 ;;;; Local
      org-python  ; [[file:.layers/org-python/packages.el]]
@@ -409,6 +410,7 @@
 (defun dotspacemacs/user-config/navigation/avy ()
   (global-set-key (kbd "C-h") 'avy-pop-mark)
   (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
+  (require 'python)
   (define-key python-mode-map (kbd "C-j") 'evil-avy-goto-char-2)
   (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
   (global-set-key (kbd "C-l") 'evil-avy-goto-line))
@@ -738,6 +740,71 @@
   (add-hook 'prog-mode-hook 'outline-minor-mode)
   )
 
+;;;; Blog
+(defun dotspacemacs/user-config/blog ()
+  ;; Adapted from
+  ;; http://whyarethingsthewaytheyare.com/setting-up-the-blog/#workflow
+  ;; Requires pandoc layer and pandoc installed and on path
+
+  ;; (concat "[\""
+  ;;         (mapconcat
+  ;;          'identity
+  ;;          (remove ""
+  ;;                  (split-string
+  ;;                   (cdr (assoc "TAGS" properties)) ":"))
+  ;;          "\",\"")
+  ;;         "\"]")))
+
+  (defun org-hugo-export ()
+    (interactive)
+    (save-excursion
+      (unless (eq (org-current-level) 1)
+        (outline-up-heading 10))
+      ;; Set export format, pandoc options, post properties
+      (let* ((org-pandoc-format 'markdown)
+             (org-pandoc-options-for-markdown
+              '((standalone . t) (atx-headers . t) (columns . 79)))
+             (hl (org-element-at-point))
+             (filename (org-element-property :EXPORT_TO hl))
+             (title (concat "\"" (org-element-property :title hl) "\""))
+             (slug (concat "\"" (org-element-property :SLUG hl) "\""))
+             (date (concat "\"" (org-element-property :DATE hl) "\""))
+             (categories "[\"meta\"]")
+             (tmp (concat (make-temp-name ".tmp") ".org")))
+        (org-export-to-file 'pandoc
+            (org-export-output-file-name tmp t)
+          nil t nil nil nil
+          (lambda (f) (org-pandoc-run-to-buffer-or-file f 'markdown t nil)))
+        ;; Use advice-add to add advice to existing process sentinel
+        ;; to modify file /after/ the export process has finished.
+        (advice-add
+         #'org-pandoc-sentinel
+         :after
+         `(lambda (process event)
+            ;; Grab the file using with-temp-file, which saves our changes
+            ;; after evaluation.
+            (with-temp-file ,filename
+              (insert-file-contents ,filename)
+              (goto-char (point-min))
+              ;; Remove default header
+              (re-search-forward "---\\(.\\|\n\\)+?---\n\n")
+              (replace-match "")
+              (goto-char (point-min))
+              ;; Insert new properties
+              (insert
+               (format
+                "---\ntitle: %s\nslug: %s\ndate: %s\ncategories: %s\n---\n\n"
+                ,title ,slug ,date ,categories))
+              ;; Demote headings and tweak code blocks
+              (dolist (reps '(("^#" . "##")
+                              ("\n``` {\\.\\(.+?\\)}" . "```\\1")))
+                (goto-char (point-min))
+                (while (re-search-forward (car reps) nil t)
+                  (replace-match (cdr reps))))))
+         '((name . "hugo-advice")))
+        ;; We don't want our advice to stick around afterwards
+        (advice-remove #'org-pandoc-sentinel 'hugo-advice))))
+  )
 ;;;; Composed
 (defun dotspacemacs/user-config ()
   ;; Group 1
@@ -749,7 +816,9 @@
   (dotspacemacs/user-config/navigation)
   (dotspacemacs/user-config/org)
   (dotspacemacs/user-config/python)
-  (dotspacemacs/user-config/outshine))
+  (dotspacemacs/user-config/outshine)
+  (dotspacemacs/user-config/blog)
+  )
 
 ;;; Spacemacs-Autogen
 (defun dotspacemacs/emacs-custom-settings ()
@@ -757,71 +826,71 @@
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(ansi-color-faces-vector
-     [default default default italic underline success warning error])
-   '(compilation-message-face (quote default))
-   '(evil-want-Y-yank-to-eol t)
-   '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
-   '(highlight-tail-colors
-     (quote
-      (("#3C3D37" . 0)
-       ("#679A01" . 20)
-       ("#4BBEAE" . 30)
-       ("#1DB4D0" . 50)
-       ("#9A8F21" . 60)
-       ("#A75B00" . 70)
-       ("#F309DF" . 85)
-       ("#3C3D37" . 100))))
-   '(hl-sexp-background-color "#efebe9")
-   '(magit-diff-use-overlays nil)
-   '(nrepl-message-colors
-     (quote
-      ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
-   '(package-selected-packages
-     (quote
-      (flatland-theme tangotango-theme subatomic-theme spacegray-theme monokai-theme heroku-theme hc-zenburn-theme darkburn-theme cyberpunk-theme ample-theme ample-zen-theme color-theme-sanityinc-solarized material-theme mmm-mode markdown-toc markdown-mode gh-md multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
-   '(pos-tip-background-color "#A6E22E")
-   '(pos-tip-foreground-color "#272822")
-   '(safe-local-variable-values
-     (quote
-      ((eval ek/startup-proj)
-       (org-babel-use-quick-and-dirty-noweb-expansion . t)
-       (org-use-tag-inheritance))))
-   '(vc-annotate-background nil)
-   '(vc-annotate-color-map
-     (quote
-      ((20 . "#bf616a")
-       (40 . "#DCA432")
-       (60 . "#ebcb8b")
-       (80 . "#B4EB89")
-       (100 . "#89EBCA")
-       (120 . "#89AAEB")
-       (140 . "#C189EB")
-       (160 . "#bf616a")
-       (180 . "#DCA432")
-       (200 . "#ebcb8b")
-       (220 . "#B4EB89")
-       (240 . "#89EBCA")
-       (260 . "#89AAEB")
-       (280 . "#C189EB")
-       (300 . "#bf616a")
-       (320 . "#DCA432")
-       (340 . "#ebcb8b")
-       (360 . "#B4EB89"))))
-   '(vc-annotate-very-old-color nil)
-   '(weechat-color-list
-     (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(default ((t (:family "Fira Code" :foundry "CTDB" :slant normal :weight normal :height 108 :width normal))))
-   '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
-   '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
-  )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(compilation-message-face (quote default))
+ '(evil-want-Y-yank-to-eol t)
+ '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
+ '(highlight-tail-colors
+   (quote
+    (("#3C3D37" . 0)
+     ("#679A01" . 20)
+     ("#4BBEAE" . 30)
+     ("#1DB4D0" . 50)
+     ("#9A8F21" . 60)
+     ("#A75B00" . 70)
+     ("#F309DF" . 85)
+     ("#3C3D37" . 100))))
+ '(hl-sexp-background-color "#efebe9")
+ '(magit-diff-use-overlays nil)
+ '(nrepl-message-colors
+   (quote
+    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
+ '(package-selected-packages
+   (quote
+    (pandoc-mode ox-pandoc ht flatland-theme tangotango-theme subatomic-theme spacegray-theme monokai-theme heroku-theme hc-zenburn-theme darkburn-theme cyberpunk-theme ample-theme ample-zen-theme color-theme-sanityinc-solarized material-theme mmm-mode markdown-toc markdown-mode gh-md multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+ '(pos-tip-background-color "#A6E22E")
+ '(pos-tip-foreground-color "#272822")
+ '(safe-local-variable-values
+   (quote
+    ((eval ek/startup-proj)
+     (org-babel-use-quick-and-dirty-noweb-expansion . t)
+     (org-use-tag-inheritance))))
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#bf616a")
+     (40 . "#DCA432")
+     (60 . "#ebcb8b")
+     (80 . "#B4EB89")
+     (100 . "#89EBCA")
+     (120 . "#89AAEB")
+     (140 . "#C189EB")
+     (160 . "#bf616a")
+     (180 . "#DCA432")
+     (200 . "#ebcb8b")
+     (220 . "#B4EB89")
+     (240 . "#89EBCA")
+     (260 . "#89AAEB")
+     (280 . "#C189EB")
+     (300 . "#bf616a")
+     (320 . "#DCA432")
+     (340 . "#ebcb8b")
+     (360 . "#B4EB89"))))
+ '(vc-annotate-very-old-color nil)
+ '(weechat-color-list
+   (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0")))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Fira Code" :foundry "CTDB" :slant normal :weight normal :height 108 :width normal))))
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+)
