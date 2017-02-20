@@ -317,6 +317,7 @@
             (lambda ()
               (mapc (lambda (pair) (push pair prettify-symbols-alist))
                     '(;; Syntax
+                      ("self" .     #x2299)  ; ⊙
                       ("def" .      #x2131)
                       ("not" .      #x2757)
                       ("in" .       #x2208)
@@ -427,7 +428,18 @@
 (defun dotspacemacs/user-config/python ()
   (when-linux-call 'dotspacemacs/user-config/python/linux)
   (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
-  (dotspacemacs/user-config/python/venvs))
+  (dotspacemacs/user-config/python/venvs)
+  (dotspacemacs/user-config/python/mypy))
+
+;;;;; Mypy
+(defun dotspacemacs/user-config/python/mypy ()
+  (defun mypy-show-region ()
+    (interactive)
+    (shell-command
+     (format "mypy --ignore-missing-imports --fast-parser --python-version 3.6 %s&" (buffer-file-name))))
+
+  (define-key python-mode-map (kbd "C-c m") 'mypy-show-region)
+  )
 
 ;;;;; Windows-pytest
 (defun dotspacemacs/user-config/python/windows-pytest ()
