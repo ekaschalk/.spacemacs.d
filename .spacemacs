@@ -316,29 +316,47 @@
   (add-hook 'python-mode-hook
             (lambda ()
               (mapc (lambda (pair) (push pair prettify-symbols-alist))
-                    '(;; Syntax
-                      ("self" .     #x2299)  ; ⊙
-                      ("def" .      #x2131)
-                      ("not" .      #x2757)
-                      ("in" .       #x2208)
-                      ("not in" .   #x2209)
-                      ("return" .   #x27fc)
-                      ("yield" .    #x27fb)
-                      ("for" .      #x2200)
-                      ;; Base Types
-                      ("int" .      #x2124)
-                      ("float" .    #x211d)
-                      ("str" .      #x1d54a)
-                      ("True" .     #x1d54b)
-                      ("False" .    #x1d53d)
-                      ;; Mypy
-                      ("Dict" .     #x1d507)
-                      ("List" .     #x2112)
-                      ("Tuple" .    #x2a02)
-                      ("Set" .      #x2126)
-                      ("Iterable" . #x1d50a)
-                      ("Any" .      #x2754)
-                      ("Union" .    #x22c3)))))
+                    '(;; Syntax (symbols)
+                      ("self" .     #x2299)   ; ⊙
+                      ("def" .      #x2131)   ; ℱ
+                      ("not" .      #x2757)   ; ❗
+                      ("in" .       #x2208)   ; ∈
+                      ("not in" .   #x2209)   ; ∉
+                      ("return" .   #x27fc)   ; ⟼
+                      ("yield" .    #x27fb)   ; ⟻
+                      ("for" .      #x2200)   ; ∀
+                      ;; Base Types (double-struck)
+                      ;; ("list" .    #x1d53d)  ; 𝕃
+                      ;; ("dict" .    #x1d53d)  ; 𝔻
+                      ;; ("tuple" .    #x1d53d)  ; 𝔻
+
+                      ("int" .      #x2124)   ; ℤ
+                      ("float" .    #x211d)   ; ℝ
+                      ("str" .      #x1d54a)  ; 𝕊
+                      ("bool" .     #x1d539)  ; 𝔹
+                      ("True" .     #x1d54b)  ; 𝕋
+                      ("False" .    #x1d53d)  ; 𝔽
+
+                      ;; Mypy (scripts)
+                      ;; ("Callable" . #x1d507)  ; 𝓕
+                      ;; ("Iterable")
+                      ;; iterator vs iterable
+                      ;; Callable[[arg1, arg2], ret_type]
+                      ;; or Callable[..., ret_type]
+                      ;; Callable = Callable[..., Any]
+                      ;; re has Pattern[str], Match[str]
+
+
+                      ("Dict" .     #x1d507)  ; 𝔇  𝓓
+                      ("List" .     #x2112)   ; ℒ  𝓛
+                      ("Set" .      #x2126)   ; Ω
+                      ("Iterable" . #x1d50a)  ; 𝔊
+                      ;; Mypy (operators)
+                      ("Tuple" .    #x2a02)   ; ⨂
+                      ("Union" .    #x22c3)   ; ⋃
+                      ;; Mypy (symbols)
+                      ("Any" .      #x2754)   ; ❔
+                      ))))
 
   (global-pretty-mode t)
 
@@ -349,7 +367,6 @@
 
   (pretty-activate-groups
    '(:sub-and-superscripts :greek :arithmetic-nary))
-
   )
 
 ;;;; Configuration
