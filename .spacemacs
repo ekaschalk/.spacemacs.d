@@ -433,8 +433,9 @@
 
 ;;;;; Mypy
 (defun dotspacemacs/user-config/python/mypy ()
-  (flycheck-define-checker python-mypy
-    :command ("mypy" "--ignore-missing-imports" "--fast-parser"
+  (flycheck-define-checker python-mypy ""
+    :command ("mypy"
+              "--ignore-missing-imports" "--fast-parser"
               "--python-version" "3.6"
               source-original)
     :error-patterns
