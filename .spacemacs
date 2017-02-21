@@ -306,56 +306,54 @@
 ;;;;; Prettify-symbols
 (defun dotspacemacs/user-config/display/prettify-symbols ()
   (set-fontset-font "fontset-default" '(#x2c7c . #x2c7c) "Courier New")
-  (set-fontset-font "fontset-default" '(#x1d518 . #x1d518) "Symbola")
+  (set-fontset-font "fontset-default" '(#x1d518 . #x1d57f) "Symbola")
   (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d4e2) "Symbola")
   (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d54a) "Symbola")
   (set-fontset-font "fontset-default" '(#x1d54a . #x1d572) "Symbola")
 
   (global-prettify-symbols-mode 1)
 
+  ;; http://unicode.mayastudios.com/
   (add-hook 'python-mode-hook
             (lambda ()
               (mapc (lambda (pair) (push pair prettify-symbols-alist))
-                    '(;; Syntax (symbols)
+                    '(;; Syntax
                       ("self" .     #x2299)   ; ⊙
-                      ("def" .      #x2131)   ; ℱ
-                      ("not" .      #x2757)   ; ❗
+                      ("def" .      #x1d4d5)  ; 𝓕
+                      ("not" .      #xffe2)   ; ￢
+                      ("for" .      #x2200)   ; ∀
                       ("in" .       #x2208)   ; ∈
                       ("not in" .   #x2209)   ; ∉
                       ("return" .   #x27fc)   ; ⟼
                       ("yield" .    #x27fb)   ; ⟻
-                      ("for" .      #x2200)   ; ∀
-                      ;; Base Types (double-struck)
-                      ;; ("list" .    #x1d53d)  ; 𝕃
-                      ;; ("dict" .    #x1d53d)  ; 𝔻
-                      ;; ("tuple" .    #x1d53d)  ; 𝔻
 
+                      ;; Types (Base)
                       ("int" .      #x2124)   ; ℤ
                       ("float" .    #x211d)   ; ℝ
                       ("str" .      #x1d54a)  ; 𝕊
                       ("bool" .     #x1d539)  ; 𝔹
                       ("True" .     #x1d54b)  ; 𝕋
                       ("False" .    #x1d53d)  ; 𝔽
+                      ;; Types (Containers)
+                      ("list" .    #x1d543)   ; 𝕃
+                      ("dict" .    #x1d53b)   ; 𝔻
 
-                      ;; Mypy (scripts)
-                      ;; ("Callable" . #x1d507)  ; 𝓕
-                      ;; ("Iterable")
-                      ;; iterator vs iterable
-                      ;; Callable[[arg1, arg2], ret_type]
-                      ;; or Callable[..., ret_type]
-                      ;; Callable = Callable[..., Any]
-                      ;; re has Pattern[str], Match[str]
-
-
+                      ;; Mypy (Abstract Types)
+                      ("Callable" . #x2131)   ; ℱ
+                      ("Mapping" .  #x2133)   ; ℳ
+                      ("Iterable" . #x1d517)  ; 𝔗
+                      ;; Mypy (Containers)
                       ("Dict" .     #x1d507)  ; 𝔇  𝓓
                       ("List" .     #x2112)   ; ℒ  𝓛
-                      ("Set" .      #x2126)   ; Ω
-                      ("Iterable" . #x1d50a)  ; 𝔊
-                      ;; Mypy (operators)
+                      ("Set" .      #x2126)   ; Ω  𝓢
+                      ;; Mypy (operators, symbols)
                       ("Tuple" .    #x2a02)   ; ⨂
                       ("Union" .    #x22c3)   ; ⋃
-                      ;; Mypy (symbols)
                       ("Any" .      #x2754)   ; ❔
+
+                      ;; Exploring
+                      ;; ("Generator" . #x1d507) ; 𝔊  𝓖
+                      ;; ("tuple" .    #x1d53d)  ; ?
                       ))))
 
   (global-pretty-mode t)
@@ -363,7 +361,9 @@
   (pretty-deactivate-groups  ; Replaced by Fira Code
    '(:equality :ordering :ordering-double :ordering-triple
                :arrows :arrows-twoheaded :punctuation
-               :logic :sets))
+               :logic :sets
+               :greek  ; NOTE Temporarily disabled as breaks 'Mapping' symbol
+               ))
 
   (pretty-activate-groups
    '(:sub-and-superscripts :greek :arithmetic-nary))
