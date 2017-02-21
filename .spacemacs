@@ -361,12 +361,10 @@
   (pretty-deactivate-groups  ; Replaced by Fira Code
    '(:equality :ordering :ordering-double :ordering-triple
                :arrows :arrows-twoheaded :punctuation
-               :logic :sets
-               :greek  ; NOTE Temporarily disabled as breaks 'Mapping' symbol
-               ))
+               :logic :sets))
 
-  (pretty-activate-groups
-   '(:sub-and-superscripts :greek :arithmetic-nary))
+  (pretty-activate-groups  ; :greek not enabled breaks 'Mapping' prettify symbol
+   '(:sub-and-superscripts :arithmetic-nary))
   )
 
 ;;;; Configuration
