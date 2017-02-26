@@ -15,6 +15,7 @@
       '(better-defaults
         helm
         git
+        gnus
         org
         ranger
         syntax-checking
@@ -345,6 +346,7 @@
                       ;; Mypy (Containers)
                       ("Dict" .     #x1d507)  ; 𝔇  𝓓
                       ("List" .     #x2112)   ; ℒ  𝓛
+                      ("Generator" . #x1d50a) ; 𝔊  𝓖
                       ("Set" .      #x2126)   ; Ω  𝓢
                       ;; Mypy (operators, symbols)
                       ("Tuple" .    #x2a02)   ; ⨂
@@ -352,7 +354,6 @@
                       ("Any" .      #x2754)   ; ❔
 
                       ;; Exploring
-                      ;; ("Generator" . #x1d507) ; 𝔊  𝓖
                       ;; ("tuple" .    #x1d53d)  ; ?
                       ))))
 
@@ -441,7 +442,8 @@
 
 ;;;; Python
 (defun dotspacemacs/user-config/python ()
-  (when-linux-call 'dotspacemacs/user-config/python/linux)
+  ;; (when-linux-call 'dotspacemacs/user-config/python/linux)
+  (dotspacemacs/user-config/python/linux)
   (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
   (dotspacemacs/user-config/python/venvs)
   (dotspacemacs/user-config/python/mypy))
@@ -483,15 +485,15 @@
 
 ;;;;; Linux
 (defun dotspacemacs/user-config/python/linux ()
-  (defun python-shell-completion-native-try-output-timeout ()
-    "Return non-nil if can trigger native completion."
-    (with-eval-after-load 'python
-      '(let ((python-shell-completion-native-enable t)
-             (python-shell-completion-native-output-timeout
-              python-shell-completion-native-try-output-timeout))
-         (python-shell-completion-native-get-completions
-          (get-buffer-process (current-buffer))
-          nil "_"))))
+  (with-eval-after-load 'python
+    (defun python-shell-completion-native-try ()
+      "Return non-nil if can trigger native completion."
+      (let ((python-shell-completion-native-enable t)
+            (python-shell-completion-native-output-timeout
+             python-shell-completion-native-try-output-timeout))
+        (python-shell-completion-native-get-completions
+         (get-buffer-process (current-buffer))
+         nil "_"))))
 
   (dolist (hook '(python-mode-hook))
     (add-hook hook (lambda () (flyspell-mode -1)))))
@@ -820,6 +822,49 @@
         ;; We don't want our advice to stick around afterwards
         (advice-remove #'org-pandoc-sentinel 'hugo-advice))))
   )
+;;;; GNUs
+(defun dotspacemacs/user-config/gnus ()
+  (setq user-mail-address	"ekaschalk@gmail.com"
+        user-full-name	"Eric Kaschalk")
+
+  ;; Get email, and store in nnml
+  (setq gnus-secondary-select-methods
+        '(
+          (nnimap "gmail"
+                  (nnimap-address
+                   "imap.gmail.com")
+                  (nnimap-server-port 993)
+                  (nnimap-stream ssl))
+          (nntp "news.gwene.org")
+          ))
+
+  ;; Send email via Gmail:
+  (setq message-send-mail-function 'smtpmail-send-it
+        smtpmail-default-smtp-server "smtp.gmail.com")
+
+  ;; Archive outgoing email in Sent folder on imap.gmail.com:
+  (setq gnus-message-archive-method '(nnimap "imap.gmail.com")
+        gnus-message-archive-group "[Gmail]/Sent Mail")
+
+  ;; set return email address based on incoming email address
+  (setq gnus-posting-styles
+        '(((header "to" "address@outlook.com")
+           (address "address@outlook.com"))
+          ((header "to" "address@gmail.com")
+           (address "address@gmail.com"))))
+
+  ;; store email in ~/gmail directory
+  (setq nnml-directory "~/gmail")
+  (setq message-directory "~/gmail")
+
+  ;; (setq gnus-secondary-select-methods
+  ;;       '(
+  ;;         (nntp "gmane"
+  ;;               (nntp-address "news.gmane.org"))
+  ;;         (nntp "news.eternal-september.org")
+  ;;         (nntp "nntp.aioe.org")
+  ;;         ))
+  )
 ;;;; Spacemacs
 (defun dotspacemacs/user-config ()
   ;; Group 1
@@ -833,6 +878,7 @@
   (dotspacemacs/user-config/python)
   (dotspacemacs/user-config/outshine)
   (dotspacemacs/user-config/blog)
+  (dotspacemacs/user-config/gnus)
   )
 
 ;;; Spacemacs-Autogen
