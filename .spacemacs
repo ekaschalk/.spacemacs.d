@@ -431,6 +431,7 @@
   (dotspacemacs/user-config/misc/aspell)
   (dotspacemacs/user-config/misc/auto-completion)
   (dotspacemacs/user-config/misc/projectile)
+  (dotspacemacs/user-config/misc/yassnippet)
   (when-linux-call 'dotspacemacs/user-config/misc/spotify))
 
 ;;;;; Aspell
@@ -449,14 +450,18 @@
 (defun dotspacemacs/user-config/misc/projectile ()
   (setq projectile-indexing-method 'native))  ; respect .projectile files
 
+;;;;; Yassnippet
+(defun dotspacemacs/user-config/misc/yassnippet ()
+  (global-set-key (kbd "C-SPC") 'hippie-expand))
+
 ;;;;; Spotify
 (defun dotspacemacs/user-config/misc/spotify ()
   (global-set-key (kbd "C-c s s") 'helm-spotify-plus)
   (global-set-key (kbd "C-c s n") 'helm-spotify-plus-next)
   (global-set-key (kbd "C-c s N") 'helm-spotify-plus-previous)
   (global-set-key (kbd "C-c s f") 'helm-spotify-plus-play)
-  (global-set-key (kbd "C-c s F") 'helm-spotify-plus-pause)
-  )
+  (global-set-key (kbd "C-c s F") 'helm-spotify-plus-pause))
+
 ;;;; Python
 (defun dotspacemacs/user-config/python ()
   ;; (when-linux-call 'dotspacemacs/user-config/python/linux)
