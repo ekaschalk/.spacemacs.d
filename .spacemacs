@@ -362,6 +362,7 @@
                       ("Any" .      #x2754)   ; ❔
 
                       ;; Exploring
+                      ("tz.pipe" .  #Xe135)   ; 
                       ;; ("tuple" .    #x1d53d)  ; ?
                       ))))
 
