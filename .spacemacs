@@ -199,10 +199,11 @@
                ,(concat "	"
                         (list (decode-char 'ucs (cadr regex-char-pair)))))))))
      '(;; ("[^/]\\(\\*\\*\\)[^/]"        #Xe101) ("\\(\\*\\*\\*\\)"             #Xe102)
-       ;; ("\\(\\*\\*/\\)"               #Xe103) ("\\(\\*>\\)"                  #Xe104)
+       ;; ("\\(\\*\\*/\\)"               #Xe103)
        ;; ("[^*]\\(\\*/\\)"              #Xe105) ("\\(\\[\\]\\)"                #Xe109)
        ;; ("\\(/\\*\\)"                  #Xe12a) ("\\(/\\*\\*\\)"               #Xe12b)
-       ;; ("\\(<\\*\\)"                  #Xe14b) ("\\(<\\*>\\)"                 #Xe14c)
+       ("\\(\\*>\\)"                  #Xe104)
+       ("\\(<\\*\\)"                  #Xe14b) ("\\(<\\*>\\)"                 #Xe14c)
        ;; ("\\(x\\)"                     #Xe16b)
        ("\\(www\\)"                   #Xe100) ("\\(\\\\\\\\\\)"              #Xe106)
        ("\\(\\\\\\\\\\\\\\)"          #Xe107) ("\\({-\\)"                    #Xe108)
@@ -344,8 +345,8 @@
                       ("True" .     #x1d54b)  ; 𝕋
                       ("False" .    #x1d53d)  ; 𝔽
                       ;; Types (Containers)
-                      ("list" .    #x1d543)   ; 𝕃
-                      ("dict" .    #x1d53b)   ; 𝔻
+                      ;; ("list" .    #x1d543)   ; 𝕃
+                      ;; ("dict" .    #x1d53b)   ; 𝔻
 
                       ;; Mypy (Abstract Types)
                       ("Callable" . #x2131)   ; ℱ
@@ -363,7 +364,8 @@
 
                       ;; Exploring
                       ("tz.pipe" .  #Xe135)   ; 
-                      ;; ("tuple" .    #x1d53d)  ; ?
+                      ;; ("tz.thread_first" . #Xe13e)  ; =>
+                      ;; ("tz.thread_last" . #Xe140)   ; =>>
                       ))))
 
   (global-pretty-mode t)
@@ -469,7 +471,10 @@
   (dotspacemacs/user-config/python/linux)
   (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
   (dotspacemacs/user-config/python/venvs)
-  (dotspacemacs/user-config/python/mypy))
+  (dotspacemacs/user-config/python/mypy)
+
+  ;; (defadvice python-shell-send-region)
+  )
 
 ;;;;; Mypy
 (defun dotspacemacs/user-config/python/mypy ()
