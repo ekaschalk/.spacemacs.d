@@ -46,7 +46,7 @@ max-locals = 35
 # C0111 - missing docstring (test functions, literate stuff)
 # disable-msg=R0903
 
-disable=R0903,W0141,C0103,C0111,C0330,unsubscriptable-object,bad-whitespace,arguments-differ,multiple-statements
+disable=R0903,W0141,C0103,C0111,C0330,unsubscriptable-object,bad-whitespace,arguments-differ,multiple-statements,protected-access
 
 
 [FORMAT]
