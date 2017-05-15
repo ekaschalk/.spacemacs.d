@@ -321,70 +321,219 @@
   (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d54a) "Symbola")
   (set-fontset-font "fontset-default" '(#x1d54a . #x1d572) "Symbola")
 
-  (global-prettify-symbols-mode 1)
+;;;;;; Utils
 
-  ;; http://unicode.mayastudios.com/
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (mapc (lambda (pair) (push pair prettify-symbols-alist))
-                    '(;; Syntax
-                      ("self" .     #x2299)   ; ⊙
-                      ("def" .      #x1d4d5)  ; 𝓕
-                      ("not" .      #xffe2)   ; ￢
-                      ("for" .      #x2200)   ; ∀
-                      ("in" .       #x2208)   ; ∈
-                      ("not in" .   #x2209)   ; ∉
-                      ("return" .   #x27fc)   ; ⟼
-                      ("yield" .    #x27fb)   ; ⟻
+  (defun prettify-utils--list (l &optional glue)
+    "Takes two lists and interleaves the (optional) second between each element of
+the first.  Used to create multi-character sequences for use with the minor mode
+'prettify-symbols'.  If not supplied, GLUE defaults to '(Br . Bl).  For more
+information about GLUE, refer to the documentation for the 'compose-region
+function and the 'reference-point-alist variable.
+This function is used by prettify-utils-string to create the lists given to
+prettify-symbols-alist.  Calling prettify-utils--list directly is probably not
+what you want, check the documentation for prettify-utils-string and
+prettify-utils-generate instead.
+Example use:
+(prettify-utils--list (string-to-list \"hello\") '(Br . Bl))
+"
 
-                      ;; Types (Base)
-                      ("int" .      #x2124)   ; ℤ
-                      ("float" .    #x211d)   ; ℝ
-                      ("str" .      #x1d54a)  ; 𝕊
-                      ("bool" .     #x1d539)  ; 𝔹
-                      ("True" .     #x1d54b)  ; 𝕋
-                      ("False" .    #x1d53d)  ; 𝔽
+  (let ((glue (or glue '(Br . Bl)))
+		(head (car l))
+		(tail (cdr l)))
+	(cond
+	 ((not (consp l))    '())
+	 ((not (consp tail))  (list head))
+	 (t (cons head
+			  (cons glue
+					(prettify-utils--list tail glue)))))))
 
-                      ;; Python custom infix operators
-                      ("@compose@"  . #X2218) ; ∘
-                      ("@pipe@"     . #Xe135) ; |>
-                      ("@vpipe@"    . #Xe104) ; *>
-                      ("@pipemap@"  . #Xe14e) ; <|>
-                      ("@pipevmap@" . #Xe14c) ; <*>
-                      ("@concatv@"  . #Xe138) ; ++
-                      ("@cons@"     . #Xe10a) ; ::
-                      ("@curry@"    . #Xe14f) ; <$
+ (defun prettify-utils-string (s &optional glue)
+  "Takes a string and an optional list, and returns a list of the string's
+characters with GLUE interleaved between each character, for use with
+prettify-symbols mode.  If no GLUE is supplied, uses the
+prettify-utils--list default.  For more information about GLUE, refer to the
+documentation for the 'compose-region function and the 'reference-point-alist
+variable.
+This function can be used to simplify multiple-character replacements when
+manually constructing a prettify-symbols-alist.  For something more high-level,
+consider using prettify-utils-generate to create the entire alist instead.
+Example:
+(prettify-utils-string \"example\" '(Br . Bl))
+"
+  (prettify-utils--list (append s nil) glue))
 
-                      ;; toolz
-                      ("tz.pipe" .  #Xe135)   ; 
-                      ;; ("tz.thread_first" . #Xe13e)  ; =>
-                      ;; ("tz.thread_last" . #Xe140)   ; =>>
+;; Was used during macro creation then removed
+(defun prettify-utils-create-pair (old new &optional glue)
+  "Takes two strings, OLD and NEW, and an optional GLUE list, and creates an
+alist pair for use when creating a prettify-symbols-alist.  For more information
+about GLUE, refer to the documentation for the 'compose-region function and the
+'reference-point-alist variable.
+This function is primarily for use by the user-friendly 'prettify-utils-generate
+macro, but may be useful if manual alist creation is desired for some reason.
+Example:
+(setq prettify-symbols-alist `((\">=\" ?≥)
+                               ,(prettify-utils-create-pair \"foo\" \"bar\" '(Br . Bl))))
+"
+  (cons old (prettify-utils-string new glue)))
 
-                      ;; Mypy (Abstract Types)
-                      ("Callable" . #x2131)   ; ℱ
-                      ("Mapping" .  #x2133)   ; ℳ
-                      ("Iterable" . #x1d517)  ; 𝔗
-                      ;; Mypy (Containers)
-                      ("Dict" .     #x1d507)  ; 𝔇  𝓓
-                      ("List" .     #x2112)   ; ℒ  𝓛
-                      ("Generator" . #x1d50a) ; 𝔊  𝓖
-                      ("Set" .      #x2126)   ; Ω  𝓢
-                      ;; Mypy (operators, symbols)
-                      ("Tuple" .    #x2a02)   ; ⨂
-                      ("Union" .    #x22c3)   ; ⋃
-                      ("Any" .      #x2754)   ; ❔
-                      ))))
+(defmacro prettify-utils-generate (&rest pairs)
+  "Generates an alist for use when setting prettify-symbols-alist.  Takes one or
+more lists, each consisting of two strings and an optional GLUE list to be
+interleaved between characters in the replacement list.  If the optional GLUE
+list is not supplied, uses the prettify-list default of '(Br . Bl).  For more
+information about GLUE, refer to the documentation for the 'compose-region
+function and the 'reference-point-alist variable.
+Example #1:
+(setq prettify-symbols-alist
+      (prettify-utils-generate (\"foo\" \"bar\")
+                               (\">=\" \"≥\" (Br . Bl))
+                               (\"->\"     \"→ \")))
+Example #2:
+(setq prettify-symbols-alist
+      (prettify-generate
+       (\"lambda\"  \"λ\")
+       (\"|>\"      \"▷\")
+       (\"<|\"      \"◁\")
+       (\"->>\"     \"↠  \")
+       (\"->\"      \"→ \")
+       (\"<-\"      \"← \")
+       (\"=>\"      \"⇒\")
+       (\"<=\"      \"≤\")
+       (\">=\"      \"≥\")))
+"
+  (let* ((head       (car   pairs))
+         (tail       (cdr   pairs))
+         (old-string (car   head))
+		 (new-string (cadr  head))
+		 (glue-list  (caddr head)))
+	(if (not (consp head))
+		'()
+       `(cons (quote ,(prettify-utils-create-pair old-string new-string glue-list))
+			 (prettify-utils-generate ,@tail)))))
 
-  (global-pretty-mode t)
+(defun prettify-utils-generate-f (&rest pairs)
+  "Generates an alist for use when setting prettify-symbols-alist.  Takes one or
+more lists, each consisting of two strings and an optional GLUE list to be
+interleaved between characters in the replacement list.  If the optional GLUE
+list is not supplied, uses the prettify-list default of '(Br . Bl).  For more
+information about GLUE, refer to the documentation for the 'compose-region
+function and the 'reference-point-alist variable.
+This is a function equivalent of the prettify-utils-generate macro.  Unless
+you specifically need a function, such as for use with a higher-order function,
+you should use the 'prettify-utils-generate macro instead.
+Example:
+(prettify-utils-generate-f '(\"foo\" \"bar\")
+                           '(\">=\" \"≥\" (Br . Bl))
+                           '(\"->\"     \"→ \"))
+"
+  (let* ((head       (car   pairs))
+         (tail       (cdr   pairs))
+         (old-string (car   head))
+		 (new-string (cadr  head))
+		 (glue-list  (caddr head)))
+  (if (not (consp head))
+	  '()
+      (cons (prettify-utils-create-pair old-string new-string glue-list)
+(apply 'prettify-utils-generate-f tail)))))
 
-  (pretty-deactivate-groups  ; Replaced by Fira Code
-   '(:equality :ordering :ordering-double :ordering-triple
-               :arrows :arrows-twoheaded :punctuation
-               :logic :sets :sub-and-superscripts))
+;;;;;; Main
 
-  (pretty-activate-groups  ; :greek not enabled breaks 'Mapping' prettify symbol
-   '(:arithmetic-nary))
-  )
+(global-prettify-symbols-mode 1)
+
+
+(defconst hy-prettify-pairs
+  (mapcar 'match-outline-levels
+          '(("\\(^;; \\*\\)[ \t\n]"          ?■)
+            ("\\(^;; \\*\\*\\)[ \t\n]"       ?○)
+            ("\\(^;; \\*\\*\\*\\)[ \t\n]"    ?✸)
+            ("\\(^;; \\*\\*\\*\\*\\)[^\\*]"  ?✿)
+
+            ("\\(self\\)"   ?⊙)
+
+            )))
+
+(defun hy-manual-prettify ()
+  (font-lock-add-keywords nil hy-prettify-pairs))
+
+(add-hook 'hy-mode-hook #'hy-manual-prettify)
+
+
+(defun hy-pretty-symbols-alist ()
+  (setq prettify-symbols-alist
+        (prettify-utils-generate
+         ("fn"      "λ")
+         ("defn"    "𝓕")
+         ("#t"      "⨂")
+         ("ah-pipe" " ")
+         ("True"    "𝕋")
+         ("False"   "𝔽")
+
+         ;; ("map"     " ?")
+         ;; ("*map"    " ?")
+         ;; ("#a"      " ")
+         ;; ("or" )
+         ;; ("and" )
+         )))
+
+(add-hook 'hy-mode-hook 'hy-pretty-symbols-alist)
+
+
+;; http://unicode.mayastudios.com/
+(add-hook 'python-mode-hook
+          (lambda ()
+            (mapc (lambda (pair) (push pair prettify-symbols-alist))
+                  '(;; Syntax
+                    ("self" .     #x2299)   ; ⊙
+                    ("def" .      #x1d4d5)  ; 𝓕
+                    ("not" .      #xffe2)   ; ￢
+                    ("for" .      #x2200)   ; ∀
+                    ("in" .       #x2208)   ; ∈
+                    ("not in" .   #x2209)   ; ∉
+                    ("return" .   #x27fc)   ; ⟼
+                    ("yield" .    #x27fb)   ; ⟻
+
+                    ;; Types (Base)
+                    ("int" .      #x2124)   ; ℤ
+                    ("float" .    #x211d)   ; ℝ
+                    ("str" .      #x1d54a)  ; 𝕊
+                    ("bool" .     #x1d539)  ; 𝔹
+                    ("True" .     #x1d54b)  ; 𝕋
+                    ("False" .    #x1d53d)  ; 𝔽
+                    ;; Types (Containers)
+                    ;; ("list" .    #x1d543)   ; 𝕃
+                    ;; ("dict" .    #x1d53b)   ; 𝔻
+
+                    ;; Mypy (Abstract Types)
+                    ("Callable" . #x2131)   ; ℱ
+                    ("Mapping" .  #x2133)   ; ℳ
+                    ("Iterable" . #x1d517)  ; 𝔗
+                    ;; Mypy (Containers)
+                    ("Dict" .     #x1d507)  ; 𝔇  𝓓
+                    ("List" .     #x2112)   ; ℒ  𝓛
+                    ("Generator" . #x1d50a) ; 𝔊  𝓖
+                    ("Set" .      #x2126)   ; Ω  𝓢
+                    ;; Mypy (operators, symbols)
+                    ("Tuple" .    #x2a02)   ; ⨂
+                    ("Union" .    #x22c3)   ; ⋃
+                    ("Any" .      #x2754)   ; ❔
+
+                    ;; Exploring
+                    ("tz.pipe" .  #Xe135)   ; 
+                    ;; ("tz.thread_first" . #Xe13e)  ; =>
+                    ;; ("tz.thread_last" . #Xe140)   ; =>>
+                    ))))
+
+(global-pretty-mode t)
+
+(pretty-deactivate-groups  ; Replaced by Fira Code
+ '(:equality :ordering :ordering-double :ordering-triple
+             :arrows :arrows-twoheaded :punctuation
+             :logic :sets :sub-and-superscripts))
+
+(pretty-activate-groups  ; :greek not enabled breaks 'Mapping' prettify symbol
+ '(:arithmetic-nary))
+)
+>>>>>>> ce80a96a3a5673231830374b21399630e8144318
 
 ;;;; Configuration
 (defun dotspacemacs/user-config/configuration ()
