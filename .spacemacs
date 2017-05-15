@@ -477,63 +477,72 @@ Example:
 
 (add-hook 'hy-mode-hook 'hy-pretty-symbols-alist)
 
+(defun add-hy-kws()
+  (font-lock-add-keywords
+   nil '(
+       ("\\<\\(self\\)" . 'font-lock-keyword-face)
+       ("\\<\\(staticmethod\\)\\>" . 'font-lock-function-name-face)
+       ("\\<\\(classmethod\\)\\>" . 'font-lock-function-name-face)
+       ("\\<\\(property\\)\\>" . 'font-lock-function-name-face)
+       )))
 
-;; http://unicode.mayastudios.com/
-(add-hook 'python-mode-hook
-          (lambda ()
-            (mapc (lambda (pair) (push pair prettify-symbols-alist))
-                  '(;; Syntax
-                    ("self" .     #x2299)   ; ⊙
-                    ("def" .      #x1d4d5)  ; 𝓕
-                    ("not" .      #xffe2)   ; ￢
-                    ("for" .      #x2200)   ; ∀
-                    ("in" .       #x2208)   ; ∈
-                    ("not in" .   #x2209)   ; ∉
-                    ("return" .   #x27fc)   ; ⟼
-                    ("yield" .    #x27fb)   ; ⟻
+  (add-hook 'hy-mode-hook 'add-hy-kws)
 
-                    ;; Types (Base)
-                    ("int" .      #x2124)   ; ℤ
-                    ("float" .    #x211d)   ; ℝ
-                    ("str" .      #x1d54a)  ; 𝕊
-                    ("bool" .     #x1d539)  ; 𝔹
-                    ("True" .     #x1d54b)  ; 𝕋
-                    ("False" .    #x1d53d)  ; 𝔽
-                    ;; Types (Containers)
-                    ;; ("list" .    #x1d543)   ; 𝕃
-                    ;; ("dict" .    #x1d53b)   ; 𝔻
+  ;; http://unicode.mayastudios.com/
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (mapc (lambda (pair) (push pair prettify-symbols-alist))
+                    '(;; Syntax
+                      ("self" .     #x2299)   ; ⊙
+                      ("def" .      #x1d4d5)  ; 𝓕
+                      ("not" .      #xffe2)   ; ￢
+                      ("for" .      #x2200)   ; ∀
+                      ("in" .       #x2208)   ; ∈
+                      ("not in" .   #x2209)   ; ∉
+                      ("return" .   #x27fc)   ; ⟼
+                      ("yield" .    #x27fb)   ; ⟻
 
-                    ;; Mypy (Abstract Types)
-                    ("Callable" . #x2131)   ; ℱ
-                    ("Mapping" .  #x2133)   ; ℳ
-                    ("Iterable" . #x1d517)  ; 𝔗
-                    ;; Mypy (Containers)
-                    ("Dict" .     #x1d507)  ; 𝔇  𝓓
-                    ("List" .     #x2112)   ; ℒ  𝓛
-                    ("Generator" . #x1d50a) ; 𝔊  𝓖
-                    ("Set" .      #x2126)   ; Ω  𝓢
-                    ;; Mypy (operators, symbols)
-                    ("Tuple" .    #x2a02)   ; ⨂
-                    ("Union" .    #x22c3)   ; ⋃
-                    ("Any" .      #x2754)   ; ❔
+                      ;; Types (Base)
+                      ("int" .      #x2124)   ; ℤ
+                      ("float" .    #x211d)   ; ℝ
+                      ("str" .      #x1d54a)  ; 𝕊
+                      ("bool" .     #x1d539)  ; 𝔹
+                      ("True" .     #x1d54b)  ; 𝕋
+                      ("False" .    #x1d53d)  ; 𝔽
+                      ;; Types (Containers)
+                      ;; ("list" .    #x1d543)   ; 𝕃
+                      ;; ("dict" .    #x1d53b)   ; 𝔻
 
-                    ;; Exploring
-                    ("tz.pipe" .  #Xe135)   ; 
-                    ;; ("tz.thread_first" . #Xe13e)  ; =>
-                    ;; ("tz.thread_last" . #Xe140)   ; =>>
-                    ))))
+                      ;; Mypy (Abstract Types)
+                      ("Callable" . #x2131)   ; ℱ
+                      ("Mapping" .  #x2133)   ; ℳ
+                      ("Iterable" . #x1d517)  ; 𝔗
+                      ;; Mypy (Containers)
+                      ("Dict" .     #x1d507)  ; 𝔇  𝓓
+                      ("List" .     #x2112)   ; ℒ  𝓛
+                      ("Generator" . #x1d50a) ; 𝔊  𝓖
+                      ("Set" .      #x2126)   ; Ω  𝓢
+                      ;; Mypy (operators, symbols)
+                      ("Tuple" .    #x2a02)   ; ⨂
+                      ("Union" .    #x22c3)   ; ⋃
+                      ("Any" .      #x2754)   ; ❔
 
-(global-pretty-mode t)
+                      ;; Exploring
+                      ("tz.pipe" .  #Xe135)   ; 
+                      ;; ("tz.thread_first" . #Xe13e)  ; =>
+                      ;; ("tz.thread_last" . #Xe140)   ; =>>
+                      ))))
 
-(pretty-deactivate-groups  ; Replaced by Fira Code
- '(:equality :ordering :ordering-double :ordering-triple
-             :arrows :arrows-twoheaded :punctuation
-             :logic :sets :sub-and-superscripts))
+  (global-pretty-mode t)
 
-(pretty-activate-groups  ; :greek not enabled breaks 'Mapping' prettify symbol
- '(:arithmetic-nary))
-)
->>>>>>> ce80a96a3a5673231830374b21399630e8144318
+  (pretty-deactivate-groups  ; Replaced by Fira Code
+   '(:equality :ordering :ordering-double :ordering-triple
+               :arrows :arrows-twoheaded :punctuation
+               :logic :sets :sub-and-superscripts))
+
+  (pretty-activate-groups  ; :greek not enabled breaks 'Mapping' prettify symbol
+   '(:arithmetic-nary))
+  )
 
 ;;;; Configuration
 (defun dotspacemacs/user-config/configuration ()
