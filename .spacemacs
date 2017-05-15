@@ -344,9 +344,21 @@
                       ("bool" .     #x1d539)  ; 𝔹
                       ("True" .     #x1d54b)  ; 𝕋
                       ("False" .    #x1d53d)  ; 𝔽
-                      ;; Types (Containers)
-                      ;; ("list" .    #x1d543)   ; 𝕃
-                      ;; ("dict" .    #x1d53b)   ; 𝔻
+
+                      ;; Python custom infix operators
+                      ("@compose@"  . #X2218) ; ∘
+                      ("@pipe@"     . #Xe135) ; |>
+                      ("@vpipe@"    . #Xe104) ; *>
+                      ("@pipemap@"  . #Xe14e) ; <|>
+                      ("@pipevmap@" . #Xe14c) ; <*>
+                      ("@concatv@"  . #Xe138) ; ++
+                      ("@cons@"     . #Xe10a) ; ::
+                      ("@curry@"    . #Xe14f) ; <$
+
+                      ;; toolz
+                      ("tz.pipe" .  #Xe135)   ; 
+                      ;; ("tz.thread_first" . #Xe13e)  ; =>
+                      ;; ("tz.thread_last" . #Xe140)   ; =>>
 
                       ;; Mypy (Abstract Types)
                       ("Callable" . #x2131)   ; ℱ
@@ -361,15 +373,6 @@
                       ("Tuple" .    #x2a02)   ; ⨂
                       ("Union" .    #x22c3)   ; ⋃
                       ("Any" .      #x2754)   ; ❔
-
-                      ;; Exploring
-                      ;; Python custom infix operators
-                      ("@C@"     . #X2218) ; ∘  => tz.compose
-                      ("@P@"     . #Xe135) ; |> => tz.pipe
-
-                      ("tz.pipe" .  #Xe135)   ; 
-                      ;; ("tz.thread_first" . #Xe13e)  ; =>
-                      ;; ("tz.thread_last" . #Xe140)   ; =>>
                       ))))
 
   (global-pretty-mode t)
