@@ -487,6 +487,8 @@ Example:
        ("\\<\\(property\\)\\>" . 'font-lock-function-name-face)
        ("\\<\\(import\\)\\>" . 'font-lock-function-name-face)
        ("\\<\\(require\\)\\>" . 'font-lock-function-name-face)
+
+       ("\\(#.\\)" . 'font-lock-function-name-face)
        )))
 
 (add-hook 'hy-mode-hook 'add-hy-kws)
