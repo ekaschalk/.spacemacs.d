@@ -440,26 +440,41 @@ Example:
 
 (global-prettify-symbols-mode 1)
 
+
+(defconst hy-prettify-pairs
+  (mapcar 'match-outline-levels
+          '(("\\(^;; \\*\\)[ \t\n]"          ?■)
+            ("\\(^;; \\*\\*\\)[ \t\n]"       ?○)
+            ("\\(^;; \\*\\*\\*\\)[ \t\n]"    ?✸)
+            ("\\(^;; \\*\\*\\*\\*\\)[^\\*]"  ?✿)
+
+            ("\\(self\\)"   ?⊙)
+
+            )))
+
+(defun hy-manual-prettify ()
+  (font-lock-add-keywords nil hy-prettify-pairs))
+
+(add-hook 'hy-mode-hook #'hy-manual-prettify)
+
+
 (defun hy-pretty-symbols-alist ()
   (setq prettify-symbols-alist
         (prettify-utils-generate
          ("fn"      "λ")
-         ("self"    "⊙")
+         ;; ("self"    "⊙")
          ("defn"    "𝓕")
          ("#t"      "⨂")
          ("ah-pipe" " ")
          ("True"    "𝕋")
          ("False"   "𝔽")
 
-         ("map"     " ?")
-         ("*map"    " ?")
-
+         ;; ("map"     " ?")
+         ;; ("*map"    " ?")
+         ;; ("#a"      " ")
          ;; ("or" )
          ;; ("and" )
          )))
-
-;; .-
-;; ..
 
 (add-hook 'hy-mode-hook 'hy-pretty-symbols-alist)
 
