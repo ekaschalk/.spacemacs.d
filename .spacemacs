@@ -338,14 +338,14 @@ Example use:
 "
 
   (let ((glue (or glue '(Br . Bl)))
-		(head (car l))
-		(tail (cdr l)))
-	(cond
-	 ((not (consp l))    '())
-	 ((not (consp tail))  (list head))
-	 (t (cons head
-			  (cons glue
-					(prettify-utils--list tail glue)))))))
+    (head (car l))
+    (tail (cdr l)))
+  (cond
+   ((not (consp l))    '())
+   ((not (consp tail))  (list head))
+   (t (cons head
+        (cons glue
+          (prettify-utils--list tail glue)))))))
 
  (defun prettify-utils-string (s &optional glue)
   "Takes a string and an optional list, and returns a list of the string's
@@ -404,12 +404,12 @@ Example #2:
   (let* ((head       (car   pairs))
          (tail       (cdr   pairs))
          (old-string (car   head))
-		 (new-string (cadr  head))
-		 (glue-list  (caddr head)))
-	(if (not (consp head))
-		'()
+     (new-string (cadr  head))
+     (glue-list  (caddr head)))
+  (if (not (consp head))
+    '()
        `(cons (quote ,(prettify-utils-create-pair old-string new-string glue-list))
-			 (prettify-utils-generate ,@tail)))))
+       (prettify-utils-generate ,@tail)))))
 
 (defun prettify-utils-generate-f (&rest pairs)
   "Generates an alist for use when setting prettify-symbols-alist.  Takes one or
@@ -429,10 +429,10 @@ Example:
   (let* ((head       (car   pairs))
          (tail       (cdr   pairs))
          (old-string (car   head))
-		 (new-string (cadr  head))
-		 (glue-list  (caddr head)))
+     (new-string (cadr  head))
+     (glue-list  (caddr head)))
   (if (not (consp head))
-	  '()
+    '()
       (cons (prettify-utils-create-pair old-string new-string glue-list)
 (apply 'prettify-utils-generate-f tail)))))
 
@@ -464,7 +464,7 @@ Example:
          ("fn"      "λ")
          ("defn"    "𝓕")
          ("#t"      "⨂")
-         ("ah-pipe" " ")
+         ("ap-pipe" " ")
          ("True"    "𝕋")
          ("False"   "𝔽")
          ("None"    "∅")
@@ -481,17 +481,30 @@ Example:
 (defun add-hy-kws()
   (font-lock-add-keywords
    nil '(
-       ("\\<\\(self\\)" . 'font-lock-keyword-face)
-       ("\\<\\(staticmethod\\)\\>" . 'font-lock-function-name-face)
-       ("\\<\\(classmethod\\)\\>" . 'font-lock-function-name-face)
-       ("\\<\\(property\\)\\>" . 'font-lock-function-name-face)
-       ("\\<\\(import\\)\\>" . 'font-lock-function-name-face)
-       ("\\<\\(require\\)\\>" . 'font-lock-function-name-face)
+         ("\\<\\(self\\)" . 'font-lock-keyword-face)
+         ("\\<\\(staticmethod\\)\\>" . 'font-lock-function-name-face)
+         ("\\<\\(classmethod\\)\\>" . 'font-lock-function-name-face)
+         ("\\<\\(property\\)\\>" . 'font-lock-function-name-face)
+         ("\\<\\(import\\)\\>" . 'font-lock-function-name-face)
+         ("\\<\\(require\\)\\>" . 'font-lock-function-name-face)
 
-       ("\\(#.\\)" . 'font-lock-function-name-face)
-       )))
+         ("\\(#.\\)" . 'font-lock-function-name-face)
+         )))
 
 (add-hook 'hy-mode-hook 'add-hy-kws)
+
+;; (defun test-fontlock-fix-before ()
+;;   (font-lock-mode -1)
+;;   (spacemacs/indent-region-or-buffer))
+
+;; (defun test-fontlock-fix-after ()
+;;   (font-lock-mode 1)
+;;   (sit-for 1)
+;;   (spacemacs/indent-region-or-buffer))
+
+;; (add-hook 'before-save-hook 'test-fontlock-fix-before)
+;; (add-hook 'after-save-hook 'test-fontlock-fix-after)
+
 
 ;; http://unicode.mayastudios.com/
 (add-hook 'python-mode-hook
