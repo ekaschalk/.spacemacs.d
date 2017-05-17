@@ -485,6 +485,7 @@ Example:
          ("\\<\\(staticmethod\\)\\>" . 'font-lock-function-name-face)
          ("\\<\\(classmethod\\)\\>" . 'font-lock-function-name-face)
          ("\\<\\(property\\)\\>" . 'font-lock-function-name-face)
+         ("\\<\\(composite\\)\\>" . 'font-lock-function-name-face)
          ("\\<\\(import\\)\\>" . 'font-lock-function-name-face)
          ("\\<\\(require\\)\\>" . 'font-lock-function-name-face)
 
