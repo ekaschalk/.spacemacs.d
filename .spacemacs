@@ -667,6 +667,16 @@ Example:
   (dotspacemacs/user-config/misc/yassnippet)
   (when-linux-call 'dotspacemacs/user-config/misc/spotify)
 
+  (evil-global-set-key 'normal (kbd "L") 'evil-end-of-line)
+  (evil-global-set-key 'visual (kbd "L")
+                       (lambda () (interactive)  ; different than 'evil-end-of-line
+                         (evil-end-of-line)))
+  (evil-global-set-key 'motion (kbd "L") 'evil-end-of-line)
+
+  (evil-global-set-key 'normal (kbd "H") 'evil-first-non-blank)
+  (evil-global-set-key 'visual (kbd "H") 'evil-first-non-blank)
+  (evil-global-set-key 'motion (kbd "H") 'evil-first-non-blank)
+
   (evil-global-set-key 'normal (kbd "Q")
                        (lambda () (interactive) (evil-execute-macro 1 "@q")))
   (evil-global-set-key 'normal (kbd "C-f") 'winum-select-window-0)
