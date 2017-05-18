@@ -625,6 +625,9 @@ Example:
   (dotspacemacs/user-config/navigation/avy)
   (dotspacemacs/user-config/navigation/file-links)
 
+  ;; Think about S-hjkl as windows movement commands
+  ;; (its available right now in spc w . transient mode)
+
   ;; (add-hook 'python-mode-hook
   ;;           (lambda ()
   ;;             (make-variable-buffer-local 'evil-snipe-aliases)
@@ -664,6 +667,8 @@ Example:
   (dotspacemacs/user-config/misc/yassnippet)
   (when-linux-call 'dotspacemacs/user-config/misc/spotify)
 
+  (evil-global-set-key 'normal (kbd "Q")
+                       (lambda () (interactive) (evil-execute-macro 1 "@q")))
   (evil-global-set-key 'normal (kbd "C-f") 'winum-select-window-0)
   )
 
