@@ -87,11 +87,8 @@
    dotspacemacs-themes '(spacemacs-dark
                          doom-vibrant
                          spacemacs-light)
-   ;; spacemacs-dark spacemacs-light)
-   dotspacemacs-default-font `("Fira Code"
-                               :size ,(if-linux 16 12)
-                               :weight bold
-                               :width condensed
+   dotspacemacs-default-font `("Hack"
+                               :size ,(if-linux 18 12)
                                :powerline-scale 1.1)
 ;;;; Static
    dotspacemacs-elpa-https t
@@ -188,6 +185,9 @@
 
   ;; Enable custom neotree theme
   (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
+
+  ;; TODO Starting with doom-vibrant doenst work since not loaded
+  (spacemacs/cycle-spacemacs-theme)
 
   ;; Enable nlinum line highlighting
   ;; (doom-themes-nlinum-config)   ; requires nlinum and hl-line-mode
