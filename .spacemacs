@@ -165,7 +165,9 @@
   (add-hook 'find-file-hook #'doom-buffer-mode-maybe)
   (add-hook 'after-revert-hook #'doom-buffer-mode-maybe)
   (add-hook 'ediff-prepare-buffer-hook #'doom-buffer-mode)
-  (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
+
+  (setq neo-theme 'icons)
+  ;; (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
 
   ;; TODO Starting with doom-vibrant doenst work since not loaded
   (spacemacs/cycle-spacemacs-theme)
