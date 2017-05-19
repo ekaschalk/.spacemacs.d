@@ -179,22 +179,23 @@
     :config (progn
               (spaceline-all-the-icons--setup-neotree)
               (spaceline-all-the-icons-theme)
-                   (setq spaceline-all-the-icons-icon-set-modified 'circle
-                         spaceline-all-the-icons-icon-set-window-numbering 'solid
-                         spaceline-all-the-icons-separators-type 'arrow)
-                   (spaceline-toggle-all-the-icons-vc-icon-off)
-                   (spaceline-toggle-all-the-icons-vc-status-off)
-                   (spaceline-toggle-all-the-icons-buffer-position-off)
-                   (spaceline-toggle-all-the-icons-time-off)
-                   (spaceline-toggle-all-the-icons-battery-status-off)
-                   (spaceline-toggle-all-the-icons-git-status-off)
-                   (spaceline-toggle-hud-on)
-                   (spaceline-toggle-all-the-icons-flycheck-status-off)
-                   ))
+              (setq spaceline-all-the-icons-icon-set-modified 'circle
+                    spaceline-all-the-icons-icon-set-window-numbering 'solid
+                    spaceline-all-the-icons-separators-type 'arrow)
+              (spaceline-toggle-all-the-icons-buffer-size-off)
+              (spaceline-toggle-all-the-icons-buffer-position-off)
+              (spaceline-toggle-all-the-icons-vc-icon-off)
+              (spaceline-toggle-all-the-icons-vc-status-off)
+              (spaceline-toggle-all-the-icons-git-status-off)
+              (spaceline-toggle-all-the-icons-flycheck-status-off)
+              (spaceline-toggle-all-the-icons-time-off)
+              (spaceline-toggle-all-the-icons-battery-status-off)
+              (spaceline-toggle-hud-on)
+              ))
   ;; (custom-set-faces
   ;;  '(spacemacs-normal-face
   ;;    ((t (:inherit 'mode-line :foreground "Black" :background "DarkSlateGray")))))
-     ;; ((t (:inherit 'mode-line :foreground "#3E3D31" :background "DarkGoldenRod2")))))
+  ;; ((t (:inherit 'mode-line :foreground "#3E3D31" :background "DarkGoldenRod2")))))
 
   ;; Group 2
   (dotspacemacs/user-config/display/fira-code-ligatures)
