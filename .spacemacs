@@ -88,6 +88,9 @@
    dotspacemacs-themes '(spacemacs-dark
                          doom-vibrant
                          spacemacs-light)
+   ;; dotspacemacs-themes '(spacemacs-dark
+   ;;                       doom-vibrant
+   ;;                       spacemacs-light)
    dotspacemacs-default-font `("Hack"
                                :size ,(if-linux 18 12)
                                :powerline-scale 1.5)
@@ -155,15 +158,30 @@
   ;; Group 1
   (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
 
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t  ; if nil, italics is universally disabled
+        doom-one-brighter-modeline nil
+        )
+  (add-hook 'find-file-hook #'doom-buffer-mode-maybe)
+  (add-hook 'after-revert-hook #'doom-buffer-mode-maybe)
+  (add-hook 'ediff-prepare-buffer-hook #'doom-buffer-mode)
+  (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
+
+  ;; TODO Starting with doom-vibrant doenst work since not loaded
+  (spacemacs/cycle-spacemacs-theme)
+
+  ;; (spaceline-toggle-buffer-size-off)
+  (setq spaceline-highlight-face-func 'spaceline-highlight-face-default)
+  (setq powerline-default-separator 'arrow)
+
   (use-package spaceline-all-the-icons
     :after spaceline
-    :config (progn (spaceline-all-the-icons-theme)
+    :config (progn
+              (spaceline-all-the-icons--setup-neotree)
+              (spaceline-all-the-icons-theme)
                    (setq spaceline-all-the-icons-icon-set-modified 'circle
                          spaceline-all-the-icons-icon-set-window-numbering 'solid
-                         spaceline-all-the-icons-primary-separator ""
-                         powerline-default-separator 'arrow
                          spaceline-all-the-icons-separators-type 'arrow)
-                   (spaceline-all-the-icons--setup-neotree)
                    (spaceline-toggle-all-the-icons-vc-icon-off)
                    (spaceline-toggle-all-the-icons-vc-status-off)
                    (spaceline-toggle-all-the-icons-buffer-position-off)
@@ -173,6 +191,10 @@
                    (spaceline-toggle-hud-on)
                    (spaceline-toggle-all-the-icons-flycheck-status-off)
                    ))
+  ;; (custom-set-faces
+  ;;  '(spacemacs-normal-face
+  ;;    ((t (:inherit 'mode-line :foreground "Black" :background "DarkSlateGray")))))
+     ;; ((t (:inherit 'mode-line :foreground "#3E3D31" :background "DarkGoldenRod2")))))
 
   ;; Group 2
   (dotspacemacs/user-config/display/fira-code-ligatures)
@@ -183,34 +205,6 @@
   (dotspacemacs/user-config/display/select-ligatures)
   (dotspacemacs/user-config/display/theme-updates)
 
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t  ; if nil, italics is universally disabled
-        doom-one-brighter-modeline nil
-        )
-        ;; doom-one specific settings
-        ;; doom-one-brighter-comments nil)
-
-  ;; Load the theme (doom-one, doom-dark, etc.)
-  ;; (load-theme 'doom-one t)
-
-  ;; brighter source buffers (that represent files)
-  (add-hook 'find-file-hook #'doom-buffer-mode-maybe)
-  ;; ...if you use auto-revert-mode
-  (add-hook 'after-revert-hook #'doom-buffer-mode-maybe)
-  ;; And you can brighten other buffers (unconditionally) with:
-  (add-hook 'ediff-prepare-buffer-hook #'doom-buffer-mode)
-
-  ;; brighter minibuffer when active
-  (add-hook 'minibuffer-setup-hook #'doom-brighten-minibuffer)
-
-  ;; Enable custom neotree theme
-  (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
-
-  ;; TODO Starting with doom-vibrant doenst work since not loaded
-  (spacemacs/cycle-spacemacs-theme)
-
-  ;; Enable nlinum line highlighting
-  ;; (doom-themes-nlinum-config)   ; requires nlinum and hl-line-mode
   )
 
 ;;;;; Windows-frame-size-fix
@@ -1174,8 +1168,7 @@ Example:
   (dotspacemacs/user-config/python)
   (dotspacemacs/user-config/outshine)
   (dotspacemacs/user-config/blog)
-  (dotspacemacs/user-config/gnus)
-  )
+  (dotspacemacs/user-config/gnus))
 
 ;;; Spacemacs-Autogen
 (defun dotspacemacs/emacs-custom-settings ()
