@@ -503,6 +503,11 @@ Example:
 
 (add-hook 'hy-mode-hook #'hy-manual-prettify)
 
+(set-fontset-font t '(#x2a02 . #x2a02) "Symbola")
+(set-fontset-font t '(#x2205 . #x2205) "Symbola")
+(set-fontset-font t '(#x27fb . #x22fc) "Symbola")
+(set-fontset-font t '(#x2299 . #x2299) "Symbola")
+
 
 (defun hy-pretty-symbols-alist ()
   (setq prettify-symbols-alist
