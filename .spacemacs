@@ -174,6 +174,14 @@
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-default)
   (setq powerline-default-separator 'arrow)
 
+  (require 'all-the-icons)
+  (add-to-list 'all-the-icons-icon-alist
+               '("\\.hy$" all-the-icons-fileicon "lisp"
+                 :face all-the-icons-orange))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(hy-mode all-the-icons-fileicon "lisp"
+                         :height 1.0 :v-adjust -0.2 :face all-the-icons-purple))
+
   (use-package spaceline-all-the-icons
     :after spaceline
     :config (progn
@@ -181,7 +189,9 @@
               (spaceline-all-the-icons-theme)
               (setq spaceline-all-the-icons-icon-set-modified 'circle
                     spaceline-all-the-icons-icon-set-window-numbering 'solid
-                    spaceline-all-the-icons-separators-type 'arrow)
+                    spaceline-all-the-icons-separators-type 'arrow
+                    spaceline-all-the-icons-primary-separator ""
+                    )
               (spaceline-toggle-all-the-icons-buffer-size-off)
               (spaceline-toggle-all-the-icons-buffer-position-off)
               (spaceline-toggle-all-the-icons-vc-icon-off)
