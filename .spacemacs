@@ -166,7 +166,10 @@
   (add-hook 'after-revert-hook #'doom-buffer-mode-maybe)
   (add-hook 'ediff-prepare-buffer-hook #'doom-buffer-mode)
 
-  (setq neo-theme 'icons)
+  (setq neo-theme 'icons
+        neo-window-width 28)
+
+
   ;; (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
 
   ;; TODO Starting with doom-vibrant doenst work since not loaded
