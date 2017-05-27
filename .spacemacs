@@ -718,6 +718,14 @@ Example:
   (evil-global-set-key 'normal (kbd "C-f") 'winum-select-window-0)
   (evil-global-set-key 'normal (kbd "C-p") 'neotree-find-project-root)
 
+
+  ;; CLOJURE
+  (spacemacs/set-leader-keys-for-major-mode
+    'clojure-mode (kbd ",") 'lisp-state-toggle-lisp-state)
+  (spacemacs/set-leader-keys-for-major-mode
+    'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state)
+
+
   )
 
 ;;;;; Aspell
