@@ -35,6 +35,7 @@
 (setq dotspacemacs/layers/langs
       `(emacs-lisp
         html
+        (clojure :variables clojure-enable-fancify-symbols t)
         (haskell :variables haskell-completion-backend 'intero)
         (python :variables
                 python-sort-imports-on-save t
