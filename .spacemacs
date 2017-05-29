@@ -5,7 +5,7 @@
 ;; ** Eric Kaschalk's Spacemacs Configuration Guide **
 
 ;; Literate configs with org-mode are not natively supported by spacemacs
-;; due to how org-mode is loaded within spacemacs layer configuration.
+;; due to how org-mode is loaded within spacemacs layers systems.
 
 ;; The approach taken is to use the `outline-minor-mode` in conjuction
 ;; with `outshine-mode` and `navi-mode` to maintain benefits of literate
@@ -288,28 +288,48 @@
     ("\\(<\\*\\)"                  #Xe14b) ("\\(<\\*>\\)"                 #Xe14c)
     ("\\(\\*>\\)"                  #Xe104)
 
-    ;; Comment and Repeated Character Ligatures
+    ;; Comments and Repeated Characters
+    ("\\(##\\)"                    #Xe11b)
+    ("\\(###\\)"                   #Xe11c) ("\\(####\\)"                  #Xe11d)
     ("\\(\\\\\\\\\\)"              #Xe106) ("\\(\\\\\\\\\\\\\\)"          #Xe107)
+    ("\\(--\\)"                    #Xe111) ("\\(---\\)"                   #Xe112)
     ("\\({-\\)"                    #Xe108) ("\\(-}\\)"                    #Xe110)
-
-    ("\\(www\\)"                   #Xe100)
     ("\\(::\\)"                    #Xe10a) ("\\(:::\\)"                   #Xe10b)
-    ("[^=]\\(:=\\)"                #Xe10c) ("\\(!!\\)"                    #Xe10d)
+
+    ;; Equality Operators
     ("\\(!=\\)"                    #Xe10e) ("\\(!==\\)"                   #Xe10f)
- ("\\(--\\)"                    #Xe111)
-    ("\\(---\\)"                   #Xe112) ("\\(-->\\)"                   #Xe113)
+    ("\\(/=\\)"                    #Xe12c) ("\\(/==\\)"                   #Xe12d)
+
+    ;; Arrows
     ("[^-]\\(->\\)"                #Xe114) ("\\(->>\\)"                   #Xe115)
     ("\\(-<\\)"                    #Xe116) ("\\(-<<\\)"                   #Xe117)
-    ("\\(-~\\)"                    #Xe118) ("\\(#{\\)"                    #Xe119)
-    ("\\(#\\[\\)"                  #Xe11a) ("\\(##\\)"                    #Xe11b)
-    ("\\(###\\)"                   #Xe11c) ("\\(####\\)"                  #Xe11d)
-    ("\\(#(\\)"                    #Xe11e) ("\\(#\\?\\)"                  #Xe11f)
-    ("\\(#_\\)"                    #Xe120) ("\\(#_(\\)"                   #Xe121)
+    ("\\(-->\\)"                   #Xe113)
+
+    ;; Misc
+    ("\\(www\\)"                   #Xe100)
+    ("\\(-~\\)"                    #Xe118)
+
+    ;; Dot Operators
     ("\\(\\.-\\)"                  #Xe122) ("\\(\\.=\\)"                  #Xe123)
     ("\\(\\.\\.\\)"                #Xe124) ("\\(\\.\\.<\\)"               #Xe125)
-    ("\\(\\.\\.\\.\\)"             #Xe126) ("\\(\\?=\\)"                  #Xe127)
-    ("\\(\\?\\?\\)"                #Xe128) ;;("\\(;;\\)"                    #Xe129)
-    ("\\(/=\\)"                    #Xe12c) ("\\(/==\\)"                   #Xe12d)
+    ("\\(\\.\\.\\.\\)"             #Xe126)
+
+    ;; Hash Operators
+    ("\\(#{\\)"                    #Xe119)
+    ("\\(#(\\)"                    #Xe11e)
+    ("\\(#_\\)"                    #Xe120)
+    ("\\(#_(\\)"                   #Xe121)
+    ("\\(#\\?\\)"                  #Xe11f)
+    ("\\(#\\[\\)"                  #Xe11a)
+
+    ;; IDK YET
+    ("\\(\\?=\\)"                  #Xe127)
+    ("[^=]\\(:=\\)"                #Xe10c) ("\\(!!\\)"                    #Xe10d)
+
+    ;; Not using
+    ;; ("\\(;;\\)"                    #Xe129)  ; Lisp `;;`, don't like spacing
+    ;; ("\\(\\?\\?\\)"                #Xe128)  ; Comments `??`, don't like spacing
+
     ("\\(/>\\)"                    #Xe12e) ("\\(//\\)"                    #Xe12f)
     ("\\(///\\)"                   #Xe130) ("\\(&&\\)"                    #Xe131)
     ("\\(||\\)"                    #Xe132) ("\\(||=\\)"                   #Xe133)
