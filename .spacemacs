@@ -9,7 +9,7 @@
 (defun unless-linux-call (x) (unless is-linuxp (funcall x)))
 
 ;;; Spacemacs-Layers
-;;;; Packages
+;;;; Layers
 (setq dotspacemacs/layers/core
       '(better-defaults
         git
@@ -41,10 +41,12 @@
                 python-sort-imports-on-save t
                 python-test-runner 'pytest))
 
-      ;; Rarely Utilized
       dotspacemacs/layers/rare
-      '(markdown
+      '(;; Markdown mode for viewing outside documentation
+        markdown
+        ;; Graphviz mode for usage with org-babel
         graphviz
+        ;; REST client for usage with org-babel
         restclient)
 
       ;; OS-Specific and Local Packages
@@ -56,6 +58,25 @@
       '()
       )
 
+;;;; Additional Packages
+
+(setq dotspacemacs/additional/packages
+      '(;; Enhancements to outline minor mode
+        outshine
+        ;; Navigation buffer for outline minor mode
+        navi-mode
+        ;; Virtualenv management for Python
+        virtualenvwrapper
+        ;; Additional ligature replacements for eg. greeks
+        pretty-mode
+        ;; Spotify layer improvements behind SPC a m s prefix
+        helm-spotify-plus
+        ;; Doom theme
+        doom-themes
+        ;; All-the-icons integration with mode line
+        spaceline-all-the-icons
+        ))
+
 ;;;; Spacemacs
 (defun dotspacemacs/layers ()
   (setq-default
@@ -63,14 +84,7 @@
    dotspacemacs-enable-lazy-installation 'unused
    dotspacemacs-ask-for-lazy-installation t
    dotspacemacs-configuration-layer-path '(".layers/")
-   dotspacemacs-additional-packages '(outshine
-                                      navi-mode
-                                      virtualenvwrapper
-                                      pretty-mode
-                                      helm-spotify-plus
-                                      doom-themes
-                                      spaceline-all-the-icons
-                                      )
+   dotspacemacs-additional-packages dotspacemacs/additional/packages
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused
@@ -87,11 +101,7 @@
 (defun dotspacemacs/init ()
   (setq-default
    dotspacemacs-themes '(spacemacs-dark
-                         doom-vibrant
-                         spacemacs-light)
-   ;; dotspacemacs-themes '(spacemacs-dark
-   ;;                       doom-vibrant
-   ;;                       spacemacs-light)
+                         doom-vibrant)
    dotspacemacs-default-font `("Hack"
                                :size ,(if-linux 18 12)
                                :powerline-scale 1.5)
