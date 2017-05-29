@@ -2,14 +2,14 @@
 
 ;;; Introduction
 
-;; ** Eric Kaschalk's Spacemacs Configuration Guide **
+;; ** Eric Kaschalk's Spacemacs Configuration Organization **
 
 ;; Literate configs with org-mode are not natively supported by spacemacs
 ;; due to how org-mode is loaded within spacemacs layers systems.
 
 ;; The approach taken is to use the `outline-minor-mode` in conjuction
 ;; with `outshine-mode` and `navi-mode` to maintain benefits of literate
-;; documentation and org-modes navigation facilities.
+;; documentation and org-modes navigation, collapsing, and narrowing facilities.
 
 ;;; OS-Config
 (setq is-linuxp (eq system-type 'gnu/linux))
@@ -233,6 +233,7 @@
               ;; Initialization
               (spaceline-all-the-icons--setup-neotree)
               (spaceline-all-the-icons-theme)
+
               ;; Configuration
               (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
                     powerline-default-separator 'arrow
@@ -240,6 +241,7 @@
                     spaceline-all-the-icons-icon-set-window-numbering 'solid
                     spaceline-all-the-icons-separators-type 'arrow
                     spaceline-all-the-icons-primary-separator "")
+
               ;; Toggles
               (spaceline-toggle-all-the-icons-buffer-size-off)
               (spaceline-toggle-all-the-icons-buffer-position-off)
@@ -255,30 +257,36 @@
 (defun dotspacemacs/user-config/display/all-the-icons ()
   "Add icon to all-the-icons for hylang for neotree and modeline integration."
   (with-eval-after-load 'all-the-icons
+    ;; Both all-the-icons-icon-alist and all-the-icons-mode-icon-alist
+    ;; Need to be updated for either modification to take effect.
+
     (add-to-list
      'all-the-icons-icon-alist
-     '("\\.hy$" all-the-icons-fileicon "lisp"
-       :face all-the-icons-orange))
-
+     '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
     (add-to-list
      'all-the-icons-mode-icon-alist
-     '(hy-mode all-the-icons-fileicon "lisp"
-               :height 1.0 :v-adjust -0.2 :face all-the-icons-purple))))
-
+     '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange))))
 
 ;;;;; Face-updates
 (defun dotspacemacs/user-config/display/face-updates ()
   (defun update-outline-font-faces ()
     (custom-theme-set-faces
      (car custom-enabled-themes)
+
+     ;; Org-level-3 and org-level-2 were too similar with color-blindness
      '(org-level-3 ((t (:height 1.03 :foreground "light slate gray"
                                 :weight ultra-bold))))
+
+     ;; Since outlines are necessarily further apart than org-mode headers
+     ;; We box the outlines to make them stand out in programming buffers.
      '(outline-1 ((t (:inherit org-level-1 :box t))))
      '(outline-2 ((t (:inherit org-level-2 :box t))))
      '(outline-3 ((t (:inherit org-level-3 :box t :height 1.03))))
      '(outline-4 ((t (:inherit org-level-4 :underline t))))))
 
+  ;; Apply face updates on emacs initialization
   (update-outline-font-faces)
+  ;; Apply face updates update whenever theme is toggled
   (add-hook 'spacemacs-post-theme-change-hook 'update-outline-font-faces))
 
 ;;;;; Fira-code-ligatures
