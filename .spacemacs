@@ -185,11 +185,11 @@
   ;; Group 2
   ;; (dotspacemacs/user-config/display/fira-code-ligatures)
   (dotspacemacs/user-config/display/font-locks)
-  (dotspacemacs/user-config/display/my-ligatures)
+  ;; (dotspacemacs/user-config/display/my-ligatures)
 
   ;; Rest
   (dotspacemacs/user-config/display/prettify-symbols)
-  (dotspacemacs/user-config/display/select-ligatures)
+  ;; (dotspacemacs/user-config/display/select-ligatures)
   (dotspacemacs/user-config/display/face-updates)
 
   (dotspacemacs/user-config/display/modeline)
@@ -289,7 +289,7 @@
   ;; Apply face updates update whenever theme is toggled
   (add-hook 'spacemacs-post-theme-change-hook 'update-outline-font-faces))
 
-;;;;; Fira-code-ligatures
+;;;;; Fira-ligatures
 (defconst fira-font-lock-alist
   '(;;;; OPERATORS
     ;;;;;; Pipes
@@ -387,6 +387,28 @@
     ;; ("\\(\\[\\]\\)"                #Xe109) ;; ("\\(x\\)"                     #Xe16b)
   ))
 
+;;;;; Outline-pairs
+(defconst emacs-lisp-font-lock-alist
+  '(("\\(^;;;\\)"                   ?■)
+    ("\\(^;;;;\\)"                  ?○)
+    ("\\(^;;;;;\\)"                 ?✸)
+    ("\\(^;;;;;;\\)"                ?✿)))
+
+(defconst python-font-lock-alist
+  '(("\\(^# \\*\\)[ \t\n]"          ?■)
+    ("\\(^# \\*\\*\\)[ \t\n]"       ?○)
+    ("\\(^# \\*\\*\\*\\)[ \t\n]"    ?✸)
+    ("\\(^# \\*\\*\\*\\*\\)[^\\*]"  ?✿)))
+
+(defconst hy-font-lock-alist
+  '(("\\(^;; \\*\\)[ \t\n]"          ?■)
+    ("\\(^;; \\*\\*\\)[ \t\n]"       ?○)
+    ("\\(^;; \\*\\*\\*\\)[ \t\n]"    ?✸)
+    ("\\(^;; \\*\\*\\*\\*\\)[^\\*]"  ?✿)
+
+    ("\\(self\\)"   ?⊙)
+    ))
+
 ;;;;; Font-locks
 (defun dotspacemacs/user-config/display/font-locks ()
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
@@ -402,58 +424,21 @@
                        (list (cadr regex-char-pair))))))))
     (font-lock-add-keywords nil (mapcar '-build-font-lock-alist font-lock-alist)))
 
-  (add-hook 'prog-mode-hook (-partial '-add-font-lock-kwds fira-font-lock-alist))
-
-  )
-
-;;;;; My-ligatures
-(defun dotspacemacs/user-config/display/my-ligatures ()
-  (defun match-outline-levels (regex-char-pair)
-    `(,(car regex-char-pair)
-      (0 (prog1 ()
-           (compose-region
-            (match-beginning 1)
-            (match-end 1)
-            ,(concat "	"
-                     (list (cadr regex-char-pair))))))))
-
-  (defconst emacs-lisp-prettify-pairs
-    (mapcar 'match-outline-levels
-            '(("\\(^;;;\\)"                   ?■)
-              ("\\(^;;;;\\)"                  ?○)
-              ("\\(^;;;;;\\)"                 ?✸)
-              ("\\(^;;;;;;\\)"                ?✿))))
-
-  (defconst python-prettify-pairs
-    (mapcar 'match-outline-levels
-            '(("\\(^# \\*\\)[ \t\n]"          ?■)
-              ("\\(^# \\*\\*\\)[ \t\n]"       ?○)
-              ("\\(^# \\*\\*\\*\\)[ \t\n]"    ?✸)
-              ("\\(^# \\*\\*\\*\\*\\)[^\\*]"  ?✿)
-              ;; ("\\(_0\\)[: \t\n]"             ?₀)
-              ;; ("\\(_1\\)[: \t\n]"             ?₁)
-              ;; ("\\(_2\\)[: \t\n]"             ?₂)
-              ;; ("\\(_3\\)[: \t\n]"             ?₃)
-              ;; ("\\(_4\\)[: \t\n]"             ?₄)
-              ;; ("\\(_i\\)[: \t\n]"             ?ᵢ)
-              ;; ("\\(_j\\)[: \t\n]"             ?ⱼ)
-              ;; ("\\(_k\\)[: \t\n]"             ?ₖ)
-              ;; ("\\(_m\\)[: \t\n]"             ?ₘ)
-              ;; ("\\(_n\\)[: \t\n]"             ?ₙ)
-              ;; ("\\(_x\\)[: \t\n]"             ?ₓ)
-              )))
-
-  (defun emacs-lisp-prettify-keywords ()
-    (font-lock-add-keywords nil emacs-lisp-prettify-pairs))
-  (defun python-prettify-keywords ()
-    (font-lock-add-keywords nil python-prettify-pairs)))
-
-;;;;; Select-ligatures
-(defun dotspacemacs/user-config/display/select-ligatures ()
-  (add-hook 'emacs-lisp-mode-hook
-            #'emacs-lisp-prettify-keywords)
+  ;; Fira Code
+  (add-hook 'prog-mode-hook
+            (-partial '-add-font-lock-kwds fira-font-lock-alist))
+  (add-hook 'org-mode-hook
+            (-partial '-add-font-lock-kwds fira-font-lock-alist))
+  ;; Python
   (add-hook 'python-mode-hook
-            #'python-prettify-keywords))
+            (-partial '-add-font-lock-kwds python-font-lock-alist))
+  ;; Emacs Lisp
+  (add-hook 'emacs-lisp-mode-hook
+            (-partial '-add-font-lock-kwds emacs-lisp-font-lock-alist))
+  ;; Hy
+  (add-hook 'hy-mode-hook
+            (-partial '-add-font-lock-kwds hy-font-lock-alist))
+  )
 
 ;;;;; Prettify-symbols
 (defun dotspacemacs/user-config/display/prettify-symbols ()
@@ -581,23 +566,6 @@ Example:
 ;;;;;; Main
 
 (global-prettify-symbols-mode 1)
-
-
-(defconst hy-prettify-pairs
-  (mapcar 'match-outline-levels
-          '(("\\(^;; \\*\\)[ \t\n]"          ?■)
-            ("\\(^;; \\*\\*\\)[ \t\n]"       ?○)
-            ("\\(^;; \\*\\*\\*\\)[ \t\n]"    ?✸)
-            ("\\(^;; \\*\\*\\*\\*\\)[^\\*]"  ?✿)
-
-            ("\\(self\\)"   ?⊙)
-
-            )))
-
-(defun hy-manual-prettify ()
-  (font-lock-add-keywords nil hy-prettify-pairs))
-
-(add-hook 'hy-mode-hook #'hy-manual-prettify)
 
 (set-fontset-font t '(#x2a02 . #x2a02) "Symbola")
 (set-fontset-font t '(#x2205 . #x2205) "Symbola")
