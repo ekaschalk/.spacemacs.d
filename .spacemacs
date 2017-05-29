@@ -2,7 +2,7 @@
 
 ;;; Introduction
 
-;; ** Eric Kaschalk's Spacemacs Configuration Organization **
+;; -- Eric Kaschalk's Spacemacs Configuration Organization --
 
 ;; Literate configs with org-mode are not natively supported by spacemacs
 ;; due to how org-mode is loaded within spacemacs layers systems.
@@ -292,49 +292,49 @@
 ;;;;; Fira-code-ligatures
 (defconst fira-font-lock-alist
   '(;;;; OPERATORS
-    ;;;;; Pipes
+    ;;;;;; Pipes
     ("\\(<|\\)" #Xe14d) ("\\(<>\\)" #Xe15b) ("\\(<|>\\)" #Xe14e) ("\\(|>\\)" #Xe135)
 
-    ;;;;; Brackets
+    ;;;;;; Brackets
     ("\\(<\\*\\)" #Xe14b) ("\\(<\\*>\\)" #Xe14c) ("\\(\\*>\\)" #Xe104)
     ("\\(<\\$\\)" #Xe14f) ("\\(<\\$>\\)" #Xe150) ("\\(\\$>\\)" #Xe137)
     ("\\(<\\+\\)" #Xe155) ("\\(<\\+>\\)" #Xe156) ("\\(\\+>\\)" #Xe13a)
 
-    ;;;;; Equality
+    ;;;;;; Equality
     ("\\(!=\\)" #Xe10e) ("\\(!==\\)"         #Xe10f) ("\\(=/=\\)" #Xe143)
     ("\\(/=\\)" #Xe12c) ("\\(/==\\)"         #Xe12d)
     ("\\(===\\)"#Xe13d) ("[^!/]\\(==\\)[^>]" #Xe13c)
 
-    ;;;;; Equality Special
+    ;;;;;; Equality Special
     ("\\(||=\\)"  #Xe133) ("[^|]\\(|=\\)" #Xe134)
     ("\\(~=\\)"   #Xe166)
     ("\\(\\^=\\)" #Xe136)
     ("\\(=:=\\)"  #Xe13b)
 
-    ;;;;; Comparisons
+    ;;;;;; Comparisons
     ("\\(<=\\)" #Xe141) ("\\(>=\\)" #Xe145)
     ("\\(</\\)" #Xe162) ("\\(</>\\)" #Xe163)
 
-    ;;;;; Shifts
+    ;;;;;; Shifts
     ("[^-=]\\(>>\\)" #Xe147) ("\\(>>>\\)" #Xe14a)
     ("[^-=]\\(<<\\)" #Xe15c) ("\\(<<<\\)" #Xe15f)
 
-    ;;;;; Dots
+    ;;;;;; Dots
     ("\\(\\.-\\)"    #Xe122) ("\\(\\.=\\)" #Xe123)
     ("\\(\\.\\.<\\)" #Xe125)
 
-    ;;;;; Hashes
+    ;;;;;; Hashes
     ("\\(#{\\)"  #Xe119) ("\\(#(\\)"   #Xe11e) ("\\(#_\\)"   #Xe120)
     ("\\(#_(\\)" #Xe121) ("\\(#\\?\\)" #Xe11f) ("\\(#\\[\\)" #Xe11a)
 
     ;;;; REPEATED CHARACTERS
-    ;;;;; 2-Repeats
+    ;;;;;; 2-Repeats
     ("\\(||\\)" #Xe132)
     ("\\(!!\\)" #Xe10d)
     ("\\(%%\\)" #Xe16a)
     ("\\(&&\\)" #Xe131)
 
-    ;;;;; 2+3-Repeats
+    ;;;;;; 2+3-Repeats
     ("\\(##\\)"       #Xe11b) ("\\(###\\)"         #Xe11c) ("\\(####\\)" #Xe11d)
     ("\\(--\\)"       #Xe111) ("\\(---\\)"         #Xe112)
     ("\\({-\\)"       #Xe108) ("\\(-}\\)"          #Xe110)
@@ -345,7 +345,7 @@
     ("\\(::\\)"       #Xe10a) ("\\(:::\\)"         #Xe10b)
 
     ;;;; ARROWS
-    ;;;;; Direct
+    ;;;;;; Direct
     ("[^-]\\(->\\)" #Xe114) ("[^=]\\(=>\\)" #Xe13f)
     ("\\(<-\\)"     #Xe152)
     ("\\(-->\\)"    #Xe113) ("\\(->>\\)"    #Xe115)
@@ -354,13 +354,13 @@
     ("\\(<==\\)"    #Xe158) ("\\(<<=\\)"    #Xe15e)
     ("\\(<->\\)"    #Xe154) ("\\(<=>\\)"    #Xe159)
 
-    ;;;;; Branches
+    ;;;;;; Branches
     ("\\(-<\\)"  #Xe116) ("\\(-<<\\)" #Xe117)
     ("\\(>-\\)"  #Xe144) ("\\(>>-\\)" #Xe148)
     ("\\(=<<\\)" #Xe142) ("\\(>>=\\)" #Xe149)
     ("\\(>=>\\)" #Xe146) ("\\(<=<\\)" #Xe15a)
 
-    ;;;;; Squiggly
+    ;;;;;; Squiggly
     ("\\(<~\\)" #Xe160) ("\\(<~~\\)" #Xe161)
     ("\\(~>\\)" #Xe167) ("\\(~~>\\)" #Xe169)
     ("\\(-~\\)" #Xe118) ("\\(~-\\)"  #Xe165)
@@ -376,12 +376,11 @@
     ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d)
     ("[^:=]\\(:\\)[^:=]"           #Xe16c)
     ("\\(<=\\)"                    #Xe157)
-
-    ;;;; Disabled
-    ;;;;; Dislike
+    ;; Disabled
+    ;; Dislike
     ;; ("\\(;;\\)"                    #Xe129)  ; Lisp `;;`, don't like spacing
     ;; ("\\(\\?\\?\\)"                #Xe128)  ; Comments `??`, don't like spacing
-    ;;;;; Conflicts with org-mode
+    ;; Conflicts with org-mode
     ;; ("[^/]\\(\\*\\*\\)[^/]"        #Xe101) ("\\(\\*\\*\\*\\)"             #Xe102)
     ;; ("\\(\\*\\*/\\)"               #Xe103) ("\\(/\\*\\)"                  #Xe12a)
     ;; ("\\(/\\*\\*\\)"               #Xe12b) ("[^*]\\(\\*/\\)"              #Xe105)
@@ -451,11 +450,6 @@
 
 ;;;;; Select-ligatures
 (defun dotspacemacs/user-config/display/select-ligatures ()
-  ;; (add-hook 'org-mode-hook
-  ;;           #'add-fira-code-symbol-keywords)
-  ;; (add-hook 'prog-mode-hook
-  ;;           #'add-fira-code-symbol-keywords)
-
   (add-hook 'emacs-lisp-mode-hook
             #'emacs-lisp-prettify-keywords)
   (add-hook 'python-mode-hook
