@@ -10,58 +10,55 @@
 
 ;;; Spacemacs-Layers
 ;;;; Packages
-;;;;; Core
 (setq dotspacemacs/layers/core
       '(better-defaults
-        helm
         git
         gnus
+        helm
         org
         ranger
         syntax-checking
-        (evil-snipe :variables
-                    evil-snipe-enable-alternate-f-and-t-behaviors t)
-        (version-control :variables
-                         version-control-global-margin t
-                         version-control-diff-tool 'git-gutter+)
-        (shell :variables
-               shell-default-shell 'eshell)
         (auto-completion :variables
                          auto-completion-return-key-behavior 'complete
                          auto-completion-tab-key-behavior 'complete
-                         auto-completion-enable-snippets-in-popup t)))
+                         auto-completion-enable-snippets-in-popup t)
+        (evil-snipe :variables
+                    evil-snipe-enable-alternate-f-and-t-behaviors t)
+        (shell :variables
+               shell-default-shell 'eshell)
+        (version-control :variables
+                         version-control-global-margin t
+                         version-control-diff-tool 'git-gutter+))
 
-;;;;; Langs
-(setq dotspacemacs/layers/langs
+      dotspacemacs/layers/langs
       `(emacs-lisp
         html
-        (clojure :variables clojure-enable-fancify-symbols t)
-        (haskell :variables haskell-completion-backend 'intero)
+        (clojure :variables
+                 clojure-enable-fancify-symbols t)
+        (haskell :variables
+                 haskell-completion-backend 'intero)
         (python :variables
                 python-sort-imports-on-save t
-                python-test-runner 'pytest)))
-;;;;; Rare
-(setq dotspacemacs/layers/rare
+                python-test-runner 'pytest))
+
+      ;; Rarely Utilized
+      dotspacemacs/layers/rare
       '(markdown
         graphviz
-        restclient))
+        restclient)
 
-;;;;; Windows
-(setq dotspacemacs/layers/windows
-      (unless-linux '(pandoc)))
-
-;;;;; Linux
-(setq dotspacemacs/layers/linux
-      (when-linux '(spotify
-                    pdf-tools)))
-
-;;;; Local
-(setq dotspacemacs/layers/local
-      '(org-python))  ; [[file:.layers/org-python/packages.el]]
+      ;; OS-Specific and Local Packages
+      dotspacemacs/layers/windows
+      '(pandoc)
+      dotspacemacs/layers/linux
+      '(pdf-tools)
+      dotspacemacs/layers/local
+      '()
+      )
 
 ;;;; Spacemacs
 (defun dotspacemacs/layers ()
-  (setq-default  ; This can't be composed like user-config
+  (setq-default
    dotspacemacs-distribution 'spacemacs
    dotspacemacs-enable-lazy-installation 'unused
    dotspacemacs-ask-for-lazy-installation t
@@ -78,9 +75,12 @@
    dotspacemacs-excluded-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused
    dotspacemacs-configuration-layers
-   (append dotspacemacs/layers/core dotspacemacs/layers/langs
-           dotspacemacs/layers/rare dotspacemacs/layers/local
-           dotspacemacs/layers/windows dotspacemacs/layers/linux)))
+   (append dotspacemacs/layers/core
+           dotspacemacs/layers/langs
+           dotspacemacs/layers/rare
+           dotspacemacs/layers/local
+           (unless-linux dotspacemacs/layers/windows)
+           (when-linux dotspacemacs/layers/linux))))
 
 ;;; Spacemacs-Init
 ;;;; Configuration
@@ -174,7 +174,7 @@
   ;; (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
 
   ;; TODO Starting with doom-vibrant doenst work since not loaded
-  (spacemacs/cycle-spacemacs-theme)
+  ;; (spacemacs/cycle-spacemacs-theme)
 
   ;; (spaceline-toggle-buffer-size-off)
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-default)
@@ -1233,7 +1233,7 @@ This function is called at the very end of Spacemacs initialization."
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (spaceline-all-the-icons evil-snipe doom-vibrant-theme doom-themes all-the-icons memoize font-lock+ helm-spotify-plus multi intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode company-cabal cmm-mode elfeed-web simple-httpd elfeed-org elfeed-goodies ace-jump-mode noflet elfeed pretty-mode pandoc-mode ox-pandoc ht flatland-theme tangotango-theme subatomic-theme spacegray-theme monokai-theme heroku-theme hc-zenburn-theme darkburn-theme cyberpunk-theme ample-theme ample-zen-theme color-theme-sanityinc-solarized material-theme mmm-mode markdown-toc markdown-mode gh-md multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (clojure-snippets clj-refactor inflections edn paredit peg cider-eval-sexp-fu cider seq queue clojure-mode spaceline-all-the-icons evil-snipe doom-vibrant-theme doom-themes all-the-icons memoize font-lock+ helm-spotify-plus multi intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode company-cabal cmm-mode elfeed-web simple-httpd elfeed-org elfeed-goodies ace-jump-mode noflet elfeed pretty-mode pandoc-mode ox-pandoc ht flatland-theme tangotango-theme subatomic-theme spacegray-theme monokai-theme heroku-theme hc-zenburn-theme darkburn-theme cyberpunk-theme ample-theme ample-zen-theme color-theme-sanityinc-solarized material-theme mmm-mode markdown-toc markdown-mode gh-md multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")
  '(safe-local-variable-values
