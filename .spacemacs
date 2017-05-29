@@ -164,7 +164,6 @@
 (defun dotspacemacs/user-init ())
 
 ;;; Spacemacs-Config
-
 ;;;; Display
 (defun dotspacemacs/user-config/display ()
   ;; Group 1
@@ -215,22 +214,20 @@
 
 ;;;;; Modeline
 (defun dotspacemacs/user-config/display/modeline ()
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
-        powerline-default-separator 'arrow)
-
   (use-package spaceline-all-the-icons
-    :after spaceline
+    :after spaceline  ; eval-after-load doesn't work for this setup
     :config (progn
-              ;; Initialize
+              ;; Initialization
               (spaceline-all-the-icons--setup-neotree)
               (spaceline-all-the-icons-theme)
               ;; Configuration
-              (setq spaceline-all-the-icons-icon-set-modified 'circle
+              (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
+                    powerline-default-separator 'arrow
+                    spaceline-all-the-icons-icon-set-modified 'circle
                     spaceline-all-the-icons-icon-set-window-numbering 'solid
                     spaceline-all-the-icons-separators-type 'arrow
-                    spaceline-all-the-icons-primary-separator ""
-                    )
-              ;; Set toggles
+                    spaceline-all-the-icons-primary-separator "")
+              ;; Toggles
               (spaceline-toggle-all-the-icons-buffer-size-off)
               (spaceline-toggle-all-the-icons-buffer-position-off)
               (spaceline-toggle-all-the-icons-vc-icon-off)
@@ -239,8 +236,7 @@
               (spaceline-toggle-all-the-icons-flycheck-status-off)
               (spaceline-toggle-all-the-icons-time-off)
               (spaceline-toggle-all-the-icons-battery-status-off)
-              (spaceline-toggle-hud-on)))
-  )
+              (spaceline-toggle-hud-on))))
 
 ;;;;; All-the-icons
 (defun dotspacemacs/user-config/display/all-the-icons ()
