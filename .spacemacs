@@ -164,64 +164,12 @@
 (defun dotspacemacs/user-init ())
 
 ;;; Spacemacs-Config
+
 ;;;; Display
 (defun dotspacemacs/user-config/display ()
   ;; Group 1
   (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
-
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t  ; if nil, italics is universally disabled
-        doom-one-brighter-modeline nil
-        )
-  (add-hook 'find-file-hook #'doom-buffer-mode-maybe)
-  (add-hook 'after-revert-hook #'doom-buffer-mode-maybe)
-  (add-hook 'ediff-prepare-buffer-hook #'doom-buffer-mode)
-
-  (setq neo-theme 'icons
-        neo-window-width 28)
-
-
-  ;; (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
-
-  ;; TODO Starting with doom-vibrant doenst work since not loaded
-  ;; (spacemacs/cycle-spacemacs-theme)
-
-  ;; (spaceline-toggle-buffer-size-off)
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-default)
-  (setq powerline-default-separator 'arrow)
-
-  (require 'all-the-icons)
-  (add-to-list 'all-the-icons-icon-alist
-               '("\\.hy$" all-the-icons-fileicon "lisp"
-                 :face all-the-icons-orange))
-  (add-to-list 'all-the-icons-mode-icon-alist
-               '(hy-mode all-the-icons-fileicon "lisp"
-                         :height 1.0 :v-adjust -0.2 :face all-the-icons-purple))
-
-  (use-package spaceline-all-the-icons
-    :after spaceline
-    :config (progn
-              (spaceline-all-the-icons--setup-neotree)
-              (spaceline-all-the-icons-theme)
-              (setq spaceline-all-the-icons-icon-set-modified 'circle
-                    spaceline-all-the-icons-icon-set-window-numbering 'solid
-                    spaceline-all-the-icons-separators-type 'arrow
-                    spaceline-all-the-icons-primary-separator ""
-                    )
-              (spaceline-toggle-all-the-icons-buffer-size-off)
-              (spaceline-toggle-all-the-icons-buffer-position-off)
-              (spaceline-toggle-all-the-icons-vc-icon-off)
-              (spaceline-toggle-all-the-icons-vc-status-off)
-              (spaceline-toggle-all-the-icons-git-status-off)
-              (spaceline-toggle-all-the-icons-flycheck-status-off)
-              (spaceline-toggle-all-the-icons-time-off)
-              (spaceline-toggle-all-the-icons-battery-status-off)
-              (spaceline-toggle-hud-on)
-              ))
-  ;; (custom-set-faces
-  ;;  '(spacemacs-normal-face
-  ;;    ((t (:inherit 'mode-line :foreground "Black" :background "DarkSlateGray")))))
-  ;; ((t (:inherit 'mode-line :foreground "#3E3D31" :background "DarkGoldenRod2")))))
+  (dotspacemacs/user-config/display/init-theme)
 
   ;; Group 2
   (dotspacemacs/user-config/display/fira-code-ligatures)
@@ -232,14 +180,82 @@
   (dotspacemacs/user-config/display/select-ligatures)
   (dotspacemacs/user-config/display/theme-updates)
 
+  (dotspacemacs/user-config/display/modeline)
+  (dotspacemacs/user-config/display/all-the-icons)
+
+  (setq neo-theme 'icons
+        neo-window-width 28)
   )
 
 ;;;;; Windows-frame-size-fix
 (defun dotspacemacs/user-config/display/windows-frame-size-fix ()
-  (add-to-list 'default-frame-alist '(font . "Fira Code"))
-  (set-face-attribute 'default t :font "Fira Code")
+  "Surface uses 200% scaling, doesn't transfer to emacs, this fixes with `f2`."
+  (add-to-list 'default-frame-alist '(font . "Hack"))
+  (set-face-attribute 'default t :font "Hack")
   (global-set-key (kbd "<f2>")
                   (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
+
+;;;;; Init-Theme
+(defun dotspacemacs/user-config/display/init-theme ()
+  "Doom theme must be initialized early in config or font breaks."
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t
+        doom-one-brighter-modeline nil)
+
+  ;; Doom buffer mode tints distinguishes (*) buffers with a lighter background
+  (add-hook 'find-file-hook
+            #'doom-buffer-mode-maybe)
+  (add-hook 'after-revert-hook
+            #'doom-buffer-mode-maybe)
+  (add-hook 'ediff-prepare-buffer-hook
+            #'doom-buffer-mode)
+
+  ;; TODO For some reason can't place in additional packages
+  (spacemacs/cycle-spacemacs-theme))
+
+;;;;; Modeline
+(defun dotspacemacs/user-config/display/modeline ()
+  (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
+        powerline-default-separator 'arrow)
+
+  (use-package spaceline-all-the-icons
+    :after spaceline
+    :config (progn
+              ;; Initialize
+              (spaceline-all-the-icons--setup-neotree)
+              (spaceline-all-the-icons-theme)
+              ;; Configuration
+              (setq spaceline-all-the-icons-icon-set-modified 'circle
+                    spaceline-all-the-icons-icon-set-window-numbering 'solid
+                    spaceline-all-the-icons-separators-type 'arrow
+                    spaceline-all-the-icons-primary-separator ""
+                    )
+              ;; Set toggles
+              (spaceline-toggle-all-the-icons-buffer-size-off)
+              (spaceline-toggle-all-the-icons-buffer-position-off)
+              (spaceline-toggle-all-the-icons-vc-icon-off)
+              (spaceline-toggle-all-the-icons-vc-status-off)
+              (spaceline-toggle-all-the-icons-git-status-off)
+              (spaceline-toggle-all-the-icons-flycheck-status-off)
+              (spaceline-toggle-all-the-icons-time-off)
+              (spaceline-toggle-all-the-icons-battery-status-off)
+              (spaceline-toggle-hud-on)))
+  )
+
+;;;;; All-the-icons
+(defun dotspacemacs/user-config/display/all-the-icons ()
+  "Add icon to all-the-icons for hylang for neotree and modeline integration."
+  (with-eval-after-load 'all-the-icons
+    (add-to-list
+     'all-the-icons-icon-alist
+     '("\\.hy$" all-the-icons-fileicon "lisp"
+       :face all-the-icons-orange))
+
+    (add-to-list
+     'all-the-icons-mode-icon-alist
+     '(hy-mode all-the-icons-fileicon "lisp"
+               :height 1.0 :v-adjust -0.2 :face all-the-icons-purple))))
+
 
 ;;;;; Theme-updates
 (defun dotspacemacs/user-config/display/theme-updates ()
