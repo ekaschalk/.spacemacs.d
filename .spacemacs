@@ -2,19 +2,26 @@
 
 ;;; Introduction
 
-;; -- Eric Kaschalk's Spacemacs Configuration Organization --
+;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Emacs 25.2.1 --
-;; -- Dev Branch, last pull: 5/29, last package update: 5/29 --
+;; -- Dev Branch - Release 0.200.9.x - pulled: 5/29 - packages updated: 5/29 --
 ;; -- Dual config for Windows and Arch Linux --
 
+;; Organization
+;; ---------
 ;; Literate configs with org-mode are not natively supported by spacemacs
 ;; due to org-mode's interaction with spacemacs layers systems.
-
+;;
 ;; The approach taken is to use the `outline-minor-mode` in conjuction
 ;; with `outshine-mode` and `navi-mode` to maintain benefits of literate
 ;; documentation and org-modes navigation, collapsing, and narrowing facilities.
-
-;; Notes:
+;;
+;; Notable features
+;; ---------
+;;
+;;
+;; Notes
+;; ---------
 ;; 1. Config is grouped when execution order needs, otherwise lexically ordered.
 ;; 2. Package `dash` is required and utilized in this config.
 ;; 3. The way spacemacs executes config functions enables placing config at end.
