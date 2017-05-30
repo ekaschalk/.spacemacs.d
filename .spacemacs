@@ -610,9 +610,25 @@
 
 ;;; Ivy
 (defun dotspacemacs/user-config/ivy ()
+  "Ivy completion configuration."
 
+  ;; Perform default action on avy-selected minibuffer line
+  (define-key ivy-minibuffer-map (kbd "C-l") 'ivy-avy)
+  ;; Evil-like scrolling of ivy minibuffer
+  (define-key ivy-minibuffer-map (kbd "C-u") 'ivy-scroll-down-command)
+  (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-scroll-up-command)
+  ;; Rebind C-n/C-y/C-p to narrow/yank from buffer/paste into buffer
+  (define-key ivy-minibuffer-map (kbd "C-n") 'ivy-restrict-to-matches)
+  ;; (define-key ivy-minibuffer-map (kbd "C-p") 'ivy-restrict-to-matches)
+  (define-key ivy-minibuffer-map (kbd "C-y") 'ivy-yank-word)
+
+  (setq ivy-format-function 'ivy-format-function-arrow
+        ivy-height 20
+        ;; Tab-completion uses ivy
+        completion-in-region-function 'ivy-completion-in-region)
+
+  ;; http://oremacs.com/swiper/
   ;; REBINDINGS
-  ;; ivy-minibuffer-map
   ;; Replace M-RET with C-RET
   ;; C-l to 'ivy-avy
   ;; C-d/C-u to ivy-scroll-up/down-command
@@ -624,16 +640,8 @@
   ;; ivy-resume C-c C-r
   ;; resumes last session
 
-  ;; ivy-restrict-to-matches S-SPC
-  ;; narrows completion on current selection
-
-  ;; M-j yanks whats at point into the minibuffer
-
-  ;; Arrow on LHS of current candidate
-  (setq ivy-format-function 'ivy-format-function-arrow
-        ;; ivy-height 20
-
-        )
+  ;; ivy-occur C-c C-o
+  ;; Copies minibuffer to read-only-buffer with its own mode
   )
 
 ;;; Configuration
