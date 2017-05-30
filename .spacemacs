@@ -233,7 +233,7 @@
 
 ;;;;; Windows-frame-size-fix
 (defun dotspacemacs/user-config/display/windows-frame-size-fix ()
-  "Surface uses 200% scaling, doesn't transfer to emacs, this fixes with `f2`."
+  "Surface has 200% scaling, doesn't apply to emacs, fixes with push of `f2`."
   (add-to-list 'default-frame-alist '(font . "Hack"))
   (set-face-attribute 'default t :font "Hack")
   (global-set-key (kbd "<f2>")
@@ -242,6 +242,7 @@
 ;;;;; Init-doom-theme
 (defun dotspacemacs/user-config/display/init-doom-theme ()
   "Doom theme configuration."
+  ;; Note to readers: there is a bug with doom-vibrant-theme and spacemacs
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t
         doom-one-brighter-modeline t

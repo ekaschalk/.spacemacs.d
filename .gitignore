@@ -1,11 +1,10 @@
-dev/*
-.emacs.d/*
-.gnupg/*
-.ipython/*
-.pylint.d/*
-.ssh/*
-.aspell*
+# Ignore Everything
+/*
 
-matplotlibrc
-.gitconfig
-.z
+# Whitelist
+!.gitignore
+!.spacemacs
+!.pylintrc
+
+!elisp/
+elisp/*
