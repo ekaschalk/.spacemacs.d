@@ -92,8 +92,7 @@
       dotspacemacs/layers/windows
       '(pandoc)
       dotspacemacs/layers/linux
-      '()  ; TODO broken with update
-      ;; '(pdf-tools)
+      '()
       dotspacemacs/layers/local
       '()
       )
