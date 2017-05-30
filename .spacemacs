@@ -53,7 +53,7 @@
       '(better-defaults
         git
         gnus
-        helm
+        ivy
         org
         ranger
         syntax-checking
