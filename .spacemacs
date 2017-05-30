@@ -553,6 +553,7 @@
 ;;;; Navigation
 (defun dotspacemacs/user-config/navigation ()
   (dotspacemacs/user-config/navigation/avy)
+  (dotspacemacs/user-config/navigation/extra-bindings)
   (dotspacemacs/user-config/navigation/file-links))
 
 ;;;;; Avy
@@ -572,45 +573,33 @@
     (evil-define-key '(normal insert visual replace operator motion emacs)
       python-mode-map (kbd "C-j") 'evil-avy-goto-char-2)))
 
+;;;;; Extra-bindings
+(defun dotspacemacs/user-config/navigation/extra-bindings ()
+  ;; H and L move to modified BOL and EOL
+  (evil-global-set-key 'normal (kbd "H") 'evil-first-non-blank)
+  (evil-global-set-key 'visual (kbd "H") 'evil-first-non-blank)
+  (evil-global-set-key 'motion (kbd "H") 'evil-first-non-blank)
+
+  (evil-global-set-key 'normal (kbd "L") 'evil-end-of-line)
+  (evil-global-set-key 'visual (kbd "L")
+                       (lambda () (interactive)  ; otherwise it goes past EOL
+                         (evil-end-of-line)))
+  (evil-global-set-key 'motion (kbd "L") 'evil-end-of-line))
+
 ;;;;; File-links
 (defun dotspacemacs/user-config/navigation/file-links ()
   (spacemacs/set-leader-keys (kbd "aof") 'org-open-at-point-global))
 
 ;;;; Misc
 (defun dotspacemacs/user-config/misc ()
+  (when-linux-call 'dotspacemacs/user-config/misc/spotify)
   (dotspacemacs/user-config/misc/aspell)
   (dotspacemacs/user-config/misc/auto-completion)
+  (dotspacemacs/user-config/misc/lisp-state)
+  (dotspacemacs/user-config/misc/macros)
+  (dotspacemacs/user-config/misc/neotree)
   (dotspacemacs/user-config/misc/projectile)
-  (dotspacemacs/user-config/misc/yassnippet)
-  (when-linux-call 'dotspacemacs/user-config/misc/spotify)
-
-  (setq neo-theme 'icons
-        neo-window-width 28)
-
-  (evil-global-set-key 'normal (kbd "L") 'evil-end-of-line)
-  (evil-global-set-key 'visual (kbd "L")
-                       (lambda () (interactive)  ; different than 'evil-end-of-line
-                         (evil-end-of-line)))
-  (evil-global-set-key 'motion (kbd "L") 'evil-end-of-line)
-
-  (evil-global-set-key 'normal (kbd "H") 'evil-first-non-blank)
-  (evil-global-set-key 'visual (kbd "H") 'evil-first-non-blank)
-  (evil-global-set-key 'motion (kbd "H") 'evil-first-non-blank)
-
-  (evil-global-set-key 'normal (kbd "Q")
-                       (lambda () (interactive) (evil-execute-macro 1 "@q")))
-  (evil-global-set-key 'normal (kbd "C-f") 'winum-select-window-0)
-  (evil-global-set-key 'normal (kbd "C-p") 'neotree-find-project-root)
-
-
-  ;; CLOJURE
-  (spacemacs/set-leader-keys-for-major-mode
-    'clojure-mode (kbd ",") 'lisp-state-toggle-lisp-state)
-  (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state)
-
-
-  )
+  (dotspacemacs/user-config/misc/yassnippet))
 
 ;;;;; Aspell
 (defun dotspacemacs/user-config/misc/aspell ()
@@ -623,6 +612,28 @@
      ((t (:inherit company-tooltip :weight bold :underline nil))))
    '(company-tooltip-common-selection
      ((t (:inherit company-tooltip-selection :weight bold :underline nil))))))
+
+;;;;; Lisp-state
+(defun dotspacemacs/user-config/misc/lisp-state ()
+  "Add lisp state shortcut to Clojure and Hy."
+  (spacemacs/set-leader-keys-for-major-mode
+    'clojure-mode (kbd ",") 'lisp-state-toggle-lisp-state)
+  (spacemacs/set-leader-keys-for-major-mode
+    'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state))
+
+;;;;; Macros
+(defun dotspacemacs/user-config/misc/macros ()
+  "Evil Q shortcut for vim macros set at @q."
+  (evil-global-set-key 'normal (kbd "Q")
+                       (lambda () (interactive) (evil-execute-macro 1 "@q"))))
+
+;;;;; Neotree
+(defun dotspacemacs/user-config/misc/neotree ()
+  (setq neo-theme 'icons
+        neo-window-width 28)
+
+  (evil-global-set-key 'normal (kbd "C-f") 'winum-select-window-0)
+  (evil-global-set-key 'normal (kbd "C-p") 'neotree-find-project-root))
 
 ;;;;; Projectile
 (defun dotspacemacs/user-config/misc/projectile ()
