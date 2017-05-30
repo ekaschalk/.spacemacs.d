@@ -16,9 +16,9 @@
 ;; with `outshine-mode` and `navi-mode` to maintain benefits of literate
 ;; documentation and org-modes navigation, collapsing, and narrowing facilities.
 ;;
-;; Notable features
+;; Notable Components
 ;; ---------
-;;
+;; 1. Outline-ellipsis-modification
 ;;
 ;; Notes
 ;; ---------
@@ -236,6 +236,7 @@
   (dotspacemacs/user-config/display/extra-syntax-highlighting)
   (dotspacemacs/user-config/display/face-updates)
   (dotspacemacs/user-config/display/modeline)
+  (dotspacemacs/user-config/display/outline-ellipsis-modification)
   (dotspacemacs/user-config/display/prettify-symbols))
 
 ;;;;; Windows-frame-size-fix
@@ -494,6 +495,24 @@
               (spaceline-toggle-all-the-icons-battery-status-off)
               (spaceline-toggle-hud-on))))
 
+;;;;; Outline-ellipsis-modification
+(defun dotspacemacs/user-config/display/outline-ellipsis-modification ()
+  "Org-ellipsis but for outline-minor-mode headings"
+  ;; Modified org-ellipsis implementation
+  (add-hook
+   'outline-minor-mode-hook
+   (lambda ()
+     (let ((display-table
+            (if buffer-display-table
+                buffer-display-table
+              (make-display-table))))
+       (unless buffer-display-table
+         (setq buffer-display-table display-table))
+       (set-display-table-slot
+        display-table 4
+        (vconcat
+         (mapcar (lambda (c) (make-glyph-code c 'font-lock-keyword-face)) "▼")))))))
+
 ;;;;; Prettify-symbols
 (defun dotspacemacs/user-config/display/prettify-symbols ()
   ;; Pretty pairs for modes
@@ -696,31 +715,15 @@
 
 ;;;; Python
 (defun dotspacemacs/user-config/python ()
-  ;; (when-linux-call 'dotspacemacs/user-config/python/linux)
-  (dotspacemacs/user-config/python/linux)
-  (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
-  (dotspacemacs/user-config/python/venvs)
-  (dotspacemacs/user-config/python/mypy)
-
-  ;; (defadvice python-shell-send-region)
-  )
-
-;;;;; Mypy
-(defun dotspacemacs/user-config/python/mypy ()
-  (flycheck-define-checker python-mypy ""
-                           :command ("mypy"
-                                     "--ignore-missing-imports" "--fast-parser"
-                                     "--python-version" "3.6"
-                                     source-original)
-                           :error-patterns
-                           ((error line-start (file-name) ":" line ": error:" (message) line-end))
-                           :modes python-mode)
-
-  (add-to-list 'flycheck-checkers 'python-mypy t)
-  (flycheck-add-next-checker 'python-pylint 'python-mypy t))
+  (with-eval-after-load 'python
+    (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
+    (dotspacemacs/user-config/python/fixes)
+    (dotspacemacs/user-config/python/mypy)
+    (dotspacemacs/user-config/python/venvs)))
 
 ;;;;; Windows-pytest
 (defun dotspacemacs/user-config/python/windows-pytest ()
+  "Pytest is broken on Windows. Basic functionality is provided for Windows."
   (defun ek-pytest-module ()
     (interactive)
     (shell-command (format "py.test -x -s %s&" buffer-file-name)))
@@ -740,75 +743,75 @@
   (spacemacs/set-leader-keys-for-major-mode
     'python-mode (kbd "t t") 'ek-pytest-one))
 
-;;;;; Linux
-(defun dotspacemacs/user-config/python/linux ()
-  (with-eval-after-load 'python
-    (defun python-shell-completion-native-try ()
-      "Return non-nil if can trigger native completion."
-      (let ((python-shell-completion-native-enable t)
-            (python-shell-completion-native-output-timeout
-             python-shell-completion-native-try-output-timeout))
-        (python-shell-completion-native-get-completions
-         (get-buffer-process (current-buffer))
-         nil "_"))))
+;;;;; Fixes
+(defun dotspacemacs/user-config/python/fixes ()
+  "Various python bugfixes."
+  ;; Sometimes ipython shells trigger a bad error to popup
+  (defun python-shell-completion-native-try ()
+    "Return non-nil if can trigger native completion."
+    (let ((python-shell-completion-native-enable t)
+          (python-shell-completion-native-output-timeout
+           python-shell-completion-native-try-output-timeout))
+      (python-shell-completion-native-get-completions
+       (get-buffer-process (current-buffer))
+       nil "_")))
 
+  ;; Remove flyspell from python buffers
   (dolist (hook '(python-mode-hook))
     (add-hook hook (lambda () (flyspell-mode -1)))))
 
+;;;;; Mypy
+(defun dotspacemacs/user-config/python/mypy ()
+  "Enable mypy flycheck integration in-tandem with pylint."
+  (flycheck-define-checker
+      python-mypy ""
+      :command ("mypy"
+                "--ignore-missing-imports" "--fast-parser"
+                "--python-version" "3.6"
+                source-original)
+      :error-patterns
+      ((error line-start (file-name) ":" line ": error:" (message) line-end))
+      :modes python-mode)
+
+  (add-to-list 'flycheck-checkers 'python-mypy t)
+  (flycheck-add-next-checker 'python-pylint 'python-mypy t))
+
 ;;;;; Venvs
 (defun dotspacemacs/user-config/python/venvs ()
-  (require 'virtualenvwrapper)
-  (pyvenv-mode 1)
-  (venv-initialize-interactive-shells)
-  (venv-initialize-eshell)
-
-  (defun pyvenv-autoload ()
-    (when (string= buffer-file-name "c:/~/dev/pop-synth/base.org")
-      (pyvenv-workon "pop-synthvenv"))
-    (when (string= buffer-file-name "c:/~/dev/health/base.org")
-      (pyvenv-workon "healthvenv")))
-
-  (add-hook 'org-mode-hook 'pyvenv-autoload))
+  (with-eval-after-load 'virtualenvwrapper
+    (pyvenv-mode 1)
+    (venv-initialize-interactive-shells)
+    (venv-initialize-eshell)))
 
 ;;;; Org
 (defun dotspacemacs/user-config/org ()
   (with-eval-after-load 'org
+
+    (dotspacemacs/user-config/org/theming)
+
     (dotspacemacs/user-config/org/core)
     (when-linux-call 'dotspacemacs/user-config/org/core-linux)
     (dotspacemacs/user-config/org/babel)
     (dotspacemacs/user-config/org/exporting)
     (dotspacemacs/user-config/org/templates)))
 
-;;;;; Core
-(defun dotspacemacs/user-config/org/core ()
-  ;; Agenda in-progress
-  (setq org-agenda-files '("c:/~/.org" "c:/~/dev/pop-synth/base.org"))
-
-
-  (require 'ox-extra)
-  (ox-extras-activate '(ignore-headlines))
+(defun dotspacemacs/user-config/org/theming ()
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
         org-priority-faces '((65 :foreground "red")
                              (66 :foreground "yellow")
-                             (67 :foreground "blue")))
+                             (67 :foreground "blue"))
+        org-ellipsis "▼")
 
+  )
+
+;;;;; Core
+(defun dotspacemacs/user-config/org/core ()
+  ;; Agenda in-progress
+  ;; (setq org-agenda-files '("c:/~/.org" "c:/~/dev/pop-synth/base.org"))
+
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines))
   (setq org-refile-targets (quote ((nil :regexp . "Week of"))))
-
-  (add-hook
-   'outline-minor-mode-hook
-   (lambda ()
-     (let ((display-table
-            (if buffer-display-table
-                buffer-display-table
-              (make-display-table))))
-       (unless buffer-display-table
-         (setq buffer-display-table display-table))
-       (set-display-table-slot
-        display-table 4
-        (vconcat
-         (mapcar (lambda (c) (make-glyph-code c 'font-lock-keyword-face)) "▼"))))))
-
-  (setq org-ellipsis "▼")
 
   (defvar org-blocks-hidden nil)
   (defun org-toggle-blocks ()
@@ -1083,6 +1086,7 @@
         ;; We don't want our advice to stick around afterwards
         (advice-remove #'org-pandoc-sentinel 'hugo-advice))))
   )
+
 ;;;; GNUs
 (defun dotspacemacs/user-config/gnus ()
   (setq user-mail-address	"ekaschalk@gmail.com"
@@ -1100,7 +1104,8 @@
 
   (setq message-send-mail-function 'smtpmail-send-it
         smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-        smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ekaschalk@gmail.com" nil))
+        smtpmail-auth-credentials '(("smtp.gmail.com" 587
+                                     "ekaschalk@gmail.com" nil))
         smtpmail-default-smtp-server "smtp.gmail.com"
         smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 587)
