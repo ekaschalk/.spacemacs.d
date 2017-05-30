@@ -8,16 +8,19 @@
 ;; -- Dual config for Windows and Arch Linux --
 
 ;; Literate configs with org-mode are not natively supported by spacemacs
-;; due to how org-mode is loaded within spacemacs layers systems.
+;; due to org-mode's interaction with spacemacs layers systems.
 
 ;; The approach taken is to use the `outline-minor-mode` in conjuction
 ;; with `outshine-mode` and `navi-mode` to maintain benefits of literate
 ;; documentation and org-modes navigation, collapsing, and narrowing facilities.
 
 ;; Notes:
-;; 1. Groups must be executed in-order, group components are lexically ordered.
+;; 1. Config is grouped when execution order needs, otherwise lexically ordered.
+;; 2. Package `dash` is required and utilized in this config.
+;; 3. The way spacemacs executes config functions enables placing config at end.
 
 ;;; OS-Config
+;; Utilities for differentiating when necessary between Windows and Linux.
 (setq is-linuxp (eq system-type 'gnu/linux))
 (defun if-linux (x y) (if is-linuxp x y))
 (defun if-linux-call (x y) (if is-linuxp (funcall x) (funcall y)))
@@ -191,6 +194,25 @@
   ;; Rids the verbose custom settings from being written to .spacemacs
   (setq custom-file "./elisp/.custom-settings.el")
   (load "~/elisp/.custom-settings.el"))
+
+;;; Spacemacs-User-config
+(defun dotspacemacs/user-config ()
+  (with-eval-after-load 'dash
+    ;; Private Elisp in "~/elisp"
+    (load "~/elisp/prettify-utils")
+
+    ;; Group 1
+    (dotspacemacs/user-config/display)
+
+    ;; Rest
+    (dotspacemacs/user-config/configuration)
+    (dotspacemacs/user-config/misc)
+    (dotspacemacs/user-config/navigation)
+    (dotspacemacs/user-config/org)
+    (dotspacemacs/user-config/python)
+    (dotspacemacs/user-config/outshine)
+    (dotspacemacs/user-config/blog)
+    (dotspacemacs/user-config/gnus)))
 
 ;;; Config
 ;;;; Display
@@ -1096,22 +1118,3 @@
 
   ;; https://github.com/paul-issartel/nnreddit
   )
-
-;;; Spacemacs-User-config
-(defun dotspacemacs/user-config ()
-  (with-eval-after-load 'dash
-    ;; Private Elisp in "~/elisp"
-    (load "~/elisp/prettify-utils")
-
-    ;; Group 1
-    (dotspacemacs/user-config/display)
-
-    ;; Rest
-    (dotspacemacs/user-config/configuration)
-    (dotspacemacs/user-config/misc)
-    (dotspacemacs/user-config/navigation)
-    (dotspacemacs/user-config/org)
-    (dotspacemacs/user-config/python)
-    (dotspacemacs/user-config/outshine)
-    (dotspacemacs/user-config/blog)
-    (dotspacemacs/user-config/gnus)))
