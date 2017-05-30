@@ -904,63 +904,90 @@
 
 ;;;;; Navi-mode
 (defun dotspacemacs/user-config/outshine/navi-mode ()
-  (add-to-list 'navi-key-mappings
-               '("python" .
-                 ((:FUN . "f")
-                  (:OBJ . "x"))))
+  (with-eval-after-load 'navi-mode
+    ;; Navi mode python integration
+    (add-to-list 'navi-key-mappings
+                 '("python" .
+                   ((:FUN . "f")
+                    (:OBJ . "x"))))
+    (add-to-list 'navi-keywords
+                 '("python" .
+                   ((:FUN . "\\(^[ ]*def[a-zA-Z0-9_ ]*\\|^[ ]*class[a-zA-Z0-9_ ]*\\)")
+                    (:OBJ . "^[ ]*\\(class[a-zA-Z0-9_ ]*\\)"))))
 
-  (add-to-list 'navi-keywords
-               '("python" .
-                 ((:FUN . "\\(^[ ]*def[a-zA-Z0-9_ ]*\\|^[ ]*class[a-zA-Z0-9_ ]*\\)")
-                  (:OBJ . "^[ ]*\\(class[a-zA-Z0-9_ ]*\\)"))))
+    (defun my-outline-show-context ()
+      "Helper utility for evil navi bindings."
+      (interactive)
+      (outline-show-entry)
+      (outline-show-branches))
 
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "TAB") 'navi-cycle-subtree)
-    (define-key map (kbd "<backtab>") 'navi-cycle-buffer)
+    (let ((map (make-sparse-keymap)))
+      ;; Enter Navi
+      (define-key map (kbd "M-n") 'navi-goto-occurrence-other-window)
+      ;; Cycle Navi
+      (define-key map (kbd "TAB") 'navi-cycle-subtree)
+      (define-key map (kbd "<backtab>") 'navi-cycle-buffer)
+      ;; Modify subtree hierarchy
+      (define-key map (kbd "M-h") 'navi-promote-subtree)
+      (define-key map (kbd "M-j") 'navi-move-down-subtree)
+      (define-key map (kbd "M-k") 'navi-move-up-subtree)
+      (define-key map (kbd "M-l") 'navi-demote-subtree)
 
-    (define-key map (kbd "M-h") 'navi-promote-subtree)
-    (define-key map (kbd "M-j") 'navi-move-down-subtree)
-    (define-key map (kbd "M-k") 'navi-move-up-subtree)
-    (define-key map (kbd "M-l") 'navi-demote-subtree)
-    (define-key map (kbd "M-n") 'navi-goto-occurrence-other-window)
+      ;; Custom vim bindings for navi-mode
+      ;; Also fixes various bugs related to narrowing/context/scrolling
+      (evil-define-key '(normal visual motion) map
+        "f" (lambda () (interactive) (navi-generic-command ?f current-prefix-arg))
+        "v" (lambda () (interactive) (navi-generic-command ?v current-prefix-arg))
+        "x" (lambda () (interactive) (navi-generic-command ?x current-prefix-arg))
+        "a" (lambda () (interactive) (navi-generic-command ?a current-prefix-arg))
 
-    (evil-define-key '(normal visual motion) map
-      "f" (lambda () (interactive) (navi-generic-command ?f current-prefix-arg)) ;Fun
-      "v" (lambda () (interactive) (navi-generic-command ?v current-prefix-arg)) ;Var
-      "x" (lambda () (interactive) (navi-generic-command ?x current-prefix-arg)) ;Obj
-      "a" (lambda () (interactive) (navi-generic-command ?a current-prefix-arg)) ;All
-      "1" (lambda () (interactive) (navi-generic-command ?1 current-prefix-arg))
-      "2" (lambda () (interactive) (navi-generic-command ?2 current-prefix-arg))
-      "3" (lambda () (interactive) (navi-generic-command ?3 current-prefix-arg))
-      "4" (lambda () (interactive) (navi-generic-command ?4 current-prefix-arg))
+        "1" (lambda () (interactive) (navi-generic-command ?1 current-prefix-arg))
+        "2" (lambda () (interactive) (navi-generic-command ?2 current-prefix-arg))
+        "3" (lambda () (interactive) (navi-generic-command ?3 current-prefix-arg))
+        "4" (lambda () (interactive) (navi-generic-command ?4 current-prefix-arg))
 
-      ;; TODO Check out org-reveal
+        ;; Narrow on occurrence
+        "n" (lambda () (interactive)
+              (navi-narrow-to-thing-at-point)
+              (other-window 1)
+              (my-outline-show-context)
+              (other-window 1))
+        ;; Widen narrowed navi buffer
+        "w" 'navi-widen
+        ;; Undo modifications to headers done within navi buffer
+        "u" 'navi-undo
+        ;; Open occurence but do not goto
+        "d" (lambda () (interactive)
+              (occur-mode-display-occurrence)
+              (other-window 1)
+              (my-outline-show-context)
+              (other-window 1))
+        "D" (lambda () (interactive)
+              (occur-mode-display-occurrence)
+              (other-window 1)
+              (my-outline-show-context)
+              (recenter 3)
+              (other-window 1))
+        ;; Open and goto occurrence
+        "o" (lambda () (interactive)
+              (navi-goto-occurrence-other-window)
+              (my-outline-show-context))
+        "O" (lambda () (interactive)
+              (navi-goto-occurrence-other-window)
+              (my-outline-show-context)
+              (recenter 3))
+        ;; Exit Navi and goto occurence
+        "q" (lambda () (interactive)
+              (navi-quit-and-switch)
+              (my-outline-show-context)
+              (recenter 3))
+        "Q" (lambda () (interactive)
+              (navi-quit-and-switch)
+              (delete-other-windows)
+              (my-outline-show-context)
+              (recenter 3)))
 
-      "u" 'navi-undo
-      "n" (lambda () (interactive) (navi-narrow-to-thing-at-point)
-            (other-window 1) (outline-show-entry) (outline-show-branches)
-            (other-window 1))
-      "w" 'navi-widen
-
-      "d" (lambda () (interactive) (occur-mode-display-occurrence)
-            (other-window 1) (outline-show-entry) (outline-show-branches)
-            (other-window 1))
-      "D" (lambda () (interactive) (occur-mode-display-occurrence)
-            (other-window 1) (outline-show-entry) (outline-show-branches)
-            (recenter 3) (other-window 1))
-
-      "o" (lambda () (interactive) (navi-goto-occurrence-other-window)
-            (outline-show-entry) (outline-show-branches))
-      "O" (lambda () (interactive) (navi-goto-occurrence-other-window)
-            (outline-show-entry) (outline-show-branches) (recenter 3))
-
-      "q" (lambda () (interactive) (navi-quit-and-switch)
-            (outline-show-entry) (outline-show-branches) (recenter 3))
-      "Q" (lambda () (interactive) (navi-quit-and-switch)
-            (delete-other-windows) (outline-show-entry) (outline-show-branches)
-            (recenter 3)))
-
-    (setq navi-mode-map map)))
+      (setq navi-mode-map map))))
 
 ;;;;; Outshine-mode
 (defun dotspacemacs/user-config/outshine/outshine-mode ()
