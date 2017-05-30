@@ -173,8 +173,7 @@
    dotspacemacs-persistent-server nil
    dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
    dotspacemacs-default-package-repository nil
-   dotspacemacs-whitespace-cleanup 'trailing
-   ))
+   dotspacemacs-whitespace-cleanup 'trailing))
 
 (defun dotspacemacs/user-init ())
 
@@ -373,7 +372,7 @@
 
 ;;;;; All-the-icons
 (defun dotspacemacs/user-config/display/all-the-icons ()
-  "Add icon to all-the-icons for hylang for neotree and modeline integration."
+  "Add hylang icon to all-the-icons for neotree and modeline integration."
   (with-eval-after-load 'all-the-icons
     ;; Both all-the-icons-icon-alist and all-the-icons-mode-icon-alist
     ;; Need to be updated for either modification to take effect.
@@ -396,6 +395,7 @@
          ("\\<\\(composite\\)\\>" . 'font-lock-function-name-face)
          ("\\<\\(import\\)\\>" . 'font-lock-function-name-face)
          ("\\<\\(require\\)\\>" . 'font-lock-function-name-face)
+
          ;; Syntax highlighting for reader-macros
          ("\\(#.\\)" . 'font-lock-function-name-face))))
 
