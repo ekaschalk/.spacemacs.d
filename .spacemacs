@@ -53,7 +53,8 @@
       '(better-defaults
         git
         gnus
-        ivy
+        (ivy :variables
+             ivy-extra-directories nil)
         org
         ranger
         syntax-checking
@@ -221,12 +222,13 @@
 
     ;; Rest
     (dotspacemacs/user-config/configuration)
+    (dotspacemacs/user-config/ivy)
+    (dotspacemacs/user-config/gnus)
     (dotspacemacs/user-config/misc)
     (dotspacemacs/user-config/navigation)
     (dotspacemacs/user-config/org)
-    (dotspacemacs/user-config/python)
     (dotspacemacs/user-config/outshine)
-    (dotspacemacs/user-config/gnus)))
+    (dotspacemacs/user-config/python)))
 
 ;;; Display
 (defun dotspacemacs/user-config/display ()
@@ -528,12 +530,16 @@
 
 ;;;; Prettify-symbols
 (defun dotspacemacs/user-config/display/prettify-symbols ()
+  ;; Ivy keybinding has 'SPC i u' for consel-unicode-char
+  ;; This function is extremely useful when exploring symbols
+
+
   ;; Pretty pairs for modes
   (defun set-hy-pretty-pairs ()
     (setq prettify-symbols-alist
           (prettify-utils-generate
            ("fn"      "λ")
-           ("defn"    "𝓕")
+           ("defn"    "ƒ")
            ("#t"      "⨂")
            ("ap-pipe" " ")
            ("True"    "𝕋")
@@ -545,7 +551,7 @@
           (prettify-utils-generate
            ;; Syntax
            ("self"     "⊙")
-           ("def"      "𝓕")
+           ("def"      "ƒ")
            ("not"      "￢")
            ("for"      "∀")
            ("in"       "∈")
@@ -599,6 +605,23 @@
    '(:equality :ordering :ordering-double :ordering-triple
                :arrows :arrows-twoheaded :punctuation
                :logic :sets :sub-and-superscripts)))
+
+;;; Ivy
+(defun dotspacemacs/user-config/ivy ()
+
+  ;; REBINDINGS
+  ;; ivy-minibuffer-map
+  ;; Replace M-RET with C-RET
+  ;; C-l to ivy-avy-complete
+
+  ;; CONFIG
+  ;; ivy-height
+
+  ;; VERY USEFUL CMDS
+  ;; ivy-resume C-c C-r
+  ;; resumes last session
+
+  )
 
 ;;; Configuration
 (defun dotspacemacs/user-config/configuration ()
