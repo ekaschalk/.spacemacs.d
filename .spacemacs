@@ -400,6 +400,7 @@
 ;;;;; Language-font-locks
 (defconst emacs-lisp-font-lock-alist
   ;; Outlines not using * so better overlap with in-the-wild packages.
+  ;; Intentionally not requiring BOL for eg. fira config modularization
   '(("\\(^;;;\\)"                   ?■)
     ("\\(^;;;;\\)"                  ?○)
     ("\\(^;;;;;\\)"                 ?✸)
@@ -428,7 +429,6 @@
   (with-eval-after-load 'all-the-icons
     ;; Both all-the-icons-icon-alist and all-the-icons-mode-icon-alist
     ;; Need to be updated for either modification to take effect.
-
     (add-to-list
      'all-the-icons-icon-alist
      '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
@@ -455,9 +455,12 @@
 
 ;;;; Face-updates
 (defun dotspacemacs/user-config/display/face-updates ()
-  (defun update-outline-font-faces ()
+  (defun -update-faces ()
     (custom-theme-set-faces
      (car custom-enabled-themes)
+
+     ;; Matching parenthesis much more obvious when underlined
+     '(show-paren-match ((t (:inherit show-paren-match :underline t))))
 
      ;; Org-level-3 and org-level-2 were too similar with color-blindness
      '(org-level-2 ((t (:height 1.10 :foreground "forest green"
@@ -473,9 +476,9 @@
      '(outline-4 ((t (:inherit org-level-4 :underline t))))))
 
   ;; Apply face updates on emacs initialization
-  (update-outline-font-faces)
+  (-update-faces)
   ;; Apply face updates update whenever theme is toggled
-  (add-hook 'spacemacs-post-theme-change-hook 'update-outline-font-faces))
+  (add-hook 'spacemacs-post-theme-change-hook '-update-faces))
 
 ;;;; Modeline
 (defun dotspacemacs/user-config/display/modeline ()
