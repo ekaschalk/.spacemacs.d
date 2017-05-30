@@ -194,14 +194,7 @@
   ;; Rids the verbose custom settings from being written to .spacemacs
   (setq custom-file "./elisp/.custom-settings.el")
   (load "~/elisp/.custom-settings.el")
-  (load "~/elisp/prettify-utils")
-
-  ;; "/root/.emacs.d/elpa/doom-themes-20170528.1204/"
-  ;; no need for (require 'doom-themes)
-  ;; (require 'doom-themes)
-  ;; (require 'doom-vibrant-theme)
-  ;; (load-theme 'doom-vibrant t)
-  )
+  (load "~/elisp/prettify-utils"))
 
 ;;; Spacemacs-User-config
 (defun dotspacemacs/user-config ()
@@ -248,20 +241,21 @@
 
 ;;;;; Init-doom-theme
 (defun dotspacemacs/user-config/display/init-doom-theme ()
-  "Doom theme config."
+  "Doom theme configuration."
   (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
+        doom-themes-enable-italic t
+        doom-one-brighter-modeline t
+        doom-one-brighter-comments t)
 
-  ;; Default doom-mode is brightens source files, compared with (*) buffers
-  ;; I prefer the opposite - brighter special buffers and normal source buffers
+  ;; Default doom-mode brightens source files.
+  ;; I prefer the opposite - brighter special buffers and dark source buffers.
   (defun opposite-doom-buffer-mode-maybe ()
     (unless buffer-file-name
       (doom-buffer-mode +1)))
 
-  (add-hook 'after-change-major-mode-hook
-            #'opposite-doom-buffer-mode-maybe)
-  (add-hook 'after-revert-hook
-            #'opposite-doom-buffer-mode-maybe))
+  (add-hook 'after-change-major-mode-hook #'opposite-doom-buffer-mode-maybe)
+  (add-hook 'after-revert-hook #'opposite-doom-buffer-mode-maybe)
+  (add-hook 'minibuffer-setup-hook #'doom-brighten-minibuffer))
 
 ;;;;; Font-locks
 ;;;;;; Core
