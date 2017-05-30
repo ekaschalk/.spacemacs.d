@@ -896,101 +896,101 @@
 
 ;;;; Outshine
 (defun dotspacemacs/user-config/outshine ()
-  (require 'outshine)
-  (require 'navi-mode)
-
   (dotspacemacs/user-config/outshine/navi-mode)
   (dotspacemacs/user-config/outshine/outshine-mode))
 
 ;;;;; Navi-mode
 (defun dotspacemacs/user-config/outshine/navi-mode ()
-  (with-eval-after-load 'navi-mode
-    ;; Navi mode python integration
-    (add-to-list 'navi-key-mappings
-                 '("python" .
-                   ((:FUN . "f")
-                    (:OBJ . "x"))))
-    (add-to-list 'navi-keywords
-                 '("python" .
-                   ((:FUN . "\\(^[ ]*def[a-zA-Z0-9_ ]*\\|^[ ]*class[a-zA-Z0-9_ ]*\\)")
-                    (:OBJ . "^[ ]*\\(class[a-zA-Z0-9_ ]*\\)"))))
+  (require 'navi-mode)
+  ;; Navi mode python integration
+  (add-to-list 'navi-key-mappings
+               '("python" .
+                 ((:FUN . "f")
+                  (:OBJ . "x"))))
+  (add-to-list 'navi-keywords
+               '("python" .
+                 ((:FUN . "\\(^[ ]*def[a-zA-Z0-9_ ]*\\|^[ ]*class[a-zA-Z0-9_ ]*\\)")
+                  (:OBJ . "^[ ]*\\(class[a-zA-Z0-9_ ]*\\)"))))
 
-    (defun my-outline-show-context ()
-      "Helper utility for evil navi bindings."
-      (interactive)
-      (outline-show-entry)
-      (outline-show-branches))
+  (defun my-outline-show-context ()
+    "Helper utility for evil navi bindings."
+    (interactive)
+    (outline-show-entry)
+    (outline-show-branches))
 
-    (let ((map (make-sparse-keymap)))
-      ;; Enter Navi
-      (define-key map (kbd "M-n") 'navi-goto-occurrence-other-window)
-      ;; Cycle Navi
-      (define-key map (kbd "TAB") 'navi-cycle-subtree)
-      (define-key map (kbd "<backtab>") 'navi-cycle-buffer)
-      ;; Modify subtree hierarchy
-      (define-key map (kbd "M-h") 'navi-promote-subtree)
-      (define-key map (kbd "M-j") 'navi-move-down-subtree)
-      (define-key map (kbd "M-k") 'navi-move-up-subtree)
-      (define-key map (kbd "M-l") 'navi-demote-subtree)
+  (let ((map (make-sparse-keymap)))
+    ;; Cycle Navi
+    (define-key map (kbd "TAB") 'navi-cycle-subtree)
+    (define-key map (kbd "<backtab>") 'navi-cycle-buffer)
+    ;; Modify subtree hierarchy
+    (define-key map (kbd "M-h") 'navi-promote-subtree)
+    (define-key map (kbd "M-j") 'navi-move-down-subtree)
+    (define-key map (kbd "M-k") 'navi-move-up-subtree)
+    (define-key map (kbd "M-l") 'navi-demote-subtree)
+    ;; Another alias for 'o', rarely used
+    (define-key map (kbd "M-n") 'navi-goto-occurrence-other-window)
 
-      ;; Custom vim bindings for navi-mode
-      ;; Also fixes various bugs related to narrowing/context/scrolling
-      (evil-define-key '(normal visual motion) map
-        "f" (lambda () (interactive) (navi-generic-command ?f current-prefix-arg))
-        "v" (lambda () (interactive) (navi-generic-command ?v current-prefix-arg))
-        "x" (lambda () (interactive) (navi-generic-command ?x current-prefix-arg))
-        "a" (lambda () (interactive) (navi-generic-command ?a current-prefix-arg))
+    ;; Custom vim bindings for navi-mode
+    ;; Also fixes various bugs related to narrowing/context/scrolling
+    (evil-define-key '(normal visual motion) map
+      "f" (lambda () (interactive) (navi-generic-command ?f current-prefix-arg))
+      "v" (lambda () (interactive) (navi-generic-command ?v current-prefix-arg))
+      "x" (lambda () (interactive) (navi-generic-command ?x current-prefix-arg))
+      "a" (lambda () (interactive) (navi-generic-command ?a current-prefix-arg))
 
-        "1" (lambda () (interactive) (navi-generic-command ?1 current-prefix-arg))
-        "2" (lambda () (interactive) (navi-generic-command ?2 current-prefix-arg))
-        "3" (lambda () (interactive) (navi-generic-command ?3 current-prefix-arg))
-        "4" (lambda () (interactive) (navi-generic-command ?4 current-prefix-arg))
+      "1" (lambda () (interactive) (navi-generic-command ?1 current-prefix-arg))
+      "2" (lambda () (interactive) (navi-generic-command ?2 current-prefix-arg))
+      "3" (lambda () (interactive) (navi-generic-command ?3 current-prefix-arg))
+      "4" (lambda () (interactive) (navi-generic-command ?4 current-prefix-arg))
 
-        ;; Narrow on occurrence
-        "n" (lambda () (interactive)
-              (navi-narrow-to-thing-at-point)
-              (other-window 1)
-              (my-outline-show-context)
-              (other-window 1))
-        ;; Widen narrowed navi buffer
-        "w" 'navi-widen
-        ;; Undo modifications to headers done within navi buffer
-        "u" 'navi-undo
-        ;; Open occurence but do not goto
-        "d" (lambda () (interactive)
-              (occur-mode-display-occurrence)
-              (other-window 1)
-              (my-outline-show-context)
-              (other-window 1))
-        "D" (lambda () (interactive)
-              (occur-mode-display-occurrence)
-              (other-window 1)
-              (my-outline-show-context)
-              (recenter 3)
-              (other-window 1))
-        ;; Open and goto occurrence
-        "o" (lambda () (interactive)
-              (navi-goto-occurrence-other-window)
-              (my-outline-show-context))
-        "O" (lambda () (interactive)
-              (navi-goto-occurrence-other-window)
-              (my-outline-show-context)
-              (recenter 3))
-        ;; Exit Navi and goto occurence
-        "q" (lambda () (interactive)
-              (navi-quit-and-switch)
-              (my-outline-show-context)
-              (recenter 3))
-        "Q" (lambda () (interactive)
-              (navi-quit-and-switch)
-              (delete-other-windows)
-              (my-outline-show-context)
-              (recenter 3)))
+      ;; Narrow on occurrence
+      "n" (lambda () (interactive)
+            (navi-narrow-to-thing-at-point)
+            (other-window 1)
+            (my-outline-show-context)
+            (other-window 1))
+      ;; Widen narrowed navi buffer
+      "w" 'navi-widen
+      ;; Undo modifications to headers done within navi buffer
+      "u" 'navi-undo
+      ;; Open occurence but do not goto
+      "d" (lambda () (interactive)
+            (occur-mode-display-occurrence)
+            (other-window 1)
+            (my-outline-show-context)
+            (other-window 1))
+      "D" (lambda () (interactive)
+            (occur-mode-display-occurrence)
+            (other-window 1)
+            (my-outline-show-context)
+            (recenter 3)
+            (other-window 1))
+      ;; Open and goto occurrence
+      "o" (lambda () (interactive)
+            (navi-goto-occurrence-other-window)
+            (my-outline-show-context))
+      "O" (lambda () (interactive)
+            (navi-goto-occurrence-other-window)
+            (my-outline-show-context)
+            (recenter 3))
+      ;; Exit Navi and goto occurence
+      "q" (lambda () (interactive)
+            (navi-quit-and-switch)
+            (my-outline-show-context)
+            (recenter 3))
+      "Q" (lambda () (interactive)
+            (navi-quit-and-switch)
+            (delete-other-windows)
+            (my-outline-show-context)
+            (recenter 3)))
 
-      (setq navi-mode-map map))))
+    (setq navi-mode-map map)))
 
 ;;;;; Outshine-mode
 (defun dotspacemacs/user-config/outshine/outshine-mode ()
+  (require 'outshine)
+  ;; 1. Adds functionality to run on narrowed buffers
+  ;; 2. Shows up to including level 3 headings on load
   (defun my-outshine-navi ()
     (interactive)
     (let ((line nil))
@@ -1005,14 +1005,21 @@
       (navi-generic-command ?3 nil)  ; default to 3 heading levels
       (search-forward-regexp line)))
 
-  ;; Org doesnt use outline minor mode but can utilize navi
+  ;; Bind to org as outline-minor-mode map isn't used by org-mode
   (define-key org-mode-map (kbd "M-n") 'my-outshine-navi)
 
   ;; Outline minor mode vim keybindings
   (let ((map outline-minor-mode-map))
+    ;; Core functions
     (define-key map (kbd "M-n") 'my-outshine-navi)
+    (define-key map (kbd "<backtab>") 'outshine-cycle-buffer)
+    (define-key map (kbd "M-h") 'outline-promote)
+    (define-key map (kbd "M-l") 'outline-demote)
 
-    (define-key map (kbd "C-M-<return>")  ; insert-subheading
+    ;; Insert Heading
+    (define-key map (kbd "M-RET") 'outshine-insert-heading)
+    ;; Insert Subheading
+    (define-key map (kbd "C-M-<return>")
       (lambda ()
         (interactive)
         (let ((line nil) (str nil))
@@ -1024,11 +1031,7 @@
           (evil-next-line 1)
           (insert str))))
 
-    (define-key map (kbd "M-RET") 'outshine-insert-heading)
-    (define-key map (kbd "<backtab>") 'outshine-cycle-buffer)
-    (define-key map (kbd "M-h") 'outline-promote)
-    (define-key map (kbd "M-l") 'outline-demote)
-
+    ;; Bring org-mode g-based evil navigation to outline-minor-mode
     (evil-define-key '(normal visual motion) map
       "gh" 'outline-up-heading
       "gj" 'outline-forward-same-level
@@ -1036,6 +1039,7 @@
       "gl" 'outline-next-visible-heading
       "gu" 'outline-previous-visible-heading
 
+      ;; Narrows buffer without needing to have cursor on heading
       (kbd "SPC n n") (lambda ()
                         (interactive)
                         (save-excursion
@@ -1046,9 +1050,11 @@
       (kbd "SPC n k") 'outline-move-subtree-up))
 
   (setq outshine-use-speed-commands t)
+
+  ;; Required for outshine
   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-  (add-hook 'prog-mode-hook 'outline-minor-mode)
-  )
+  ;; Enables outline-minor-mode for *ALL* programming buffers!
+  (add-hook 'prog-mode-hook 'outline-minor-mode))
 
 ;;;; Blog
 (defun dotspacemacs/user-config/blog ()
