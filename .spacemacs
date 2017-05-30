@@ -786,51 +786,21 @@
 ;;;; Org
 (defun dotspacemacs/user-config/org ()
   (with-eval-after-load 'org
-
-    (dotspacemacs/user-config/org/theming)
-
-    (dotspacemacs/user-config/org/core)
-    (when-linux-call 'dotspacemacs/user-config/org/core-linux)
+    (when-linux-call 'dotspacemacs/user-config/org/linux-file-apps)
     (dotspacemacs/user-config/org/babel)
-    (dotspacemacs/user-config/org/exporting)
-    (dotspacemacs/user-config/org/templates)))
+    (dotspacemacs/user-config/org/exports)
+    (dotspacemacs/user-config/org/misc)
+    (dotspacemacs/user-config/org/templates)
+    (dotspacemacs/user-config/org/theming)))
 
-(defun dotspacemacs/user-config/org/theming ()
-  (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
-        org-priority-faces '((65 :foreground "red")
-                             (66 :foreground "yellow")
-                             (67 :foreground "blue"))
-        org-ellipsis "▼")
-
+;;;;; Agenda
+(defun dotspacemacs/user-config/org/agenda ()
+  ;; Agenda workflow integration being investigated
+  ;; (setq org-agenda-files '("c:/~/.org"))
   )
 
-;;;;; Core
-(defun dotspacemacs/user-config/org/core ()
-  ;; Agenda in-progress
-  ;; (setq org-agenda-files '("c:/~/.org" "c:/~/dev/pop-synth/base.org"))
-
-  (require 'ox-extra)
-  (ox-extras-activate '(ignore-headlines))
-  (setq org-refile-targets (quote ((nil :regexp . "Week of"))))
-
-  (defvar org-blocks-hidden nil)
-  (defun org-toggle-blocks ()
-    (interactive)
-    (if org-blocks-hidden
-        (org-show-block-all)
-      (org-hide-block-all))
-    (setq-local org-blocks-hidden (not org-blocks-hidden)))
-
-  (add-hook 'org-mode-hook 'flyspell-mode)  ; Async python, spelling
-  (add-hook 'org-mode-hook 'org-toggle-blocks)
-  (define-key org-mode-map (kbd "C-c t") 'org-toggle-blocks)
-
-  (evil-define-key '(normal visual motion) org-mode-map
-    "gu" 'outline-previous-visible-heading)
-  )
-
-;;;;; Core-linux
-(defun dotspacemacs/user-config/org/core-linux ()
+;;;;; Linux-file-apps
+(defun dotspacemacs/user-config/org/linux-file-apps ()
   (setq org-file-apps '((auto-mode . emacs)
                         ("\\.mm\\'" . default)
                         ("\\.x?html?\\'" . "/usr/bin/firefox %s")
@@ -841,56 +811,88 @@
   (setq org-confirm-babel-evaluate nil
         org-src-fontify-natively t
         org-src-tab-acts-natively t
-        org-src-preserve-indentation t
-        org-src-window-setup 'current-window)
+        org-src-preserve-indentation t  ; Otherwise python is painful
+        org-src-window-setup 'current-window)  ; `, ,` opens in same window
   (org-babel-do-load-languages
-   'org-babel-load-languages '((python . t)
-                               (dot . t)
-                               (http . t)
-                               (haskell . t))))
+   'org-babel-load-languages '((python .  t)
+                               (haskell . t)
+                               (clojure . t)
+                               (dot .     t)  ; Graphviz
+                               (http .    t)  ; Requests
+                               )))
 
-;;;;; Exporting
-(defun dotspacemacs/user-config/org/exporting ()
-  (require 'ox-bibtex)
-  (add-to-list 'org-latex-packages-alist '("" "minted"))
-  (setq org-html-htmlize-output-type 'inline-css
-        org-latex-listings 'minted
-        org-latex-minted-options
-        '(("frame" "lines")
-          ("fontsize" "\\scriptsize")
-          ("xleftmargin" "\\parindent")
-          ("linenos" ""))
-        org-latex-pdf-process
-        '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")))
+;;;;; Exports
+(defun dotspacemacs/user-config/org/exports ()
+  (with-eval-after-load 'ox-bibtex  ; This eval might not be needed
+    (add-to-list 'org-latex-packages-alist '("" "minted"))
+    (setq
+     org-latex-listings 'minted
+     org-latex-minted-options
+     '(("frame" "lines")
+       ("fontsize" "\\scriptsize")
+       ("xleftmargin" "\\parindent")
+       ("linenos" ""))
+     org-latex-pdf-process
+     '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+       "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+       "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+       ))))
+
+;;;;; Misc
+(defun dotspacemacs/user-config/org/misc ()
+  ;; Useful header navigation binding inspired from outline-mode
+  (evil-define-key '(normal visual motion) org-mode-map
+    "gu" 'outline-previous-visible-heading)
+
+  ;; Header property ignore for true no-export of header and its contents
+  (with-eval-after-load 'ox-extra
+    (ox-extras-activate '(ignore-headlines)))
+
+  ;; Quick refile of project tasks
+  (setq org-refile-targets
+        '((nil :regexp . "Week of")))
+
+  ;; Hide all org-blocks, including src, quote, etc. blocks, on buffer load
+  (defvar org-blocks-hidden nil)
+  (defun org-toggle-blocks ()
+    (interactive)
+    (if org-blocks-hidden
+        (org-show-block-all)
+      (org-hide-block-all))
+    (setq-local org-blocks-hidden (not org-blocks-hidden)))
+
+  (add-hook 'org-mode-hook 'org-toggle-blocks)
+  (define-key org-mode-map (kbd "C-c t") 'org-toggle-blocks)
+
+  ;; Enable flyspell in org-mode
+  (add-hook 'org-mode-hook 'flyspell-mode)
+
+  )
 
 ;;;;; Templates
 (defun dotspacemacs/user-config/org/templates ()
   (mapc (lambda (x) (add-to-list 'org-structure-template-alist x))
         (list
-         ;; Common
+         ;; Name block
          '("n" "#+NAME: ?")
-         ;; Haskell
-         '("h" "#+begin_src haskell\n\n#+end_src")
-         ;; Emacs-Lisp
+         ;; Language Blocks
+         '("c" "#+begin_src clojure\n\n#+end_src")
          '("e" "#+begin_src emacs-lisp\n\n#+end_src")
-         ;; Python
+         '("h" "#+begin_src haskell\n\n#+end_src")
          '("p" "#+begin_src python\n\n#+end_src")
-         '("pd" "#+begin_src python :tangle no :results output\n\n#+end_src")
-         '("pt" "#+begin_src python :results silent :exports none\n\n#+end_src")
-         ;; Misc
-         '("c" " :PROPERTIES:\n :HTML_CONTAINER_CLASS: hsCollapsed\n :END:\n")
-         `("d" ,(concat
-                 "#+begin_src dot :tangle no :exports results :file static/imgs/"
-                 "\n\n#+end_src"))
-         ;; Project File header
-         `("f" ,(concat
-                 "# -*- org-use-tag-inheritance: nil"
-                 " org-babel-use-quick-and-dirty-noweb-expansion: t-*-\n"
-                 "#+BEGIN_QUOTE\n#+PROPERTY: header-args :eval never-export"
-                 " :noweb no-export\n#+PROPERTY: header-args:python"
-                 " :tangle (ek/file-path)\n#+END_QUOTE\n")))))
+         ;; Graphviz Block
+         '("d" "#+begin_src dot\n\n#+end_src")
+         ;; Collapse previous header by default in themed html export
+         '("clps" ":PROPERTIES:\n :HTML_CONTAINER_CLASS: hsCollapsed\n :END:\n")
+         )))
+
+;;;;; Theming
+(defun dotspacemacs/user-config/org/theming ()
+  (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
+        org-priority-faces '((65 :foreground "red")
+                             (66 :foreground "yellow")
+                             (67 :foreground "blue"))
+        org-ellipsis "▼"))
 
 ;;;; Outshine
 (defun dotspacemacs/user-config/outshine ()
