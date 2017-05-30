@@ -122,8 +122,8 @@
 ;;;; Configuration
 (defun dotspacemacs/init ()
   (setq-default
-   dotspacemacs-themes '(spacemacs-dark
-                         ;; doom-vibrant  ; TODO
+   dotspacemacs-themes '(
+                         doom-one
                          )
    dotspacemacs-default-font `("Hack"
                                :size ,(if-linux 18 12)
@@ -194,7 +194,14 @@
   ;; Rids the verbose custom settings from being written to .spacemacs
   (setq custom-file "./elisp/.custom-settings.el")
   (load "~/elisp/.custom-settings.el")
-  (load "~/elisp/prettify-utils"))
+  (load "~/elisp/prettify-utils")
+
+  ;; "/root/.emacs.d/elpa/doom-themes-20170528.1204/"
+  ;; no need for (require 'doom-themes)
+  ;; (require 'doom-themes)
+  ;; (require 'doom-vibrant-theme)
+  ;; (load-theme 'doom-vibrant t)
+  )
 
 ;;; Spacemacs-User-config
 (defun dotspacemacs/user-config ()
@@ -219,7 +226,7 @@
   (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
 
   ;; Group 2
-  ;; (dotspacemacs/user-config/display/init-doom-theme)
+  (dotspacemacs/user-config/display/init-doom-theme)
 
   ;; Group 3
   (dotspacemacs/user-config/display/font-locks)
@@ -241,21 +248,20 @@
 
 ;;;;; Init-doom-theme
 (defun dotspacemacs/user-config/display/init-doom-theme ()
-  "Doom theme must be initialized early in config or font breaks."
+  "Doom theme config."
   (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t
-        doom-one-brighter-modeline nil)
+        doom-themes-enable-italic t)
 
-  ;; Doom buffer mode tints distinguishes (*) buffers with a lighter background
-  (add-hook 'find-file-hook
-            #'doom-buffer-mode-maybe)
+  ;; Default doom-mode is brightens source files, compared with (*) buffers
+  ;; I prefer the opposite - brighter special buffers and normal source buffers
+  (defun opposite-doom-buffer-mode-maybe ()
+    (unless buffer-file-name
+      (doom-buffer-mode +1)))
+
+  (add-hook 'after-change-major-mode-hook
+            #'opposite-doom-buffer-mode-maybe)
   (add-hook 'after-revert-hook
-            #'doom-buffer-mode-maybe)
-  (add-hook 'ediff-prepare-buffer-hook
-            #'doom-buffer-mode)
-
-  ;; TODO For some reason can't place in additional packages
-  (spacemacs/cycle-spacemacs-theme))
+            #'opposite-doom-buffer-mode-maybe))
 
 ;;;;; Font-locks
 ;;;;;; Core
