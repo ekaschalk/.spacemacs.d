@@ -6,6 +6,7 @@
 ;; -- Emacs 25.2.1 --
 ;; -- Dev Branch - Release 0.200.9.x - pulled: 5/29 - packages updated: 5/29 --
 ;; -- Dual config for Windows and Arch Linux --
+;; -- Contact: ekaschalk@gmail.com --
 
 ;; Organization
 ;; ---------
@@ -16,15 +17,25 @@
 ;; with `outshine-mode` and `navi-mode` to maintain benefits of literate
 ;; documentation and org-modes navigation, collapsing, and narrowing facilities.
 ;;
-;; Notable Components
-;; ---------
-;; 1. Outline-ellipsis-modification
+;; Configuration is grouped by theme. The current groups are:
+;; Display - Configuration - Navigation - Misc - Python - Org - Outshine - GNUS
 ;;
-;; Notes
+;; Each group is broken into further components for targetted enabling/disabling
+;; Some groups require a specific execution ordering. Ordering requirements are
+;; specifed with `Group x` comments. Within the group, the packages are lexical.
+;;
+;; Notable Features
 ;; ---------
-;; 1. Config is grouped when execution order needs, otherwise lexically ordered.
-;; 2. Package `dash` is required and utilized in this config.
-;; 3. The way spacemacs executes config functions enables placing config at end.
+;; 1. Outline-minor-mode + Navi + Outshine mode configuration.
+;;    - Org-like headings, navigation, faces in programming buffers.
+;;    - Vim bindings for outline-minor-mode and navi-mode.
+;;    - Enhanced narrowing.
+;; 2. Visual replacements (see https://ekaschalk.github.io/ for examples)
+;;    - Fira code ligature integration (Fira Code font not required, I use Hack)
+;;    - Pretty symbols utilities and examples
+;; x. Miscellaneous
+;;    - Mypy flychecking integrated with pylint.
+;;    - Unicode ellipsis for outline headings (org-ellipsis only for org-mode)
 
 ;;; OS-Config
 ;; Utilities for integrating Windows and Linux.
@@ -865,9 +876,7 @@
   (define-key org-mode-map (kbd "C-c t") 'org-toggle-blocks)
 
   ;; Enable flyspell in org-mode
-  (add-hook 'org-mode-hook 'flyspell-mode)
-
-  )
+  (add-hook 'org-mode-hook 'flyspell-mode))
 
 ;;;; Templates
 (defun dotspacemacs/user-config/org/templates ()
