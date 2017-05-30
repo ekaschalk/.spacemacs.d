@@ -344,15 +344,6 @@
     ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d)
     ("[^:=]\\(:\\)[^:=]"           #Xe16c)
     ("\\(<=\\)"                    #Xe157)
-    ;; Disabled
-    ;; Dislike
-    ;; ("\\(;;\\)"                    #Xe129)  ; Lisp `;;`, don't like spacing
-    ;; ("\\(\\?\\?\\)"                #Xe128)  ; Comments `??`, don't like spacing
-    ;; Conflicts with org-mode
-    ;; ("[^/]\\(\\*\\*\\)[^/]"        #Xe101) ("\\(\\*\\*\\*\\)"             #Xe102)
-    ;; ("\\(\\*\\*/\\)"               #Xe103) ("\\(/\\*\\)"                  #Xe12a)
-    ;; ("\\(/\\*\\*\\)"               #Xe12b) ("[^*]\\(\\*/\\)"              #Xe105)
-    ;; ("\\(\\[\\]\\)"                #Xe109) ;; ("\\(x\\)"                     #Xe16b)
   ))
 
 ;;;;;; Language-font-locks
@@ -557,26 +548,12 @@
   (fringe-mode '(1 . 1))  ; Minimal left padding and ~ end newline markers
   (rainbow-delimiters-mode-enable)  ; Paren color based on depth
   (global-highlight-parentheses-mode 1)  ; Highlight containing parens
-  (spacemacs/toggle-mode-line-minor-modes-off))  ; no unicode symbs next to major
+  (spacemacs/toggle-mode-line-minor-modes-off))  ; no uni symbs next to major
 
 ;;;; Navigation
 (defun dotspacemacs/user-config/navigation ()
   (dotspacemacs/user-config/navigation/avy)
-  (dotspacemacs/user-config/navigation/file-links)
-
-  ;; Think about S-hjkl as windows movement commands
-  ;; (its available right now in spc w . transient mode)
-
-  ;; (add-hook 'python-mode-hook
-  ;;           (lambda ()
-  ;;             (make-variable-buffer-local 'evil-snipe-aliases)
-  ;;             (push '(?: "def .+:") evil-snipe-aliases)))
-
-  ;; (add-hook 'hy-mode-hook
-  ;;           (lambda ()
-  ;;             (make-variable-buffer-local 'evil-snipe-aliases)
-  ;;             (push '(?: "defn .+:") evil-snipe-aliases)))
-  )
+  (dotspacemacs/user-config/navigation/file-links))
 
 ;;;;; Avy
 (defun dotspacemacs/user-config/navigation/avy ()
@@ -586,8 +563,10 @@
   (global-set-key (kbd "C-l") 'evil-avy-goto-line)
 
   (with-eval-after-load 'org
-    (define-key org-mode-map (kbd "C-j") 'evil-avy-goto-char-2)
-    (define-key org-mode-map (kbd "C-k") 'evil-avy-goto-word-or-subword-1))
+    (evil-define-key '(normal insert visual replace operator motion emacs)
+      org-mode-map (kbd "C-j") 'evil-avy-goto-char-2)
+    (evil-define-key '(normal insert visual replace operator motion emacs)
+      org-mode-map (kbd "C-k") 'evil-avy-goto-word-or-subword-1))
 
   (with-eval-after-load 'python
     (evil-define-key '(normal insert visual replace operator motion emacs)
@@ -595,8 +574,7 @@
 
 ;;;;; File-links
 (defun dotspacemacs/user-config/navigation/file-links ()
-  (define-key evil-normal-state-local-map (kbd "SPC a o f")
-    'org-open-at-point-global))
+  (spacemacs/set-leader-keys (kbd "aof") 'org-open-at-point-global))
 
 ;;;; Misc
 (defun dotspacemacs/user-config/misc ()
