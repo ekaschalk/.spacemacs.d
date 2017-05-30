@@ -216,11 +216,9 @@
     (dotspacemacs/user-config/org)
     (dotspacemacs/user-config/python)
     (dotspacemacs/user-config/outshine)
-    (dotspacemacs/user-config/blog)
     (dotspacemacs/user-config/gnus)))
 
-;;; Config
-;;;; Display
+;;; Display
 (defun dotspacemacs/user-config/display ()
   ;; Group 1
   (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
@@ -239,7 +237,7 @@
   (dotspacemacs/user-config/display/outline-ellipsis-modification)
   (dotspacemacs/user-config/display/prettify-symbols))
 
-;;;;; Windows-frame-size-fix
+;;;; Windows-frame-size-fix
 (defun dotspacemacs/user-config/display/windows-frame-size-fix ()
   "Surface has 200% scaling, doesn't apply to emacs, fixes with push of `f2`."
   (add-to-list 'default-frame-alist '(font . "Hack"))
@@ -247,7 +245,7 @@
   (global-set-key (kbd "<f2>")
                   (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
 
-;;;;; Init-doom-theme
+;;;; Init-doom-theme
 (defun dotspacemacs/user-config/display/init-doom-theme ()
   "Doom theme configuration."
   ;; Note to readers: there is a bug with doom-vibrant-theme and spacemacs
@@ -266,8 +264,8 @@
   (add-hook 'after-revert-hook #'opposite-doom-buffer-mode-maybe)
   (add-hook 'minibuffer-setup-hook #'doom-brighten-minibuffer))
 
-;;;;; Font-locks
-;;;;;; Core
+;;;; Font-locks
+;;;;; Core
 (defun dotspacemacs/user-config/display/font-locks ()
   "Enable following font-locks for appropriate modes."
   ;; Use Fira Code's ligatures, does not require Fira Code font to be in use
@@ -300,7 +298,7 @@
             (-partial '-add-font-lock-kwds hy-font-lock-alist))
   )
 
-;;;;;; Fira-font-locks
+;;;;; Fira-font-locks
 (defconst fira-font-lock-alist
   '(;;;; OPERATORS
     ;;;;;; Pipes
@@ -389,7 +387,7 @@
     ("\\(<=\\)"                    #Xe157)
   ))
 
-;;;;;; Language-font-locks
+;;;;; Language-font-locks
 (defconst emacs-lisp-font-lock-alist
   ;; Outlines not using * so better overlap with in-the-wild packages.
   '(("\\(^;;;\\)"                   ?■)
@@ -414,7 +412,7 @@
     ;; self does not work as a prettify symbol for hy, unlike python
     ("\\(self\\)"   ?⊙)))
 
-;;;;; All-the-icons
+;;;; All-the-icons
 (defun dotspacemacs/user-config/display/all-the-icons ()
   "Add hylang icon to all-the-icons for neotree and modeline integration."
   (with-eval-after-load 'all-the-icons
@@ -428,7 +426,7 @@
      'all-the-icons-mode-icon-alist
      '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange))))
 
-;;;;; Extra-syntax-highlighting
+;;;; Extra-syntax-highlighting
 (defun dotspacemacs/user-config/display/extra-syntax-highlighting ()
   (defun hy-extra-syntax ()
     (font-lock-add-keywords
@@ -445,13 +443,15 @@
 
   (add-hook 'hy-mode-hook 'hy-extra-syntax))
 
-;;;;; Face-updates
+;;;; Face-updates
 (defun dotspacemacs/user-config/display/face-updates ()
   (defun update-outline-font-faces ()
     (custom-theme-set-faces
      (car custom-enabled-themes)
 
      ;; Org-level-3 and org-level-2 were too similar with color-blindness
+     '(org-level-2 ((t (:height 1.10 :foreground "forest green"
+                                :weight ultra-bold))))
      '(org-level-3 ((t (:height 1.03 :foreground "light slate gray"
                                 :weight ultra-bold))))
 
@@ -467,7 +467,7 @@
   ;; Apply face updates update whenever theme is toggled
   (add-hook 'spacemacs-post-theme-change-hook 'update-outline-font-faces))
 
-;;;;; Modeline
+;;;; Modeline
 (defun dotspacemacs/user-config/display/modeline ()
   (use-package spaceline-all-the-icons
     :after spaceline  ; eval-after-load doesn't work for this setup
@@ -495,7 +495,7 @@
               (spaceline-toggle-all-the-icons-battery-status-off)
               (spaceline-toggle-hud-on))))
 
-;;;;; Outline-ellipsis-modification
+;;;; Outline-ellipsis-modification
 (defun dotspacemacs/user-config/display/outline-ellipsis-modification ()
   "Org-ellipsis but for outline-minor-mode headings"
   ;; Modified org-ellipsis implementation
@@ -513,7 +513,7 @@
         (vconcat
          (mapcar (lambda (c) (make-glyph-code c 'font-lock-keyword-face)) "▼")))))))
 
-;;;;; Prettify-symbols
+;;;; Prettify-symbols
 (defun dotspacemacs/user-config/display/prettify-symbols ()
   ;; Pretty pairs for modes
   (defun set-hy-pretty-pairs ()
@@ -587,24 +587,24 @@
                :arrows :arrows-twoheaded :punctuation
                :logic :sets :sub-and-superscripts)))
 
-;;;; Configuration
+;;; Configuration
 (defun dotspacemacs/user-config/configuration ()
   (dotspacemacs/user-config/configuration/evil)
   (dotspacemacs/user-config/configuration/editing)
   (dotspacemacs/user-config/configuration/visual))
 
-;;;;; Evil
+;;;; Evil
 (defun dotspacemacs/user-config/configuration/evil ()
   (setq-default evil-escape-key-sequence "jk"
                 evil-escape-unordered-key-sequence "true"))
 
-;;;;; Editing
+;;;; Editing
 (defun dotspacemacs/user-config/configuration/editing ()
   (hungry-delete-mode 1)  ; in edit mode back gets all contiguous whitespace
   (spacemacs/toggle-aggressive-indent-globally-on)  ; auto-indentation
   (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1))))  ; SPC splits past 80
 
-;;;;; Visual
+;;;; Visual
 (defun dotspacemacs/user-config/configuration/visual ()
   (spacemacs/toggle-highlight-long-lines-globally-on)
   (fringe-mode '(1 . 1))  ; Minimal left padding and ~ end newline markers
@@ -612,13 +612,13 @@
   (global-highlight-parentheses-mode 1)  ; Highlight containing parens
   (spacemacs/toggle-mode-line-minor-modes-off))  ; no uni symbs next to major
 
-;;;; Navigation
+;;; Navigation
 (defun dotspacemacs/user-config/navigation ()
   (dotspacemacs/user-config/navigation/avy)
   (dotspacemacs/user-config/navigation/extra-bindings)
   (dotspacemacs/user-config/navigation/file-links))
 
-;;;;; Avy
+;;;; Avy
 (defun dotspacemacs/user-config/navigation/avy ()
   (global-set-key (kbd "C-h") 'avy-pop-mark)
   (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
@@ -635,7 +635,7 @@
     (evil-define-key '(normal insert visual replace operator motion emacs)
       python-mode-map (kbd "C-j") 'evil-avy-goto-char-2)))
 
-;;;;; Extra-bindings
+;;;; Extra-bindings
 (defun dotspacemacs/user-config/navigation/extra-bindings ()
   ;; H and L move to modified BOL and EOL
   (evil-global-set-key 'normal (kbd "H") 'evil-first-non-blank)
@@ -648,11 +648,11 @@
                          (evil-end-of-line)))
   (evil-global-set-key 'motion (kbd "L") 'evil-end-of-line))
 
-;;;;; File-links
+;;;; File-links
 (defun dotspacemacs/user-config/navigation/file-links ()
   (spacemacs/set-leader-keys (kbd "aof") 'org-open-at-point-global))
 
-;;;; Misc
+;;; Misc
 (defun dotspacemacs/user-config/misc ()
   (when-linux-call 'dotspacemacs/user-config/misc/spotify)
   (dotspacemacs/user-config/misc/aspell)
@@ -663,11 +663,11 @@
   (dotspacemacs/user-config/misc/projectile)
   (dotspacemacs/user-config/misc/yassnippet))
 
-;;;;; Aspell
+;;;; Aspell
 (defun dotspacemacs/user-config/misc/aspell ()
   (setq ispell-program-name "aspell"))
 
-;;;;; Auto-completion
+;;;; Auto-completion
 (defun dotspacemacs/user-config/misc/auto-completion ()
   (custom-set-faces
    '(company-tooltip-common
@@ -675,7 +675,7 @@
    '(company-tooltip-common-selection
      ((t (:inherit company-tooltip-selection :weight bold :underline nil))))))
 
-;;;;; Lisp-state
+;;;; Lisp-state
 (defun dotspacemacs/user-config/misc/lisp-state ()
   "Add lisp state shortcut to Clojure and Hy."
   (spacemacs/set-leader-keys-for-major-mode
@@ -683,13 +683,13 @@
   (spacemacs/set-leader-keys-for-major-mode
     'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state))
 
-;;;;; Macros
+;;;; Macros
 (defun dotspacemacs/user-config/misc/macros ()
   "Evil Q shortcut for vim macros set at @q."
   (evil-global-set-key 'normal (kbd "Q")
                        (lambda () (interactive) (evil-execute-macro 1 "@q"))))
 
-;;;;; Neotree
+;;;; Neotree
 (defun dotspacemacs/user-config/misc/neotree ()
   (setq neo-theme 'icons
         neo-window-width 28)
@@ -697,15 +697,15 @@
   (evil-global-set-key 'normal (kbd "C-f") 'winum-select-window-0)
   (evil-global-set-key 'normal (kbd "C-p") 'neotree-find-project-root))
 
-;;;;; Projectile
+;;;; Projectile
 (defun dotspacemacs/user-config/misc/projectile ()
   (setq projectile-indexing-method 'native))  ; respect .projectile files
 
-;;;;; Yassnippet
+;;;; Yassnippet
 (defun dotspacemacs/user-config/misc/yassnippet ()
   (global-set-key (kbd "C-SPC") 'hippie-expand))
 
-;;;;; Spotify
+;;;; Spotify
 (defun dotspacemacs/user-config/misc/spotify ()
   (global-set-key (kbd "C-c s s") 'helm-spotify-plus)
   (global-set-key (kbd "C-c s n") 'helm-spotify-plus-next)
@@ -713,7 +713,7 @@
   (global-set-key (kbd "C-c s f") 'helm-spotify-plus-play)
   (global-set-key (kbd "C-c s F") 'helm-spotify-plus-pause))
 
-;;;; Python
+;;; Python
 (defun dotspacemacs/user-config/python ()
   (with-eval-after-load 'python
     (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
@@ -721,7 +721,7 @@
     (dotspacemacs/user-config/python/mypy)
     (dotspacemacs/user-config/python/venvs)))
 
-;;;;; Windows-pytest
+;;;; Windows-pytest
 (defun dotspacemacs/user-config/python/windows-pytest ()
   "Pytest is broken on Windows. Basic functionality is provided for Windows."
   (defun ek-pytest-module ()
@@ -743,7 +743,7 @@
   (spacemacs/set-leader-keys-for-major-mode
     'python-mode (kbd "t t") 'ek-pytest-one))
 
-;;;;; Fixes
+;;;; Fixes
 (defun dotspacemacs/user-config/python/fixes ()
   "Various python bugfixes."
   ;; Sometimes ipython shells trigger a bad error to popup
@@ -760,7 +760,7 @@
   (dolist (hook '(python-mode-hook))
     (add-hook hook (lambda () (flyspell-mode -1)))))
 
-;;;;; Mypy
+;;;; Mypy
 (defun dotspacemacs/user-config/python/mypy ()
   "Enable mypy flycheck integration in-tandem with pylint."
   (flycheck-define-checker
@@ -776,14 +776,14 @@
   (add-to-list 'flycheck-checkers 'python-mypy t)
   (flycheck-add-next-checker 'python-pylint 'python-mypy t))
 
-;;;;; Venvs
+;;;; Venvs
 (defun dotspacemacs/user-config/python/venvs ()
   (with-eval-after-load 'virtualenvwrapper
     (pyvenv-mode 1)
     (venv-initialize-interactive-shells)
     (venv-initialize-eshell)))
 
-;;;; Org
+;;; Org
 (defun dotspacemacs/user-config/org ()
   (with-eval-after-load 'org
     (when-linux-call 'dotspacemacs/user-config/org/linux-file-apps)
@@ -793,20 +793,20 @@
     (dotspacemacs/user-config/org/templates)
     (dotspacemacs/user-config/org/theming)))
 
-;;;;; Agenda
+;;;; Agenda
 (defun dotspacemacs/user-config/org/agenda ()
   ;; Agenda workflow integration being investigated
   ;; (setq org-agenda-files '("c:/~/.org"))
   )
 
-;;;;; Linux-file-apps
+;;;; Linux-file-apps
 (defun dotspacemacs/user-config/org/linux-file-apps ()
   (setq org-file-apps '((auto-mode . emacs)
                         ("\\.mm\\'" . default)
                         ("\\.x?html?\\'" . "/usr/bin/firefox %s")
                         ("\\.pdf\\'" . default))))
 
-;;;;; Babel
+;;;; Babel
 (defun dotspacemacs/user-config/org/babel ()
   (setq org-confirm-babel-evaluate nil
         org-src-fontify-natively t
@@ -821,7 +821,7 @@
                                (http .    t)  ; Requests
                                )))
 
-;;;;; Exports
+;;;; Exports
 (defun dotspacemacs/user-config/org/exports ()
   (with-eval-after-load 'ox-bibtex  ; This eval might not be needed
     (add-to-list 'org-latex-packages-alist '("" "minted"))
@@ -838,7 +838,7 @@
        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
        ))))
 
-;;;;; Misc
+;;;; Misc
 (defun dotspacemacs/user-config/org/misc ()
   ;; Useful header navigation binding inspired from outline-mode
   (evil-define-key '(normal visual motion) org-mode-map
@@ -869,7 +869,7 @@
 
   )
 
-;;;;; Templates
+;;;; Templates
 (defun dotspacemacs/user-config/org/templates ()
   (mapc (lambda (x) (add-to-list 'org-structure-template-alist x))
         (list
@@ -886,7 +886,7 @@
          '("clps" ":PROPERTIES:\n :HTML_CONTAINER_CLASS: hsCollapsed\n :END:\n")
          )))
 
-;;;;; Theming
+;;;; Theming
 (defun dotspacemacs/user-config/org/theming ()
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
         org-priority-faces '((65 :foreground "red")
@@ -894,12 +894,12 @@
                              (67 :foreground "blue"))
         org-ellipsis "▼"))
 
-;;;; Outshine
+;;; Outshine
 (defun dotspacemacs/user-config/outshine ()
   (dotspacemacs/user-config/outshine/navi-mode)
   (dotspacemacs/user-config/outshine/outshine-mode))
 
-;;;;; Navi-mode
+;;;; Navi-mode
 (defun dotspacemacs/user-config/outshine/navi-mode ()
   (require 'navi-mode)
   ;; Navi mode python integration
@@ -986,7 +986,7 @@
 
     (setq navi-mode-map map)))
 
-;;;;; Outshine-mode
+;;;; Outshine-mode
 (defun dotspacemacs/user-config/outshine/outshine-mode ()
   (require 'outshine)
   ;; 1. Adds functionality to run on narrowed buffers
@@ -1056,7 +1056,7 @@
   ;; Enables outline-minor-mode for *ALL* programming buffers!
   (add-hook 'prog-mode-hook 'outline-minor-mode))
 
-;;;; GNUs
+;;; GNUs
 (defun dotspacemacs/user-config/gnus ()
   (setq user-mail-address	"ekaschalk@gmail.com"
         user-full-name	"Eric Kaschalk"
@@ -1101,64 +1101,3 @@
 
         ;; Full size images
         mm-inline-large-images 'resize))
-
-;;;; Blog
-(defun dotspacemacs/user-config/blog ()
-  ;; NOTE
-  ;; Maintaining this for when I look to restart the blog properly
-  ;; See http://ekaschalk.github.io
-  ;; Want to move to a better supported, more native blogging solution
-
-  ;; Adapted from
-  ;; http://whyarethingsthewaytheyare.com/setting-up-the-blog/#workflow
-  ;; Requires pandoc layer and pandoc installed and on path
-  (defun org-hugo-export ()
-    (interactive)
-    (save-excursion
-      (unless (eq (org-current-level) 1)
-        (outline-up-heading 10))
-      ;; Set export format, pandoc options, post properties
-      (let* ((org-pandoc-format 'markdown)
-             (org-pandoc-options-for-markdown
-              '((standalone . t) (atx-headers . t) (columns . 79)))
-             (hl (org-element-at-point))
-             (filename (org-element-property :EXPORT_TO hl))
-             (title (concat "\"" (org-element-property :title hl) "\""))
-             (slug (concat "\"" (org-element-property :SLUG hl) "\""))
-             (date (concat "\"" (org-element-property :DATE hl) "\""))
-             (categories "[\"emacs\"]")
-             (tmp (concat (make-temp-name ".tmp") ".org")))
-        (org-export-to-file 'pandoc
-            (org-export-output-file-name tmp t)
-          nil t nil nil nil
-          (lambda (f) (org-pandoc-run-to-buffer-or-file f 'markdown t nil)))
-        ;; Use advice-add to add advice to existing process sentinel
-        ;; to modify file /after/ the export process has finished.
-        (advice-add
-         #'org-pandoc-sentinel
-         :after
-         `(lambda (process event)
-            ;; Grab the file using with-temp-file, which saves our changes
-            ;; after evaluation.
-            (with-temp-file ,filename
-              (insert-file-contents ,filename)
-              (goto-char (point-min))
-              ;; Remove default header
-              (re-search-forward "---\\(.\\|\n\\)+?---\n\n")
-              (replace-match "")
-              (goto-char (point-min))
-              ;; Insert new properties
-              (insert
-               (format
-                "---\ntitle: %s\nslug: %s\ndate: %s\ncategories: %s\n---\n\n"
-                ,title ,slug ,date ,categories))
-              ;; Demote headings and tweak code blocks
-              (dolist (reps '(("^#" . "##")
-                              ("\n``` {\\.\\(.+?\\)}" . "```\\1")))
-                (goto-char (point-min))
-                (while (re-search-forward (car reps) nil t)
-                  (replace-match (cdr reps))))))
-         '((name . "hugo-advice")))
-        ;; We don't want our advice to stick around afterwards
-        (advice-remove #'org-pandoc-sentinel 'hugo-advice))))
-  )
