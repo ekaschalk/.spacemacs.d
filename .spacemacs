@@ -1056,21 +1056,62 @@
   ;; Enables outline-minor-mode for *ALL* programming buffers!
   (add-hook 'prog-mode-hook 'outline-minor-mode))
 
+;;;; GNUs
+(defun dotspacemacs/user-config/gnus ()
+  (setq user-mail-address	"ekaschalk@gmail.com"
+        user-full-name	"Eric Kaschalk"
+
+        ;; Get mail
+        gnus-secondary-select-methods
+        '((nnimap "gmail"
+                  (nnimap-address "imap.gmail.com")
+                  (nnimap-server-port 993)
+                  (nnimap-stream ssl))
+          (nntp "gmane"
+                (nntp-address "news.gmane.org"))
+          (nntp "news.gwene.org"))
+
+        ;; Send mail
+        message-send-mail-function 'smtpmail-send-it
+
+        ;; Archive outgoing email in Sent folder on imap.gmail.com
+        gnus-message-archive-method '(nnimap "imap.gmail.com")
+        gnus-message-archive-group "[Gmail]/Sent Mail"
+
+        ;; Auth
+        smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+        smtpmail-auth-credentials '(("smtp.gmail.com" 587
+                                     "ekaschalk@gmail.com" nil))
+
+        ;; SMPT Server config
+        smtpmail-default-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587
+
+        ;; set return email address based on incoming email address
+        gnus-posting-styles
+        '(((header "to" "address@outlook.com")
+           (address  "address@outlook.com"))
+          ((header "to" "address@gmail.com")
+           (address "address@gmail.com")))
+
+        ;; store email in ~/gmail directory
+        nnml-directory "~/gmail"
+        message-directory "~/gmail"
+
+        ;; Full size images
+        mm-inline-large-images 'resize))
+
 ;;;; Blog
 (defun dotspacemacs/user-config/blog ()
+  ;; NOTE
+  ;; Maintaining this for when I look to restart the blog properly
+  ;; See http://ekaschalk.github.io
+  ;; Want to move to a better supported, more native blogging solution
+
   ;; Adapted from
   ;; http://whyarethingsthewaytheyare.com/setting-up-the-blog/#workflow
   ;; Requires pandoc layer and pandoc installed and on path
-
-  ;; (concat "[\""
-  ;;         (mapconcat
-  ;;          'identity
-  ;;          (remove ""
-  ;;                  (split-string
-  ;;                   (cdr (assoc "TAGS" properties)) ":"))
-  ;;          "\",\"")
-  ;;         "\"]")))
-
   (defun org-hugo-export ()
     (interactive)
     (save-excursion
@@ -1120,47 +1161,4 @@
          '((name . "hugo-advice")))
         ;; We don't want our advice to stick around afterwards
         (advice-remove #'org-pandoc-sentinel 'hugo-advice))))
-  )
-
-;;;; GNUs
-(defun dotspacemacs/user-config/gnus ()
-  (setq user-mail-address	"ekaschalk@gmail.com"
-        user-full-name	"Eric Kaschalk")
-
-  ;; Get email, and store in nnml
-  (setq gnus-secondary-select-methods
-        '((nnimap "gmail"
-                  (nnimap-address "imap.gmail.com")
-                  (nnimap-server-port 993)
-                  (nnimap-stream ssl))
-          (nntp "gmane"
-                (nntp-address "news.gmane.org"))
-          (nntp "news.gwene.org")))
-
-  (setq message-send-mail-function 'smtpmail-send-it
-        smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-        smtpmail-auth-credentials '(("smtp.gmail.com" 587
-                                     "ekaschalk@gmail.com" nil))
-        smtpmail-default-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 587)
-
-  ;; Archive outgoing email in Sent folder on imap.gmail.com:
-  (setq gnus-message-archive-method '(nnimap "imap.gmail.com")
-        gnus-message-archive-group "[Gmail]/Sent Mail")
-
-  ;; set return email address based on incoming email address
-  (setq gnus-posting-styles
-        '(((header "to" "address@outlook.com")
-           (address "address@outlook.com"))
-          ((header "to" "address@gmail.com")
-           (address "address@gmail.com"))))
-
-  ;; store email in ~/gmail directory
-  (setq nnml-directory "~/gmail")
-  (setq message-directory "~/gmail")
-
-  (setq mm-inline-large-images 'resize)  ; Full size images
-
-  ;; https://github.com/paul-issartel/nnreddit
   )
