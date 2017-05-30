@@ -68,7 +68,8 @@
       dotspacemacs/layers/windows
       '(pandoc)
       dotspacemacs/layers/linux
-      '(pdf-tools)
+      '()  ; TODO broken with update
+      ;; '(pdf-tools)
       dotspacemacs/layers/local
       '()
       )
@@ -116,7 +117,8 @@
 (defun dotspacemacs/init ()
   (setq-default
    dotspacemacs-themes '(spacemacs-dark
-                         doom-vibrant)
+                         ;; doom-vibrant  ; TODO
+                         )
    dotspacemacs-default-font `("Hack"
                                :size ,(if-linux 18 12)
                                :powerline-scale 1.5)
@@ -146,6 +148,7 @@
    dotspacemacs-default-layout-name "Default"
    dotspacemacs-display-default-layout nil
    dotspacemacs-auto-resume-layouts nil
+   dotspacemacs-auto-generate-layout-names t
    dotspacemacs-large-file-size 1
    dotspacemacs-auto-save-file-location 'cache
    dotspacemacs-max-rollback-slots 5
@@ -155,6 +158,7 @@
    dotspacemacs-enable-paste-transient-state nil
    dotspacemacs-which-key-delay 0.4
    dotspacemacs-which-key-position 'bottom
+   dotspacemacs-switch-to-buffer-prefers-purpose nil
    dotspacemacs-loading-progress-bar t
    dotspacemacs-fullscreen-at-startup (if-linux nil t)
    dotspacemacs-fullscreen-use-non-native nil
@@ -173,7 +177,10 @@
    dotspacemacs-persistent-server nil
    dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
    dotspacemacs-default-package-repository nil
-   dotspacemacs-whitespace-cleanup 'trailing))
+   dotspacemacs-frame-title-format "%I@%S"
+   dotspacemacs-icon-title-format nil
+   dotspacemacs-whitespace-cleanup 'trailing
+   dotspacemacs-zone-out-when-idle nil))
 
 (defun dotspacemacs/user-init ())
 
@@ -184,7 +191,7 @@
   (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
 
   ;; Group 2
-  (dotspacemacs/user-config/display/init-theme)
+  ;; (dotspacemacs/user-config/display/init-doom-theme)
 
   ;; Group 3
   (dotspacemacs/user-config/display/font-locks)
@@ -204,8 +211,8 @@
   (global-set-key (kbd "<f2>")
                   (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
 
-;;;;; Init-Theme
-(defun dotspacemacs/user-config/display/init-theme ()
+;;;;; Init-doom-theme
+(defun dotspacemacs/user-config/display/init-doom-theme ()
   "Doom theme must be initialized early in config or font breaks."
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t
@@ -729,11 +736,12 @@
 
 ;;;; Org
 (defun dotspacemacs/user-config/org ()
-  (dotspacemacs/user-config/org/core)
-  (when-linux-call 'dotspacemacs/user-config/org/core-linux)
-  (dotspacemacs/user-config/org/babel)
-  (dotspacemacs/user-config/org/exporting)
-  (dotspacemacs/user-config/org/templates))
+  (with-eval-after-load 'org
+    (dotspacemacs/user-config/org/core)
+    (when-linux-call 'dotspacemacs/user-config/org/core-linux)
+    (dotspacemacs/user-config/org/babel)
+    (dotspacemacs/user-config/org/exporting)
+    (dotspacemacs/user-config/org/templates)))
 
 ;;;;; Core
 (defun dotspacemacs/user-config/org/core ()
@@ -1132,7 +1140,7 @@ This function is called at the very end of Spacemacs initialization."
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (clojure-snippets clj-refactor inflections edn paredit peg cider-eval-sexp-fu cider seq queue clojure-mode spaceline-all-the-icons evil-snipe doom-vibrant-theme doom-themes all-the-icons memoize font-lock+ helm-spotify-plus multi intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode company-cabal cmm-mode elfeed-web simple-httpd elfeed-org elfeed-goodies ace-jump-mode noflet elfeed pretty-mode pandoc-mode ox-pandoc ht flatland-theme tangotango-theme subatomic-theme spacegray-theme monokai-theme heroku-theme hc-zenburn-theme darkburn-theme cyberpunk-theme ample-theme ample-zen-theme color-theme-sanityinc-solarized material-theme mmm-mode markdown-toc markdown-mode gh-md multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (symon string-inflection sayid password-generator fuzzy evil-lion editorconfig dante browse-at-remote pdf-tools tablist org projectile diminish packed avy highlight smartparens evil helm helm-core async hydra f s dash clojure-snippets clj-refactor inflections edn paredit peg cider-eval-sexp-fu cider seq queue clojure-mode spaceline-all-the-icons evil-snipe doom-vibrant-theme doom-themes all-the-icons memoize font-lock+ helm-spotify-plus multi intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode company-cabal cmm-mode elfeed-web simple-httpd elfeed-org elfeed-goodies ace-jump-mode noflet elfeed pretty-mode pandoc-mode ox-pandoc ht flatland-theme tangotango-theme subatomic-theme spacegray-theme monokai-theme heroku-theme hc-zenburn-theme darkburn-theme cyberpunk-theme ample-theme ample-zen-theme color-theme-sanityinc-solarized material-theme mmm-mode markdown-toc markdown-mode gh-md multiple-cursors helm-company helm-c-yasnippet company-web web-completion-data company-statistics company-restclient know-your-http-well company-anaconda company auto-yasnippet yasnippet ac-ispell auto-complete navi-mode outshine outorg window-purpose imenu-list zenburn-theme yapfify xterm-color web-mode virtualenvwrapper unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode restclient-helm ranger pyvenv pytest pyenv-mode py-isort pug-mode pip-requirements orgit org-projectile org-present org-pomodoro alert log4e gntp org-download ob-restclient restclient ob-http mwim multi-term magit-gitflow live-py-mode less-css-mode hy-mode htmlize helm-pydoc helm-gitignore helm-css-scss haml-mode graphviz-dot-mode gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")
  '(safe-local-variable-values
