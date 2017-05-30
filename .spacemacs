@@ -20,7 +20,7 @@
 ;; 3. The way spacemacs executes config functions enables placing config at end.
 
 ;;; OS-Config
-;; Utilities for differentiating when necessary between Windows and Linux.
+;; Utilities for integrating Windows and Linux.
 (setq is-linuxp (eq system-type 'gnu/linux))
 (defun if-linux (x y) (if is-linuxp x y))
 (defun if-linux-call (x y) (if is-linuxp (funcall x) (funcall y)))
@@ -193,14 +193,12 @@
 (defun dotspacemacs/user-init ()
   ;; Rids the verbose custom settings from being written to .spacemacs
   (setq custom-file "./elisp/.custom-settings.el")
-  (load "~/elisp/.custom-settings.el"))
+  (load "~/elisp/.custom-settings.el")
+  (load "~/elisp/prettify-utils"))
 
 ;;; Spacemacs-User-config
 (defun dotspacemacs/user-config ()
   (with-eval-after-load 'dash
-    ;; Private Elisp in "~/elisp"
-    (load "~/elisp/prettify-utils")
-
     ;; Group 1
     (dotspacemacs/user-config/display)
 
