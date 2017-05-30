@@ -199,7 +199,7 @@
    dotspacemacs-smart-closing-parenthesis nil
    dotspacemacs-highlight-delimiters 'all
    dotspacemacs-persistent-server nil
-   dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
+   dotspacemacs-search-tools '("ag" "rg" "pt" "ack" "grep")
    dotspacemacs-default-package-repository nil
    dotspacemacs-frame-title-format "%I@%S"
    dotspacemacs-icon-title-format nil
@@ -533,6 +533,8 @@
   ;; Ivy keybinding has 'SPC i u' for consel-unicode-char
   ;; This function is extremely useful when exploring symbols
 
+  ;; Eventually I would like to standardize this across languages
+  ;; So all lambda-likes, func-def likes, etc. use common symbol
 
   ;; Pretty pairs for modes
   (defun set-hy-pretty-pairs ()
@@ -612,15 +614,26 @@
   ;; REBINDINGS
   ;; ivy-minibuffer-map
   ;; Replace M-RET with C-RET
-  ;; C-l to ivy-avy-complete
+  ;; C-l to 'ivy-avy
+  ;; C-d/C-u to ivy-scroll-up/down-command
 
-  ;; CONFIG
-  ;; ivy-height
+  ;; Bind M-o to something else
+  ;; (C-M-o) is the nonexiting version of M-o
+  ;; maybe make it capital
 
-  ;; VERY USEFUL CMDS
   ;; ivy-resume C-c C-r
   ;; resumes last session
 
+  ;; ivy-restrict-to-matches S-SPC
+  ;; narrows completion on current selection
+
+  ;; M-j yanks whats at point into the minibuffer
+
+  ;; Arrow on LHS of current candidate
+  (setq ivy-format-function 'ivy-format-function-arrow
+        ;; ivy-height 20
+
+        )
   )
 
 ;;; Configuration
