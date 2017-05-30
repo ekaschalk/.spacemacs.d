@@ -7,7 +7,7 @@
 ;; -- Dev Branch - Release 0.200.9.x - pulled: 5/29 - packages updated: 5/29 --
 ;; -- Dual config for Windows and Arch Linux --
 ;; -- Contact: ekaschalk@gmail.com --
-
+;;
 ;; Organization
 ;; ---------
 ;; Literate configs with org-mode are not natively supported by spacemacs
@@ -617,32 +617,25 @@
   ;; Evil-like scrolling of ivy minibuffer
   (define-key ivy-minibuffer-map (kbd "C-u") 'ivy-scroll-down-command)
   (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-scroll-up-command)
+
   ;; Rebind C-n/C-y/C-p to narrow/yank from buffer/paste into buffer
   (define-key ivy-minibuffer-map (kbd "C-n") 'ivy-restrict-to-matches)
-  ;; (define-key ivy-minibuffer-map (kbd "C-p") 'ivy-restrict-to-matches)
   (define-key ivy-minibuffer-map (kbd "C-y") 'ivy-yank-word)
+  ;; Read-only buffer of candidates with shortcuts to dispatches
+  (define-key ivy-minibuffer-map (kbd "C-o") 'ivy-occur)
+
+  ;; Non-exiting default action
+  (define-key ivy-minibuffer-map (kbd "C-<return>") 'ivy-call)
+  ;; Dispatch actions
+  (define-key ivy-minibuffer-map (kbd "C-SPC") 'ivy-dispatching-done)
+  (define-key ivy-minibuffer-map (kbd "C-S-SPC") 'ivy-dispatching-call)
+
+  ;; Resume last ivy session
+  (spacemacs/set-leader-keys (kbd "ai") 'ivy-resume)
 
   (setq ivy-format-function 'ivy-format-function-arrow
         ivy-height 20
-        ;; Tab-completion uses ivy
-        completion-in-region-function 'ivy-completion-in-region)
-
-  ;; http://oremacs.com/swiper/
-  ;; REBINDINGS
-  ;; Replace M-RET with C-RET
-  ;; C-l to 'ivy-avy
-  ;; C-d/C-u to ivy-scroll-up/down-command
-
-  ;; Bind M-o to something else
-  ;; (C-M-o) is the nonexiting version of M-o
-  ;; maybe make it capital
-
-  ;; ivy-resume C-c C-r
-  ;; resumes last session
-
-  ;; ivy-occur C-c C-o
-  ;; Copies minibuffer to read-only-buffer with its own mode
-  )
+        completion-in-region-function 'ivy-completion-in-region))
 
 ;;; Configuration
 (defun dotspacemacs/user-config/configuration ()
