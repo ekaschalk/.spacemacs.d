@@ -11,6 +11,9 @@
 ;; with `outshine-mode` and `navi-mode` to maintain benefits of literate
 ;; documentation and org-modes navigation, collapsing, and narrowing facilities.
 
+;; Notes:
+;; 1. Groups must be executed in-order, group components are lexically ordered.
+
 ;;; OS-Config
 (setq is-linuxp (eq system-type 'gnu/linux))
 (defun if-linux (x y) (if is-linuxp x y))
@@ -180,24 +183,19 @@
 (defun dotspacemacs/user-config/display ()
   ;; Group 1
   (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
-  (dotspacemacs/user-config/display/init-theme)
 
   ;; Group 2
-  ;; (dotspacemacs/user-config/display/fira-code-ligatures)
+  (dotspacemacs/user-config/display/init-theme)
+
+  ;; Group 3
   (dotspacemacs/user-config/display/font-locks)
-  ;; (dotspacemacs/user-config/display/my-ligatures)
 
   ;; Rest
-  (dotspacemacs/user-config/display/prettify-symbols)
-  ;; (dotspacemacs/user-config/display/select-ligatures)
-  (dotspacemacs/user-config/display/face-updates)
-
-  (dotspacemacs/user-config/display/modeline)
   (dotspacemacs/user-config/display/all-the-icons)
-
-  (setq neo-theme 'icons
-        neo-window-width 28)
-  )
+  (dotspacemacs/user-config/display/extra-syntax-highlighting)
+  (dotspacemacs/user-config/display/face-updates)
+  (dotspacemacs/user-config/display/modeline)
+  (dotspacemacs/user-config/display/prettify-symbols))
 
 ;;;;; Windows-frame-size-fix
 (defun dotspacemacs/user-config/display/windows-frame-size-fix ()
@@ -225,71 +223,41 @@
   ;; TODO For some reason can't place in additional packages
   (spacemacs/cycle-spacemacs-theme))
 
-;;;;; Modeline
-(defun dotspacemacs/user-config/display/modeline ()
-  (use-package spaceline-all-the-icons
-    :after spaceline  ; eval-after-load doesn't work for this setup
-    :config (progn
-              ;; Initialization
-              (spaceline-all-the-icons--setup-neotree)
-              (spaceline-all-the-icons-theme)
+;;;;; Font-locks
+;;;;;; Core
+(defun dotspacemacs/user-config/display/font-locks ()
+  "Enable following font-locks for appropriate modes."
+  ;; Use Fira Code's ligatures, does not require Fira Code font to be in use
+  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
 
-              ;; Configuration
-              (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
-                    powerline-default-separator 'arrow
-                    spaceline-all-the-icons-icon-set-modified 'circle
-                    spaceline-all-the-icons-icon-set-window-numbering 'solid
-                    spaceline-all-the-icons-separators-type 'arrow
-                    spaceline-all-the-icons-primary-separator "")
+  (defun -add-font-lock-kwds (font-lock-alist)
+    (defun -build-font-lock-alist (regex-char-pair)
+      `(,(car regex-char-pair)
+        (0 (prog1 ()
+             (compose-region
+              (match-beginning 1)
+              (match-end 1)
+              ,(concat "	"
+                       (list (cadr regex-char-pair))))))))
+    (font-lock-add-keywords nil (mapcar '-build-font-lock-alist font-lock-alist)))
 
-              ;; Toggles
-              (spaceline-toggle-all-the-icons-buffer-size-off)
-              (spaceline-toggle-all-the-icons-buffer-position-off)
-              (spaceline-toggle-all-the-icons-vc-icon-off)
-              (spaceline-toggle-all-the-icons-vc-status-off)
-              (spaceline-toggle-all-the-icons-git-status-off)
-              (spaceline-toggle-all-the-icons-flycheck-status-off)
-              (spaceline-toggle-all-the-icons-time-off)
-              (spaceline-toggle-all-the-icons-battery-status-off)
-              (spaceline-toggle-hud-on))))
+  ;; Fira Code
+  (add-hook 'prog-mode-hook
+            (-partial '-add-font-lock-kwds fira-font-lock-alist))
+  (add-hook 'org-mode-hook
+            (-partial '-add-font-lock-kwds fira-font-lock-alist))
+  ;; Python
+  (add-hook 'python-mode-hook
+            (-partial '-add-font-lock-kwds python-font-lock-alist))
+  ;; Emacs Lisp
+  (add-hook 'emacs-lisp-mode-hook
+            (-partial '-add-font-lock-kwds emacs-lisp-font-lock-alist))
+  ;; Hy
+  (add-hook 'hy-mode-hook
+            (-partial '-add-font-lock-kwds hy-font-lock-alist))
+  )
 
-;;;;; All-the-icons
-(defun dotspacemacs/user-config/display/all-the-icons ()
-  "Add icon to all-the-icons for hylang for neotree and modeline integration."
-  (with-eval-after-load 'all-the-icons
-    ;; Both all-the-icons-icon-alist and all-the-icons-mode-icon-alist
-    ;; Need to be updated for either modification to take effect.
-
-    (add-to-list
-     'all-the-icons-icon-alist
-     '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
-    (add-to-list
-     'all-the-icons-mode-icon-alist
-     '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange))))
-
-;;;;; Face-updates
-(defun dotspacemacs/user-config/display/face-updates ()
-  (defun update-outline-font-faces ()
-    (custom-theme-set-faces
-     (car custom-enabled-themes)
-
-     ;; Org-level-3 and org-level-2 were too similar with color-blindness
-     '(org-level-3 ((t (:height 1.03 :foreground "light slate gray"
-                                :weight ultra-bold))))
-
-     ;; Since outlines are necessarily further apart than org-mode headers
-     ;; We box the outlines to make them stand out in programming buffers.
-     '(outline-1 ((t (:inherit org-level-1 :box t))))
-     '(outline-2 ((t (:inherit org-level-2 :box t))))
-     '(outline-3 ((t (:inherit org-level-3 :box t :height 1.03))))
-     '(outline-4 ((t (:inherit org-level-4 :underline t))))))
-
-  ;; Apply face updates on emacs initialization
-  (update-outline-font-faces)
-  ;; Apply face updates update whenever theme is toggled
-  (add-hook 'spacemacs-post-theme-change-hook 'update-outline-font-faces))
-
-;;;;; Fira-ligatures
+;;;;;; Fira-font-locks
 (defconst fira-font-lock-alist
   '(;;;; OPERATORS
     ;;;;;; Pipes
@@ -387,296 +355,184 @@
     ;; ("\\(\\[\\]\\)"                #Xe109) ;; ("\\(x\\)"                     #Xe16b)
   ))
 
-;;;;; Outline-pairs
+;;;;;; Language-font-locks
 (defconst emacs-lisp-font-lock-alist
+  ;; Outlines not using * so better overlap with in-the-wild packages.
   '(("\\(^;;;\\)"                   ?■)
     ("\\(^;;;;\\)"                  ?○)
     ("\\(^;;;;;\\)"                 ?✸)
     ("\\(^;;;;;;\\)"                ?✿)))
 
 (defconst python-font-lock-alist
+  ;; Outlines
   '(("\\(^# \\*\\)[ \t\n]"          ?■)
     ("\\(^# \\*\\*\\)[ \t\n]"       ?○)
     ("\\(^# \\*\\*\\*\\)[ \t\n]"    ?✸)
     ("\\(^# \\*\\*\\*\\*\\)[^\\*]"  ?✿)))
 
 (defconst hy-font-lock-alist
+  ;; Outlines
   '(("\\(^;; \\*\\)[ \t\n]"          ?■)
     ("\\(^;; \\*\\*\\)[ \t\n]"       ?○)
     ("\\(^;; \\*\\*\\*\\)[ \t\n]"    ?✸)
     ("\\(^;; \\*\\*\\*\\*\\)[^\\*]"  ?✿)
 
-    ("\\(self\\)"   ?⊙)
-    ))
+    ;; self does not work as a prettify symbol for hy, unlike python
+    ("\\(self\\)"   ?⊙)))
 
-;;;;; Font-locks
-(defun dotspacemacs/user-config/display/font-locks ()
-  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+;;;;; All-the-icons
+(defun dotspacemacs/user-config/display/all-the-icons ()
+  "Add icon to all-the-icons for hylang for neotree and modeline integration."
+  (with-eval-after-load 'all-the-icons
+    ;; Both all-the-icons-icon-alist and all-the-icons-mode-icon-alist
+    ;; Need to be updated for either modification to take effect.
 
-  (defun -add-font-lock-kwds (font-lock-alist)
-    (defun -build-font-lock-alist (regex-char-pair)
-      `(,(car regex-char-pair)
-        (0 (prog1 ()
-             (compose-region
-              (match-beginning 1)
-              (match-end 1)
-              ,(concat "	"
-                       (list (cadr regex-char-pair))))))))
-    (font-lock-add-keywords nil (mapcar '-build-font-lock-alist font-lock-alist)))
+    (add-to-list
+     'all-the-icons-icon-alist
+     '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
+    (add-to-list
+     'all-the-icons-mode-icon-alist
+     '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange))))
 
-  ;; Fira Code
-  (add-hook 'prog-mode-hook
-            (-partial '-add-font-lock-kwds fira-font-lock-alist))
-  (add-hook 'org-mode-hook
-            (-partial '-add-font-lock-kwds fira-font-lock-alist))
-  ;; Python
-  (add-hook 'python-mode-hook
-            (-partial '-add-font-lock-kwds python-font-lock-alist))
-  ;; Emacs Lisp
-  (add-hook 'emacs-lisp-mode-hook
-            (-partial '-add-font-lock-kwds emacs-lisp-font-lock-alist))
-  ;; Hy
-  (add-hook 'hy-mode-hook
-            (-partial '-add-font-lock-kwds hy-font-lock-alist))
-  )
-
-;;;;; Prettify-symbols
-(defun dotspacemacs/user-config/display/prettify-symbols ()
-  (set-fontset-font "fontset-default" '(#x2c7c . #x2c7c) "Courier New")
-  (set-fontset-font "fontset-default" '(#x1d518 . #x1d57f) "Symbola")
-  (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d4e2) "Symbola")
-  (set-fontset-font "fontset-default" '(#x1d4d0 . #x1d54a) "Symbola")
-  (set-fontset-font "fontset-default" '(#x1d54a . #x1d572) "Symbola")
-
-;;;;;; Utils
-
-  (defun prettify-utils--list (l &optional glue)
-    "Takes two lists and interleaves the (optional) second between each element of
-the first.  Used to create multi-character sequences for use with the minor mode
-'prettify-symbols'.  If not supplied, GLUE defaults to '(Br . Bl).  For more
-information about GLUE, refer to the documentation for the 'compose-region
-function and the 'reference-point-alist variable.
-This function is used by prettify-utils-string to create the lists given to
-prettify-symbols-alist.  Calling prettify-utils--list directly is probably not
-what you want, check the documentation for prettify-utils-string and
-prettify-utils-generate instead.
-Example use:
-(prettify-utils--list (string-to-list \"hello\") '(Br . Bl))
-"
-
-  (let ((glue (or glue '(Br . Bl)))
-    (head (car l))
-    (tail (cdr l)))
-  (cond
-   ((not (consp l))    '())
-   ((not (consp tail))  (list head))
-   (t (cons head
-        (cons glue
-          (prettify-utils--list tail glue)))))))
-
- (defun prettify-utils-string (s &optional glue)
-  "Takes a string and an optional list, and returns a list of the string's
-characters with GLUE interleaved between each character, for use with
-prettify-symbols mode.  If no GLUE is supplied, uses the
-prettify-utils--list default.  For more information about GLUE, refer to the
-documentation for the 'compose-region function and the 'reference-point-alist
-variable.
-This function can be used to simplify multiple-character replacements when
-manually constructing a prettify-symbols-alist.  For something more high-level,
-consider using prettify-utils-generate to create the entire alist instead.
-Example:
-(prettify-utils-string \"example\" '(Br . Bl))
-"
-  (prettify-utils--list (append s nil) glue))
-
-;; Was used during macro creation then removed
-(defun prettify-utils-create-pair (old new &optional glue)
-  "Takes two strings, OLD and NEW, and an optional GLUE list, and creates an
-alist pair for use when creating a prettify-symbols-alist.  For more information
-about GLUE, refer to the documentation for the 'compose-region function and the
-'reference-point-alist variable.
-This function is primarily for use by the user-friendly 'prettify-utils-generate
-macro, but may be useful if manual alist creation is desired for some reason.
-Example:
-(setq prettify-symbols-alist `((\">=\" ?≥)
-                               ,(prettify-utils-create-pair \"foo\" \"bar\" '(Br . Bl))))
-"
-  (cons old (prettify-utils-string new glue)))
-
-(defmacro prettify-utils-generate (&rest pairs)
-  "Generates an alist for use when setting prettify-symbols-alist.  Takes one or
-more lists, each consisting of two strings and an optional GLUE list to be
-interleaved between characters in the replacement list.  If the optional GLUE
-list is not supplied, uses the prettify-list default of '(Br . Bl).  For more
-information about GLUE, refer to the documentation for the 'compose-region
-function and the 'reference-point-alist variable.
-Example #1:
-(setq prettify-symbols-alist
-      (prettify-utils-generate (\"foo\" \"bar\")
-                               (\">=\" \"≥\" (Br . Bl))
-                               (\"->\"     \"→ \")))
-Example #2:
-(setq prettify-symbols-alist
-      (prettify-generate
-       (\"lambda\"  \"λ\")
-       (\"|>\"      \"▷\")
-       (\"<|\"      \"◁\")
-       (\"->>\"     \"↠  \")
-       (\"->\"      \"→ \")
-       (\"<-\"      \"← \")
-       (\"=>\"      \"⇒\")
-       (\"<=\"      \"≤\")
-       (\">=\"      \"≥\")))
-"
-  (let* ((head       (car   pairs))
-         (tail       (cdr   pairs))
-         (old-string (car   head))
-     (new-string (cadr  head))
-     (glue-list  (caddr head)))
-  (if (not (consp head))
-    '()
-       `(cons (quote ,(prettify-utils-create-pair old-string new-string glue-list))
-       (prettify-utils-generate ,@tail)))))
-
-(defun prettify-utils-generate-f (&rest pairs)
-  "Generates an alist for use when setting prettify-symbols-alist.  Takes one or
-more lists, each consisting of two strings and an optional GLUE list to be
-interleaved between characters in the replacement list.  If the optional GLUE
-list is not supplied, uses the prettify-list default of '(Br . Bl).  For more
-information about GLUE, refer to the documentation for the 'compose-region
-function and the 'reference-point-alist variable.
-This is a function equivalent of the prettify-utils-generate macro.  Unless
-you specifically need a function, such as for use with a higher-order function,
-you should use the 'prettify-utils-generate macro instead.
-Example:
-(prettify-utils-generate-f '(\"foo\" \"bar\")
-                           '(\">=\" \"≥\" (Br . Bl))
-                           '(\"->\"     \"→ \"))
-"
-  (let* ((head       (car   pairs))
-         (tail       (cdr   pairs))
-         (old-string (car   head))
-     (new-string (cadr  head))
-     (glue-list  (caddr head)))
-  (if (not (consp head))
-    '()
-      (cons (prettify-utils-create-pair old-string new-string glue-list)
-(apply 'prettify-utils-generate-f tail)))))
-
-;;;;;; Main
-
-(global-prettify-symbols-mode 1)
-
-(set-fontset-font t '(#x2a02 . #x2a02) "Symbola")
-(set-fontset-font t '(#x2205 . #x2205) "Symbola")
-(set-fontset-font t '(#x27fb . #x22fc) "Symbola")
-(set-fontset-font t '(#x2299 . #x2299) "Symbola")
-
-
-(defun hy-pretty-symbols-alist ()
-  (setq prettify-symbols-alist
-        (prettify-utils-generate
-         ("fn"      "λ")
-         ("defn"    "𝓕")
-         ("#t"      "⨂")
-         ("ap-pipe" " ")
-         ("True"    "𝕋")
-         ("False"   "𝔽")
-         ("None"    "∅")
-         ;; ("map"     " ?")
-         ;; ("*map"    " ?")j
-         ;; ("#a"      " ")
-         ;; ("or" )
-         ;; ("and" )
-         )))
-
-
-(add-hook 'hy-mode-hook 'hy-pretty-symbols-alist)
-
-(defun add-hy-kws()
-  (font-lock-add-keywords
-   nil '(
-         ("\\<\\(self\\)" . 'font-lock-keyword-face)
+;;;;; Extra-syntax-highlighting
+(defun dotspacemacs/user-config/display/extra-syntax-highlighting ()
+  (defun hy-extra-syntax ()
+    (font-lock-add-keywords
+     nil '(("\\<\\(self\\)" . 'font-lock-keyword-face)
          ("\\<\\(staticmethod\\)\\>" . 'font-lock-function-name-face)
          ("\\<\\(classmethod\\)\\>" . 'font-lock-function-name-face)
          ("\\<\\(property\\)\\>" . 'font-lock-function-name-face)
          ("\\<\\(composite\\)\\>" . 'font-lock-function-name-face)
          ("\\<\\(import\\)\\>" . 'font-lock-function-name-face)
          ("\\<\\(require\\)\\>" . 'font-lock-function-name-face)
+         ;; Syntax highlighting for reader-macros
+         ("\\(#.\\)" . 'font-lock-function-name-face))))
 
-         ("\\(#.\\)" . 'font-lock-function-name-face)
-         )))
+  (add-hook 'hy-mode-hook 'hy-extra-syntax))
 
-(add-hook 'hy-mode-hook 'add-hy-kws)
+;;;;; Face-updates
+(defun dotspacemacs/user-config/display/face-updates ()
+  (defun update-outline-font-faces ()
+    (custom-theme-set-faces
+     (car custom-enabled-themes)
 
-;; (defun test-fontlock-fix-before ()
-;;   (font-lock-mode -1)
-;;   (spacemacs/indent-region-or-buffer))
+     ;; Org-level-3 and org-level-2 were too similar with color-blindness
+     '(org-level-3 ((t (:height 1.03 :foreground "light slate gray"
+                                :weight ultra-bold))))
 
-;; (defun test-fontlock-fix-after ()
-;;   (font-lock-mode 1)
-;;   (sit-for 1)
-;;   (spacemacs/indent-region-or-buffer))
+     ;; Since outlines are necessarily further apart than org-mode headers
+     ;; We box the outlines to make them stand out in programming buffers.
+     '(outline-1 ((t (:inherit org-level-1 :box t))))
+     '(outline-2 ((t (:inherit org-level-2 :box t))))
+     '(outline-3 ((t (:inherit org-level-3 :box t :height 1.03))))
+     '(outline-4 ((t (:inherit org-level-4 :underline t))))))
 
-;; (add-hook 'before-save-hook 'test-fontlock-fix-before)
-;; (add-hook 'after-save-hook 'test-fontlock-fix-after)
+  ;; Apply face updates on emacs initialization
+  (update-outline-font-faces)
+  ;; Apply face updates update whenever theme is toggled
+  (add-hook 'spacemacs-post-theme-change-hook 'update-outline-font-faces))
 
+;;;;; Modeline
+(defun dotspacemacs/user-config/display/modeline ()
+  (use-package spaceline-all-the-icons
+    :after spaceline  ; eval-after-load doesn't work for this setup
+    :config (progn
+              ;; Initialization
+              (spaceline-all-the-icons--setup-neotree)
+              (spaceline-all-the-icons-theme)
 
-;; http://unicode.mayastudios.com/
-(add-hook 'python-mode-hook
-          (lambda ()
-            (mapc (lambda (pair) (push pair prettify-symbols-alist))
-                  '(;; Syntax
-                    ("self" .     #x2299)   ; ⊙
-                    ("def" .      #x1d4d5)  ; 𝓕
-                    ("not" .      #xffe2)   ; ￢
-                    ("for" .      #x2200)   ; ∀
-                    ("in" .       #x2208)   ; ∈
-                    ("not in" .   #x2209)   ; ∉
-                    ("return" .   #x27fc)   ; ⟼
-                    ("yield" .    #x27fb)   ; ⟻
+              ;; Configuration
+              (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
+                    powerline-default-separator 'arrow
+                    spaceline-all-the-icons-icon-set-modified 'circle
+                    spaceline-all-the-icons-icon-set-window-numbering 'solid
+                    spaceline-all-the-icons-separators-type 'arrow
+                    spaceline-all-the-icons-primary-separator "")
 
-                    ;; Types (Base)
-                    ("int" .      #x2124)   ; ℤ
-                    ("float" .    #x211d)   ; ℝ
-                    ("str" .      #x1d54a)  ; 𝕊
-                    ("bool" .     #x1d539)  ; 𝔹
-                    ("True" .     #x1d54b)  ; 𝕋
-                    ("False" .    #x1d53d)  ; 𝔽
-                    ;; Types (Containers)
-                    ;; ("list" .    #x1d543)   ; 𝕃
-                    ;; ("dict" .    #x1d53b)   ; 𝔻
+              ;; Toggles
+              (spaceline-toggle-all-the-icons-buffer-size-off)
+              (spaceline-toggle-all-the-icons-buffer-position-off)
+              (spaceline-toggle-all-the-icons-vc-icon-off)
+              (spaceline-toggle-all-the-icons-vc-status-off)
+              (spaceline-toggle-all-the-icons-git-status-off)
+              (spaceline-toggle-all-the-icons-flycheck-status-off)
+              (spaceline-toggle-all-the-icons-time-off)
+              (spaceline-toggle-all-the-icons-battery-status-off)
+              (spaceline-toggle-hud-on))))
 
-                    ;; Mypy (Abstract Types)
-                    ("Callable" . #x2131)   ; ℱ
-                    ("Mapping" .  #x2133)   ; ℳ
-                    ("Iterable" . #x1d517)  ; 𝔗
-                    ;; Mypy (Containers)
-                    ("Dict" .     #x1d507)  ; 𝔇  𝓓
-                    ("List" .     #x2112)   ; ℒ  𝓛
-                    ("Generator" . #x1d50a) ; 𝔊  𝓖
-                    ("Set" .      #x2126)   ; Ω  𝓢
-                    ;; Mypy (operators, symbols)
-                    ("Tuple" .    #x2a02)   ; ⨂
-                    ("Union" .    #x22c3)   ; ⋃
-                    ("Any" .      #x2754)   ; ❔
+;;;;; Prettify-symbols
+(defun dotspacemacs/user-config/display/prettify-symbols ()
+  ;; Pretty pairs for modes
+  (defun set-hy-pretty-pairs ()
+    (setq prettify-symbols-alist
+          (prettify-utils-generate
+           ("fn"      "λ")
+           ("defn"    "𝓕")
+           ("#t"      "⨂")
+           ("ap-pipe" " ")
+           ("True"    "𝕋")
+           ("False"   "𝔽")
+           ("None"    "∅"))))
 
-                    ;; Exploring
-                    ("tz.pipe" .  #Xe135)   ; 
-                    ;; ("tz.thread_first" . #Xe13e)  ; =>
-                    ;; ("tz.thread_last" . #Xe140)   ; =>>
-                    ))))
+  (defun set-python-pretty-pairs ()
+    (setq prettify-symbols-alist
+          (prettify-utils-generate
+           ;; Syntax
+           ("self"     "⊙")
+           ("def"      "𝓕")
+           ("not"      "￢")
+           ("for"      "∀")
+           ("in"       "∈")
+           ("not in"   "∉")
+           ("return"   "⟼")
+           ("yield"    "⟻")
 
-(global-pretty-mode t)
+           ;; Types (Base)
+           ("int"      "ℤ")
+           ("float"    "ℝ")
+           ("str"      "𝕊")
+           ("bool"     "𝔹")
+           ("True"     "𝕋")
+           ("False"    "𝔽")
 
-(pretty-deactivate-groups  ; Replaced by Fira Code
- '(:equality :ordering :ordering-double :ordering-triple
-             :arrows :arrows-twoheaded :punctuation
-             :logic :sets :sub-and-superscripts))
+           ;; Mypy (Abstract Types)
+           ("Callable" "ℱ")
+           ("Mapping"  "ℳ")
+           ("Iterable" "𝔗")
+           ;; Mypy (Containers)
+           ("Dict"     "𝔇")
+           ("List"     "ℒ")
+           ;; Mypy (operators, symbols)
+           ("Tuple"    "⨂")
+           ("Union"    "⋃")
+           ("Any"      "❔")
 
-(pretty-activate-groups  ; :greek not enabled breaks 'Mapping' prettify symbol
- '(:arithmetic-nary))
-)
+           ;; Toolz
+           ("tz.pipe"  ""))))
+
+  ;; Force specified font for some symbols
+  (set-fontset-font t '(#x1d54a . #x1d54a) "Symbola")  ; 𝕊
+  (set-fontset-font t '(#x2a02 . #x2a02) "Symbola")    ; ⨂
+  (set-fontset-font t '(#x2205 . #x2205) "Symbola")    ; ∅
+  (set-fontset-font t '(#x27fb . #x27fc) "Symbola")    ; ⟻, ⟼
+  (set-fontset-font t '(#x2299 . #x2299) "Symbola")    ; ⊙
+
+  ;; Enable pretty modes
+  (add-hook 'hy-mode-hook 'set-hy-pretty-pairs)
+  (add-hook 'python-mode-hook 'set-python-pretty-pairs)
+
+  (global-prettify-symbols-mode 1)
+  (global-pretty-mode t)
+
+  ;; Activate pretty groups
+  (pretty-activate-groups
+   '(:arithmetic-nary :greek))
+
+  ;; Deactivate pretty groups conflicting with Fira Code ligatures
+  (pretty-deactivate-groups  ; Replaced by Fira Code
+   '(:equality :ordering :ordering-double :ordering-triple
+               :arrows :arrows-twoheaded :punctuation
+               :logic :sets :sub-and-superscripts)))
 
 ;;;; Configuration
 (defun dotspacemacs/user-config/configuration ()
@@ -749,6 +605,9 @@ Example:
   (dotspacemacs/user-config/misc/projectile)
   (dotspacemacs/user-config/misc/yassnippet)
   (when-linux-call 'dotspacemacs/user-config/misc/spotify)
+
+  (setq neo-theme 'icons
+        neo-window-width 28)
 
   (evil-global-set-key 'normal (kbd "L") 'evil-end-of-line)
   (evil-global-set-key 'visual (kbd "L")
@@ -1235,6 +1094,9 @@ Example:
 ;;;; Spacemacs
 (defun dotspacemacs/user-config ()
   (with-eval-after-load 'dash
+    ;; Private Elisp in "~/elisp"
+    (load "~/elisp/prettify-utils")
+
     ;; Group 1
     (dotspacemacs/user-config/display)
 
