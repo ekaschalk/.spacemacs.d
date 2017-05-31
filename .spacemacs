@@ -591,6 +591,10 @@
            ;; Toolz
            ("tz.pipe"  ""))))
 
+
+  ;; Git symbol notes
+  ;; FIX - NEW - UPDATE - CLEAN
+
   ;; Force specified font for some symbols
   (set-fontset-font t '(#x1d54a . #x1d54a) "Symbola")  ; 𝕊
   (set-fontset-font t '(#x2a02 . #x2a02) "Symbola")    ; ⨂
@@ -646,20 +650,20 @@
 
 ;;; Configuration
 (defun dotspacemacs/user-config/configuration ()
-  (dotspacemacs/user-config/configuration/evil)
   (dotspacemacs/user-config/configuration/editing)
+  (dotspacemacs/user-config/configuration/evil)
   (dotspacemacs/user-config/configuration/visual))
-
-;;;; Evil
-(defun dotspacemacs/user-config/configuration/evil ()
-  (setq-default evil-escape-key-sequence "jk"
-                evil-escape-unordered-key-sequence "true"))
 
 ;;;; Editing
 (defun dotspacemacs/user-config/configuration/editing ()
   (hungry-delete-mode 1)  ; in edit mode back gets all contiguous whitespace
   (spacemacs/toggle-aggressive-indent-globally-on)  ; auto-indentation
   (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1))))  ; SPC splits past 80
+
+;;;; Evil
+(defun dotspacemacs/user-config/configuration/evil ()
+  (setq-default evil-escape-key-sequence "jk"
+                evil-escape-unordered-key-sequence "true"))
 
 ;;;; Visual
 (defun dotspacemacs/user-config/configuration/visual ()
@@ -850,17 +854,12 @@
 (defun dotspacemacs/user-config/org ()
   (with-eval-after-load 'org
     (when-linux-call 'dotspacemacs/user-config/org/linux-file-apps)
+    (dotspacemacs/user-config/org/agenda)
     (dotspacemacs/user-config/org/babel)
     (dotspacemacs/user-config/org/exports)
     (dotspacemacs/user-config/org/misc)
     (dotspacemacs/user-config/org/templates)
     (dotspacemacs/user-config/org/theming)))
-
-;;;; Agenda
-(defun dotspacemacs/user-config/org/agenda ()
-  ;; Agenda workflow integration being investigated
-  ;; (setq org-agenda-files '("c:/~/.org"))
-  )
 
 ;;;; Linux-file-apps
 (defun dotspacemacs/user-config/org/linux-file-apps ()
@@ -868,6 +867,12 @@
                         ("\\.mm\\'" . default)
                         ("\\.x?html?\\'" . "/usr/bin/firefox %s")
                         ("\\.pdf\\'" . default))))
+
+;;;; Agenda
+(defun dotspacemacs/user-config/org/agenda ()
+  ;; Agenda workflow integration being investigated
+  ;; (setq org-agenda-files '("c:/~/.org"))
+  )
 
 ;;;; Babel
 (defun dotspacemacs/user-config/org/babel ()
@@ -957,7 +962,10 @@
 
 ;;; Outshine
 (defun dotspacemacs/user-config/outshine ()
+  ;; Group 1
   (dotspacemacs/user-config/outshine/navi-mode)
+
+  ;; Rest
   (dotspacemacs/user-config/outshine/outshine-mode))
 
 ;;;; Navi-mode
