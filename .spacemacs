@@ -618,6 +618,16 @@
                    ))))
 
   ;; https://github.com/domtronn/all-the-icons.el
+  ;; (all-the-icons-insert-icons-for 'alltheicon)
+  ;; (all-the-icons-insert-icons-for 'material)
+  ;; (all-the-icons-insert-icons-for 'fontawesome)
+
+  ;; all-the-icons-alltheicon
+  ;; all-the-icons-faicon
+  ;; all-the-icons-fileicon
+  ;; all-the-icons-oction
+  ;; all-the-icons-wicon
+
   ;; Char:  (61503, #o170077, #xf03f, part of display "") point=57 of 2210 (3%) column=0
   ;; (set-fontset-font t '(#xe906 . #xe906) "octicons")  ; 𝕊
   ;; ("\\(hi\\)" "")
@@ -625,6 +635,29 @@
   ;;             'face `(:family ,(all-the-icons-octicon-family) :height 2.5)
   ;;             'display '(raise -0.1))
   ;; (insert (all-the-icons-octicon "package"))
+
+  (defface my-test-face
+    '((t :foreground "white"
+         :background "aquamarine"
+         :weight bold
+         :underline t
+         :height 1.9
+         ))
+    "My Face."
+    )
+
+  (defun test-extra-syntax ()
+    (font-lock-add-keywords
+     nil '(("\\(hi\\)" . 'my-test-face)
+         )))
+
+  (defconst test-font-lock-alist
+    ;; Outlines
+    '(("\\(hi\\)"          ?)))
+
+  (add-hook 'hy-mode-hook 'test-extra-syntax)
+  (add-hook 'hy-mode-hook
+            (-partial '-add-font-lock-kwds test-font-lock-alist))
 
   ;; Git symbol notes
   ;; FIX - NEW - UPDATE - CLEAN
