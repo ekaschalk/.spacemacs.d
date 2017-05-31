@@ -211,8 +211,10 @@
 (defun dotspacemacs/user-init ()
   ;; Rids the verbose custom settings from being written to .spacemacs
   (setq custom-file "./elisp/.custom-settings.el")
-  (load "~/elisp/.custom-settings.el")
-  (load "~/elisp/prettify-utils"))
+  (load (if-linux "~/elisp/.custom-settings.el"
+                  "c:/~/elisp/.custom-settings.el"))
+  (load (if-linux "~/elisp/prettify-utils.el"
+                  "c:/~/elisp/prettify-utils.el")))
 
 ;;; Spacemacs-User-config
 (defun dotspacemacs/user-config ()
