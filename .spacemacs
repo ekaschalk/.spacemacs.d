@@ -13,8 +13,8 @@
 ;; Literate configs with org-mode are not natively supported by spacemacs
 ;; due to org-mode's interaction with spacemacs layers systems.
 ;;
-;; The approach taken is to use the `outline-minor-mode` in conjuction
-;; with `outshine-mode` and `navi-mode` to maintain benefits of literate
+;; The approach taken is to use the `outline-minor-mode' in conjuction
+;; with `outshine-mode' and `navi-mode' to maintain benefits of literate
 ;; documentation and org-modes navigation, collapsing, and narrowing facilities.
 ;;
 ;; Configuration is grouped by theme. The current groups are:
@@ -23,9 +23,9 @@
 ;;
 ;; Each group is broken into further components for targetted enabling/disabling
 ;; Some groups require a specific execution ordering. Ordering requirements are
-;; specifed with `Group x` comments. Within the group, the packages are lexical.
+;; specifed with Group x comments. Within the group, the packages are lexical.
 ;;
-;; Notable Features
+;; Notable
 ;; ---------
 ;; 1. Outline-minor-mode + Navi + Outshine mode configuration.
 ;;    - Org-like headings, navigation, faces in programming buffers.
@@ -33,7 +33,7 @@
 ;;    - Enhanced narrowing.
 ;; 2. Visual replacements (see https://ekaschalk.github.io/ for examples)
 ;;    - Fira code ligature integration (Fira Code font not required, I use Hack)
-;;    - Pretty symbols utilities and examples
+;;    - Significant pretty symbols customization and utilities
 ;; x. Miscellaneous small snippets.
 ;;    - Mypy flychecking integrated with pylint.
 ;;    - Unicode ellipsis for outline headings (org-ellipsis only for org-mode)
@@ -445,6 +445,7 @@
 
 ;;;; Extra-syntax-highlighting
 (defun dotspacemacs/user-config/display/extra-syntax-highlighting ()
+  "Extra syntax highlighting for desired keywords."
   (defun hy-extra-syntax ()
     (font-lock-add-keywords
      nil '(("\\<\\(self\\)" . 'font-lock-keyword-face)
@@ -462,6 +463,7 @@
 
 ;;;; Face-updates
 (defun dotspacemacs/user-config/display/face-updates ()
+  "Face configuration."
   (defun -update-faces ()
     (custom-theme-set-faces
      (car custom-enabled-themes)
@@ -491,6 +493,7 @@
 
 ;;;; Modeline
 (defun dotspacemacs/user-config/display/modeline ()
+  "Minimalistic spaceline-all-the-icons configuration."
   (use-package spaceline-all-the-icons
     :after spaceline  ; eval-after-load doesn't work for this setup
     :config (progn
@@ -537,12 +540,13 @@
 
 ;;;; Prettify-symbols
 (defun dotspacemacs/user-config/display/prettify-symbols ()
+  "Visually replace text with unicode."
   ;; Ivy keybinding has 'SPC i u' for consel-unicode-char
   ;; This function is extremely useful when exploring symbols
 
-  ;; NOTE This plist approach doesn't preserve spaces in unicode str
-  ;; Try `what-cursor-position' if the symbol doenst render.
+  ;; Try `what-cursor-position' if the symbol doesnt render.
   ;; Then see the fontsets below for choosing the offending symbol's fonts
+  ;; NOTE This plist approach doesn't preserve spaces in unicode str
   (setq pretty-options
         (-flatten
          (prettify-utils-generate
@@ -644,7 +648,7 @@
 
 ;;; Ivy
 (defun dotspacemacs/user-config/ivy ()
-  "Ivy completion configuration."
+  "Ivy completion framework configuration."
 
   ;; Perform default action on avy-selected minibuffer line
   (define-key ivy-minibuffer-map (kbd "C-l") 'ivy-avy)
