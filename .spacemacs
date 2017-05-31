@@ -463,6 +463,21 @@
     (custom-theme-set-faces
      (car custom-enabled-themes)
 
+     ;; mode-line, powerline-active1, powerline-active2
+     ;; considering binding % to something else
+     ;; spaceline-highlight-face
+     ;; all-the-icons-spaceline
+     ;; #63B2FF
+     ;; spaceline-highlight-face
+     ;; #51afef
+
+     ;; #282c34 - mode-line
+     ;; #21242b - doom-one bg color
+     ;; org-todo is the face to change
+
+     ;; Fixes bad tint for mode-line background in doom-one theme
+     '(mode-line ((t (:inherit mode-line :background "#21242b"))))
+
      ;; Matching parenthesis much more obvious when underlined
      '(show-paren-match ((t (:inherit show-paren-match :underline t))))
 
@@ -496,8 +511,8 @@
               ;; Configuration
               (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
                     powerline-default-separator 'arrow
-                    spaceline-all-the-icons-icon-set-modified 'circle
-                    spaceline-all-the-icons-icon-set-window-numbering 'solid
+                    spaceline-all-the-icons-icon-set-modified 'chain
+                    spaceline-all-the-icons-icon-set-window-numbering 'circle
                     spaceline-all-the-icons-separators-type 'arrow
                     spaceline-all-the-icons-primary-separator "")
 
@@ -510,7 +525,7 @@
               (spaceline-toggle-all-the-icons-flycheck-status-off)
               (spaceline-toggle-all-the-icons-time-off)
               (spaceline-toggle-all-the-icons-battery-status-off)
-              (spaceline-toggle-hud-on))))
+              (spaceline-toggle-hud-off))))
 
 ;;;; Outline-ellipsis-modification
 (defun dotspacemacs/user-config/display/outline-ellipsis-modification ()
