@@ -462,19 +462,6 @@
   (defun -update-faces ()
     (custom-theme-set-faces
      (car custom-enabled-themes)
-
-     ;; mode-line, powerline-active1, powerline-active2
-     ;; considering binding % to something else
-     ;; spaceline-highlight-face
-     ;; all-the-icons-spaceline
-     ;; #63B2FF
-     ;; spaceline-highlight-face
-     ;; #51afef
-
-     ;; #282c34 - mode-line
-     ;; #21242b - doom-one bg color
-     ;; org-todo is the face to change
-
      ;; Fixes bad tint for mode-line background in doom-one theme
      '(mode-line ((t (:inherit mode-line :background "#21242b"))))
 
@@ -713,7 +700,13 @@
   (evil-global-set-key 'visual (kbd "L")
                        (lambda () (interactive)  ; otherwise it goes past EOL
                          (evil-end-of-line)))
-  (evil-global-set-key 'motion (kbd "L") 'evil-end-of-line))
+  (evil-global-set-key 'motion (kbd "L") 'evil-end-of-line)
+
+  ;; I find '%' very useful but an annoying to reach binding.
+  ;; Since H is bound to BOL, we can rebind it to 0.
+  (evil-global-set-key 'normal (kbd "0") 'evil-jump-item)
+  (evil-global-set-key 'visual (kbd "0") 'evil-jump-item)
+  (evil-global-set-key 'motion (kbd "0") 'evil-jump-item))
 
 ;;;; File-links
 (defun dotspacemacs/user-config/navigation/file-links ()
