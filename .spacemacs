@@ -541,64 +541,57 @@
   ;; This function is extremely useful when exploring symbols
 
   ;; NOTE This plist approach doesn't preserve spaces in unicode str
+  ;; Try `what-cursor-position' if the symbol doenst render.
+  ;; Then see the fontsets below for choosing the offending symbol's fonts
   (setq pretty-options
         (-flatten
          (prettify-utils-generate
-          ;;;;;; Functional
-          (:lambda      "λ")
-          (:def         "ƒ")
+          ;;;;; Functional
+          (:lambda      "λ") (:def         "ƒ")
 
-          ;;;;;; Base Types
-          (:null        "∅")
-          (:true        "𝕋")
-          (:false       "𝔽")
+          ;;;;; Types
+          (:null        "∅") (:true        "𝕋") (:false       "𝔽")
+          (:int         "ℤ") (:float       "ℝ")
+          (:str         "𝕊") (:bool        "𝔹")
 
-          ;;;;;; Numeric Types
-          (:int         "ℤ")
-          (:float       "ℝ")
-
-          ;;;;;; Other Types
-          (:str         "𝕊")
-          (:bool        "𝔹")
-
-          ;;;;;; Operators
+          ;;;;; Flow
+          (:in          "∈") (:not-in      "∉")
+          (:return     "⟼") (:yield      "⟻")
           (:not         "￢")
           (:for         "∀")
-          (:in          "∈")
-          (:not-in      "∉")
-          (:return     "⟼")
-          (:yield      "⟻")
 
-          ;;;;;; Collections
+          ;;;;; Other
           (:tuple       "⨂")
-
-          ;;;;;; Other
           (:pipe        "")
           )))
 
-  (defun get-pairs (kwds)
+  (defun get-pairs (KWDS)
+    "KWDS '(:symb, majormode symb), returns alist for prettify-symbols-alist."
     (-non-nil
-     (--map (when-let (sym (plist-get kwds it))
-             `(,sym
+     (--map (when-let (major-mode-sym (plist-get KWDS it))
+             `(,major-mode-sym
                ,(plist-get pretty-options it)))
            pretty-options)))
 
   (setq hy-pretty-choices
-        (get-pairs '(:lambda "fn" :def "defn"
-                             :null "None" :true "True" :false "False"
-                             :tuple "#t"
-                             :pipe "ap-pipe"))
+        (get-pairs
+         '(:lambda "fn" :def "defn"
+                   :null "None" :true "True" :false "False"
+                   :in "in" :not "not"
+                   :tuple "#t"
+                   :pipe "ap-pipe"
+                   ))
 
         python-pretty-choices
-        (get-pairs '(:lambda "lambda" :def "def"
-                             :null "None" :true "True" :false "False"
-                             :int "int" :float "float"
-                             :str "str" :bool "bool"
-                             :not "not" :for "for" :in "in" :not-in "not in"
-                             :return "return" :yield "yield"
-                             :tuple "Tuple"
-                             :pipe "tz-pipe"
-                             ))
+        (get-pairs
+         '(:lambda "lambda" :def "def"
+                   :null "None" :true "True" :false "False"
+                   :int "int" :float "float" :str "str" :bool "bool"
+                   :not "not" :for "for" :in "in" :not-in "not in"
+                   :return "return" :yield "yield"
+                   :tuple "Tuple"
+                   :pipe "tz-pipe"
+                   ))
         )
 
   ;; Pretty pairs for modes
@@ -609,21 +602,13 @@
     (setq prettify-symbols-alist
           (append python-pretty-choices
                   (prettify-utils-generate
-                   ;; Syntax
                    ("self"     "⊙")
 
-                   ;; Mypy (Abstract Types)
-                   ("Callable" "ℱ")
-                   ("Mapping"  "ℳ")
-                   ("Iterable" "𝔗")
-                   ;; Mypy (Containers)
-                   ("Dict"     "𝔇")
-                   ("List"     "ℒ")
-                   ;; Mypy (operators, symbols)
-                   ("Union"    "⋃")
-                   ("Any"      "❔")
+                   ;; Mypy Stuff
+                   ("Dict"     "𝔇") ("List"     "ℒ")
+                   ("Callable" "ℱ") ("Mapping"  "ℳ") ("Iterable" "𝔗")
+                   ("Union"    "⋃") ("Any"      "❔")
                    ))))
-
 
   ;; Git symbol notes
   ;; FIX - NEW - UPDATE - CLEAN
@@ -634,6 +619,11 @@
   (set-fontset-font t '(#x2205 . #x2205) "Symbola")    ; ∅
   (set-fontset-font t '(#x27fb . #x27fc) "Symbola")    ; ⟻, ⟼
   (set-fontset-font t '(#x2299 . #x2299) "Symbola")    ; ⊙
+  (set-fontset-font t '(#x1d54b . #x1d54b) "Symbola")  ; 𝕋
+  (set-fontset-font t '(#x1d53d . #x1d53d) "Symbola")  ; 𝔽
+  (set-fontset-font t '(#x1d539 . #x1d539) "Symbola")  ; 𝔹
+  (set-fontset-font t '(#x1d507 . #x1d507) "Symbola")  ; 𝔇
+  (set-fontset-font t '(#x1d517 . #x1d517) "Symbola")  ; 𝔗
 
   ;; Enable pretty modes
   (add-hook 'hy-mode-hook 'set-hy-pretty-pairs)
