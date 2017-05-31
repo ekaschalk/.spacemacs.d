@@ -430,6 +430,7 @@
     ;; self does not work as a prettify symbol for hy, unlike python
     ("\\(self\\)"   ?⊙)))
 
+
 ;;;; All-the-icons
 (defun dotspacemacs/user-config/display/all-the-icons ()
   "Add hylang icon to all-the-icons for neotree and modeline integration."
@@ -524,6 +525,7 @@
 (defun dotspacemacs/user-config/display/outline-ellipsis-modification ()
   "Org-ellipsis but for outline-minor-mode headings"
   ;; Modified org-ellipsis implementation
+
   (add-hook
    'outline-minor-mode-hook
    (lambda ()
@@ -607,6 +609,7 @@
           (append python-pretty-choices
                   (prettify-utils-generate
                    ("self"     "⊙")
+                   ;; ("self"     "")
 
                    ;; Mypy Stuff
                    ("Dict"     "𝔇") ("List"     "ℒ")
@@ -614,8 +617,18 @@
                    ("Union"    "⋃") ("Any"      "❔")
                    ))))
 
+  ;; https://github.com/domtronn/all-the-icons.el
+  ;; Char:  (61503, #o170077, #xf03f, part of display "") point=57 of 2210 (3%) column=0
+  ;; (set-fontset-font t '(#xe906 . #xe906) "octicons")  ; 𝕊
+  ;; ("\\(hi\\)" "")
+  ;; (propertize (all-the-icons-octicon "package")
+  ;;             'face `(:family ,(all-the-icons-octicon-family) :height 2.5)
+  ;;             'display '(raise -0.1))
+  ;; (insert (all-the-icons-octicon "package"))
+
   ;; Git symbol notes
   ;; FIX - NEW - UPDATE - CLEAN
+  (set-fontset-font t '(#xe917 . #xe917) "all-the-icons") ; 
 
   ;; Force specified font for some symbols
   (set-fontset-font t '(#x1d54a . #x1d54a) "Symbola")  ; 𝕊
