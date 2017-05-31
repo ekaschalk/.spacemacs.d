@@ -540,56 +540,89 @@
   ;; Ivy keybinding has 'SPC i u' for consel-unicode-char
   ;; This function is extremely useful when exploring symbols
 
-  ;; Eventually I would like to standardize this across languages
-  ;; So all lambda-likes, func-def likes, etc. use common symbol
+  ;; NOTE This plist approach doesn't preserve spaces in unicode str
+  (setq pretty-options
+        (-flatten
+         (prettify-utils-generate
+          ;;;;;; Functional
+          (:lambda      "λ")
+          (:def         "ƒ")
+
+          ;;;;;; Base Types
+          (:null        "∅")
+          (:true        "𝕋")
+          (:false       "𝔽")
+
+          ;;;;;; Numeric Types
+          (:int         "ℤ")
+          (:float       "ℝ")
+
+          ;;;;;; Other Types
+          (:str         "𝕊")
+          (:bool        "𝔹")
+
+          ;;;;;; Operators
+          (:not         "￢")
+          (:for         "∀")
+          (:in          "∈")
+          (:not-in      "∉")
+          (:return     "⟼")
+          (:yield      "⟻")
+
+          ;;;;;; Collections
+          (:tuple       "⨂")
+
+          ;;;;;; Other
+          (:pipe        "")
+          )))
+
+  (defun get-pairs (kwds)
+    (-non-nil
+     (--map (when-let (sym (plist-get kwds it))
+             `(,sym
+               ,(plist-get pretty-options it)))
+           pretty-options)))
+
+  (setq hy-pretty-choices
+        (get-pairs '(:lambda "fn" :def "defn"
+                             :null "None" :true "True" :false "False"
+                             :tuple "#t"
+                             :pipe "ap-pipe"))
+
+        python-pretty-choices
+        (get-pairs '(:lambda "lambda" :def "def"
+                             :null "None" :true "True" :false "False"
+                             :int "int" :float "float"
+                             :str "str" :bool "bool"
+                             :not "not" :for "for" :in "in" :not-in "not in"
+                             :return "return" :yield "yield"
+                             :tuple "Tuple"
+                             :pipe "tz-pipe"
+                             ))
+        )
 
   ;; Pretty pairs for modes
   (defun set-hy-pretty-pairs ()
-    (setq prettify-symbols-alist
-          (prettify-utils-generate
-           ("fn"      "λ")
-           ("defn"    "ƒ")
-           ("#t"      "⨂")
-           ("ap-pipe" " ")
-           ("True"    "𝕋")
-           ("False"   "𝔽")
-           ("None"    "∅"))))
+    (setq prettify-symbols-alist hy-pretty-choices))
 
   (defun set-python-pretty-pairs ()
     (setq prettify-symbols-alist
-          (prettify-utils-generate
-           ;; Syntax
-           ("self"     "⊙")
-           ("def"      "ƒ")
-           ("not"      "￢")
-           ("for"      "∀")
-           ("in"       "∈")
-           ("not in"   "∉")
-           ("return"   "⟼")
-           ("yield"    "⟻")
+          (append python-pretty-choices
+                  (prettify-utils-generate
+                   ;; Syntax
+                   ("self"     "⊙")
 
-           ;; Types (Base)
-           ("int"      "ℤ")
-           ("float"    "ℝ")
-           ("str"      "𝕊")
-           ("bool"     "𝔹")
-           ("True"     "𝕋")
-           ("False"    "𝔽")
-
-           ;; Mypy (Abstract Types)
-           ("Callable" "ℱ")
-           ("Mapping"  "ℳ")
-           ("Iterable" "𝔗")
-           ;; Mypy (Containers)
-           ("Dict"     "𝔇")
-           ("List"     "ℒ")
-           ;; Mypy (operators, symbols)
-           ("Tuple"    "⨂")
-           ("Union"    "⋃")
-           ("Any"      "❔")
-
-           ;; Toolz
-           ("tz.pipe"  ""))))
+                   ;; Mypy (Abstract Types)
+                   ("Callable" "ℱ")
+                   ("Mapping"  "ℳ")
+                   ("Iterable" "𝔗")
+                   ;; Mypy (Containers)
+                   ("Dict"     "𝔇")
+                   ("List"     "ℒ")
+                   ;; Mypy (operators, symbols)
+                   ("Union"    "⋃")
+                   ("Any"      "❔")
+                   ))))
 
 
   ;; Git symbol notes
