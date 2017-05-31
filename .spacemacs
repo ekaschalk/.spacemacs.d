@@ -18,7 +18,8 @@
 ;; documentation and org-modes navigation, collapsing, and narrowing facilities.
 ;;
 ;; Configuration is grouped by theme. The current groups are:
-;; Display - Configuration - Navigation - Misc - Python - Org - Outshine - GNUS
+;; Display - Ivy - Configuration - Navigation - Misc - Python - Org - Outshine
+;; - GNUS
 ;;
 ;; Each group is broken into further components for targetted enabling/disabling
 ;; Some groups require a specific execution ordering. Ordering requirements are
@@ -33,9 +34,10 @@
 ;; 2. Visual replacements (see https://ekaschalk.github.io/ for examples)
 ;;    - Fira code ligature integration (Fira Code font not required, I use Hack)
 ;;    - Pretty symbols utilities and examples
-;; x. Miscellaneous
+;; x. Miscellaneous small snippets.
 ;;    - Mypy flychecking integrated with pylint.
 ;;    - Unicode ellipsis for outline headings (org-ellipsis only for org-mode)
+;;    - Many premium keybindings (C-SPC, C-h, 0, ...) have been rebound
 
 ;;; OS-Config
 ;; Utilities for integrating Windows and Linux.
@@ -218,6 +220,7 @@
 
 ;;; Spacemacs-User-config
 (defun dotspacemacs/user-config ()
+  ;; Dash is a general purpose, modern list and functional api for emacs lisp
   (with-eval-after-load 'dash
     ;; Group 1
     (dotspacemacs/user-config/display)
