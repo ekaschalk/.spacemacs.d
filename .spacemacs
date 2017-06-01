@@ -540,6 +540,79 @@
         (vconcat
          (mapcar (lambda (c) (make-glyph-code c 'font-lock-keyword-face)) "▼")))))))
 
+;;;; Pretty-magit
+(defun dotspacemacs/user-config/display/prettify-magit ()
+  ;; https://github.com/domtronn/all-the-icons.el
+  ;; TODO look through
+  ;; (all-the-icons-insert-icons-for 'material)
+
+  ;; Set all-the-icons unicode numbers for magit commit headers
+  (set-fontset-font t '(#xf091 . #xf091) "github-octicons") ; 
+  (set-fontset-font t '(#xf059 . #xf059) "github-octicons") ; 
+  (set-fontset-font t '(#xf076 . #xf076) "github-octicons") ; 
+  (set-fontset-font t '(#xf075 . #xf075) "github-octicons") ; 
+  (set-fontset-font t '(#xf0c4 . #xf0c4) "fontawesome")     ; 
+
+  (defconst magit-font-lock-alist
+    '(("\\(Feature\\)"        ?)
+      ("\\(Add\\)"            ?)
+      ("\\(Fix\\)"            ?)
+      ("\\(Clean\\)"          ?)
+      ("\\(Docs\\)"           ?)))
+
+  (defface my-magit-base-face
+    '((t :weight bold  :height 1.5))
+    "Base face for magit commit headers."
+    :group 'magit-faces)
+
+  (defface my-magit-feature-face
+    '((t :foreground "gray" :inherit my-magit-base-face))
+    "Feature commit header face.")
+
+  (defface my-magit-fix-face
+    '((t :foreground "green" :inherit my-magit-base-face))
+    "Fix commit header face.")
+
+  (defface my-magit-add-face
+    '((t :foreground "yellow" :inherit my-magit-base-face))
+    "Add commit header face.")
+
+  (defface my-magit-clean-face
+    '((t :foreground "blue" :inherit my-magit-base-face))
+    "Clean commit header face.")
+
+  (defface my-magit-docs-face
+    '((t :foreground "red" :inherit my-magit-base-face))
+    "Docs commit header face.")
+
+  (defun test ()
+    (with-silent-modifications
+      (save-excursion
+        (evil-goto-first-line)
+        (while (search-forward-regexp "\\(status\\)" nil t)
+          (compose-region
+           (match-beginning 1)
+           (match-end 1)
+           ?
+           )))))
+          ;; (add-face-text-property
+          ;;  (match-beginning 1)
+          ;;  (match-end 1)
+          ;;  '(:foreground "green"))))))
+
+  (add-hook 'magit-log-mode-hook
+            (lambda ()
+              (font-lock-add-keywords
+               nil '(("\\<\\(Feature:\\)\\>" .  'my-magit-feature-face)
+                   ("\\<\\(Add:\\)\\>" .      'my-magit-add-face)
+                   ("\\<\\(Fix:\\)\\>" .      'my-magit-fix-face)
+                   ("\\<\\(Clean:\\)\\>" .    'my-magit-clean-face)
+                   ("\\<\\(Docs:\\)\\>" .     'my-magit-docs-face)))))
+
+  (with-eval-after-load 'magit
+    (advice-add 'magit-status :after 'test)
+    (advice-add 'magit-refresh-buffer :after 'test)))
+
 ;;;; Prettify-symbols
 (defun dotspacemacs/user-config/display/prettify-symbols ()
   "Visually replace text with unicode."
@@ -572,7 +645,7 @@
           )))
 
   (defun get-pairs (KWDS)
-    "KWDS '(:symb, majormode symb), returns alist for prettify-symbols-alist."
+    "KWDS '(:def-symb mode-symb), returns alist for prettify-symbols-alist."
     (-non-nil
      (--map (when-let (major-mode-sym (plist-get KWDS it))
              `(,major-mode-sym
@@ -608,110 +681,14 @@
     (setq prettify-symbols-alist
           (append python-pretty-choices
                   (prettify-utils-generate
+                   ;; Self for hy necessarily done through font-lock
                    ("self"     "⊙")
-                   ;; ("self"     "")
 
                    ;; Mypy Stuff
                    ("Dict"     "𝔇") ("List"     "ℒ")
                    ("Callable" "ℱ") ("Mapping"  "ℳ") ("Iterable" "𝔗")
                    ("Union"    "⋃") ("Any"      "❔")
                    ))))
-
-  ;; https://github.com/domtronn/all-the-icons.el
-  ;; TODO look through
-  ;; (all-the-icons-insert-icons-for 'material)
-
-  (defface my-magit-base-face
-    '((t :weight bold  :height 1.5))
-    "My Face."
-    :group 'magit-faces)
-
-  (defface my-magit-feature-face
-    '((t :foreground "gray" :inherit my-magit-base-face))
-    "My Face.")
-
-  (defface my-magit-fix-face
-    '((t :foreground "green" :inherit my-magit-base-face))
-    "My Face.")
-
-  (defface my-magit-add-face
-    '((t :foreground "yellow" :inherit my-magit-base-face))
-    "My Face.")
-
-  (defface my-magit-clean-face
-    '((t :foreground "blue" :inherit my-magit-base-face))
-    "My Face.")
-
-  (defface my-magit-docs-face
-    '((t :foreground "red" :inherit my-magit-base-face))
-    "My Face.")
-
-  ;; TODO its working, make robust
-  (defun test ()
-    ;; (when (string= major-mode "magit-status-mode")
-    (interactive)
-    (with-silent-modifications
-      (save-excursion
-        (evil-goto-first-line)
-        (while (search-forward-regexp "\\(status\\)" nil t)
-          (compose-region
-           (match-beginning 1)
-           (match-end 1)
-           ?
-           )))))
-          ;; (add-face-text-property
-          ;;  (match-beginning 1)
-          ;;  (match-end 1)
-          ;;  '(:foreground "green"))))))
-
-  (require 'magit)
-  ;; WORKING
-  ;; (advice-add 'magit-status :after 'test)
-
-  ;; magit-status
-  ;; (add-hook 'magit-mode-hook 'test)
-  ;; (add-hook 'after-change-major-mode-hook 'test)
-  ;; (magit-add-section-hook 'magit-mode-hook 'test)
-
-
-  ;; (add-hook 'change-major-mode 'test)
-  ;; (add-hook 'change-major-mode-after-body-hook 'test)
-
-  (defconst magit-font-lock-alist
-    '(
-      ("\\(Feature\\)"        ?)
-      ("\\(Add\\)"            ?)
-      ("\\(Fix\\)"            ?)
-      ("\\(Clean\\)"          ?)
-      ("\\(Docs\\)"           ?)
-      ))
-
-  (add-hook 'magit-log-mode-hook
-            (lambda ()
-              (font-lock-add-keywords
-               nil '(
-                   ("\\<\\(Feature:\\)\\>" .  'my-magit-feature-face)
-                   ("\\<\\(Add:\\)\\>" .      'my-magit-add-face)
-                   ("\\<\\(Fix:\\)\\>" .      'my-magit-fix-face)
-                   ("\\<\\(Clean:\\)\\>" .    'my-magit-clean-face)
-                   ("\\<\\(Docs:\\)\\>" .     'my-magit-docs-face)
-                   ))
-              ))
-
-  ;; (magit-add-section-hook
-  ;;  'magit-status-sections-hook
-  ;;  (-partial '-add-font-lock-kwds magit-font-lock-alist))
-  ;; (add-hook 'magit-log-mode-hook
-  ;;           (-partial '-add-font-lock-kwds magit-font-lock-alist))
-  ;; (add-hook 'magit-log-mode-hook 'magit-extra-syntax)
-  ;; (add-face-text-property 41710 41720 '(:foreground "green"))
-
-  ;; (set-fontset-font t '(#xe917 . #xe917) "all-the-icons")   ; 
-  (set-fontset-font t '(#xf091 . #xf091) "github-octicons") ; 
-  (set-fontset-font t '(#xf059 . #xf059) "github-octicons") ; 
-  (set-fontset-font t '(#xf076 . #xf076) "github-octicons") ; 
-  (set-fontset-font t '(#xf075 . #xf075) "github-octicons") ; 
-  (set-fontset-font t '(#xf0c4 . #xf0c4) "fontawesome")     ; 
 
   ;; Force specified font for some symbols
   (set-fontset-font t '(#x1d54a . #x1d54a) "Symbola")  ; 𝕊
