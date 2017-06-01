@@ -31,9 +31,10 @@
 ;;    - Org-like headings, navigation, faces in programming buffers.
 ;;    - Vim bindings for outline-minor-mode and navi-mode.
 ;;    - Enhanced narrowing.
-;; 2. Visual replacements (see https://ekaschalk.github.io/ for examples)
+;; 2. Visual replacements (see https://ekaschalk.github.io/ for old screenshots)
 ;;    - Fira code ligature integration (Fira Code font not required, I use Hack)
-;;    - Significant pretty symbols customization and utilities
+;;    - Math and other custom symbols for major modes
+;;    - Pretty magit commit headers (eg. Fix: -> fontified bug font-awesome icon)
 ;; x. Miscellaneous small snippets.
 ;;    - Mypy flychecking integrated with pylint.
 ;;    - Unicode ellipsis for outline headings (org-ellipsis only for org-mode)
@@ -252,6 +253,7 @@
   (dotspacemacs/user-config/display/face-updates)
   (dotspacemacs/user-config/display/modeline)
   (dotspacemacs/user-config/display/outline-ellipsis-modification)
+  (dotspacemacs/user-config/display/prettify-magit)
   (dotspacemacs/user-config/display/prettify-symbols))
 
 ;;;; Windows-frame-size-fix
@@ -542,11 +544,12 @@
 
 ;;;; Pretty-magit
 (defun dotspacemacs/user-config/display/prettify-magit ()
-  ;; https://github.com/domtronn/all-the-icons.el
+  "Add faces to Magit manually for things like commit headers eg. (Add: ...)."
   ;; TODO look through
+  ;; https://github.com/domtronn/all-the-icons.el
   ;; (all-the-icons-insert-icons-for 'material)
 
-  ;; Set all-the-icons unicode numbers for magit commit headers
+  ;; Requires all-the-icons font, uni numbers for magit commit headers
   (set-fontset-font t '(#xf091 . #xf091) "github-octicons") ; 
   (set-fontset-font t '(#xf059 . #xf059) "github-octicons") ; 
   (set-fontset-font t '(#xf076 . #xf076) "github-octicons") ; 
@@ -566,26 +569,50 @@
     :group 'magit-faces)
 
   (defface my-magit-feature-face
-    '((t :foreground "gray" :inherit my-magit-base-face))
+    '((t :foreground "gray"
+         :inherit my-magit-base-face))
     "Feature commit header face.")
 
   (defface my-magit-fix-face
-    '((t :foreground "green" :inherit my-magit-base-face))
+    '((t :foreground "green"
+         :inherit my-magit-base-face))
     "Fix commit header face.")
 
   (defface my-magit-add-face
-    '((t :foreground "yellow" :inherit my-magit-base-face))
+    '((t :foreground "yellow"
+         :inherit my-magit-base-face))
     "Add commit header face.")
 
   (defface my-magit-clean-face
-    '((t :foreground "blue" :inherit my-magit-base-face))
+    '((t :foreground "blue"
+         :inherit my-magit-base-face))
     "Clean commit header face.")
 
   (defface my-magit-docs-face
-    '((t :foreground "red" :inherit my-magit-base-face))
+    '((t :foreground "red"
+         :inherit my-magit-base-face))
     "Docs commit header face.")
 
-  (defun test ()
+  (add-hook 'magit-log-mode-hook
+            (lambda ()
+              (font-lock-add-keywords
+               nil '(("\\<\\(Feature:\\)\\>" .  'my-magit-feature-face)
+                   ("\\<\\(Add:\\)\\>" .      'my-magit-add-face)
+                   ("\\<\\(Fix:\\)\\>" .      'my-magit-fix-face)
+                   ("\\<\\(Clean:\\)\\>" .    'my-magit-clean-face)
+                   ("\\<\\(Docs:\\)\\>" .     'my-magit-docs-face)))))
+
+  ;; (defun -build-font-lock-alist (regex-char-pair)
+  ;;   `(,(car regex-char-pair)
+  ;;     (0 (prog1 ()
+  ;;          (compose-region
+  ;;           (match-beginning 1)
+  ;;           (match-end 1)
+  ;;           ,(concat "	"
+  ;;                    (list (cadr regex-char-pair))))))))
+
+  (defun add-magit-faces ()
+    (interactive)
     (with-silent-modifications
       (save-excursion
         (evil-goto-first-line)
@@ -600,18 +627,9 @@
           ;;  (match-end 1)
           ;;  '(:foreground "green"))))))
 
-  (add-hook 'magit-log-mode-hook
-            (lambda ()
-              (font-lock-add-keywords
-               nil '(("\\<\\(Feature:\\)\\>" .  'my-magit-feature-face)
-                   ("\\<\\(Add:\\)\\>" .      'my-magit-add-face)
-                   ("\\<\\(Fix:\\)\\>" .      'my-magit-fix-face)
-                   ("\\<\\(Clean:\\)\\>" .    'my-magit-clean-face)
-                   ("\\<\\(Docs:\\)\\>" .     'my-magit-docs-face)))))
-
   (with-eval-after-load 'magit
-    (advice-add 'magit-status :after 'test)
-    (advice-add 'magit-refresh-buffer :after 'test)))
+    (advice-add 'magit-status :after 'add-magit-faces)
+    (advice-add 'magit-refresh-buffer :after 'add-magit-faces)))
 
 ;;;; Prettify-symbols
 (defun dotspacemacs/user-config/display/prettify-symbols ()
