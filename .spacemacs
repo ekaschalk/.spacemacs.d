@@ -556,8 +556,15 @@
   (set-fontset-font t '(#xf075 . #xf075) "github-octicons") ; 
   (set-fontset-font t '(#xf0c4 . #xf0c4) "fontawesome")     ; 
 
+  (setq my-magit-colors '(:feature "gray"
+                          :fix "#FB6542"  ; sunset
+                          :add "#375E97"  ; sky
+                          :clean "#FFBB00"  ; sunflower
+                          :docs "3F681C" ; grass
+                          ))
+
   (defface my-magit-base-face
-    '((t :weight bold  :height 1.1))
+    '((t :weight bold  :height 1.2))
     "Base face for magit commit headers."
     :group 'magit-faces)
 
@@ -567,22 +574,22 @@
     "Feature commit header face.")
 
   (defface my-magit-fix-face
-    '((t :foreground "green"
+    '((t :foreground "#763626"  ; autumn foliage
          :inherit my-magit-base-face))
     "Fix commit header face.")
 
   (defface my-magit-add-face
-    '((t :foreground "yellow"
+    '((t :foreground "#336B87"  ; stone
          :inherit my-magit-base-face))
     "Add commit header face.")
 
   (defface my-magit-clean-face
-    '((t :foreground "blue"
+    '((t :foreground "#90AFC5"  ; mist
          :inherit my-magit-base-face))
     "Clean commit header face.")
 
   (defface my-magit-docs-face
-    '((t :foreground "red"
+    '((t :foreground "#2A3132"   ; shadow
          :inherit my-magit-base-face))
     "Docs commit header face.")
 
