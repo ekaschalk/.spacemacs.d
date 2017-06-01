@@ -27,17 +27,17 @@
 ;;
 ;; Notable
 ;; ---------
-;; 1. Outline-minor-mode + Navi + Outshine mode configuration.
+;; 1. Outline-minor-mode + Navi + Outshine mode enhancements.
 ;;    - Org-like headings, navigation, faces in programming buffers.
 ;;    - Vim bindings for outline-minor-mode and navi-mode.
 ;;    - Enhanced narrowing.
-;; 2. Visual replacements (see https://ekaschalk.github.io/ for old screenshots)
+;; 2. Unique visual enhancements.
 ;;    - Fira code ligature integration (Fira Code font not required, I use Hack)
 ;;    - Math and other custom symbols for major modes
-;;    - Pretty magit commit headers (eg. Fix: -> fontified bug font-awesome icon)
+;;    - Pretty magit commits
 ;; x. Miscellaneous small snippets.
 ;;    - Mypy flychecking integrated with pylint.
-;;    - Unicode ellipsis for outline headings (org-ellipsis only for org-mode)
+;;    - Unicode ellipsis for outline headings
 ;;    - Many premium keybindings (C-SPC, C-h, 0, ...) have been rebound
 
 ;;; OS-Config
@@ -56,8 +56,6 @@
       '(better-defaults
         git
         gnus
-        (ivy :variables
-             ivy-extra-directories nil)
         org
         ranger
         syntax-checking
@@ -67,6 +65,8 @@
                          auto-completion-enable-snippets-in-popup t)
         (evil-snipe :variables
                     evil-snipe-enable-alternate-f-and-t-behaviors t)
+        (ivy :variables
+             ivy-extra-directories nil)
         (shell :variables
                shell-default-shell 'eshell)
         (version-control :variables
