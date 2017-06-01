@@ -556,15 +556,8 @@
   (set-fontset-font t '(#xf075 . #xf075) "github-octicons") ; 
   (set-fontset-font t '(#xf0c4 . #xf0c4) "fontawesome")     ; 
 
-  (defconst magit-font-lock-alist
-    '(("\\(Feature\\)"        ?)
-      ("\\(Add\\)"            ?)
-      ("\\(Fix\\)"            ?)
-      ("\\(Clean\\)"          ?)
-      ("\\(Docs\\)"           ?)))
-
   (defface my-magit-base-face
-    '((t :weight bold  :height 1.5))
+    '((t :weight bold  :height 1.1))
     "Base face for magit commit headers."
     :group 'magit-faces)
 
@@ -593,39 +586,32 @@
          :inherit my-magit-base-face))
     "Docs commit header face.")
 
-  (add-hook 'magit-log-mode-hook
-            (lambda ()
-              (font-lock-add-keywords
-               nil '(("\\<\\(Feature:\\)\\>" .  'my-magit-feature-face)
-                   ("\\<\\(Add:\\)\\>" .      'my-magit-add-face)
-                   ("\\<\\(Fix:\\)\\>" .      'my-magit-fix-face)
-                   ("\\<\\(Clean:\\)\\>" .    'my-magit-clean-face)
-                   ("\\<\\(Docs:\\)\\>" .     'my-magit-docs-face)))))
-
-  ;; (defun -build-font-lock-alist (regex-char-pair)
-  ;;   `(,(car regex-char-pair)
-  ;;     (0 (prog1 ()
-  ;;          (compose-region
-  ;;           (match-beginning 1)
-  ;;           (match-end 1)
-  ;;           ,(concat "	"
-  ;;                    (list (cadr regex-char-pair))))))))
+  (setq pretty-magit-faces '(("\\<\\(Feature:\\)"    'my-magit-feature-face)
+                             ("\\<\\(Add:\\)"        'my-magit-add-face)
+                             ("\\<\\(Fix:\\)"        'my-magit-fix-face)
+                             ("\\<\\(Clean:\\)"      'my-magit-clean-face)
+                             ("\\<\\(Docs:\\)"       'my-magit-docs-face))
+        pretty-magit-symbols '(("\\<\\(Feature:\\)"  ?)
+                               ("\\<\\(Add:\\)"      ?)
+                               ("\\<\\(Fix:\\)"      ?)
+                               ("\\<\\(Clean:\\)"    ?)
+                               ("\\<\\(Docs:\\)"     ?)))
 
   (defun add-magit-faces ()
     (interactive)
     (with-silent-modifications
-      (save-excursion
-        (evil-goto-first-line)
-        (while (search-forward-regexp "\\(status\\)" nil t)
-          (compose-region
-           (match-beginning 1)
-           (match-end 1)
-           ?
-           )))))
-          ;; (add-face-text-property
-          ;;  (match-beginning 1)
-          ;;  (match-end 1)
-          ;;  '(:foreground "green"))))))
+      (--each pretty-magit-faces
+        (save-excursion
+          (evil-goto-first-line)
+          (while (search-forward-regexp (car it) nil t)
+            (add-face-text-property
+             (match-beginning 1) (match-end 1) (cdr it)))))
+      (--each pretty-magit-symbols
+        (save-excursion
+          (evil-goto-first-line)
+          (while (search-forward-regexp (car it) nil t)
+            (compose-region
+             (match-beginning 1) (match-end 1) (cdr it)))))))
 
   (with-eval-after-load 'magit
     (advice-add 'magit-status :after 'add-magit-faces)
