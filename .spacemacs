@@ -638,6 +638,10 @@
             (compose-region
              (match-beginning 1) (match-end 1) (cdr it)))))))
 
+  ;; NOTE Faces don't get applied to write commit buffer (its not magit-mode)
+  ;; it is text-mode and the hook only runs once unlike constant font lock
+  ;; However, using font lock breaks the commit buffer styling.
+  ;; Decided the bug is not significant enough to worry about atm.
   (with-eval-after-load 'magit
     (advice-add 'magit-status :after 'add-magit-faces)
     (advice-add 'magit-refresh-buffer :after 'add-magit-faces)))
