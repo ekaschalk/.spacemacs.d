@@ -618,41 +618,8 @@
                    ))))
 
   ;; https://github.com/domtronn/all-the-icons.el
-  ;; (all-the-icons-insert-icons-for 'alltheicon)
+  ;; TODO look through
   ;; (all-the-icons-insert-icons-for 'material)
-  ;; (all-the-icons-insert-icons-for 'fontawesome)
-
-  ;; all-the-icons-alltheicon
-  ;; all-the-icons-faicon
-  ;; all-the-icons-fileicon
-  ;; all-the-icons-oction
-  ;; all-the-icons-wicon
-
-  ;; Char:  (61503, #o170077, #xf03f, part of display "") point=57 of 2210 (3%) column=0
-  ;; (set-fontset-font t '(#xe906 . #xe906) "octicons")  ; 𝕊
-  ;; ("\\(hi\\)" "")
-  ;; (propertize (all-the-icons-octicon "package")
-  ;;             'face `(:family ,(all-the-icons-octicon-family) :height 2.5)
-  ;;             'display '(raise -0.1))
-  ;; (insert (all-the-icons-octicon "package"))
-
-  ;; http://fontawesome.io/cheatsheet/
-  ;; Worth exploring
-  ;; fa-angle-left, fa-angle-double-left
-  ;; fa-asterisk, fa-envelope, fa-flash
-  ;; fa-folder, fa-tag, wi-meteor, wi-time-2
-
-  ;; WHAT ABOUT REPLACING todos with icons?
-
-  ;; Options:
-  ;; fa-bug == oct-buf
-  ;; fa-check-square-o, fa-recycle, fa-scissors, fa-star
-  ;; fa-check, fa-times
-  ;; oct-bug, oct-check, oct-checklist, oct-clock
-  ;; oct-gear, oct-info, oct-issue-closed
-  ;; oct-milestone, oct-sync
-
-  ;; magit-mode effects all sub-magit-modes
 
   (defface magit-feature-face
     '((t :foreground "blue" :weight bold :underline t :height 1.5))
