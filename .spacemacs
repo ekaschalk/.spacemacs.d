@@ -621,48 +621,78 @@
   ;; TODO look through
   ;; (all-the-icons-insert-icons-for 'material)
 
-  (defface magit-feature-face
-    '((t :foreground "blue" :weight bold :underline t :height 1.5))
+  (defface my-magit-base-face
+    '((t :weight bold  :height 1.5))
+    "My Face."
+    :group 'magit-faces)
+
+  (defface my-magit-feature-face
+    '((t :foreground "gray" :inherit my-magit-base-face))
     "My Face.")
 
-  (defface magit-fix-face
-    '((t :foreground "blue" :weight bold :underline t :height 1.5))
+  (defface my-magit-fix-face
+    '((t :foreground "green" :inherit my-magit-base-face))
     "My Face.")
 
-  (defface magit-add-face
-    '((t :foreground "blue" :weight bold :underline t :height 1.5))
+  (defface my-magit-add-face
+    '((t :foreground "yellow" :inherit my-magit-base-face))
     "My Face.")
 
-  (defface magit-clean-face
-    '((t :foreground "blue" :weight bold :underline t :height 1.5))
+  (defface my-magit-clean-face
+    '((t :foreground "blue" :inherit my-magit-base-face))
     "My Face.")
 
-  (defface magit-docs-face
-    '((t :foreground "blue" :weight bold :underline t :height 1.5))
+  (defface my-magit-docs-face
+    '((t :foreground "red" :inherit my-magit-base-face))
     "My Face.")
 
-  (defun magit-extra-syntax ()
-    (font-lock-add-keywords
-     nil '(
-         ("\\(Feature\\):" .  'magit-feature-face)
-         ("\\(Add\\):" .      'magit-add-face)
-         ("\\(Fix\\):" .      'magit-fix-face)
-         ("\\(Clean\\):" .    'magit-clean-face)
-         ("\\(Docs\\):" .     'magit-docs-face)
-         )))
+  ;; TODO its working, make robust
+  (defun test ()
+    (with-silent-modifications
+      (save-excursion
+        (evil-goto-first-line)
+        (while (search-forward-regexp "\\(all\\)" nil t)
+          (compose-region
+           (match-beginning 1)
+           (match-end 1)
+           ?
+           )))))
+          ;; (add-face-text-property
+          ;;  (match-beginning 1)
+          ;;  (match-end 1)
+          ;;  '(:foreground "green"))))))
 
   (defconst magit-font-lock-alist
     '(
-      ("\\(Feature\\):"        ?)
-      ("\\(Add\\):"            ?)
-      ("\\(Fix\\):"            ?)
-      ("\\(Clean\\):"          ?)
-      ("\\(Docs\\):"           ?)
+      ("\\(Feature\\)"        ?)
+      ("\\(Add\\)"            ?)
+      ("\\(Fix\\)"            ?)
+      ("\\(Clean\\)"          ?)
+      ("\\(Docs\\)"           ?)
       ))
 
-  (add-hook 'magit-mode-hook 'magit-extra-syntax)
-  (add-hook 'magit-mode-hook
-            (-partial '-add-font-lock-kwds magit-font-lock-alist))
+  (add-hook 'magit-log-mode-hook
+            (lambda ()
+              (font-lock-add-keywords
+               nil '(
+                   ("\\<\\(Feature:\\)\\>" .  'my-magit-feature-face)
+                   ("\\<\\(Add:\\)\\>" .      'my-magit-add-face)
+                   ("\\<\\(Fix:\\)\\>" .      'my-magit-fix-face)
+                   ("\\<\\(Clean:\\)\\>" .    'my-magit-clean-face)
+                   ("\\<\\(Docs:\\)\\>" .     'my-magit-docs-face)
+                   ))
+              ))
+
+  ;; (require 'magit)
+  ;; (magit-add-section-hook 'magit-mode-hook 'test)
+
+  ;; (magit-add-section-hook
+  ;;  'magit-status-sections-hook
+  ;;  (-partial '-add-font-lock-kwds magit-font-lock-alist))
+  ;; (add-hook 'magit-log-mode-hook
+  ;;           (-partial '-add-font-lock-kwds magit-font-lock-alist))
+  ;; (add-hook 'magit-log-mode-hook 'magit-extra-syntax)
+  ;; (add-face-text-property 41710 41720 '(:foreground "green"))
 
   ;; (set-fontset-font t '(#xe917 . #xe917) "all-the-icons")   ; 
   (set-fontset-font t '(#xf091 . #xf091) "github-octicons") ; 
