@@ -545,8 +545,9 @@
 ;;;; Pretty-magit
 (defun dotspacemacs/user-config/display/prettify-magit ()
   "Add faces to Magit manually for things like commit headers eg. (Add: ...)."
-  ;; TODO look through
+
   ;; https://github.com/domtronn/all-the-icons.el
+  ;; Can look through the icons by opening a scratch a buffer and running eg.
   ;; (all-the-icons-insert-icons-for 'material)
 
   ;; Requires all-the-icons font, uni numbers for magit commit headers
@@ -555,41 +556,53 @@
   (set-fontset-font t '(#xf076 . #xf076) "github-octicons") ; 
   (set-fontset-font t '(#xf075 . #xf075) "github-octicons") ; 
   (set-fontset-font t '(#xf0c4 . #xf0c4) "fontawesome")     ; 
+  (set-fontset-font t '(#xf09b . #xf09b) "fontawesome")     ; 
+  (set-fontset-font t '(#xe907 . #xe907) "all-the-icons")   ; 
 
-  (setq my-magit-colors '(:feature "gray"
+  (setq my-magit-colors '(:feature "silver"
                           :fix "#FB6542"  ; sunset
                           :add "#375E97"  ; sky
                           :clean "#FFBB00"  ; sunflower
-                          :docs "3F681C" ; grass
+                          :docs "#3F681C" ; grass
                           ))
 
   (defface my-magit-base-face
-    '((t :weight bold  :height 1.2))
+    `((t :weight bold  :height 1.2))
     "Base face for magit commit headers."
     :group 'magit-faces)
 
   (defface my-magit-feature-face
-    '((t :foreground "gray"
+    `((t :foreground ,(plist-get my-magit-colors :feature)
          :inherit my-magit-base-face))
     "Feature commit header face.")
 
   (defface my-magit-fix-face
-    '((t :foreground "#763626"  ; autumn foliage
+    `((t :foreground ,(plist-get my-magit-colors :fix)
          :inherit my-magit-base-face))
     "Fix commit header face.")
 
   (defface my-magit-add-face
-    '((t :foreground "#336B87"  ; stone
+    `((t :foreground ,(plist-get my-magit-colors :add)
          :inherit my-magit-base-face))
     "Add commit header face.")
 
   (defface my-magit-clean-face
-    '((t :foreground "#90AFC5"  ; mist
+    `((t :foreground ,(plist-get my-magit-colors :clean)
          :inherit my-magit-base-face))
     "Clean commit header face.")
 
   (defface my-magit-docs-face
-    '((t :foreground "#2A3132"   ; shadow
+    `((t :foreground ,(plist-get my-magit-colors :docs)
+         :inherit my-magit-base-face))
+    "Docs commit header face.")
+
+  (defface my-magit-master-face
+    `((t :box t
+         :inherit my-magit-base-face))
+    "Docs commit header face.")
+
+  (defface my-magit-origin-face
+    `((t :box t
          :inherit my-magit-base-face))
     "Docs commit header face.")
 
@@ -597,12 +610,17 @@
                              ("\\<\\(Add:\\)"        'my-magit-add-face)
                              ("\\<\\(Fix:\\)"        'my-magit-fix-face)
                              ("\\<\\(Clean:\\)"      'my-magit-clean-face)
-                             ("\\<\\(Docs:\\)"       'my-magit-docs-face))
+                             ("\\<\\(Docs:\\)"       'my-magit-docs-face)
+                             ("\\<\\(master\\)\\>"            'my-magit-master-face)
+                             ("\\<\\(origin/master\\)\\>"     'my-magit-origin-face))
+
         pretty-magit-symbols '(("\\<\\(Feature:\\)"  ?)
                                ("\\<\\(Add:\\)"      ?)
                                ("\\<\\(Fix:\\)"      ?)
                                ("\\<\\(Clean:\\)"    ?)
-                               ("\\<\\(Docs:\\)"     ?)))
+                               ("\\<\\(Docs:\\)"     ?)
+                               ("\\<\\(master\\)\\>"     ?)
+                               ("\\<\\(origin/master\\)" ?)))
 
   (defun add-magit-faces ()
     (interactive)
