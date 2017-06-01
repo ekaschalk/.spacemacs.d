@@ -648,10 +648,12 @@
 
   ;; TODO its working, make robust
   (defun test ()
+    ;; (when (string= major-mode "magit-status-mode")
+    (interactive)
     (with-silent-modifications
       (save-excursion
         (evil-goto-first-line)
-        (while (search-forward-regexp "\\(all\\)" nil t)
+        (while (search-forward-regexp "\\(status\\)" nil t)
           (compose-region
            (match-beginning 1)
            (match-end 1)
@@ -661,6 +663,19 @@
           ;;  (match-beginning 1)
           ;;  (match-end 1)
           ;;  '(:foreground "green"))))))
+
+  (require 'magit)
+  ;; WORKING
+  ;; (advice-add 'magit-status :after 'test)
+
+  ;; magit-status
+  ;; (add-hook 'magit-mode-hook 'test)
+  ;; (add-hook 'after-change-major-mode-hook 'test)
+  ;; (magit-add-section-hook 'magit-mode-hook 'test)
+
+
+  ;; (add-hook 'change-major-mode 'test)
+  ;; (add-hook 'change-major-mode-after-body-hook 'test)
 
   (defconst magit-font-lock-alist
     '(
@@ -682,9 +697,6 @@
                    ("\\<\\(Docs:\\)\\>" .     'my-magit-docs-face)
                    ))
               ))
-
-  ;; (require 'magit)
-  ;; (magit-add-section-hook 'magit-mode-hook 'test)
 
   ;; (magit-add-section-hook
   ;;  'magit-status-sections-hook
