@@ -636,32 +636,73 @@
   ;;             'display '(raise -0.1))
   ;; (insert (all-the-icons-octicon "package"))
 
-  (defface my-test-face
-    '((t :foreground "white"
-         :background "aquamarine"
-         :weight bold
-         :underline t
-         :height 1.9
-         ))
-    "My Face."
-    )
+  ;; http://fontawesome.io/cheatsheet/
+  ;; Worth exploring
+  ;; fa-angle-left, fa-angle-double-left
+  ;; fa-asterisk, fa-envelope, fa-flash
+  ;; fa-folder, fa-tag, wi-meteor, wi-time-2
 
-  (defun test-extra-syntax ()
+  ;; WHAT ABOUT REPLACING todos with icons?
+
+  ;; Options:
+  ;; fa-bug == oct-buf
+  ;; fa-check-square-o, fa-recycle, fa-scissors, fa-star
+  ;; fa-check, fa-times
+  ;; oct-bug, oct-check, oct-checklist, oct-clock
+  ;; oct-gear, oct-info, oct-issue-closed
+  ;; oct-milestone, oct-sync
+
+  ;; magit-mode effects all sub-magit-modes
+
+  (defface magit-feature-face
+    '((t :foreground "blue" :weight bold :underline t :height 1.5))
+    "My Face.")
+
+  (defface magit-fix-face
+    '((t :foreground "blue" :weight bold :underline t :height 1.5))
+    "My Face.")
+
+  (defface magit-add-face
+    '((t :foreground "blue" :weight bold :underline t :height 1.5))
+    "My Face.")
+
+  (defface magit-clean-face
+    '((t :foreground "blue" :weight bold :underline t :height 1.5))
+    "My Face.")
+
+  (defface magit-docs-face
+    '((t :foreground "blue" :weight bold :underline t :height 1.5))
+    "My Face.")
+
+  (defun magit-extra-syntax ()
     (font-lock-add-keywords
-     nil '(("\\(hi\\)" . 'my-test-face)
+     nil '(
+         ("\\(Feature\\):" .  'magit-feature-face)
+         ("\\(Add\\):" .      'magit-add-face)
+         ("\\(Fix\\):" .      'magit-fix-face)
+         ("\\(Clean\\):" .    'magit-clean-face)
+         ("\\(Docs\\):" .     'magit-docs-face)
          )))
 
-  (defconst test-font-lock-alist
-    ;; Outlines
-    '(("\\(hi\\)"          ?)))
+  (defconst magit-font-lock-alist
+    '(
+      ("\\(Feature\\):"        ?)
+      ("\\(Add\\):"            ?)
+      ("\\(Fix\\):"            ?)
+      ("\\(Clean\\):"          ?)
+      ("\\(Docs\\):"           ?)
+      ))
 
-  (add-hook 'hy-mode-hook 'test-extra-syntax)
-  (add-hook 'hy-mode-hook
-            (-partial '-add-font-lock-kwds test-font-lock-alist))
+  (add-hook 'magit-mode-hook 'magit-extra-syntax)
+  (add-hook 'magit-mode-hook
+            (-partial '-add-font-lock-kwds magit-font-lock-alist))
 
-  ;; Git symbol notes
-  ;; FIX - NEW - UPDATE - CLEAN
-  (set-fontset-font t '(#xe917 . #xe917) "all-the-icons") ; 
+  ;; (set-fontset-font t '(#xe917 . #xe917) "all-the-icons")   ; 
+  (set-fontset-font t '(#xf091 . #xf091) "github-octicons") ; 
+  (set-fontset-font t '(#xf059 . #xf059) "github-octicons") ; 
+  (set-fontset-font t '(#xf076 . #xf076) "github-octicons") ; 
+  (set-fontset-font t '(#xf075 . #xf075) "github-octicons") ; 
+  (set-fontset-font t '(#xf0c4 . #xf0c4) "fontawesome")     ; 
 
   ;; Force specified font for some symbols
   (set-fontset-font t '(#x1d54a . #x1d54a) "Symbola")  ; 𝕊
