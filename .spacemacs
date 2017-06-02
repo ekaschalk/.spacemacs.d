@@ -613,8 +613,8 @@
                              ("\\<\\(Fix:\\)"        'my-magit-fix-face)
                              ("\\<\\(Clean:\\)"      'my-magit-clean-face)
                              ("\\<\\(Docs:\\)"       'my-magit-docs-face)
-                             ("\\<\\(master\\)\\>"            'my-magit-master-face)
-                             ("\\<\\(origin/master\\)\\>"     'my-magit-origin-face))
+                             ("\\<\\(master\\)\\>"          'my-magit-master-face)
+                             ("\\<\\(origin/master\\)\\>"   'my-magit-origin-face))
 
         pretty-magit-symbols '(("\\<\\(Feature:\\)"  ?)
                                ("\\<\\(Add:\\)"      ?)
@@ -640,13 +640,21 @@
             (compose-region
              (match-beginning 1) (match-end 1) (cdr it)))))))
 
-  ;; NOTE Faces don't get applied to write commit buffer (its not magit-mode)
-  ;; it is text-mode and the hook only runs once unlike constant font lock
-  ;; However, using font lock breaks the commit buffer styling.
-  ;; Decided the bug is not significant enough to worry about atm.
+  (defun magit-commit-prompt ()
+    "Magit prompt and insert commit header with faces."
+    (interactive)
+    (when (bound-and-true-p git-commit-mode)
+      (insert (ivy-read "Commit Type "
+                        '("Feature: " "Add: " "Fix: " "Clean: " "Docs: ")))
+      (add-magit-faces)
+      (evil-insert 1)))
+
+  ;; TODO disable on reword/ammend/... commit buffers
+  ;; TODO the symbol stays but the face breaks in commit buffers
   (with-eval-after-load 'magit
     (advice-add 'magit-status :after 'add-magit-faces)
-    (advice-add 'magit-refresh-buffer :after 'add-magit-faces)))
+    (advice-add 'magit-refresh-buffer :after 'add-magit-faces)
+    (add-hook 'git-commit-setup-hook 'magit-commit-prompt)))
 
 ;;;; Prettify-symbols
 (defun dotspacemacs/user-config/display/prettify-symbols ()
