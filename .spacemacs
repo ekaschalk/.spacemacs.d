@@ -95,12 +95,9 @@
         restclient)
 
       ;; OS-Specific and Local Packages
-      dotspacemacs/layers/windows
-      '()
-      dotspacemacs/layers/linux
-      '()
-      dotspacemacs/layers/local
-      '()
+      dotspacemacs/layers/windows '()
+      dotspacemacs/layers/linux '()
+      dotspacemacs/layers/local '()
       )
 
 ;;;; Additional Packages
