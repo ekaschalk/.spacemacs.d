@@ -85,7 +85,9 @@
                 python-test-runner 'pytest))
 
       dotspacemacs/layers/rare
-      '(;; Markdown mode for viewing outside documentation
+      '(;; Pandoc for more export options, used for blogging
+        pandoc
+        ;; Markdown mode for viewing outside documentation
         markdown
         ;; Graphviz mode for usage with org-babel
         graphviz
@@ -94,7 +96,7 @@
 
       ;; OS-Specific and Local Packages
       dotspacemacs/layers/windows
-      '(pandoc)
+      '()
       dotspacemacs/layers/linux
       '()
       dotspacemacs/layers/local
