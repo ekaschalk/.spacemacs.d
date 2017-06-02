@@ -608,22 +608,26 @@
          :inherit my-magit-base-face))
     "Docs commit header face.")
 
-  (setq pretty-magit-faces '(("\\<\\(Feature:\\)"    'my-magit-feature-face)
-                             ("\\<\\(Add:\\)"        'my-magit-add-face)
-                             ("\\<\\(Fix:\\)"        'my-magit-fix-face)
-                             ("\\<\\(Clean:\\)"      'my-magit-clean-face)
-                             ("\\<\\(Docs:\\)"       'my-magit-docs-face)
-                             ("\\<\\(master\\)\\>"          'my-magit-master-face)
-                             ("\\<\\(origin/master\\)\\>"   'my-magit-origin-face))
+  (setq pretty-magit-faces '(("\\<\\(Feature:\\)"         'my-magit-feature-face)
+                             ("\\<\\(Add:\\)"             'my-magit-add-face)
+                             ("\\<\\(Fix:\\)"             'my-magit-fix-face)
+                             ("\\<\\(Clean:\\)"           'my-magit-clean-face)
+                             ("\\<\\(Docs:\\)"            'my-magit-docs-face)
+                             ("\\<\\(master\\)\\>"        'my-magit-master-face)
+                             ("\\<\\(origin/master\\)\\>" 'my-magit-origin-face))
 
-        pretty-magit-symbols '(("\\<\\(Feature:\\)"  ?)
-                               ("\\<\\(Add:\\)"      ?)
-                               ("\\<\\(Fix:\\)"      ?)
-                               ("\\<\\(Clean:\\)"    ?)
-                               ("\\<\\(Docs:\\)"     ?)
+        pretty-magit-symbols '(("\\<\\(Feature:\\)"      ?)
+                               ("\\<\\(Add:\\)"          ?)
+                               ("\\<\\(Fix:\\)"          ?)
+                               ("\\<\\(Clean:\\)"        ?)
+                               ("\\<\\(Docs:\\)"         ?)
                                ("\\<\\(master\\)\\>"     ?)
                                ("\\<\\(origin/master\\)" ?)))
 
+  ;; Font-lock mode breaks magit. Magit uses propertized strings and does lots
+  ;; of magic since it assumes a read-only buffer. Doing anything with
+  ;; font-lock-keywords will break styling of the whole status buffer.
+  ;; So we update the magit faces mannually.
   (defun add-magit-faces ()
     (interactive)
     (with-silent-modifications
@@ -640,30 +644,46 @@
             (compose-region
              (match-beginning 1) (match-end 1) (cdr it)))))))
 
-  (defun magit-commit-prompt ()
-    "Magit prompt and insert commit header with faces."
-    (interactive)
-    ;; (when (bound-and-true-p git-commit-mode)
-    (when use-magit-commit-prompt-p
-      (insert (ivy-read "Commit Type "
-                        '("Feature: " "Add: " "Fix: " "Clean: " "Docs: ")))
-      (add-magit-faces)
-      (evil-insert 1)
-      (setq use-magit-commit-prompt-p nil)
-      ))
-
+  ;; Ivy prompt for commit keywords.
+  ;; Now due to the delayed use of minibuffer in commit buffers, we cannot
+  ;; use add-advice and instead use `git-commit-setup-hook' to run the prompt.
+  ;; However, we only want the prompt for c-c `magit-commit' and not its
+  ;; variants. The only way to distinguish the calling commit mode is through
+  ;; the caller, so we use advice add on `magit-commit' for a prompt predicate.
   (setq use-magit-commit-prompt-p nil)
-  ;; (make-variable-buffer-local 'use-magit-commit-prompt-p)
-
   (defun use-magit-commit-prompt (&rest args)
     (setq use-magit-commit-prompt-p t))
 
-  ;; TODO disable on reword/ammend/... commit buffers
-  ;; TODO the symbol stays but the face breaks in commit buffers
+  (defun magit-commit-prompt ()
+    "Magit prompt and insert commit header with faces."
+    (interactive)
+    (when use-magit-commit-prompt-p
+      (setq use-magit-commit-prompt-p nil)
+      (insert (ivy-read "Commit Type "
+                        '("Feature: " "Add: " "Fix: " "Clean: " "Docs: ")
+                        :require-match t
+                        :sort t
+                        :preselect "Add: "))
+      (add-magit-faces)
+      (evil-insert 1)))
+
+  ;; TODO Escaping ivy-read in commit prompt will make the next call
+  ;; to commit jump to commit template without prompt. This is an issue
+  ;; between integrating ivy and magit exiting, not simple.
+  ;; So use , k rather than ESC on a commit prompt to cancel commit
+  ;; TODO the symbol stays but the face is overwritten in commit buffers
+  ;; In fact it is overwritten continuously! Magit uses font lock here.
+  ;; However doing anything (any trivial mod) with font-lock-add-keywords
+  ;; will break highlighting the buffer. We can get the symbols added
+  ;; but not the coloring, sizing, and other face attributes.
   (with-eval-after-load 'magit
+    ;; Hook is overwritten by ivy prompt
+    (remove-hook 'git-commit-setup-hook 'with-editor-usage-message)
+
     (advice-add 'magit-status :after 'add-magit-faces)
     (advice-add 'magit-refresh-buffer :after 'add-magit-faces)
     (advice-add 'magit-commit :after 'use-magit-commit-prompt)
+
     (add-hook 'git-commit-setup-hook 'magit-commit-prompt)))
 
 ;;;; Prettify-symbols
