@@ -643,17 +643,27 @@
   (defun magit-commit-prompt ()
     "Magit prompt and insert commit header with faces."
     (interactive)
-    (when (bound-and-true-p git-commit-mode)
+    ;; (when (bound-and-true-p git-commit-mode)
+    (when use-magit-commit-prompt-p
       (insert (ivy-read "Commit Type "
                         '("Feature: " "Add: " "Fix: " "Clean: " "Docs: ")))
       (add-magit-faces)
-      (evil-insert 1)))
+      (evil-insert 1)
+      (setq use-magit-commit-prompt-p nil)
+      ))
+
+  (setq use-magit-commit-prompt-p nil)
+  ;; (make-variable-buffer-local 'use-magit-commit-prompt-p)
+
+  (defun use-magit-commit-prompt (&rest args)
+    (setq use-magit-commit-prompt-p t))
 
   ;; TODO disable on reword/ammend/... commit buffers
   ;; TODO the symbol stays but the face breaks in commit buffers
   (with-eval-after-load 'magit
     (advice-add 'magit-status :after 'add-magit-faces)
     (advice-add 'magit-refresh-buffer :after 'add-magit-faces)
+    (advice-add 'magit-commit :after 'use-magit-commit-prompt)
     (add-hook 'git-commit-setup-hook 'magit-commit-prompt)))
 
 ;;;; Prettify-symbols
