@@ -811,17 +811,17 @@
   (set-fontset-font t '(#xe928 . #xe928) "all-the-icons")  ; 
   (set-fontset-font t '(#xf101 . #xf101) "all-the-icons")  ; 
 
-  (defun set-eshell-prompt-icon (icon)
-    (let ((prompt (concat icon " ")))
-      (setq eshell-prompt-regexp prompt)
-      (concat "\n"
-              (with-face prompt eshell-prompt-face))))
-
   (defmacro with-face (str &rest properties)
     `(propertize ,str 'face (list ,@properties)))
 
   (defmacro with-icon (icon)
     `(concat ,icon ,eshell-icon-sep))
+
+  (defun set-eshell-prompt-icon (icon)
+    (let ((prompt (concat icon " ")))
+      (setq eshell-prompt-regexp prompt)
+      (concat "\n"
+              (with-face prompt eshell-prompt-face))))
 
   (defun eshell-section (icon str &rest properties)
     (when str
