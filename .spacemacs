@@ -820,7 +820,8 @@
 (defun dotspacemacs/user-config/navigation ()
   (dotspacemacs/user-config/navigation/avy)
   (dotspacemacs/user-config/navigation/extra-bindings)
-  (dotspacemacs/user-config/navigation/file-links))
+  (dotspacemacs/user-config/navigation/file-links)
+  (dotspacemacs/user-config/navigation/searching))
 
 ;;;; Avy
 (defun dotspacemacs/user-config/navigation/avy ()
@@ -861,6 +862,14 @@
 ;;;; File-links
 (defun dotspacemacs/user-config/navigation/file-links ()
   (spacemacs/set-leader-keys (kbd "aof") 'org-open-at-point-global))
+
+;;;; Searching
+(defun dotspacemacs/user-config/navigation/searching ()
+  ;; Evil searching scrolls to center of match
+  (advice-add 'evil-ex-search-next :after
+              (lambda (&rest x) (evil-scroll-line-to-center (line-number-at-pos))))
+  (advice-add 'evil-ex-search-previous :after
+              (lambda (&rest x) (evil-scroll-line-to-center (line-number-at-pos)))))
 
 ;;; Misc
 (defun dotspacemacs/user-config/misc ()
