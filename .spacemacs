@@ -794,32 +794,37 @@
 
 ;;;; Shell
 (defun dotspacemacs/user-config/display/shell ()
+  ;; TODO Idea - avy motion to narrow to outline
+  ;; color dev and ~ special
+
   ;; eshell-prompt-regexp
-  (setq eshell-prompt-function
+  (set-fontset-font t '(#xe192 . #xe192) "material")
+
+  (setq eshell-sep-face '(:foreground "light slate gray")
+        eshell-time-face '(:foreground "#007849")  ; greenish
+        eshell-venv-face '(:foreground "blue")
+
+        ;; include git branch
+        ;; include venv val
+        ;; pyvenv-virtual-env
+
+        eshell-prompt-function
         (lambda ()
           (concat
-           (propertize "┌─[" 'face
-                       `(:foreground "green"))
-           (propertize (user-login-name) 'face
-                       `(:foreground "red"))
-           (propertize "@" 'face
-                       `(:foreground "green"))
-           (propertize (system-name) 'face
-                       `(:foreground "blue"))
-           (propertize "]──[" 'face
-                       `(:foreground "green"))
-           (propertize (format-time-string "%H:%M" (current-time))
-                       'face `(:foreground "yellow"))
-           (propertize "]──[" 'face
-                       `(:foreground "green"))
+           (propertize "┌─[" 'face eshell-sep-face)
            (propertize (concat (eshell/pwd)) 'face
                        `(:foreground "white"))
-           (propertize "]\n" 'face
-                       `(:foreground "green"))
-           (propertize "└─>" 'face
-                       `(:foreground "green"))
-           (propertize (if (= (user-uid) 0) " # " " $ ")
-                       'face `(:foreground "green"))
+           (propertize "]──[" 'face eshell-sep-face)
+           (propertize (concat "" (format-time-string "%H:%M"
+                                                       (current-time))) 'face
+                                                       eshell-time-face)
+           (when pyvenv-virtual-env-name
+             (concat
+              (propertize "]──[" 'face eshell-sep-face)
+              (propertize pyvenv-virtual-env-name 'face eshell-venv-face)))
+           (propertize "]\n" 'face eshell-sep-face)
+           (propertize "└─>" 'face eshell-sep-face)
+           (propertize (if (= (user-uid) 0) " # " " $ ") 'face eshell-sep-face)
            ))))
 
 ;;; Ivy
