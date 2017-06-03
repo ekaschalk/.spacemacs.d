@@ -254,7 +254,8 @@
   (dotspacemacs/user-config/display/modeline)
   (dotspacemacs/user-config/display/outline-ellipsis-modification)
   (dotspacemacs/user-config/display/prettify-magit)
-  (dotspacemacs/user-config/display/prettify-symbols))
+  (dotspacemacs/user-config/display/prettify-symbols)
+  (dotspacemacs/user-config/display/shell))
 
 ;;;; Windows-frame-size-fix
 (defun dotspacemacs/user-config/display/windows-frame-size-fix ()
@@ -761,6 +762,36 @@
    '(:equality :ordering :ordering-double :ordering-triple
                :arrows :arrows-twoheaded :punctuation
                :logic :sets :sub-and-superscripts)))
+
+;;;; Shell
+(defun dotspacemacs/user-config/display/shell ()
+  ;; eshell-prompt-regexp
+  (setq eshell-prompt-function
+        (lambda ()
+          (concat
+           (propertize "┌─[" 'face
+                       `(:foreground "green"))
+           (propertize (user-login-name) 'face
+                       `(:foreground "red"))
+           (propertize "@" 'face
+                       `(:foreground "green"))
+           (propertize (system-name) 'face
+                       `(:foreground "blue"))
+           (propertize "]──[" 'face
+                       `(:foreground "green"))
+           (propertize (format-time-string "%H:%M" (current-time))
+                       'face `(:foreground "yellow"))
+           (propertize "]──[" 'face
+                       `(:foreground "green"))
+           (propertize (concat (eshell/pwd)) 'face
+                       `(:foreground "white"))
+           (propertize "]\n" 'face
+                       `(:foreground "green"))
+           (propertize "└─>" 'face
+                       `(:foreground "green"))
+           (propertize (if (= (user-uid) 0) " # " " $ ")
+                       'face `(:foreground "green"))
+           ))))
 
 ;;; Ivy
 (defun dotspacemacs/user-config/ivy ()
