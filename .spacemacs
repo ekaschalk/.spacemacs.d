@@ -216,9 +216,7 @@
   (load (if-linux "~/elisp/.custom-settings.el"
                   "c:/~/elisp/.custom-settings.el"))
   (load (if-linux "~/elisp/prettify-utils.el"
-                  "c:/~/elisp/prettify-utils.el"))
-  (load (if-linux "~/elisp/eshell-git.el"
-                  "c:/~/elisp/eshell-git.el")))
+                  "c:/~/elisp/prettify-utils.el")))
 
 ;;; Spacemacs-User-config
 (defun dotspacemacs/user-config ()
@@ -808,6 +806,7 @@
 
   (require 'virtualenvwrapper)  ; TODO integrate this better way
   (pyvenv-mode 1)
+  (load (if-linux "~/elisp/eshell-git.el" "c:/~/elisp/eshell-git.el"))
 
   (set-fontset-font t '(#xe192 . #xe192) "material")       ; Clock 
   (set-fontset-font t '(#xf07c . #xf07c) "fontawesome")    ; Folder 

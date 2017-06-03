@@ -50,8 +50,8 @@
 
 ;;; Code:
 
-(require 'cl-lib)
-(require 'dash)
+;; (require 'cl-lib)
+;; (require 'dash)
 
 (declare-function eshell/pwd "em-dirs" (&rest args))
 (declare-function eshell-printn "esh-io" (object))
