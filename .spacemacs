@@ -794,33 +794,28 @@
 
 ;;;; Shell
 (defun dotspacemacs/user-config/display/shell ()
-  ;; TODO Idea - avy motion to narrow to outline
   ;; TODO include git branch
-  ;; TODO if in dev then make a project icon replace ~/dev/
-  ;; perhaps different face for dev folders too
+  ;; (vc-working-revision (buffer-file-name (current-buffer)))
 
-  ;; color dev and ~ special
+  ;; TODO if in dev then make a project icon replace ~/dev/ and the folder
+
+  ;; TODO Background faces emulate spaceline
   ;; https://github.com/xuchunyang/eshell-git-prompt
 
-  ;;  - angle-double-right
-  ;;  - caret-right
-  ;;  - chevron-right
-  ;;  - sign-out
-  ;;  - folder-open
-  ;;  - folder-open-o
-  ;;  - level-down
+  ;; TODO Unrelated idea - avy motion to narrow to outline
 
-  (set-fontset-font t '(#xe192 . #xe192) "material")
+  (set-fontset-font t '(#xe192 . #xe192) "material")  ; 
   (set-fontset-font t '(#xf0da . #xf0da) "fontawesome")  ; 
   (set-fontset-font t '(#xf115 . #xf115) "fontawesome")  ; 
-  (set-fontset-font t '(#xf115 . #xf115) "github-octicons")  ; 
+  (set-fontset-font t '(#xf07c . #xf07c) "fontawesome")  ; 
   (set-fontset-font t '(#xe928 . #xe928) "all-the-icons")  ; 
   (set-fontset-font t '(#xf101 . #xf101) "all-the-icons")  ; 
 
   (defun set-eshell-prompt-icon (icon)
     (let ((prompt (concat icon " ")))
       (setq eshell-prompt-regexp prompt)
-      (with-face prompt eshell-prompt-face)))
+      (concat "\n"
+              (with-face prompt eshell-prompt-face))))
 
   (defmacro with-face (str &rest properties)
     `(propertize ,str 'face (list ,@properties)))
@@ -834,32 +829,26 @@
        (with-face " " eshell-sep-face)
        (with-face (concat (with-icon icon) str) properties))))
 
-  ;; (vc-working-revision (buffer-file-name (current-buffer)))
-
   (setq eshell-sep-face '(:foreground "light slate gray")
-        ;; eshell-dir-face `(:foreground "white" :background "steel blue")
-        eshell-dir-face `(:foreground "white")
+        eshell-dir-face `(:foreground "gold")
         eshell-time-face '(:foreground "#007849")  ; greenish
-        eshell-venv-face '(:foreground "blue")
+        eshell-venv-face '(:foreground "steel blue")
         eshell-prompt-face '(:foreground "steel blue")
-        eshell-icon-sep "|"
+        eshell-icon-sep " "
 
         eshell-prompt-function
         (lambda ()
           (concat
-           (with-face "┌─" eshell-sep-face)
-           (with-face (concat (with-icon "")
-                              (eshell/pwd))
-                      eshell-dir-face)
+           (with-face "┌─" eshell-prompt-face)
 
+           (eshell-section "" (eshell/pwd)
+                           eshell-dir-face)
            (eshell-section "" pyvenv-virtual-env-name
                            eshell-venv-face)
            (eshell-section "" (format-time-string "%H:%M" (current-time))
                            eshell-time-face)
 
-           (with-face "]\n" eshell-sep-face)
-           (set-eshell-prompt-icon "└─")
-           ;; (set-eshell-prompt-icon "└─")
+           (set-eshell-prompt-icon "└─")
            ))))
 
 ;;; Ivy
