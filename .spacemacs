@@ -804,18 +804,18 @@
 
   ;; TODO Unrelated idea - avy motion to narrow to outline
 
-  (set-fontset-font t '(#xe192 . #xe192) "material")  ; 
-  (set-fontset-font t '(#xf0da . #xf0da) "fontawesome")  ; 
-  (set-fontset-font t '(#xf115 . #xf115) "fontawesome")  ; 
-  (set-fontset-font t '(#xf07c . #xf07c) "fontawesome")  ; 
+  (set-fontset-font t '(#xe192 . #xe192) "material")       ; 
+  (set-fontset-font t '(#xf07c . #xf07c) "fontawesome")    ; 
+  (set-fontset-font t '(#xf115 . #xf115) "fontawesome")    ; 
   (set-fontset-font t '(#xe928 . #xe928) "all-the-icons")  ; 
+  (set-fontset-font t '(#xf0da . #xf0da) "fontawesome")    ; 
   (set-fontset-font t '(#xf101 . #xf101) "all-the-icons")  ; 
 
   (defmacro with-face (str &rest properties)
     `(propertize ,str 'face (list ,@properties)))
 
-  (defmacro with-icon (icon)
-    `(concat ,icon ,eshell-icon-sep))
+  (defun with-icon (icon)
+    (concat icon eshell-icon-sep))
 
   (defun set-eshell-prompt-icon (icon)
     (let ((prompt (concat icon " ")))
@@ -826,14 +826,19 @@
   (defun eshell-section (icon str &rest properties)
     (when str
       (concat
-       (with-face " " eshell-sep-face)
+       (with-face eshell-section-sep eshell-sep-face)
        (with-face (concat (with-icon icon) str) properties))))
 
+  ;; TODO enable pyvenv in better manner for virtualenv integration
+  (require 'virtualenvwrapper)
+  (pyvenv-mode 1)
+
   (setq eshell-sep-face '(:foreground "light slate gray")
-        eshell-dir-face `(:foreground "gold")
+        eshell-dir-face '(:foreground "gold")
         eshell-time-face '(:foreground "#007849")  ; greenish
         eshell-venv-face '(:foreground "steel blue")
         eshell-prompt-face '(:foreground "steel blue")
+        eshell-section-sep " "
         eshell-icon-sep " "
 
         eshell-prompt-function
