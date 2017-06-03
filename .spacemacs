@@ -804,55 +804,71 @@
 
   ;; TODO Unrelated idea - avy motion to narrow to outline
 
-  (set-fontset-font t '(#xe192 . #xe192) "material")       ; 
-  (set-fontset-font t '(#xf07c . #xf07c) "fontawesome")    ; 
-  (set-fontset-font t '(#xf115 . #xf115) "fontawesome")    ; 
-  (set-fontset-font t '(#xe928 . #xe928) "all-the-icons")  ; 
-  (set-fontset-font t '(#xf0da . #xf0da) "fontawesome")    ; 
-  (set-fontset-font t '(#xf101 . #xf101) "all-the-icons")  ; 
+
+  (require 'virtualenvwrapper)  ; TODO integrate this better way
+  (pyvenv-mode 1)
+
+  (set-fontset-font t '(#xe192 . #xe192) "material")       ; Clock 
+  (set-fontset-font t '(#xf07c . #xf07c) "fontawesome")    ; Folder 
+  (set-fontset-font t '(#xf115 . #xf115) "fontawesome")    ; Folder 
+  (set-fontset-font t '(#xf0da . #xf0da) "fontawesome")    ; Prompt 
+  (set-fontset-font t '(#xf101 . #xf101) "all-the-icons")  ; Prompt 
+  (set-fontset-font t '(#xe928 . #xe928) "all-the-icons")  ; Py 
+  (set-fontset-font t '(#xe907 . #xe907) "all-the-icons")  ; Git 
 
   (defmacro with-face (str &rest properties)
     `(propertize ,str 'face (list ,@properties)))
 
-  (defun with-icon (icon)
-    (concat icon eshell-icon-sep))
-
   (defun set-eshell-prompt-icon (icon)
     (let ((prompt (concat icon " ")))
       (setq eshell-prompt-regexp prompt)
-      (concat "\n"
-              (with-face prompt eshell-prompt-face))))
+      (concat "\n" (with-face prompt eshell-prompt-face))))
 
   (defun eshell-section (icon str &rest properties)
     (when str
       (concat
        (with-face eshell-section-sep eshell-sep-face)
-       (with-face (concat (with-icon icon) str) properties))))
-
-  ;; TODO enable pyvenv in better manner for virtualenv integration
-  (require 'virtualenvwrapper)
-  (pyvenv-mode 1)
+       (with-face (concat icon eshell-icon-sep str " ") properties))))
 
   (setq eshell-sep-face '(:foreground "light slate gray")
         eshell-dir-face '(:foreground "gold")
         eshell-time-face '(:foreground "#007849")  ; greenish
         eshell-venv-face '(:foreground "steel blue")
+
+        ;; still using
         eshell-prompt-face '(:foreground "steel blue")
-        eshell-section-sep " "
+        eshell-section-sep ""
         eshell-icon-sep " "
+
+        ;; new modeline style
+        eshell-dir-face '(:foreground "white" :background "steel blue"
+                                      :weight bold)
+        eshell-venv-face '(:foreground "white" :background "indian red")
+        eshell-time-face '(:forground "white" :background "#007849")  ; greenish
+        seg-sep " "
+        seg-sep-face-dir '(:foreground "steel blue" :background "indian red")
+        seg-sep-face-time '(:foreground "indian red" :background "#007849")
+        seg-sep-face-end '(:foreground "#007849")
 
         eshell-prompt-function
         (lambda ()
           (concat
-           (with-face "┌─" eshell-prompt-face)
+           (with-face "\n┌─" eshell-prompt-face)
 
-           (eshell-section "" (eshell/pwd)
+           (eshell-section " " (eshell/pwd)
                            eshell-dir-face)
+
+           (with-face seg-sep seg-sep-face-dir)
            (eshell-section "" pyvenv-virtual-env-name
                            eshell-venv-face)
+
+           (with-face seg-sep seg-sep-face-time)
            (eshell-section "" (format-time-string "%H:%M" (current-time))
                            eshell-time-face)
 
+           (with-face seg-sep seg-sep-face-end)
+
+           (with-face "\n|" eshell-prompt-face)
            (set-eshell-prompt-icon "└─")
            ))))
 
