@@ -795,36 +795,45 @@
 ;;;; Shell
 (defun dotspacemacs/user-config/display/shell ()
   ;; TODO Idea - avy motion to narrow to outline
+
+  ;; if in dev then make a project icon replace ~/dev/
+  ;; perhaps different face for dev folders too
+
   ;; color dev and ~ special
 
+  ;; https://github.com/xuchunyang/eshell-git-prompt
   ;; eshell-prompt-regexp
   (set-fontset-font t '(#xe192 . #xe192) "material")
 
+  (defmacro with-face (str &rest properties)
+    `(propertize ,str 'face (list ,@properties)))
+
   (setq eshell-sep-face '(:foreground "light slate gray")
+        eshell-dir-face `(:foreground "white" :background "steel blue")
         eshell-time-face '(:foreground "#007849")  ; greenish
         eshell-venv-face '(:foreground "blue")
+        ;; eshell-sep
 
         ;; include git branch
-        ;; include venv val
-        ;; pyvenv-virtual-env
 
         eshell-prompt-function
         (lambda ()
           (concat
-           (propertize "┌─[" 'face eshell-sep-face)
-           (propertize (concat (eshell/pwd)) 'face
-                       `(:foreground "white"))
-           (propertize "]──[" 'face eshell-sep-face)
-           (propertize (concat "" (format-time-string "%H:%M"
-                                                       (current-time))) 'face
-                                                       eshell-time-face)
+           (with-face "┌─[" eshell-sep-face)
+           (with-face (eshell/pwd) eshell-dir-face)
+
            (when pyvenv-virtual-env-name
              (concat
-              (propertize "]──[" 'face eshell-sep-face)
-              (propertize pyvenv-virtual-env-name 'face eshell-venv-face)))
-           (propertize "]\n" 'face eshell-sep-face)
-           (propertize "└─>" 'face eshell-sep-face)
-           (propertize (if (= (user-uid) 0) " # " " $ ") 'face eshell-sep-face)
+              (with-face "]──[" eshell-sep-face)
+              (with-face pyvenv-virtual-env-name eshell-venv-face)))
+
+           (with-face "]──[" eshell-sep-face)
+           (with-face (concat ""
+                              (format-time-string "%H:%M" (current-time)))
+                      eshell-time-face)
+           (with-face "]\n" eshell-sep-face)
+           (with-face "└─>" eshell-sep-face)
+           (with-face (if (= (user-uid) 0) " # " " $ ") eshell-sep-face)
            ))))
 
 ;;; Ivy
