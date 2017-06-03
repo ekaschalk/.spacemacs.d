@@ -795,26 +795,37 @@
 ;;;; Shell
 (defun dotspacemacs/user-config/display/shell ()
   ;; TODO Idea - avy motion to narrow to outline
-
-  ;; if in dev then make a project icon replace ~/dev/
+  ;; TODO include git branch
+  ;; TODO if in dev then make a project icon replace ~/dev/
   ;; perhaps different face for dev folders too
 
   ;; color dev and ~ special
-
   ;; https://github.com/xuchunyang/eshell-git-prompt
-  ;; eshell-prompt-regexp
+
+  ;;  - angle-double-right
+  ;;  - caret-right
+  ;;  - chevron-right
+  ;;  - sign-out
+  ;;  - folder-open
+  ;;  - folder-open-o
+  ;;  - level-down
+
   (set-fontset-font t '(#xe192 . #xe192) "material")
+  (set-fontset-font t '(#xf0da . #xf0da) "fontawesome")  ; 
 
   (defmacro with-face (str &rest properties)
     `(propertize ,str 'face (list ,@properties)))
+
+  (defun set-eshell-prompt-icon (icon)
+    (let ((prompt (concat icon " ")))
+      (setq eshell-prompt-regexp prompt)
+      (with-face prompt eshell-prompt-face)))
 
   (setq eshell-sep-face '(:foreground "light slate gray")
         eshell-dir-face `(:foreground "white" :background "steel blue")
         eshell-time-face '(:foreground "#007849")  ; greenish
         eshell-venv-face '(:foreground "blue")
-        ;; eshell-sep
-
-        ;; include git branch
+        eshell-prompt-face '(:foreground "steel blue")
 
         eshell-prompt-function
         (lambda ()
@@ -832,8 +843,7 @@
                               (format-time-string "%H:%M" (current-time)))
                       eshell-time-face)
            (with-face "]\n" eshell-sep-face)
-           (with-face "└─>" eshell-sep-face)
-           (with-face (if (= (user-uid) 0) " # " " $ ") eshell-sep-face)
+           (set-eshell-prompt-icon "└─")
            ))))
 
 ;;; Ivy
