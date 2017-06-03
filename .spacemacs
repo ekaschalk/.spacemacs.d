@@ -812,38 +812,54 @@
 
   (set-fontset-font t '(#xe192 . #xe192) "material")
   (set-fontset-font t '(#xf0da . #xf0da) "fontawesome")  ; 
-
-  (defmacro with-face (str &rest properties)
-    `(propertize ,str 'face (list ,@properties)))
+  (set-fontset-font t '(#xf115 . #xf115) "fontawesome")  ; 
+  (set-fontset-font t '(#xf115 . #xf115) "github-octicons")  ; 
+  (set-fontset-font t '(#xe928 . #xe928) "all-the-icons")  ; 
+  (set-fontset-font t '(#xf101 . #xf101) "all-the-icons")  ; 
 
   (defun set-eshell-prompt-icon (icon)
     (let ((prompt (concat icon " ")))
       (setq eshell-prompt-regexp prompt)
       (with-face prompt eshell-prompt-face)))
 
+  (defmacro with-face (str &rest properties)
+    `(propertize ,str 'face (list ,@properties)))
+
+  (defmacro with-icon (icon)
+    `(concat ,icon ,eshell-icon-sep))
+
+  (defun eshell-section (icon str &rest properties)
+    (when str
+      (concat
+       (with-face " " eshell-sep-face)
+       (with-face (concat (with-icon icon) str) properties))))
+
+  ;; (vc-working-revision (buffer-file-name (current-buffer)))
+
   (setq eshell-sep-face '(:foreground "light slate gray")
-        eshell-dir-face `(:foreground "white" :background "steel blue")
+        ;; eshell-dir-face `(:foreground "white" :background "steel blue")
+        eshell-dir-face `(:foreground "white")
         eshell-time-face '(:foreground "#007849")  ; greenish
         eshell-venv-face '(:foreground "blue")
         eshell-prompt-face '(:foreground "steel blue")
+        eshell-icon-sep "|"
 
         eshell-prompt-function
         (lambda ()
           (concat
-           (with-face "┌─[" eshell-sep-face)
-           (with-face (eshell/pwd) eshell-dir-face)
+           (with-face "┌─" eshell-sep-face)
+           (with-face (concat (with-icon "")
+                              (eshell/pwd))
+                      eshell-dir-face)
 
-           (when pyvenv-virtual-env-name
-             (concat
-              (with-face "]──[" eshell-sep-face)
-              (with-face pyvenv-virtual-env-name eshell-venv-face)))
+           (eshell-section "" pyvenv-virtual-env-name
+                           eshell-venv-face)
+           (eshell-section "" (format-time-string "%H:%M" (current-time))
+                           eshell-time-face)
 
-           (with-face "]──[" eshell-sep-face)
-           (with-face (concat ""
-                              (format-time-string "%H:%M" (current-time)))
-                      eshell-time-face)
            (with-face "]\n" eshell-sep-face)
-           (set-eshell-prompt-icon "└─")
+           (set-eshell-prompt-icon "└─")
+           ;; (set-eshell-prompt-icon "└─")
            ))))
 
 ;;; Ivy
