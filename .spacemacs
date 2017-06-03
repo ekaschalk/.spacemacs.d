@@ -216,7 +216,9 @@
   (load (if-linux "~/elisp/.custom-settings.el"
                   "c:/~/elisp/.custom-settings.el"))
   (load (if-linux "~/elisp/prettify-utils.el"
-                  "c:/~/elisp/prettify-utils.el")))
+                  "c:/~/elisp/prettify-utils.el"))
+  (load (if-linux "~/elisp/eshell-git.el"
+                  "c:/~/elisp/eshell-git.el")))
 
 ;;; Spacemacs-User-config
 (defun dotspacemacs/user-config ()
@@ -804,7 +806,6 @@
 
   ;; TODO Unrelated idea - avy motion to narrow to outline
 
-
   (require 'virtualenvwrapper)  ; TODO integrate this better way
   (pyvenv-mode 1)
 
@@ -830,6 +831,12 @@
        (with-face eshell-section-sep eshell-sep-face)
        (with-face (concat icon eshell-icon-sep str " ") properties))))
 
+  (setq eshell-prompt-number 0)
+  (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
+  (advice-add 'eshell-send-input :before
+              (lambda (&rest args) (setq eshell-prompt-number (+ 1 eshell-prompt-number))))
+
+
   (setq eshell-sep-face '(:foreground "light slate gray")
         eshell-dir-face '(:foreground "gold")
         eshell-time-face '(:foreground "#007849")  ; greenish
@@ -841,13 +848,14 @@
         eshell-icon-sep " "
 
         ;; new modeline style
-        eshell-dir-face '(:foreground "white" :background "steel blue"
-                                      :weight bold)
-        eshell-venv-face '(:foreground "white" :background "indian red")
-        eshell-time-face '(:forground "white" :background "#007849")  ; greenish
+        eshell-git-face '(:background "indian red")
+        eshell-dir-face '(:foreground "ivory" :background "steel blue" :weight bold)
+        eshell-venv-face '(:background "slate gray")
+        eshell-time-face '(:background "#007849")  ; greenish
         seg-sep " "
         seg-sep-face-dir '(:foreground "steel blue" :background "indian red")
-        seg-sep-face-time '(:foreground "indian red" :background "#007849")
+        seg-sep-face-git '(:foreground "indian red" :background "slate gray")
+        seg-sep-face-time '(:foreground "slate gray" :background "#007849")
         seg-sep-face-end '(:foreground "#007849")
 
         eshell-prompt-function
@@ -859,6 +867,10 @@
                            eshell-dir-face)
 
            (with-face seg-sep seg-sep-face-dir)
+           (eshell-section "" (eshell-git-prompt--branch-name)
+                           eshell-git-face)
+
+           (with-face seg-sep seg-sep-face-git)
            (eshell-section "" pyvenv-virtual-env-name
                            eshell-venv-face)
 
@@ -868,7 +880,9 @@
 
            (with-face seg-sep seg-sep-face-end)
 
-           (with-face "\n|" eshell-prompt-face)
+           ;; (with-face "\n|" eshell-prompt-face)
+           (with-face (concat "\n|" (number-to-string eshell-prompt-number))
+             eshell-prompt-face)
            (set-eshell-prompt-icon "└─")
            ))))
 
@@ -990,7 +1004,16 @@
   (dotspacemacs/user-config/misc/macros)
   (dotspacemacs/user-config/misc/neotree)
   (dotspacemacs/user-config/misc/projectile)
+  (dotspacemacs/user-config/misc/shell)
   (dotspacemacs/user-config/misc/yassnippet))
+
+;;;; Spotify
+(defun dotspacemacs/user-config/misc/spotify ()
+  (global-set-key (kbd "C-c s s") 'helm-spotify-plus)
+  (global-set-key (kbd "C-c s n") 'helm-spotify-plus-next)
+  (global-set-key (kbd "C-c s N") 'helm-spotify-plus-previous)
+  (global-set-key (kbd "C-c s f") 'helm-spotify-plus-play)
+  (global-set-key (kbd "C-c s F") 'helm-spotify-plus-pause))
 
 ;;;; Aspell
 (defun dotspacemacs/user-config/misc/aspell ()
@@ -1030,17 +1053,22 @@
 (defun dotspacemacs/user-config/misc/projectile ()
   (setq projectile-indexing-method 'native))  ; respect .projectile files
 
+;;;; Shell
+(defun dotspacemacs/user-config/misc/shell ()
+  "Quick eshell with vim interaction."
+  (defun my-spacemacs/shell-pop-eshell ()
+    (interactive)
+    (spacemacs/shell-pop-eshell nil)
+    (if (string= major-mode "eshell-mode")
+        (evil-insert 1)
+      (evil-escape)))
+
+  (evil-global-set-key 'normal (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
+  (evil-global-set-key 'insert (kbd "C-e") 'my-spacemacs/shell-pop-eshell))
+
 ;;;; Yassnippet
 (defun dotspacemacs/user-config/misc/yassnippet ()
   (global-set-key (kbd "C-SPC") 'hippie-expand))
-
-;;;; Spotify
-(defun dotspacemacs/user-config/misc/spotify ()
-  (global-set-key (kbd "C-c s s") 'helm-spotify-plus)
-  (global-set-key (kbd "C-c s n") 'helm-spotify-plus-next)
-  (global-set-key (kbd "C-c s N") 'helm-spotify-plus-previous)
-  (global-set-key (kbd "C-c s f") 'helm-spotify-plus-play)
-  (global-set-key (kbd "C-c s F") 'helm-spotify-plus-pause))
 
 ;;; Python
 (defun dotspacemacs/user-config/python ()
