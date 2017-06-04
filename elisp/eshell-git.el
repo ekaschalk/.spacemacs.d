@@ -397,7 +397,7 @@ It looks like:
 
 
 ;; Powerline
-
+;; (eshell-path)
 (defun eshell-git-prompt-powerline ()
   (let ((segment-separator "\xe0b0")
         (plusminus         "\x00b1")

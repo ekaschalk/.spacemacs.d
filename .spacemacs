@@ -794,17 +794,7 @@
 
 ;;;; Shell
 (defun dotspacemacs/user-config/display/shell ()
-  ;; TODO include git branch
-  ;; (vc-working-revision (buffer-file-name (current-buffer)))
-
-  ;; TODO if in dev then make a project icon replace ~/dev/ and the folder
-
-  ;; TODO Background faces emulate spaceline
-  ;; https://github.com/xuchunyang/eshell-git-prompt
-
-  ;; TODO Unrelated idea - avy motion to narrow to outline
-
-  (require 'virtualenvwrapper)  ; TODO integrate this better way
+  (require 'virtualenvwrapper)  ; TODO integrate these better way
   (pyvenv-mode 1)
   (load (if-linux "~/elisp/eshell-git.el" "c:/~/elisp/eshell-git.el"))
 
@@ -835,14 +825,8 @@
   (advice-add 'eshell-send-input :before
               (lambda (&rest args) (setq eshell-prompt-number (+ 1 eshell-prompt-number))))
 
-
-  (setq eshell-sep-face '(:foreground "light slate gray")
-        eshell-dir-face '(:foreground "gold")
-        eshell-time-face '(:foreground "#007849")  ; greenish
-        eshell-venv-face '(:foreground "steel blue")
-
-        ;; still using
-        eshell-prompt-face '(:foreground "steel blue")
+  (setq eshell-prompt-face '(:foreground "steel blue")
+        eshell-sep-face '(:foreground "light slate gray")
         eshell-section-sep ""
         eshell-icon-sep " "
 
@@ -862,7 +846,7 @@
           (concat
            (with-face "\n┌─" eshell-prompt-face)
 
-           (eshell-section " " (eshell/pwd)
+           (eshell-section " " (abbreviate-file-name (eshell/pwd))
                            eshell-dir-face)
 
            (with-face seg-sep seg-sep-face-dir)
