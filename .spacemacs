@@ -316,7 +316,9 @@
   ;; Hy
   (add-hook 'hy-mode-hook
             (-partial '-add-font-lock-kwds hy-font-lock-alist))
-  )
+  ;; Navi-mode
+  (add-hook 'navi-mode-hook
+            (-partial '-add-font-lock-kwds navi-font-lock-alist)))
 
 ;;;;; Fira-font-locks
 (defconst fira-font-lock-alist
@@ -416,6 +418,13 @@
     ("\\(^;;;;;\\)"                 ?✸)
     ("\\(^;;;;;;\\)"                ?✿)))
 
+(defconst navi-font-lock-alist
+  ;; TODO ideally this would be major-mode specific, atm elisp
+  '(("\\(:;;;\\) "                   ?■)
+    ("\\(:;;;;\\) "                  ?○)
+    ("\\(:;;;;;\\) "                 ?✸)
+    ("\\(:;;;;;;\\) "                ?✿)))
+
 (defconst python-font-lock-alist
   ;; Outlines
   '(("\\(^# \\*\\)[ \t\n]"          ?■)
@@ -463,7 +472,15 @@
          ;; Syntax highlighting for reader-macros
          ("\\(#.\\)" . 'font-lock-function-name-face))))
 
-  (add-hook 'hy-mode-hook 'hy-extra-syntax))
+  (defun navi-extra-syntax ()
+    (font-lock-add-keywords
+     nil '((":\\(;;;\\) .*$" .    'org-level-1)
+         (":\\(;;;;\\) .*$" .   'org-level-2)
+         (":\\(;;;;;\\) .*$" .  'org-level-3)
+         (":\\(;;;;;\\) .*$" .  'org-level-4))))
+
+  (add-hook 'hy-mode-hook 'hy-extra-syntax)
+  (add-hook 'navi-mode-hook 'navi-extra-syntax))
 
 ;;;; Face-updates
 (defun dotspacemacs/user-config/display/face-updates ()
