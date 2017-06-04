@@ -964,10 +964,16 @@
   (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
   (global-set-key (kbd "C-l") 'evil-avy-goto-line)
 
+  ;; TODO this should be major-mode specific and handle navi altogether
   (defun avy-navi-goto-outline ()
     (interactive)
-    (avy--generic-jump "[;]+\\( \\)" nil 'post))
+    (avy--generic-jump "[;]+\\( \\)" nil 'post))  ; must be post
 
+  (defun avy-navi-goto-comment ()
+    (interactive)
+    (avy--generic-jump comment-start-skip nil 'pre))
+
+  (global-set-key (kbd "C-;") 'avy-navi-goto-outline)
   ;; TODO probably better way to do multi evil global set
   (evil-global-set-key 'normal (kbd "C-o") 'avy-navi-goto-outline)
   (evil-global-set-key 'visual (kbd "C-o") 'avy-navi-goto-outline)
@@ -975,6 +981,10 @@
   (evil-global-set-key 'operator (kbd "C-o") 'avy-navi-goto-outline)
   (evil-global-set-key 'motion (kbd "C-o") 'avy-navi-goto-outline)
   (evil-global-set-key 'emacs (kbd "C-o") 'avy-navi-goto-outline)
+
+  (with-eval-after-load 'flyspell
+    (evil-define-key '(normal insert visual replace operator motion emacs)
+      flyspell-mode-map (kbd "C-;") 'avy-navi-goto-comment))
 
   (with-eval-after-load 'org
     (evil-define-key '(normal insert visual replace operator motion emacs)
