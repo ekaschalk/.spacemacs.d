@@ -899,6 +899,12 @@
 (defun dotspacemacs/user-config/ivy ()
   "Ivy completion framework configuration."
 
+  (load (if-linux
+         "~/elisp/all-the-icons-ivy.el"
+         "c:/~/elisp/all-the-icons-ivy.el"))
+  ;; TODO the icon for folder is wrong
+  (all-the-icons-ivy-setup)
+
   ;; Perform default action on avy-selected minibuffer line
   (define-key ivy-minibuffer-map (kbd "C-l") 'ivy-avy)
   ;; Evil-like scrolling of ivy minibuffer
