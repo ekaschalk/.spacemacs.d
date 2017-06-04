@@ -1269,8 +1269,9 @@
 
 ;;;; Navi-mode
 (defun dotspacemacs/user-config/outshine/navi-mode ()
+  ;; TODO doesnt work well with more than 2 windows
+
   (require 'navi-mode)
-  ;; Navi mode python integration
   (add-to-list 'navi-key-mappings
                '("python" .
                  ((:FUN . "f")
@@ -1317,40 +1318,29 @@
             (other-window 1)
             (my-outline-show-context)
             (other-window 1))
-      ;; Widen narrowed navi buffer
-      "w" 'navi-widen
-      ;; Undo modifications to headers done within navi buffer
-      "u" 'navi-undo
       ;; Open occurence but do not goto
       "d" (lambda () (interactive)
             (occur-mode-display-occurrence)
             (other-window 1)
             (my-outline-show-context)
-            (other-window 1))
-      "D" (lambda () (interactive)
-            (occur-mode-display-occurrence)
-            (other-window 1)
-            (my-outline-show-context)
             (recenter 3)
             (other-window 1))
-      ;; Open and goto occurrence
+      ;; Open and goto occurrence. Capital for closing navi
       "o" (lambda () (interactive)
             (navi-goto-occurrence-other-window)
-            (my-outline-show-context))
+            (my-outline-show-context)
+            (recenter 3))
       "O" (lambda () (interactive)
             (navi-goto-occurrence-other-window)
-            (my-outline-show-context)
-            (recenter 3))
-      ;; Exit Navi and goto occurence
-      "q" (lambda () (interactive)
-            (navi-quit-and-switch)
-            (my-outline-show-context)
-            (recenter 3))
-      "Q" (lambda () (interactive)
-            (navi-quit-and-switch)
             (delete-other-windows)
             (my-outline-show-context)
-            (recenter 3)))
+            (recenter 3))
+      ;; Exit Navi
+      "q" 'spacemacs/delete-window
+      ;; Widen narrowed navi buffer
+      "w" 'navi-widen
+      ;; Undo modifications to headers done within navi buffer
+      "u" 'navi-undo)
 
     (setq navi-mode-map map)))
 
@@ -1359,6 +1349,8 @@
   (require 'outshine)
   ;; 1. Adds functionality to run on narrowed buffers
   ;; 2. Shows up to including level 3 headings on load
+
+  ;; TODO Make it neotree like on the left side
   (defun my-outshine-navi ()
     (interactive)
     (let ((line nil))
