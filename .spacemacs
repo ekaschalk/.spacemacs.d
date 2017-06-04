@@ -972,6 +972,8 @@
   (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
   (global-set-key (kbd "C-l") 'evil-avy-goto-line)
 
+  ;; TODO for some reason must require avy to get avy--generic-jump loaded
+  (require 'avy)
   ;; TODO this should be major-mode specific and handle navi altogether
   (defun avy-navi-goto-outline ()
     (interactive)
