@@ -34,11 +34,12 @@
 ;; 2. Unique visual enhancements.
 ;;    - Fira code ligature integration (Fira Code font not required, I use Hack)
 ;;    - Math and other custom symbols for major modes
-;;    - Pretty magit commits
+;;    - Pretty magit commits with ivy integration
+;;    - Pretty eshell
 ;; x. Miscellaneous small snippets.
 ;;    - Mypy flychecking integrated with pylint.
 ;;    - Unicode ellipsis for outline headings
-;;    - Many premium keybindings (C-SPC, C-h, 0, ...) have been rebound
+;;    - Many premium keybindings (C-SPC, C-h, C-e, 0, ...) have been rebound
 
 ;;; OS-Config
 ;; Utilities for integrating Windows and Linux.
@@ -794,6 +795,7 @@
 
 ;;;; Shell
 (defun dotspacemacs/user-config/display/shell ()
+  "Eshell prettification."
   (require 'virtualenvwrapper)  ; TODO integrate these better way
   (pyvenv-mode 1)
   (load (if-linux "~/elisp/eshell-git.el" "c:/~/elisp/eshell-git.el"))
@@ -823,7 +825,8 @@
   (setq eshell-prompt-number 0)
   (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
   (advice-add 'eshell-send-input :before
-              (lambda (&rest args) (setq eshell-prompt-number (+ 1 eshell-prompt-number))))
+              (lambda (&rest args)
+                (setq eshell-prompt-number (+ 1 eshell-prompt-number))))
 
   (setq eshell-prompt-face '(:foreground "steel blue")
         eshell-sep-face '(:foreground "light slate gray")
@@ -832,7 +835,8 @@
 
         ;; new modeline style
         eshell-git-face '(:background "indian red")
-        eshell-dir-face '(:foreground "ivory" :background "steel blue" :weight bold)
+        eshell-dir-face '(:foreground "ivory"
+                                      :background "steel blue" :weight bold)
         eshell-venv-face '(:background "slate gray")
         eshell-time-face '(:background "#007849")  ; greenish
         seg-sep " "
@@ -863,7 +867,6 @@
 
            (with-face seg-sep seg-sep-face-end)
 
-           ;; (with-face "\n|" eshell-prompt-face)
            (with-face (concat "\n|" (number-to-string eshell-prompt-number))
              eshell-prompt-face)
            (set-eshell-prompt-icon "└─")
