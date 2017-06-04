@@ -39,7 +39,8 @@
 ;; x. Miscellaneous small snippets.
 ;;    - Mypy flychecking integrated with pylint.
 ;;    - Unicode ellipsis for outline headings
-;;    - Many premium keybindings (C-SPC, C-h, C-e, 0, ...) have been rebound
+;;    - Many premium keybindings (C-SPC, C-h, C-e, 0, M-d...) have been rebound
+;;    - Extra avy motions
 
 ;;; OS-Config
 ;; Utilities for integrating Windows and Linux.
@@ -1054,11 +1055,11 @@
 
 ;;;; Spotify
 (defun dotspacemacs/user-config/misc/spotify ()
-  (global-set-key (kbd "C-c s s") 'helm-spotify-plus)
-  (global-set-key (kbd "C-c s n") 'helm-spotify-plus-next)
-  (global-set-key (kbd "C-c s N") 'helm-spotify-plus-previous)
-  (global-set-key (kbd "C-c s f") 'helm-spotify-plus-play)
-  (global-set-key (kbd "C-c s F") 'helm-spotify-plus-pause))
+  (global-set-key (kbd "M-s s") 'helm-spotify-plus)
+  (global-set-key (kbd "M-s j") 'helm-spotify-plus-play)
+  (global-set-key (kbd "M-s SPC") 'helm-spotify-plus-pause)
+  (global-set-key (kbd "M-s l") 'helm-spotify-plus-next)
+  (global-set-key (kbd "M-s h") 'helm-spotify-plus-previous))
 
 ;;;; Aspell
 (defun dotspacemacs/user-config/misc/aspell ()
