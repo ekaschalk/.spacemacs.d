@@ -958,10 +958,23 @@
 
 ;;;; Avy
 (defun dotspacemacs/user-config/navigation/avy ()
+  "Avy keybindings and custom commands."
   (global-set-key (kbd "C-h") 'avy-pop-mark)
   (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
   (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
   (global-set-key (kbd "C-l") 'evil-avy-goto-line)
+
+  (defun avy-navi-goto-outline ()
+    (interactive)
+    (avy--generic-jump "[;]+\\( \\)" nil 'post))
+
+  ;; TODO probably better way to do multi evil global set
+  (evil-global-set-key 'normal (kbd "C-o") 'avy-navi-goto-outline)
+  (evil-global-set-key 'visual (kbd "C-o") 'avy-navi-goto-outline)
+  (evil-global-set-key 'replace (kbd "C-o") 'avy-navi-goto-outline)
+  (evil-global-set-key 'operator (kbd "C-o") 'avy-navi-goto-outline)
+  (evil-global-set-key 'motion (kbd "C-o") 'avy-navi-goto-outline)
+  (evil-global-set-key 'emacs (kbd "C-o") 'avy-navi-goto-outline)
 
   (with-eval-after-load 'org
     (evil-define-key '(normal insert visual replace operator motion emacs)
@@ -1270,6 +1283,7 @@
 ;;;; Navi-mode
 (defun dotspacemacs/user-config/outshine/navi-mode ()
   ;; TODO doesnt work well with more than 2 windows
+  ;; TODO if navi buffer exists then M-n doesnt do open window
 
   (require 'navi-mode)
   (add-to-list 'navi-key-mappings
