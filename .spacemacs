@@ -420,10 +420,16 @@
 
 (defconst navi-font-lock-alist
   ;; TODO ideally this would be major-mode specific, atm elisp
-  '(("\\(:;;;\\) "                   ?■)
+  '(;; Outlines
+    ("\\(:;;;\\) "                   ?■)
     ("\\(:;;;;\\) "                  ?○)
     ("\\(:;;;;;\\) "                 ?✸)
-    ("\\(:;;;;;;\\) "                ?✿)))
+    ("\\(:;;;;;;\\) "                ?✿)
+    ;; Hide first line
+    ("\\(.*matches.*$\\)"            ? )
+    ;; Hide numbers (numbers still needed for internal navi methods)
+    ("\\([ ]+[0-9]+\\)"              ? )
+    ))
 
 (defconst python-font-lock-alist
   ;; Outlines
