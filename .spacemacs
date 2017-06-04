@@ -1049,6 +1049,7 @@
   (dotspacemacs/user-config/misc/neotree)
   (dotspacemacs/user-config/misc/projectile)
   (dotspacemacs/user-config/misc/shell)
+  (dotspacemacs/user-config/misc/windows)
   (dotspacemacs/user-config/misc/yassnippet))
 
 ;;;; Spotify
@@ -1109,6 +1110,10 @@
 
   (evil-global-set-key 'normal (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
   (evil-global-set-key 'insert (kbd "C-e") 'my-spacemacs/shell-pop-eshell))
+
+;;;; Windows
+(defun dotspacemacs/user-config/misc/windows ()
+  (global-set-key (kbd "M-d") 'spacemacs/delete-window))
 
 ;;;; Yassnippet
 (defun dotspacemacs/user-config/misc/yassnippet ()
