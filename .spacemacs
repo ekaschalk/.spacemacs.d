@@ -119,6 +119,8 @@
         doom-themes
         ;; All-the-icons integration with mode line
         spaceline-all-the-icons
+        ;; Org google calendar integration
+        org-gcal
         ))
 
 ;;;; Spacemacs
@@ -237,6 +239,7 @@
     (dotspacemacs/user-config/misc)
     (dotspacemacs/user-config/navigation)
     (dotspacemacs/user-config/org)
+    (dotspacemacs/user-config/org-gcal)
     (dotspacemacs/user-config/outshine)
     (dotspacemacs/user-config/python)))
 
@@ -1509,3 +1512,23 @@
 
         ;; Full size images
         mm-inline-large-images 'resize))
+
+;;; Org-gcal
+
+(defun dotspacemacs/user-config/org-gcal ()
+  ;; TODO use dropbox
+  ;; TODO bind everything
+  ;; TODO try calfw
+  ;; TODO improve the load
+  ;; https://github.com/myuhe/org-gcal.el
+  ;; http://cestlaz.github.io/posts/using-emacs-26-gcal/#.WG52MOtj0wE.reddit
+
+  (require 'org-gcal)
+  (load (if-linux "~/Dropbox/secrets.el"
+                  "c:/~/Dropbox/secrets.el"))
+  (setq org-gcal-file-alist
+        `(("ekaschalk@gmail.com" .
+           ,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org"))))
+
+  ;; (org-gcal-sync)
+  )
