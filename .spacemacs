@@ -902,9 +902,11 @@
 (defun dotspacemacs/user-config/ivy ()
   "Ivy completion framework configuration."
 
-  ;; TODO better loading
+  ;; TODO handle loading better
+  (require 's)
   (load (if-linux "~/elisp/all-the-icons-ivy.el"
                   "c:/~/elisp/all-the-icons-ivy.el"))
+  (set-fontset-font t '(#xf016 . #xf016) "fileicons")  ; 
   (all-the-icons-ivy-setup)
 
   ;; Perform default action on avy-selected minibuffer line
@@ -1410,6 +1412,7 @@
   ;; Outline minor mode vim keybindings
   (let ((map outline-minor-mode-map))
     ;; Core functions
+    ;; (define-key map (kbd "s-n") 'my-outshine-navi)
     (define-key map (kbd "M-n") 'my-outshine-navi)
     (define-key map (kbd "<backtab>") 'outshine-cycle-buffer)
     (define-key map (kbd "M-h") 'outline-promote)

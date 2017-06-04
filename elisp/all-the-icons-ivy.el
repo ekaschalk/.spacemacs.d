@@ -62,8 +62,12 @@ If that fails look for an icon for the mode that the `major-mode' is derived fro
 
 (defun all-the-icons-ivy-file-transformer (s)
   "Return a candidate string for filename S preceded by an icon."
+  ;; NOTE Made changes here as the folder icon for file-icons is vastly superior
+  ;; to the file-icon fontawesome font.
   (format "%s\t%s"
-          (propertize "\t" 'display (all-the-icons-icon-for-file s))
+          (if (s-ends-with? "/" s)
+              (propertize "\t" 'display "" 'face 'all-the-icons-silver)
+            (propertize "\t" 'display (all-the-icons-icon-for-file s)))
           s))
 
 (defun all-the-icons-ivy-buffer-transformer (s)
