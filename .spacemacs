@@ -1296,8 +1296,8 @@
     (define-key map (kbd "M-j") 'navi-move-down-subtree)
     (define-key map (kbd "M-k") 'navi-move-up-subtree)
     (define-key map (kbd "M-l") 'navi-demote-subtree)
-    ;; Another alias for 'o', rarely used
-    (define-key map (kbd "M-n") 'navi-goto-occurrence-other-window)
+    ;; another way to exit
+    (define-key map (kbd "M-n") 'spacemacs/delete-window)
 
     ;; Custom vim bindings for navi-mode
     ;; Also fixes various bugs related to narrowing/context/scrolling
@@ -1350,8 +1350,9 @@
   ;; 1. Adds functionality to run on narrowed buffers
   ;; 2. Shows up to including level 3 headings on load
 
-  ;; TODO Make it neotree like on the left side
   (defun my-outshine-navi ()
+    ;; TODO Couldnt get popwin to work
+    ;; However, managed neotree-like behavior but not 100% consistent
     (interactive)
     (let ((line nil))
       (widen)  ; Otherwise broken on narrowed buffers
@@ -1361,11 +1362,15 @@
         (setq line
               (replace-regexp-in-string "\n$" ""
                                         (thing-at-point 'line t))))
+      ;; window stuff
+      (split-window-below)
       (outshine-navi)
-      (navi-generic-command ?3 nil)  ; default to 3 heading levels
+      (evil-window-move-far-left)
+      (shrink-window-horizontally (- (window-width) 35))
+      ;; default to 3 heading levels
+      (navi-generic-command ?3 nil)
       (search-forward-regexp line)))
 
-  ;; Bind to org as outline-minor-mode map isn't used by org-mode
   (define-key org-mode-map (kbd "M-n") 'my-outshine-navi)
 
   ;; Outline minor mode vim keybindings
