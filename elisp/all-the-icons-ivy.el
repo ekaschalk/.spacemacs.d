@@ -33,8 +33,8 @@
 
 ;;; Code:
 
-(require 'all-the-icons)
-(require 'ivy)
+;; (require 'all-the-icons)
+;; (require 'ivy)
 
 (defun all-the-icons-ivy--buffer-propertize (b s)
   "If buffer B is modified apply `ivy-modified-buffer' face on string S."

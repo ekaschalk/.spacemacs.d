@@ -217,7 +217,10 @@
   (load (if-linux "~/elisp/.custom-settings.el"
                   "c:/~/elisp/.custom-settings.el"))
   (load (if-linux "~/elisp/prettify-utils.el"
-                  "c:/~/elisp/prettify-utils.el")))
+                  "c:/~/elisp/prettify-utils.el"))
+  ;; (load (if-linux "~/elisp/all-the-icons-ivy.el"
+  ;;                 "c:/~/elisp/all-the-icons-ivy.el"))
+  )
 
 ;;; Spacemacs-User-config
 (defun dotspacemacs/user-config ()
@@ -899,10 +902,9 @@
 (defun dotspacemacs/user-config/ivy ()
   "Ivy completion framework configuration."
 
-  (load (if-linux
-         "~/elisp/all-the-icons-ivy.el"
-         "c:/~/elisp/all-the-icons-ivy.el"))
-  ;; TODO the icon for folder is wrong
+  ;; TODO better loading
+  (load (if-linux "~/elisp/all-the-icons-ivy.el"
+                  "c:/~/elisp/all-the-icons-ivy.el"))
   (all-the-icons-ivy-setup)
 
   ;; Perform default action on avy-selected minibuffer line
