@@ -1196,6 +1196,10 @@
 (defun dotspacemacs/user-config/python/venvs ()
   (with-eval-after-load 'virtualenvwrapper
     (pyvenv-mode 1)
+
+    ;; Fixes hy-mode environment when pyvenv is activated
+    (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode)
+
     (venv-initialize-interactive-shells)
     (venv-initialize-eshell)))
 
