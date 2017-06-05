@@ -1525,11 +1525,20 @@
   ;; http://cestlaz.github.io/posts/using-emacs-26-gcal/#.WG52MOtj0wE.reddit
 
   (require 'org-gcal)
+  (require 'org-contacts)
   (load (if-linux "~/Dropbox/secrets.el"
                   "c:/~/Dropbox/secrets.el"))
   (setq org-gcal-file-alist
         `(("ekaschalk@gmail.com" .
            ,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org"))))
+  (setq org-contacts-files
+        `(,(if-linux "~/Dropbox/contacts.org" "c:/~/Dropbox/contacts.org")))
 
   ;; (org-gcal-sync)
+  ;;   (add-to-list 'org-capture-templates
+  ;;                '("c" "Contacts" entry (file "~/Org/contacts.org")
+  ;;                  "* %(org-contacts-template-name)
+  ;; :PROPERTIES:
+  ;; :EMAIL: %(org-contacts-template-email)
+  ;; :END:"))
   )
