@@ -1097,8 +1097,12 @@
   (setq neo-theme 'icons
         neo-window-width 28)
 
-  (evil-global-set-key 'normal (kbd "C-f") 'winum-select-window-0)
-  (evil-global-set-key 'normal (kbd "C-p") 'neotree-find-project-root))
+  (setq neo-hidden-regexp-list '("^\\." "\\.pyc$" "~$" "^#.*#$" "\\.elc$"
+                                 ;; Pycache and init rarely want to see
+                                 "__pycache__" "__init__\\.py"))
+
+  (evil-global-set-key 'normal (kbd "M-f") 'winum-select-window-0)
+  (evil-global-set-key 'normal (kbd "M-p") 'neotree-find-project-root))
 
 ;;;; Projectile
 (defun dotspacemacs/user-config/misc/projectile ()
