@@ -63,9 +63,11 @@ If that fails look for an icon for the mode that the `major-mode' is derived fro
 (defun all-the-icons-ivy-file-transformer (s)
   "Return a candidate string for filename S preceded by an icon."
   ;; NOTE Made changes here as the folder icon for file-icons is vastly superior
+  ;; TODO doesnt use right folder icon for windows
   ;; to the file-icon fontawesome font.
+  (setq is-linuxp (eq system-type 'gnu/linux))
   (format "%s\t%s"
-          (if (s-ends-with? "/" s)
+          (if (and is-linuxp (s-ends-with? "/" s))
               (propertize "\t" 'display "" 'face 'all-the-icons-silver)
             (propertize "\t" 'display (all-the-icons-icon-for-file s)))
           s))
