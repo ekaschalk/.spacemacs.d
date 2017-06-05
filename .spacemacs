@@ -1541,6 +1541,8 @@
            ,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org"))))
   (setq org-contacts-files
         `(,(if-linux "~/Dropbox/contacts.org" "c:/~/Dropbox/contacts.org")))
+  (setq org-agenda-files
+        `(,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org")))
 
   ;; (org-gcal-sync)
   ;;   (add-to-list 'org-capture-templates
