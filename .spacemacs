@@ -121,6 +121,8 @@
         spaceline-all-the-icons
         ;; Org google calendar integration
         org-gcal
+        ;; Org vcard for contact export/import
+        org-vcard
         ))
 
 ;;;; Spacemacs
@@ -1514,7 +1516,6 @@
         mm-inline-large-images 'resize))
 
 ;;; Org-gcal
-
 (defun dotspacemacs/user-config/org-gcal ()
   ;; TODO use dropbox
   ;; TODO bind everything
