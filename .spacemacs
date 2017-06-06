@@ -1111,6 +1111,7 @@
 ;;;; Shell
 (defun dotspacemacs/user-config/misc/shell ()
   "Quick eshell with vim interaction."
+
   (defun my-spacemacs/shell-pop-eshell ()
     (interactive)
     (spacemacs/shell-pop-eshell nil)
@@ -1119,7 +1120,11 @@
       (evil-escape)))
 
   (evil-global-set-key 'normal (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
-  (evil-global-set-key 'insert (kbd "C-e") 'my-spacemacs/shell-pop-eshell))
+  (evil-global-set-key 'insert (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
+
+  ;; Enables Python shell to print unicode
+  (setenv "PYTHONIOENCODING" "utf-8")
+  (setenv "LANG" "en_US.UTF-8"))
 
 ;;;; Windows
 (defun dotspacemacs/user-config/misc/windows ()
