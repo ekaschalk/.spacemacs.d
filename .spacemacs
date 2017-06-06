@@ -733,6 +733,7 @@
          (prettify-utils-generate
           ;;;;; Functional
           (:lambda      "λ") (:def         "ƒ")
+          (:composition "∘")
 
           ;;;;; Types
           (:null        "∅") (:true        "𝕋") (:false       "𝔽")
@@ -761,6 +762,7 @@
   (setq hy-pretty-choices
         (get-pairs
          '(:lambda "fn" :def "defn"
+                   :composition "comp"
                    :null "None" :true "True" :false "False"
                    :in "in" :not "not"
                    :tuple "#t"
@@ -1124,6 +1126,7 @@
   (evil-global-set-key 'insert (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
 
   ;; Enables Python shell to print unicode
+  ;; TODO might have to make this pyvenv hook
   (setenv "PYTHONIOENCODING" "utf-8")
   (setenv "LANG" "en_US.UTF-8"))
 
