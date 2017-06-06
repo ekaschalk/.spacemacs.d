@@ -1060,6 +1060,7 @@
 
 ;;;; Spotify
 (defun dotspacemacs/user-config/misc/spotify ()
+  ;; TODO most overwrite navi mode for M-s s
   (global-set-key (kbd "M-s s") 'helm-spotify-plus)
   (global-set-key (kbd "M-s j") 'helm-spotify-plus-play)
   (global-set-key (kbd "M-s SPC") 'helm-spotify-plus-pause)
@@ -1179,6 +1180,9 @@
       (python-shell-completion-native-get-completions
        (get-buffer-process (current-buffer))
        nil "_")))
+
+  ;; No log output in pytests
+  (setq pytest-cmd-flags "-x --no-print-logs")
 
   ;; Remove flyspell from python buffers
   (dolist (hook '(python-mode-hook))
