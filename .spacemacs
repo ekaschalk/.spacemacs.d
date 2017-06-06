@@ -1128,6 +1128,9 @@
 
 ;;;; Windows
 (defun dotspacemacs/user-config/misc/windows ()
+  (evil-define-key 'normal outline-minor-mode-map (kbd "C-M-i")  ; M-tab
+    'spacemacs/alternate-buffer)
+
   (global-set-key (kbd "M-d") 'spacemacs/delete-window))
 
 ;;;; Yassnippet
