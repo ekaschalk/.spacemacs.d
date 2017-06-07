@@ -41,6 +41,13 @@
 ;;    - Unicode ellipsis for outline headings
 ;;    - Many premium keybindings (C-SPC, C-h, C-e, 0, M-d...) have been rebound
 ;;    - Extra avy motions
+;;
+;; TODO Add screenshots to the repo
+;; TODO Rename repo to be specific to .spacemacs rather than dotfiles
+;; TODO Add cloning instructions
+;; TODO Add tool that creates documentation from the elisp
+;; TODO Move this entire section to a README
+;;
 
 ;;; OS-Config
 ;; Utilities for integrating Windows and Linux.
@@ -1185,7 +1192,8 @@
        nil "_")))
 
   ;; No log output in pytests
-  (setq pytest-cmd-flags "-x --no-print-logs")
+  ;; (setq pytest-cmd-flags "-x --no-print-logs")
+  (setq pytest-cmd-flags "-x -s")
 
   ;; Remove flyspell from python buffers
   (dolist (hook '(python-mode-hook))
@@ -1540,10 +1548,9 @@
 
 ;;; Org-gcal
 (defun dotspacemacs/user-config/org-gcal ()
-  ;; TODO use dropbox
   ;; TODO bind everything
   ;; TODO try calfw
-  ;; TODO improve the load
+  ;; TODO setup dropbox daemon on linux
   ;; https://github.com/myuhe/org-gcal.el
   ;; http://cestlaz.github.io/posts/using-emacs-26-gcal/#.WG52MOtj0wE.reddit
 
