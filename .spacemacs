@@ -138,7 +138,7 @@
    dotspacemacs-distribution 'spacemacs
    dotspacemacs-enable-lazy-installation 'unused
    dotspacemacs-ask-for-lazy-installation t
-   dotspacemacs-configuration-layer-path '(".layers/")
+   dotspacemacs-configuration-layer-path nil
    dotspacemacs-additional-packages dotspacemacs/additional/packages
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages '()
@@ -157,6 +157,7 @@
   (setq-default
    dotspacemacs-themes '(
                          doom-one
+                         (my-light :location "/root/elisp/my-light-theme")
                          )
    dotspacemacs-default-font `("Hack"
                                :size ,(if-linux 18 12)
@@ -281,7 +282,7 @@
   (global-set-key (kbd "<f2>")
                   (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
 
-;;;; Init-doom-theme
+;;; Init-doom-theme
 (defun dotspacemacs/user-config/display/init-doom-theme ()
   "Doom theme configuration."
   ;; Note to readers: there is a bug with doom-vibrant-theme and spacemacs
@@ -292,13 +293,15 @@
 
   ;; Default doom-mode brightens source files.
   ;; I prefer the opposite - brighter special buffers and dark source buffers.
-  (defun opposite-doom-buffer-mode-maybe ()
-    (unless buffer-file-name
-      (doom-buffer-mode +1)))
+  ;; depricated for solair-mode
+  ;; (defun opposite-doom-buffer-mode-maybe ()
+  ;;   (unless buffer-file-name
+  ;;     (doom-buffer-mode +1)))
 
-  (add-hook 'after-change-major-mode-hook #'opposite-doom-buffer-mode-maybe)
-  (add-hook 'after-revert-hook #'opposite-doom-buffer-mode-maybe)
-  (add-hook 'minibuffer-setup-hook #'doom-brighten-minibuffer))
+  ;; (add-hook 'after-change-major-mode-hook #'opposite-doom-buffer-mode-maybe)
+  ;; (add-hook 'after-revert-hook #'opposite-doom-buffer-mode-maybe)
+  ;; (add-hook 'minibuffer-setup-hook #'doom-brighten-minibuffer)
+  )
 
 ;;;; Font-locks
 ;;;;; Core
