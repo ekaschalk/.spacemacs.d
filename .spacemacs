@@ -459,7 +459,8 @@
   "Extra syntax highlighting for desired keywords."
   (defun hy-extra-syntax ()
     (font-lock-add-keywords
-     nil '(("\\<\\(self\\)" . 'font-lock-keyword-face)
+     nil '(
+         ("\\<\\(self\\)" . 'font-lock-constant-face)
          ;; Highlight entire line for all decorators through reader macro
          ("\\(#@.*$\\)" . 'font-lock-function-name-face)
          ;; Syntax highlighting for reader-macros
@@ -857,7 +858,7 @@
    'solarized-light
 
    `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
-                                           :background "light slate gray"))))
+                                           :background "light gray"))))
 
    ;; active modeline has no colors
    `(mode-line ((t (:inherit mode-line :background "#fdf6e3"))))
