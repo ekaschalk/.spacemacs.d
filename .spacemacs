@@ -122,8 +122,9 @@
         pretty-mode
         ;; Spotify layer improvements behind SPC a m s prefix
         helm-spotify-plus
-        ;; Doom theme
+        ;; Themes
         doom-themes
+        solarized-theme
         ;; All-the-icons integration with mode line
         spaceline-all-the-icons
         ;; Org google calendar integration
@@ -156,8 +157,9 @@
 (defun dotspacemacs/init ()
   (setq-default
    dotspacemacs-themes '(
-                         doom-one
+                         solarized-light
                          (my-light :location "/root/elisp/my-light-theme")
+                         ;; doom-one
                          )
    dotspacemacs-default-font `("Hack"
                                :size ,(if-linux 18 12)
@@ -440,14 +442,14 @@
 (defconst navi-font-lock-alist
   ;; TODO ideally this would be major-mode specific, atm elisp
   '(;; Outlines
-    ("\\(:;;;\\) "                   ?■)
-    ("\\(:;;;;\\) "                  ?○)
-    ("\\(:;;;;;\\) "                 ?✸)
-    ("\\(:;;;;;;\\) "                ?✿)
+    ;; Hides numbers (numbers still needed for internal navi methods)
+    ("\\([ ]+[0-9]+:;;;\\) "                   ?■)
+    ("\\([ ]+[0-9]+:;;;;\\) "                  ?○)
+    ("\\([ ]+[0-9]+:;;;;;\\) "                 ?✸)
+    ("\\([ ]+[0-9]+:;;;;;;\\) "                ?✿)
+
     ;; Hide first line
     ("\\(.*matches.*$\\)"            ? )
-    ;; Hide numbers (numbers still needed for internal navi methods)
-    ("\\([ ]+[0-9]+\\)"              ? )
     ))
 
 (defconst python-font-lock-alist
@@ -499,10 +501,14 @@
 
   (defun navi-extra-syntax ()
     (font-lock-add-keywords
-     nil '((":\\(;;;\\) .*$" .    'org-level-1)
-         (":\\(;;;;\\) .*$" .   'org-level-2)
-         (":\\(;;;;;\\) .*$" .  'org-level-3)
-         (":\\(;;;;;\\) .*$" .  'org-level-4))))
+     nil '(("\\([ ]+[0-9]+:;;;\\) .*$" .    'org-level-1)
+         ("\\([ ]+[0-9]+:;;;;\\) .*$" .   'org-level-2)
+         ("\\([ ]+[0-9]+:;;;;;\\) .*$" .  'org-level-3)
+         ("\\([ ]+[0-9]+:;;;;;\\) .*$" .  'org-level-4))))
+     ;; nil '(("\\(:;;;\\) "                   'org-level-1)
+     ;;     ("\\(:;;;;\\) "                  'org-level-2)
+     ;;     ("\\(:;;;;;\\) "                 'org-level-3)
+     ;;     ("\\(+:;;;;;;\\) "                'org-level-4))))
 
   (add-hook 'hy-mode-hook 'hy-extra-syntax)
   (add-hook 'navi-mode-hook 'navi-extra-syntax))
@@ -510,6 +516,13 @@
 ;;;; Face-updates
 (defun dotspacemacs/user-config/display/face-updates ()
   "Face configuration."
+
+  (setq my-black-1 "#1b1b1e"
+        ;; my-black-2 "#58A4B0"
+        my-black-2 "#AB2346"
+        my-black-3 "#00B295"
+        my-black-4 "#A9BCD0")
+
   (defun -update-faces ()
     (custom-theme-set-faces
      (car custom-enabled-themes)
@@ -520,16 +533,26 @@
      '(show-paren-match ((t (:inherit show-paren-match :underline t))))
 
      ;; Org-level-3 and org-level-2 were too similar with color-blindness
-     '(org-level-2 ((t (:height 1.10 :foreground "forest green"
-                                :weight ultra-bold))))
-     '(org-level-3 ((t (:height 1.03 :foreground "light slate gray"
-                                :weight ultra-bold))))
+     `(org-level-1 ((t (:height 1.25 :foreground ,my-black-1
+                                :background "#C9DAEA"
+                                :weight bold))))
+     `(org-level-2 ((t (:height 1.15 :foreground ,my-black-1
+                                :background "#7CDF64"
+                                :weight bold))))
+     `(org-level-3 ((t (:height 1.05 :foreground ,my-black-1
+                                :background "#C7D59F"
+                                :weight bold))))
+     ;; For doom-theme:
+     ;; '(org-level-2 ((t (:height 1.10 :foreground "forest green"
+     ;;                            :weight ultra-bold))))
+     ;; '(org-level-3 ((t (:height 1.03 :foreground "light slate gray"
+     ;;                            :weight ultra-bold))))
 
      ;; Since outlines are necessarily further apart than org-mode headers
      ;; We box the outlines to make them stand out in programming buffers.
-     '(outline-1 ((t (:inherit org-level-1 :box t))))
-     '(outline-2 ((t (:inherit org-level-2 :box t))))
-     '(outline-3 ((t (:inherit org-level-3 :box t :height 1.03))))
+     '(outline-1 ((t (:inherit org-level-1))))
+     '(outline-2 ((t (:inherit org-level-2))))
+     '(outline-3 ((t (:inherit org-level-3))))
      '(outline-4 ((t (:inherit org-level-4 :underline t))))))
 
   ;; Apply face updates on emacs initialization
@@ -583,7 +606,7 @@
        (set-display-table-slot
         display-table 4
         (vconcat
-         (mapcar (lambda (c) (make-glyph-code c 'font-lock-keyword-face)) "▼")))))))
+         (mapcar (lambda (c) (make-glyph-code c 'font-lock-keyword-face)) " ▼")))))))
 
 ;;;; Pretty-magit
 (defun dotspacemacs/user-config/display/prettify-magit ()

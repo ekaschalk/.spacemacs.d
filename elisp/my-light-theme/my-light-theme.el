@@ -1,4 +1,4 @@
-(deftheme my-light "My theme (light version)")
+(deftheme my-light "My light theme")
 
 (let ((nubox_truewhite "#ffffff")
       (nubox_trueblack "#000000")
