@@ -261,7 +261,8 @@
   (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
 
   ;; Group 2
-  (dotspacemacs/user-config/display/init-doom-theme)
+  ;; NOTE Working with solarized light theme now
+  ;; (dotspacemacs/user-config/display/init-doom-theme)
 
   ;; Group 3
   (dotspacemacs/user-config/display/font-locks)
@@ -284,7 +285,7 @@
   (global-set-key (kbd "<f2>")
                   (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
 
-;;; Init-doom-theme
+;;;; Init-doom-theme
 (defun dotspacemacs/user-config/display/init-doom-theme ()
   "Doom theme configuration."
   ;; Note to readers: there is a bug with doom-vibrant-theme and spacemacs
@@ -516,49 +517,85 @@
 ;;;; Face-updates
 (defun dotspacemacs/user-config/display/face-updates ()
   "Face configuration."
-
   (setq my-black-1 "#1b1b1e"
         ;; my-black-2 "#58A4B0"
         my-black-2 "#AB2346"
         my-black-3 "#00B295"
         my-black-4 "#A9BCD0")
 
-  (defun -update-faces ()
-    (custom-theme-set-faces
-     (car custom-enabled-themes)
-     ;; Fixes bad tint for mode-line background in doom-one theme
-     '(mode-line ((t (:inherit mode-line :background "#21242b"))))
+  (custom-theme-set-faces
+   'solarized-light
 
-     ;; Matching parenthesis much more obvious when underlined
-     '(show-paren-match ((t (:inherit show-paren-match :underline t))))
+   `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
+                                           :background "light slate gray"))))
 
-     ;; Org-level-3 and org-level-2 were too similar with color-blindness
-     `(org-level-1 ((t (:height 1.25 :foreground ,my-black-1
-                                :background "#C9DAEA"
-                                :weight bold))))
-     `(org-level-2 ((t (:height 1.15 :foreground ,my-black-1
-                                :background "#7CDF64"
-                                :weight bold))))
-     `(org-level-3 ((t (:height 1.05 :foreground ,my-black-1
-                                :background "#C7D59F"
-                                :weight bold))))
-     ;; For doom-theme:
-     ;; '(org-level-2 ((t (:height 1.10 :foreground "forest green"
-     ;;                            :weight ultra-bold))))
-     ;; '(org-level-3 ((t (:height 1.03 :foreground "light slate gray"
-     ;;                            :weight ultra-bold))))
+   `(mode-line ((t (:inherit mode-line :background "#fdf6e3"))))
+   `(mode-line-inactive ((t (:inherit mode-line :background "#fdf6e3"))))
+   `(spaceline-highlight-face ((t (:inherit mode-line :background "#fdf6e3"))))
+   `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
+   `(powerline-active1 ((t (:inherit mode-line :background "#fdf6e3"))))
+   `(powerline-active2 ((t (:inherit mode-line :background "#fdf6e3"))))
 
-     ;; Since outlines are necessarily further apart than org-mode headers
-     ;; We box the outlines to make them stand out in programming buffers.
-     '(outline-1 ((t (:inherit org-level-1))))
-     '(outline-2 ((t (:inherit org-level-2))))
-     '(outline-3 ((t (:inherit org-level-3))))
-     '(outline-4 ((t (:inherit org-level-4 :underline t))))))
+   `(org-level-1 ((t (:height 1.25 :foreground ,my-black-1
+                              :background "#C9DAEA"
+                              :weight bold))))
+   `(org-level-2 ((t (:height 1.15 :foreground ,my-black-1
+                              :background "#7CDF64"
+                              :weight bold))))
+   `(org-level-3 ((t (:height 1.05 :foreground ,my-black-1
+                              :background "#C7D59F"
+                              :weight bold))))
 
-  ;; Apply face updates on emacs initialization
-  (-update-faces)
-  ;; Apply face updates update whenever theme is toggled
-  (add-hook 'spacemacs-post-theme-change-hook '-update-faces))
+   ;; file:/root/.emacs.d/elpa/solarized-theme-20170430.800/solarized.el
+   '(outline-1 ((t (:inherit org-level-1))))
+   '(outline-2 ((t (:inherit org-level-2))))
+   '(outline-3 ((t (:inherit org-level-3))))
+   '(outline-4 ((t (:inherit org-level-4 :underline t))))
+
+   ))
+
+;;;;; Old doom theme faces
+
+;; Since outlines are necessarily further apart than org-mode headers
+;; We box the outlines to make them stand out in programming buffers.
+  ;; (defun -update-faces ()
+  ;;   (custom-theme-set-faces
+  ;;    (car custom-enabled-themes)
+  ;;    ;; Fixes bad tint for mode-line background in doom-one theme
+  ;;    ;; '(mode-line ((t (:inherit mode-line :background "#21242b"))))
+
+  ;;    `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
+  ;;                                            :background "light slate gray"))))
+
+  ;;    ;; Org-level-3 and org-level-2 were too similar with color-blindness
+  ;;    `(org-level-1 ((t (:height 1.25 :foreground ,my-black-1
+  ;;                               :background "#C9DAEA"
+  ;;                               :weight bold))))
+  ;;    `(org-level-2 ((t (:height 1.15 :foreground ,my-black-1
+  ;;                               :background "#7CDF64"
+  ;;                               :weight bold))))
+  ;;    `(org-level-3 ((t (:height 1.05 :foreground ,my-black-1
+  ;;                               :background "#C7D59F"
+  ;;                               :weight bold))))
+  ;;    ;; For doom-theme:
+  ;;    ;; Matching parenthesis much more obvious when underlined
+  ;;    ;; `(show-paren-match ((t (:inherit show-paren-match :underline t))))
+  ;;    ;; '(org-level-2 ((t (:height 1.10 :foreground "forest green"
+  ;;    ;;                            :weight ultra-bold))))
+  ;;    ;; '(org-level-3 ((t (:height 1.03 :foreground "light slate gray"
+  ;;    ;;                            :weight ultra-bold))))
+
+  ;;    ;; Since outlines are necessarily further apart than org-mode headers
+  ;;    ;; We box the outlines to make them stand out in programming buffers.
+  ;;    '(outline-1 ((t (:inherit org-level-1))))
+  ;;    '(outline-2 ((t (:inherit org-level-2))))
+  ;;    '(outline-3 ((t (:inherit org-level-3))))
+  ;;    '(outline-4 ((t (:inherit org-level-4 :underline t))))))
+
+  ;; ;; Apply face updates on emacs initialization
+  ;; (-update-faces)
+  ;; ;; Apply face updates update whenever theme is toggled
+  ;; (add-hook 'spacemacs-post-theme-change-hook '-update-faces))
 
 ;;;; Modeline
 (defun dotspacemacs/user-config/display/modeline ()
@@ -572,7 +609,7 @@
 
               ;; Configuration
               (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
-                    powerline-default-separator 'arrow
+                    powerline-default-separator 'bar
                     spaceline-all-the-icons-icon-set-modified 'chain
                     spaceline-all-the-icons-icon-set-window-numbering 'circle
                     spaceline-all-the-icons-separators-type 'arrow
