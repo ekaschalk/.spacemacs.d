@@ -38,7 +38,6 @@
 ;;    - Pretty eshell
 ;; x. Miscellaneous small snippets.
 ;;    - Mypy flychecking integrated with pylint.
-;;    - Unicode ellipsis for outline headings
 ;;    - Many premium keybindings (C-SPC, C-h, C-e, 0, M-d...) have been rebound
 ;;    - Extra avy motions
 ;;
@@ -513,21 +512,13 @@
 ;;;; Outline-ellipsis-modification
 (defun dotspacemacs/user-config/display/outline-ellipsis-modification ()
   "Org-ellipsis but for outline-minor-mode headings"
-  ;; Modified org-ellipsis implementation
-
-  (add-hook
-   'outline-minor-mode-hook
-   (lambda ()
-     (let ((display-table
-            (if buffer-display-table
-                buffer-display-table
-              (make-display-table))))
-       (unless buffer-display-table
-         (setq buffer-display-table display-table))
-       (set-display-table-slot
-        display-table 4
-        (vconcat
-         (mapcar (lambda (c) (make-glyph-code c 'font-lock-keyword-face)) " ▼")))))))
+  (defvar outline-display-table (make-display-table))
+  (set-display-table-slot outline-display-table 'selective-display
+                          (vector (make-glyph-code ?▼ 'escape-glyph)))
+  (defun set-outline-display-table ()
+    (setf buffer-display-table outline-display-table))
+  (add-hook 'outline-mode-hook 'set-outline-display-table)
+  (add-hook 'outline-minor-mode-hook 'set-outline-display-table))
 
 ;;;; Pretty-magit
 (defun dotspacemacs/user-config/display/prettify-magit ()
@@ -863,6 +854,8 @@
 ;;;; Theme-updates
 (defun dotspacemacs/user-config/display/theme-updates ()
   "Face configuration for themes."
+  ;; file:/root/.emacs.d/elpa/solarized-theme-20170430.800/solarized.el
+
   (setq my-black "#1b1b1e")
 
   (custom-theme-set-faces
@@ -891,11 +884,10 @@
                               :background "#C7D59F"
                               :weight bold))))
 
-   ;; file:/root/.emacs.d/elpa/solarized-theme-20170430.800/solarized.el
    '(outline-1 ((t (:inherit org-level-1))))
    '(outline-2 ((t (:inherit org-level-2))))
    '(outline-3 ((t (:inherit org-level-3))))
-   '(outline-4 ((t (:inherit org-level-4 :underline t))))
+   '(outline-4 ((t (:inherit org-level-4))))
    ))
 
 ;;; Ivy
