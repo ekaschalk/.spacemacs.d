@@ -123,7 +123,6 @@
         ;; Spotify layer improvements behind SPC a m s prefix
         helm-spotify-plus
         ;; Themes
-        doom-themes
         solarized-theme
         ;; All-the-icons integration with mode line
         spaceline-all-the-icons
@@ -158,8 +157,6 @@
   (setq-default
    dotspacemacs-themes '(
                          solarized-light
-                         (my-light :location "/root/elisp/my-light-theme")
-                         ;; doom-one
                          )
    dotspacemacs-default-font `("Hack"
                                :size ,(if-linux 18 12)
@@ -233,8 +230,6 @@
                   "c:/~/elisp/.custom-settings.el"))
   (load (if-linux "~/elisp/prettify-utils.el"
                   "c:/~/elisp/prettify-utils.el"))
-  ;; (load (if-linux "~/elisp/all-the-icons-ivy.el"
-  ;;                 "c:/~/elisp/all-the-icons-ivy.el"))
   )
 
 ;;; Spacemacs-User-config
@@ -261,21 +256,17 @@
   (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
 
   ;; Group 2
-  ;; NOTE Working with solarized light theme now
-  ;; (dotspacemacs/user-config/display/init-doom-theme)
-
-  ;; Group 3
   (dotspacemacs/user-config/display/font-locks)
 
   ;; Rest
   (dotspacemacs/user-config/display/all-the-icons)
   (dotspacemacs/user-config/display/extra-syntax-highlighting)
-  (dotspacemacs/user-config/display/face-updates)
   (dotspacemacs/user-config/display/modeline)
   (dotspacemacs/user-config/display/outline-ellipsis-modification)
   (dotspacemacs/user-config/display/prettify-magit)
   (dotspacemacs/user-config/display/prettify-symbols)
-  (dotspacemacs/user-config/display/shell))
+  (dotspacemacs/user-config/display/shell)
+  (dotspacemacs/user-config/display/theme-updates))
 
 ;;;; Windows-frame-size-fix
 (defun dotspacemacs/user-config/display/windows-frame-size-fix ()
@@ -285,28 +276,8 @@
   (global-set-key (kbd "<f2>")
                   (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
 
-;;;; Init-doom-theme
-(defun dotspacemacs/user-config/display/init-doom-theme ()
-  "Doom theme configuration."
-  ;; Note to readers: there is a bug with doom-vibrant-theme and spacemacs
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t
-        doom-one-brighter-modeline t
-        doom-one-brighter-comments t)
-
-  ;; Default doom-mode brightens source files.
-  ;; I prefer the opposite - brighter special buffers and dark source buffers.
-  ;; depricated for solair-mode
-  ;; (defun opposite-doom-buffer-mode-maybe ()
-  ;;   (unless buffer-file-name
-  ;;     (doom-buffer-mode +1)))
-
-  ;; (add-hook 'after-change-major-mode-hook #'opposite-doom-buffer-mode-maybe)
-  ;; (add-hook 'after-revert-hook #'opposite-doom-buffer-mode-maybe)
-  ;; (add-hook 'minibuffer-setup-hook #'doom-brighten-minibuffer)
-  )
-
 ;;;; Font-locks
+
 ;;;;; Core
 (defun dotspacemacs/user-config/display/font-locks ()
   "Enable following font-locks for appropriate modes."
@@ -506,96 +477,9 @@
          ("\\([ ]+[0-9]+:;;;;\\) .*$" .   'org-level-2)
          ("\\([ ]+[0-9]+:;;;;;\\) .*$" .  'org-level-3)
          ("\\([ ]+[0-9]+:;;;;;\\) .*$" .  'org-level-4))))
-     ;; nil '(("\\(:;;;\\) "                   'org-level-1)
-     ;;     ("\\(:;;;;\\) "                  'org-level-2)
-     ;;     ("\\(:;;;;;\\) "                 'org-level-3)
-     ;;     ("\\(+:;;;;;;\\) "                'org-level-4))))
 
   (add-hook 'hy-mode-hook 'hy-extra-syntax)
   (add-hook 'navi-mode-hook 'navi-extra-syntax))
-
-;;;; Face-updates
-(defun dotspacemacs/user-config/display/face-updates ()
-  "Face configuration."
-  (setq my-black-1 "#1b1b1e"
-        ;; my-black-2 "#58A4B0"
-        my-black-2 "#AB2346"
-        my-black-3 "#00B295"
-        my-black-4 "#A9BCD0")
-
-  (custom-theme-set-faces
-   'solarized-light
-
-   `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
-                                           :background "light slate gray"))))
-
-   `(mode-line ((t (:inherit mode-line :background "#fdf6e3"))))
-   `(mode-line-inactive ((t (:inherit mode-line :background "#fdf6e3"))))
-   `(spaceline-highlight-face ((t (:inherit mode-line :background "#fdf6e3"))))
-   `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
-   `(powerline-active1 ((t (:inherit mode-line :background "#fdf6e3"))))
-   `(powerline-active2 ((t (:inherit mode-line :background "#fdf6e3"))))
-
-   `(org-level-1 ((t (:height 1.25 :foreground ,my-black-1
-                              :background "#C9DAEA"
-                              :weight bold))))
-   `(org-level-2 ((t (:height 1.15 :foreground ,my-black-1
-                              :background "#7CDF64"
-                              :weight bold))))
-   `(org-level-3 ((t (:height 1.05 :foreground ,my-black-1
-                              :background "#C7D59F"
-                              :weight bold))))
-
-   ;; file:/root/.emacs.d/elpa/solarized-theme-20170430.800/solarized.el
-   '(outline-1 ((t (:inherit org-level-1))))
-   '(outline-2 ((t (:inherit org-level-2))))
-   '(outline-3 ((t (:inherit org-level-3))))
-   '(outline-4 ((t (:inherit org-level-4 :underline t))))
-
-   ))
-
-;;;;; Old doom theme faces
-
-;; Since outlines are necessarily further apart than org-mode headers
-;; We box the outlines to make them stand out in programming buffers.
-  ;; (defun -update-faces ()
-  ;;   (custom-theme-set-faces
-  ;;    (car custom-enabled-themes)
-  ;;    ;; Fixes bad tint for mode-line background in doom-one theme
-  ;;    ;; '(mode-line ((t (:inherit mode-line :background "#21242b"))))
-
-  ;;    `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
-  ;;                                            :background "light slate gray"))))
-
-  ;;    ;; Org-level-3 and org-level-2 were too similar with color-blindness
-  ;;    `(org-level-1 ((t (:height 1.25 :foreground ,my-black-1
-  ;;                               :background "#C9DAEA"
-  ;;                               :weight bold))))
-  ;;    `(org-level-2 ((t (:height 1.15 :foreground ,my-black-1
-  ;;                               :background "#7CDF64"
-  ;;                               :weight bold))))
-  ;;    `(org-level-3 ((t (:height 1.05 :foreground ,my-black-1
-  ;;                               :background "#C7D59F"
-  ;;                               :weight bold))))
-  ;;    ;; For doom-theme:
-  ;;    ;; Matching parenthesis much more obvious when underlined
-  ;;    ;; `(show-paren-match ((t (:inherit show-paren-match :underline t))))
-  ;;    ;; '(org-level-2 ((t (:height 1.10 :foreground "forest green"
-  ;;    ;;                            :weight ultra-bold))))
-  ;;    ;; '(org-level-3 ((t (:height 1.03 :foreground "light slate gray"
-  ;;    ;;                            :weight ultra-bold))))
-
-  ;;    ;; Since outlines are necessarily further apart than org-mode headers
-  ;;    ;; We box the outlines to make them stand out in programming buffers.
-  ;;    '(outline-1 ((t (:inherit org-level-1))))
-  ;;    '(outline-2 ((t (:inherit org-level-2))))
-  ;;    '(outline-3 ((t (:inherit org-level-3))))
-  ;;    '(outline-4 ((t (:inherit org-level-4 :underline t))))))
-
-  ;; ;; Apply face updates on emacs initialization
-  ;; (-update-faces)
-  ;; ;; Apply face updates update whenever theme is toggled
-  ;; (add-hook 'spacemacs-post-theme-change-hook '-update-faces))
 
 ;;;; Modeline
 (defun dotspacemacs/user-config/display/modeline ()
@@ -975,6 +859,44 @@
              eshell-prompt-face)
            (set-eshell-prompt-icon "└─")
            ))))
+
+;;;; Theme-updates
+(defun dotspacemacs/user-config/display/theme-updates ()
+  "Face configuration for themes."
+  (setq my-black "#1b1b1e")
+
+  (custom-theme-set-faces
+   'solarized-light
+
+   `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
+                                           :background "light slate gray"))))
+
+   ;; active modeline has no colors
+   `(mode-line ((t (:inherit mode-line :background "#fdf6e3"))))
+   `(mode-line-inactive ((t (:inherit mode-line :background "#fdf6e3"))))
+   `(spaceline-highlight-face ((t (:inherit mode-line :background "#fdf6e3"))))
+   `(powerline-active1 ((t (:inherit mode-line :background "#fdf6e3"))))
+   `(powerline-active2 ((t (:inherit mode-line :background "#fdf6e3"))))
+
+   ;; Inactive modeline has tint
+   `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
+
+   `(org-level-1 ((t (:height 1.25 :foreground ,my-black
+                              :background "#C9DAEA"
+                              :weight bold))))
+   `(org-level-2 ((t (:height 1.15 :foreground ,my-black
+                              :background "#7CDF64"
+                              :weight bold))))
+   `(org-level-3 ((t (:height 1.05 :foreground ,my-black
+                              :background "#C7D59F"
+                              :weight bold))))
+
+   ;; file:/root/.emacs.d/elpa/solarized-theme-20170430.800/solarized.el
+   '(outline-1 ((t (:inherit org-level-1))))
+   '(outline-2 ((t (:inherit org-level-2))))
+   '(outline-3 ((t (:inherit org-level-3))))
+   '(outline-4 ((t (:inherit org-level-4 :underline t))))
+   ))
 
 ;;; Ivy
 (defun dotspacemacs/user-config/ivy ()
