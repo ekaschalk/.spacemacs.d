@@ -460,13 +460,8 @@
   (defun hy-extra-syntax ()
     (font-lock-add-keywords
      nil '(("\\<\\(self\\)" . 'font-lock-keyword-face)
-         ("\\<\\(staticmethod\\)\\>" . 'font-lock-function-name-face)
-         ("\\<\\(classmethod\\)\\>" . 'font-lock-function-name-face)
-         ("\\<\\(property\\)\\>" . 'font-lock-function-name-face)
-         ("\\<\\(composite\\)\\>" . 'font-lock-function-name-face)
-         ("\\<\\(import\\)\\>" . 'font-lock-function-name-face)
-         ("\\<\\(require\\)\\>" . 'font-lock-function-name-face)
-
+         ;; Highlight entire line for all decorators through reader macro
+         ("\\(#@.*$\\)" . 'font-lock-function-name-face)
          ;; Syntax highlighting for reader-macros
          ("\\(#.\\)" . 'font-lock-function-name-face))))
 
