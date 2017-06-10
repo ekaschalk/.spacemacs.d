@@ -1,0 +1,20 @@
+* Screens
+** Magit
+
+[[file:./imgs/pretty-magit.png]]
+
+** Neotree
+
+[[file:./imgs/neotree.png]]
+
+** Code
+
+[[file:./imgs/example-code.png]]
+
+** Ivy
+
+[[file:./imgs/icons-ivy.png]]
+
+** Shell
+
+[[file:./imgs/pretty-shell.png]]
