@@ -4,7 +4,6 @@
 # Whitelist
 !.gitignore
 !.spacemacs
-!.pylintrc
 
 !elisp/
 !elisp/*
