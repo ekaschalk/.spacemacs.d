@@ -1,4 +1,7 @@
 * Screens
+
+[[file:./imgs/full-example.png]]
+
 ** Magit
 
 [[file:./imgs/pretty-magit.png]]
