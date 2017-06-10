@@ -2,27 +2,10 @@
 
 [[file:./imgs/full-example.png]]
 
-** Magit
+| Shell                        | Ivy                       | Neotree                 | Code                         |
+|------------------------------+---------------------------+-------------------------+------------------------------|
+| [[file:./imgs/pretty-shell.png]] | [[file:./imgs/icons-ivy.png]] | [[file:./imgs/neotree.png]] | [[file:./imgs/example-code.png]] |
+
+Magit Commits and Logs:
 
 [[file:./imgs/pretty-magit.png]]
-
-** Neotree
-
-** Code
-
-[[file:./imgs/example-code.png]]
-
-** Ivy
-
-[[file:./imgs/icons-ivy.png]]
-
-** Shell
-
-[[file:./imgs/pretty-shell.png]]
-
-
-** Side-by-side images test
-
-  | Shell                        | Ivy                       | Neotree                 |
-  |------------------------------+---------------------------+-------------------------|
-  | [[file:./imgs/pretty-shell.png]] | [[file:./imgs/icons-ivy.png]] | [[file:./imgs/neotree.png]] |
