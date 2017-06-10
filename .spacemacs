@@ -775,13 +775,16 @@
   (pyvenv-mode 1)
   (load (if-linux "~/elisp/eshell-git.el" "c:/~/elisp/eshell-git.el"))
 
-  (set-fontset-font t '(#xe192 . #xe192) "material")       ; Clock 
   (set-fontset-font t '(#xf07c . #xf07c) "fontawesome")    ; Folder 
-  (set-fontset-font t '(#xf115 . #xf115) "fontawesome")    ; Folder 
-  (set-fontset-font t '(#xf0da . #xf0da) "fontawesome")    ; Prompt 
-  (set-fontset-font t '(#xf101 . #xf101) "all-the-icons")  ; Prompt 
-  (set-fontset-font t '(#xe928 . #xe928) "all-the-icons")  ; Py 
   (set-fontset-font t '(#xe907 . #xe907) "all-the-icons")  ; Git 
+  (set-fontset-font t '(#xe928 . #xe928) "all-the-icons")  ; Py 
+  (set-fontset-font t '(#xe192 . #xe192) "material")       ; Clock 
+
+  (setq eshell-prompt-number 0)
+  (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
+  (advice-add 'eshell-send-input :before
+              (lambda (&rest args)
+                (setq eshell-prompt-number (+ 1 eshell-prompt-number))))
 
   (defmacro with-face (str &rest properties)
     `(propertize ,str 'face (list ,@properties)))
@@ -793,70 +796,56 @@
 
   (defun eshell-section (icon str &rest properties)
     (when str
+      (with-face (concat icon " " str) properties)))
+
+  (defun esh-prompt-function ()
+    (let* ((esh-header "\n ")
+           (esh-header-face nil)
+           (esh-prompt "")
+           (esh-prompt-face nil)
+           (esh-sep " | ")
+           (esh-sep-face nil)
+
+           (esh-dir-section (abbreviate-file-name (eshell/pwd)))
+           (esh-dir-face nil)
+
+           (esh-git-section (eshell-git-prompt--branch-name))
+           (esh-git-face nil)
+
+           (esh-venv-section pyvenv-virtual-env-name)
+           (esh-venv-face nil)
+
+           (esh-time-section (format-time-string "%H:%M" (current-time)))
+           (esh-time-face nil)
+
+           (esh-prompt-num-section (number-to-string eshell-prompt-number))
+           (esh-prompt-num-face nil)
+
+           (esh-sections (list
+                          (eshell-section "" esh-dir-section esh-dir-face)
+                          (eshell-section "" esh-git-section esh-git-face)
+                          (eshell-section "" esh-venv-section esh-venv-face)
+                          (eshell-section "" esh-time-section esh-time-face)
+                          (eshell-section "" esh-prompt-num-section esh-prompt-num-face))))
       (concat
-       (with-face eshell-section-sep eshell-sep-face)
-       (with-face (concat icon eshell-icon-sep str " ") properties))))
+       (with-face esh-header esh-header-face)
+       (s-join (with-face esh-sep esh-sep-face)
+               (-non-nil esh-sections))
+       (set-eshell-prompt-icon esh-prompt esh-prompt-face))))
 
-  (setq eshell-prompt-number 0)
-  (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
-  (advice-add 'eshell-send-input :before
-              (lambda (&rest args)
-                (setq eshell-prompt-number (+ 1 eshell-prompt-number))))
+  (setq eshell-prompt-function 'esh-prompt-function))
 
-  (setq my-black "#1b1b1e")
-
-  ;; TODO fix these setqs
-  (setq eshell-prompt-face '(:background my-black)
-        eshell-sep-face '(:background my-black)
-        eshell-section-sep ""
-        eshell-icon-sep " "
-
-        seg-sep ""
-        ;; seg-sep " "
-        seg-sep-face-dir '(:foreground "steel blue" :background "indian red")
-        seg-sep-face-git '(:foreground "indian red" :background "slate gray")
-        seg-sep-face-time '(:foreground "slate gray" :background "#007849")
-        seg-sep-face-end '(:foreground "#007849"))
-
-  (defun my-eshell-prompt-function ()
-    (let (;; Header and Prompt
-          (esh-header "\n ")
-          (esh-header-face nil)
-          (esh-prompt "")
-          (esh-prompt-face nil)
-
-          ;; Dir
-          (esh-dir-section (abbreviate-file-name (eshell/pwd)))
-          (esh-dir-face nil)
-
-          ;; Git
-          (esh-git-section (eshell-git-prompt--branch-name))
-          (esh-git-face nil)
-
-          ;; Python Venv
-          (esh-venv-section pyvenv-virtual-env-name)
-          (esh-venv-face nil)
-
-          ;; Time
-          (esh-time-section (format-time-string "%H:%M" (current-time)))
-          (esh-time-face nil)
-
-          ;; Prompt number
-          (esh-prompt-num-section (number-to-string eshell-prompt-number))
-          (esh-prompt-num-face nil))
-      (concat
-       (eshell-section "" esh-header esh-header-face)
-
-       (eshell-section "" esh-dir-section esh-dir-face)
-       (eshell-section "" esh-git-section esh-git-face)
-       (eshell-section "" esh-venv-section esh-venv-face)
-       (eshell-section "" esh-time-section esh-time-face)
-       (eshell-section "-" esh-prompt-num-section esh-prompt-num-face)
-
-       (set-eshell-prompt-icon esh-prompt esh-prompt-face)
-       )))
-
-  (setq eshell-prompt-function 'my-eshell-prompt-function))
+;; NOTE This is template for adding modeline style chained faces
+;; (defun get-esh-seg-section (prev-face next-face)
+;;   esh-sections
+;;   (-interleave esh-sections
+;;                (map 'get-esh-seg-section
+;;                     (-partition-in-steps 2 1 esh-sections))))
+;;   (when (and prev-face next-face)
+;;     (with-face seg
+;;       ;; face-attribute face :background
+;;       `(:foreground ,(plist-get prev-face :background)
+;;                     :background ,(plist-get next-face :foreground)))))
 
 ;;;; Theme-updates
 (defun dotspacemacs/user-config/display/theme-updates ()
@@ -888,7 +877,7 @@
                               :background "#7CDF64"
                               :weight bold))))
    `(org-level-3 ((t (:height 1.05 :foreground ,my-black
-                              :background "#C7D59F"
+                              :background "#F8DE7E"
                               :weight bold))))
 
    '(outline-1 ((t (:inherit org-level-1))))
