@@ -19,19 +19,19 @@ entirely visual, searching for "Fix:" or "lambda" will jump to the icons.
 
 * My Spacemacs
 My Spacemacs notably implements:
-1. Visual enhancements
-   1. Unicode symbol replacement for mimicking mathematical notation in
-      programming buffers.
-   2. Fira Code ligature integration (any font can be used in-tandem).
-   3. Magit commit header fontification with ivy integration.
-   4. Eshell fontification with icon integration.
-2. Org-like navigation and visualization in programming buffers
-   1. See 'outline-mode', 'outshine-mode', 'navi-mode'.
-3. Rebound many core keybindings superfluous with leader-keys and evil
-   1. C-h, C-j, C-k, C-l are Avy motions.
-   2. C-SPC for yassnippet expansion
-   3. C-e eshell popup and so on...
-4. Modular organization to enable/disable components easily
+- Visual enhancements
+  - Unicode symbol replacement for mimicking mathematical notation in
+     programming buffers.
+  - Fira Code ligature integration (any font can be used in-tandem).
+  - Magit commit header fontification with ivy integration.
+  - Eshell fontification with icon integration.
+- Org-like navigation and visualization in programming buffers
+  - See 'outline-mode', 'outshine-mode', 'navi-mode'.
+- Rebound many core keybindings superfluous with leader-keys and evil
+  - C-h, C-j, C-k, C-l are Avy motions.
+  - C-SPC for yassnippet expansion
+  - C-e eshell popup and so on...
+- Modular organization to enable/disable components easily
 
 ** Implementation
 Literate configs with org-mode are not natively supported by Spacemacs due to
@@ -41,10 +41,10 @@ The alternative is 'outline-mode' which creates faux-headers within different
 major modes based on their comment syntax.
 
 Outlines are improved by providing:
-1. Navi and outshine mode - see sections.
-2. Enhanced narrowing capabilities.
-3. Vim bindings and additional navigation bindings.
-4. Bugfixes.
+- Navi and outshine mode - see sections.
+- Enhanced narrowing capabilities.
+- Vim bindings and additional navigation bindings.
+- Bugfixes.
 
 Together, managing large source buffers such as an Emacs configuration becomes
 pleasant. Further, many source files, especially Emacs lisp files, both
