@@ -8,8 +8,6 @@
 
 ** Neotree
 
-[[file:./imgs/neotree.png]]
-
 ** Code
 
 [[file:./imgs/example-code.png]]
@@ -25,6 +23,6 @@
 
 ** Side-by-side images test
 
-  | Shell                        |  Ivy                    |
-  |------------------------------+---------------------------|
-  | [[file:./imgs/pretty-shell.png]] | [[file:./imgs/icons-ivy.png]] |
+  | Shell                        | Ivy                       | Neotree                 |
+  |------------------------------+---------------------------+-------------------------|
+  | [[file:./imgs/pretty-shell.png]] | [[file:./imgs/icons-ivy.png]] | [[file:./imgs/neotree.png]] |
