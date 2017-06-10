@@ -21,3 +21,10 @@
 ** Shell
 
 [[file:./imgs/pretty-shell.png]]
+
+
+** Side-by-side images test
+
+  | Shell                        |  Ivy                    |
+  |------------------------------+---------------------------|
+  | [[file:./imgs/pretty-shell.png]] | [[file:./imgs/icons-ivy.png]] |
