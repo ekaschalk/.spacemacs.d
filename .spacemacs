@@ -255,6 +255,7 @@
   (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
 
   ;; Group 2
+  (dotspacemacs/user-config/display/fontsets)
   (dotspacemacs/user-config/display/font-locks)
 
   ;; Rest
@@ -275,14 +276,56 @@
   (global-set-key (kbd "<f2>")
                   (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
 
+;;;; Fontsets
+(defun dotspacemacs/user-config/display/fontsets ()
+  "Set unicode points to point to the right fonts."
+
+  ;; Fira code ligatures. Fira Code Symbol is a different font than Fira Code!
+  ;; You can use any font you wish just the ligatures, I use Hack.
+  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+
+  (defun set-icon-fonts (code-font-alist)
+    "Utility to associate unicode points with a chosen font."
+    (mapc (lambda (x)
+            (let ((font (car x))
+                  (codes (cdr x)))
+              (mapc (lambda (code)
+                      (set-fontset-font t `(,code . ,code) font))
+                    codes)))
+          code-font-alist))
+
+  (set-icon-fonts
+   '(("fontawesome"
+      ;;              
+      #xf07c #xf0c9 #xf0c4 #xf0cb)
+
+     ("all-the-icons"
+      ;;    
+      #xe907 #xe928)
+
+     ("material"
+      ;; 
+      #xe192)
+
+     ("github-octicons"
+      ;;              
+      #xf091 #xf059 #xf076 #xf075)
+
+     ("fileicons"
+      ;; 
+      #xf016)
+
+     ("Symbola"
+      ;; 𝕊    ⨂      ∅      ⟻    ⟼     ⊙      𝕋       𝔽
+      #x1d54a #x2a02 #x2205 #x27fb #x27fc #x2299 #x1d54b #x1d53d
+      ;; 𝔹    𝔇       𝔗
+      #x1d539 #x1d507 #x1d517))))
+
 ;;;; Font-locks
 
 ;;;;; Core
 (defun dotspacemacs/user-config/display/font-locks ()
   "Enable following font-locks for appropriate modes."
-  ;; Use Fira Code's ligatures, does not require Fira Code font to be in use
-  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-
   (defun -add-font-lock-kwds (font-lock-alist)
     (defun -build-font-lock-alist (regex-char-pair)
       `(,(car regex-char-pair)
@@ -516,25 +559,13 @@
   (add-hook 'outline-mode-hook 'set-outline-display-table)
   (add-hook 'outline-minor-mode-hook 'set-outline-display-table))
 
-;;;; Pretty-magit
+;;;; Prettify-magit
 (defun dotspacemacs/user-config/display/prettify-magit ()
   "Add faces to Magit manually for things like commit headers eg. (Add: ...)."
 
   ;; https://github.com/domtronn/all-the-icons.el
   ;; Can look through the icons by opening a scratch a buffer and running eg.
   ;; (all-the-icons-insert-icons-for 'material)
-
-  ;; Requires all-the-icons font, uni numbers for magit commit headers
-  ;; Note that the unicode symbols you see are likely *not* the right symbols
-  ;; Setting the fontset will show the correct symbol
-  (set-fontset-font t '(#xf091 . #xf091) "github-octicons") ; 
-  (set-fontset-font t '(#xf059 . #xf059) "github-octicons") ; 
-  (set-fontset-font t '(#xf076 . #xf076) "github-octicons") ; 
-  (set-fontset-font t '(#xf075 . #xf075) "github-octicons") ; 
-  (set-fontset-font t '(#xf0c4 . #xf0c4) "fontawesome")     ; 
-  (set-fontset-font t '(#xf09b . #xf09b) "fontawesome")     ; 
-  (set-fontset-font t '(#xe907 . #xe907) "all-the-icons")   ; 
-
   (setq my-magit-colors '(:feature "silver"
                           :fix "#FB6542"  ; sunset
                           :add "#375E97"  ; sky
@@ -667,7 +698,6 @@
   ;; This function is extremely useful when exploring symbols
 
   ;; Try `what-cursor-position' if the symbol doesnt render.
-  ;; Then see the fontsets below for choosing the offending symbol's fonts
   ;; NOTE This plist approach doesn't preserve spaces in unicode str
   (setq pretty-options
         (-flatten
@@ -739,18 +769,6 @@
                    ("Union"    "⋃") ("Any"      "❔")
                    ))))
 
-  ;; Force specified font for some symbols
-  (set-fontset-font t '(#x1d54a . #x1d54a) "Symbola")  ; 𝕊
-  (set-fontset-font t '(#x2a02 . #x2a02) "Symbola")    ; ⨂
-  (set-fontset-font t '(#x2205 . #x2205) "Symbola")    ; ∅
-  (set-fontset-font t '(#x27fb . #x27fc) "Symbola")    ; ⟻, ⟼
-  (set-fontset-font t '(#x2299 . #x2299) "Symbola")    ; ⊙
-  (set-fontset-font t '(#x1d54b . #x1d54b) "Symbola")  ; 𝕋
-  (set-fontset-font t '(#x1d53d . #x1d53d) "Symbola")  ; 𝔽
-  (set-fontset-font t '(#x1d539 . #x1d539) "Symbola")  ; 𝔹
-  (set-fontset-font t '(#x1d507 . #x1d507) "Symbola")  ; 𝔇
-  (set-fontset-font t '(#x1d517 . #x1d517) "Symbola")  ; 𝔗
-
   ;; Enable pretty modes
   (add-hook 'hy-mode-hook 'set-hy-pretty-pairs)
   (add-hook 'python-mode-hook 'set-python-pretty-pairs)
@@ -774,25 +792,6 @@
   (require 'virtualenvwrapper)  ; TODO integrate these better way
   (pyvenv-mode 1)
   (load (if-linux "~/elisp/eshell-git.el" "c:/~/elisp/eshell-git.el"))
-
-  (defun set-icon-fonts (code-font-alist)
-    (mapc (lambda (x)
-            (let ((font (car x))
-                  (codes (cdr x)))
-              (mapc (lambda (code)
-                      (set-fontset-font t `(,code . ,code) font))
-                    codes)))
-          code-font-alist))
-
-  (set-icon-fonts '(("fontawesome"
-                     ;;    
-                     #xf07c #xf0c9)
-                    ("all-the-icons"
-                     ;;    
-                     #xe907 #xe928)
-                    ("material"
-                     ;; 
-                     #xe192)))
 
   (setq eshell-prompt-number 0)
   (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
@@ -908,7 +907,6 @@
   (require 's)
   (load (if-linux "~/elisp/all-the-icons-ivy.el"
                   "c:/~/elisp/all-the-icons-ivy.el"))
-  (set-fontset-font t '(#xf016 . #xf016) "fileicons")  ; 
   (all-the-icons-ivy-setup)
 
   ;; Perform default action on avy-selected minibuffer line
