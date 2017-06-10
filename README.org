@@ -19,23 +19,36 @@ icons:
 [[file:./imgs/pretty-magit.png]]
 
 * My Spacemacs
-
 My Spacemacs notably implements:
-
-1. Visual enhancements - see screens.
+1. Visual enhancements
    1. Unicode symbol replacement for mimicking mathematical notation in
       programming buffers.
    2. Fira Code ligature integration (any font can be used in-tandem).
    3. Magit commit header fontification with ivy integration.
    4. Eshell fontification with icon integration.
-2. Org-like navigation and visualization in programming buffers - see outshine.
+2. Org-like navigation and visualization in programming buffers
+   1. See 'outline-mode', 'outshine-mode', 'navi-mode'.
+3. Rebound many core keybindings superfluous with leader-keys and evil.
+   1. C-h, C-j, C-k, C-l are Avy motions.
+   2. C-SPC for yassnippet expansion
+   3. C-e eshell popup and so on...
+4. Modular config organization to enable/disable components easily.
 
-Literate configs with org-mode are not natively supported by spacemacs
-due to org-mode's interaction with spacemacs layers systems.
+** Implementation
+Literate configs with org-mode are not natively supported by Spacemacs due to
+org-mode's interaction with spacemacs layers systems.
 
-The approach taken is to use the `outline-minor-mode' in conjuction
-with `outshine-mode' and `navi-mode' to maintain benefits of literate
-documentation and org-modes navigation, collapsing, and narrowing facilities.
+The alternative is 'outline-mode' which creates faux-headers within different
+major modes based on their comment syntax. 'navi-mode' and 'outshine-mode'
+expand outline mode.
+
+These modes are improved by providing:
+1. Enhanced narrowing capabilities.
+2. Vim bindings and additional navigation bindings.
+3. Bugfixes.
+
+Together managing large source buffers such as an Emacs configuration becomes
+pleasant.
 
 ** Version
 Dual config for Windows and Arch Linux for Emacs 25.2.1
