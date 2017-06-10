@@ -319,7 +319,6 @@
       #x1d539 #x1d507 #x1d517))))
 
 ;;;; Font-locks
-
 ;;;;; Core
 (defun dotspacemacs/user-config/display/font-locks ()
   "Enable following font-locks for appropriate modes."
