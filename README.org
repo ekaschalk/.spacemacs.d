@@ -15,7 +15,7 @@ entirely visual, searching your logs for "Fix:" or "lambda" will jump to the ico
 
 | Magit                        | Code                         |
 |------------------------------+------------------------------|
-| [[file:./imgs/example-code.png]] | [[file:./imgs/pretty-magit.png]] |
+| [[file:./imgs/pretty-magit.png]] | [[file:./imgs/example-code.png]] |
 
 * My Spacemacs
 My Spacemacs notably implements:
