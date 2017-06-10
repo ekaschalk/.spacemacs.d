@@ -315,49 +315,49 @@
 ;;;;; Fira-font-locks
 (defconst fira-font-lock-alist
   '(;;;; OPERATORS
-    ;;;;;; Pipes
+    ;;;;; Pipes
     ("\\(<|\\)" #Xe14d) ("\\(<>\\)" #Xe15b) ("\\(<|>\\)" #Xe14e) ("\\(|>\\)" #Xe135)
 
-    ;;;;;; Brackets
+    ;;;;; Brackets
     ("\\(<\\*\\)" #Xe14b) ("\\(<\\*>\\)" #Xe14c) ("\\(\\*>\\)" #Xe104)
     ("\\(<\\$\\)" #Xe14f) ("\\(<\\$>\\)" #Xe150) ("\\(\\$>\\)" #Xe137)
     ("\\(<\\+\\)" #Xe155) ("\\(<\\+>\\)" #Xe156) ("\\(\\+>\\)" #Xe13a)
 
-    ;;;;;; Equality
+    ;;;;; Equality
     ("\\(!=\\)" #Xe10e) ("\\(!==\\)"         #Xe10f) ("\\(=/=\\)" #Xe143)
     ("\\(/=\\)" #Xe12c) ("\\(/==\\)"         #Xe12d)
     ("\\(===\\)"#Xe13d) ("[^!/]\\(==\\)[^>]" #Xe13c)
 
-    ;;;;;; Equality Special
+    ;;;;; Equality Special
     ("\\(||=\\)"  #Xe133) ("[^|]\\(|=\\)" #Xe134)
     ("\\(~=\\)"   #Xe166)
     ("\\(\\^=\\)" #Xe136)
     ("\\(=:=\\)"  #Xe13b)
 
-    ;;;;;; Comparisons
+    ;;;;; Comparisons
     ("\\(<=\\)" #Xe141) ("\\(>=\\)" #Xe145)
     ("\\(</\\)" #Xe162) ("\\(</>\\)" #Xe163)
 
-    ;;;;;; Shifts
+    ;;;;; Shifts
     ("[^-=]\\(>>\\)" #Xe147) ("\\(>>>\\)" #Xe14a)
     ("[^-=]\\(<<\\)" #Xe15c) ("\\(<<<\\)" #Xe15f)
 
-    ;;;;;; Dots
+    ;;;;; Dots
     ("\\(\\.-\\)"    #Xe122) ("\\(\\.=\\)" #Xe123)
     ("\\(\\.\\.<\\)" #Xe125)
 
-    ;;;;;; Hashes
+    ;;;;; Hashes
     ("\\(#{\\)"  #Xe119) ("\\(#(\\)"   #Xe11e) ("\\(#_\\)"   #Xe120)
     ("\\(#_(\\)" #Xe121) ("\\(#\\?\\)" #Xe11f) ("\\(#\\[\\)" #Xe11a)
 
     ;;;; REPEATED CHARACTERS
-    ;;;;;; 2-Repeats
+    ;;;;; 2-Repeats
     ("\\(||\\)" #Xe132)
     ("\\(!!\\)" #Xe10d)
     ("\\(%%\\)" #Xe16a)
     ("\\(&&\\)" #Xe131)
 
-    ;;;;;; 2+3-Repeats
+    ;;;;; 2+3-Repeats
     ("\\(##\\)"       #Xe11b) ("\\(###\\)"         #Xe11c) ("\\(####\\)" #Xe11d)
     ("\\(--\\)"       #Xe111) ("\\(---\\)"         #Xe112)
     ("\\({-\\)"       #Xe108) ("\\(-}\\)"          #Xe110)
@@ -368,7 +368,7 @@
     ("\\(::\\)"       #Xe10a) ("\\(:::\\)"         #Xe10b)
 
     ;;;; ARROWS
-    ;;;;;; Direct
+    ;;;;; Direct
     ("[^-]\\(->\\)" #Xe114) ("[^=]\\(=>\\)" #Xe13f)
     ("\\(<-\\)"     #Xe152)
     ("\\(-->\\)"    #Xe113) ("\\(->>\\)"    #Xe115)
@@ -377,13 +377,13 @@
     ("\\(<==\\)"    #Xe158) ("\\(<<=\\)"    #Xe15e)
     ("\\(<->\\)"    #Xe154) ("\\(<=>\\)"    #Xe159)
 
-    ;;;;;; Branches
+    ;;;;; Branches
     ("\\(-<\\)"  #Xe116) ("\\(-<<\\)" #Xe117)
     ("\\(>-\\)"  #Xe144) ("\\(>>-\\)" #Xe148)
     ("\\(=<<\\)" #Xe142) ("\\(>>=\\)" #Xe149)
     ("\\(>=>\\)" #Xe146) ("\\(<=<\\)" #Xe15a)
 
-    ;;;;;; Squiggly
+    ;;;;; Squiggly
     ("\\(<~\\)" #Xe160) ("\\(<~~\\)" #Xe161)
     ("\\(~>\\)" #Xe167) ("\\(~~>\\)" #Xe169)
     ("\\(-~\\)" #Xe118) ("\\(~-\\)"  #Xe165)
@@ -786,10 +786,10 @@
   (defmacro with-face (str &rest properties)
     `(propertize ,str 'face (list ,@properties)))
 
-  (defun set-eshell-prompt-icon (icon)
+  (defun set-eshell-prompt-icon (icon face)
     (let ((prompt (concat icon " ")))
       (setq eshell-prompt-regexp prompt)
-      (concat "\n" (with-face prompt eshell-prompt-face))))
+      (concat "\n" (with-face prompt face))))
 
   (defun eshell-section (icon str &rest properties)
     (when str
@@ -803,49 +803,60 @@
               (lambda (&rest args)
                 (setq eshell-prompt-number (+ 1 eshell-prompt-number))))
 
-  (setq eshell-prompt-face '(:foreground "steel blue")
-        eshell-sep-face '(:foreground "light slate gray")
+  (setq my-black "#1b1b1e")
+
+  ;; TODO fix these setqs
+  (setq eshell-prompt-face '(:background my-black)
+        eshell-sep-face '(:background my-black)
         eshell-section-sep ""
         eshell-icon-sep " "
 
-        ;; new modeline style
-        eshell-git-face '(:background "indian red")
-        eshell-dir-face '(:foreground "ivory"
-                                      :background "steel blue" :weight bold)
-        eshell-venv-face '(:background "slate gray")
-        eshell-time-face '(:background "#007849")  ; greenish
-        seg-sep " "
+        seg-sep ""
+        ;; seg-sep " "
         seg-sep-face-dir '(:foreground "steel blue" :background "indian red")
         seg-sep-face-git '(:foreground "indian red" :background "slate gray")
         seg-sep-face-time '(:foreground "slate gray" :background "#007849")
-        seg-sep-face-end '(:foreground "#007849")
+        seg-sep-face-end '(:foreground "#007849"))
 
-        eshell-prompt-function
-        (lambda ()
-          (concat
-           (with-face "\n┌─" eshell-prompt-face)
+  (defun my-eshell-prompt-function ()
+    (let (;; Header and Prompt
+          (esh-header "\n ")
+          (esh-header-face nil)
+          (esh-prompt "")
+          (esh-prompt-face nil)
 
-           (eshell-section " " (abbreviate-file-name (eshell/pwd))
-                           eshell-dir-face)
+          ;; Dir
+          (esh-dir-section (abbreviate-file-name (eshell/pwd)))
+          (esh-dir-face nil)
 
-           (with-face seg-sep seg-sep-face-dir)
-           (eshell-section "" (eshell-git-prompt--branch-name)
-                           eshell-git-face)
+          ;; Git
+          (esh-git-section (eshell-git-prompt--branch-name))
+          (esh-git-face nil)
 
-           (with-face seg-sep seg-sep-face-git)
-           (eshell-section "" pyvenv-virtual-env-name
-                           eshell-venv-face)
+          ;; Python Venv
+          (esh-venv-section pyvenv-virtual-env-name)
+          (esh-venv-face nil)
 
-           (with-face seg-sep seg-sep-face-time)
-           (eshell-section "" (format-time-string "%H:%M" (current-time))
-                           eshell-time-face)
+          ;; Time
+          (esh-time-section (format-time-string "%H:%M" (current-time)))
+          (esh-time-face nil)
 
-           (with-face seg-sep seg-sep-face-end)
+          ;; Prompt number
+          (esh-prompt-num-section (number-to-string eshell-prompt-number))
+          (esh-prompt-num-face nil))
+      (concat
+       (eshell-section "" esh-header esh-header-face)
 
-           (with-face (concat "\n|" (number-to-string eshell-prompt-number))
-             eshell-prompt-face)
-           (set-eshell-prompt-icon "└─")
-           ))))
+       (eshell-section "" esh-dir-section esh-dir-face)
+       (eshell-section "" esh-git-section esh-git-face)
+       (eshell-section "" esh-venv-section esh-venv-face)
+       (eshell-section "" esh-time-section esh-time-face)
+       (eshell-section "-" esh-prompt-num-section esh-prompt-num-face)
+
+       (set-eshell-prompt-icon esh-prompt esh-prompt-face)
+       )))
+
+  (setq eshell-prompt-function 'my-eshell-prompt-function))
 
 ;;;; Theme-updates
 (defun dotspacemacs/user-config/display/theme-updates ()
