@@ -775,10 +775,24 @@
   (pyvenv-mode 1)
   (load (if-linux "~/elisp/eshell-git.el" "c:/~/elisp/eshell-git.el"))
 
-  (set-fontset-font t '(#xf07c . #xf07c) "fontawesome")    ; Folder 
-  (set-fontset-font t '(#xe907 . #xe907) "all-the-icons")  ; Git 
-  (set-fontset-font t '(#xe928 . #xe928) "all-the-icons")  ; Py 
-  (set-fontset-font t '(#xe192 . #xe192) "material")       ; Clock 
+  (defun set-icon-fonts (code-font-alist)
+    (mapc (lambda (x)
+            (let ((font (car x))
+                  (codes (cdr x)))
+              (mapc (lambda (code)
+                      (set-fontset-font t `(,code . ,code) font))
+                    codes)))
+          code-font-alist))
+
+  (set-icon-fonts '(("fontawesome"
+                     ;;    
+                     #xf07c #xf0c9)
+                    ("all-the-icons"
+                     ;;    
+                     #xe907 #xe928)
+                    ("material"
+                     ;; 
+                     #xe192)))
 
   (setq eshell-prompt-number 0)
   (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
@@ -826,7 +840,7 @@
                           (eshell-section "" esh-git-section esh-git-face)
                           (eshell-section "" esh-venv-section esh-venv-face)
                           (eshell-section "" esh-time-section esh-time-face)
-                          (eshell-section "" esh-prompt-num-section esh-prompt-num-face))))
+                          (eshell-section "" esh-prompt-num-section esh-prompt-num-face))))
       (concat
        (with-face esh-header esh-header-face)
        (s-join (with-face esh-sep esh-sep-face)
