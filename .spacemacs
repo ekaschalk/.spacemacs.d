@@ -18,8 +18,7 @@
 ;; documentation and org-modes navigation, collapsing, and narrowing facilities.
 ;;
 ;; Configuration is grouped by theme. The current groups are:
-;; Display - Ivy - Configuration - Navigation - Misc - Python - Org - Outshine
-;; - GNUS
+;; Display - Ivy - Configuration - Misc - Navigation - Python - Org - Outshine
 ;;
 ;; Each group is broken into further components for targetted enabling/disabling
 ;; Some groups require a specific execution ordering. Ordering requirements are
@@ -46,6 +45,7 @@
 ;; TODO Add cloning instructions
 ;; TODO Add tool that creates documentation from the elisp
 ;; TODO Move this entire section to a README
+;; TODO Reference icons by variable name rather than the direct string
 ;;
 
 ;;; OS-Config
@@ -233,7 +233,6 @@
 
 ;;; Spacemacs-User-config
 (defun dotspacemacs/user-config ()
-  ;; Dash is a general purpose, modern list and functional api for emacs lisp
   (with-eval-after-load 'dash
     ;; Group 1
     (dotspacemacs/user-config/display)
@@ -241,11 +240,9 @@
     ;; Rest
     (dotspacemacs/user-config/configuration)
     (dotspacemacs/user-config/ivy)
-    (dotspacemacs/user-config/gnus)
     (dotspacemacs/user-config/misc)
     (dotspacemacs/user-config/navigation)
     (dotspacemacs/user-config/org)
-    (dotspacemacs/user-config/org-gcal)
     (dotspacemacs/user-config/outshine)
     (dotspacemacs/user-config/python)))
 
@@ -959,6 +956,147 @@
   (global-highlight-parentheses-mode 1)  ; Highlight containing parens
   (spacemacs/toggle-mode-line-minor-modes-off))  ; no uni symbs next to major
 
+;;; Misc
+(defun dotspacemacs/user-config/misc ()
+  (when-linux-call 'dotspacemacs/user-config/misc/spotify)
+  (dotspacemacs/user-config/misc/aspell)
+  (dotspacemacs/user-config/misc/auto-completion)
+  (dotspacemacs/user-config/misc/gnus)
+  (dotspacemacs/user-config/misc/lisp-state)
+  (dotspacemacs/user-config/misc/macros)
+  (dotspacemacs/user-config/misc/neotree)
+  (dotspacemacs/user-config/misc/projectile)
+  (dotspacemacs/user-config/misc/shell)
+  (dotspacemacs/user-config/misc/windows)
+  (dotspacemacs/user-config/misc/yassnippet))
+
+;;;; Spotify
+(defun dotspacemacs/user-config/misc/spotify ()
+  ;; TODO most overwrite navi mode for M-s s
+  (global-set-key (kbd "M-s s") 'helm-spotify-plus)
+  (global-set-key (kbd "M-s j") 'helm-spotify-plus-play)
+  (global-set-key (kbd "M-s SPC") 'helm-spotify-plus-pause)
+  (global-set-key (kbd "M-s l") 'helm-spotify-plus-next)
+  (global-set-key (kbd "M-s h") 'helm-spotify-plus-previous))
+
+;;;; Aspell
+(defun dotspacemacs/user-config/misc/aspell ()
+  (setq ispell-program-name "aspell"))
+
+;;;; Auto-completion
+(defun dotspacemacs/user-config/misc/auto-completion ()
+  (custom-set-faces
+   '(company-tooltip-common
+     ((t (:inherit company-tooltip :weight bold :underline nil))))
+   '(company-tooltip-common-selection
+     ((t (:inherit company-tooltip-selection :weight bold :underline nil))))))
+
+;;;; GNUs
+(defun dotspacemacs/user-config/misc/gnus ()
+  (setq user-mail-address	"ekaschalk@gmail.com"
+        user-full-name	"Eric Kaschalk"
+
+        ;; Get mail
+        gnus-secondary-select-methods
+        '((nnimap "gmail"
+                  (nnimap-address "imap.gmail.com")
+                  (nnimap-server-port 993)
+                  (nnimap-stream ssl))
+          (nntp "gmane"
+                (nntp-address "news.gmane.org"))
+          (nntp "news.gwene.org"))
+
+        ;; Send mail
+        message-send-mail-function 'smtpmail-send-it
+
+        ;; Archive outgoing email in Sent folder on imap.gmail.com
+        gnus-message-archive-method '(nnimap "imap.gmail.com")
+        gnus-message-archive-group "[Gmail]/Sent Mail"
+
+        ;; Auth
+        smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+        smtpmail-auth-credentials '(("smtp.gmail.com" 587
+                                     "ekaschalk@gmail.com" nil))
+
+        ;; SMPT Server config
+        smtpmail-default-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587
+
+        ;; set return email address based on incoming email address
+        gnus-posting-styles
+        '(((header "to" "address@outlook.com")
+           (address  "address@outlook.com"))
+          ((header "to" "address@gmail.com")
+           (address "address@gmail.com")))
+
+        ;; store email in ~/gmail directory
+        nnml-directory "~/gmail"
+        message-directory "~/gmail"
+
+        ;; Full size images
+        mm-inline-large-images 'resize))
+
+;;;; Lisp-state
+(defun dotspacemacs/user-config/misc/lisp-state ()
+  "Add lisp state shortcut to Clojure and Hy."
+  (spacemacs/set-leader-keys-for-major-mode
+    'clojure-mode (kbd ",") 'lisp-state-toggle-lisp-state)
+  (spacemacs/set-leader-keys-for-major-mode
+    'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state))
+
+;;;; Macros
+(defun dotspacemacs/user-config/misc/macros ()
+  "Evil Q shortcut for vim macros set at @q."
+  (evil-global-set-key 'normal (kbd "Q")
+                       (lambda () (interactive) (evil-execute-macro 1 "@q"))))
+
+;;;; Neotree
+(defun dotspacemacs/user-config/misc/neotree ()
+  (setq neo-theme 'icons
+        neo-window-width 28)
+
+  (setq neo-hidden-regexp-list '("^\\." "\\.pyc$" "~$" "^#.*#$" "\\.elc$"
+                                 ;; Pycache and init rarely want to see
+                                 "__pycache__" "__init__\\.py"))
+
+  (evil-global-set-key 'normal (kbd "M-f") 'winum-select-window-0)
+  (evil-global-set-key 'normal (kbd "M-p") 'neotree-find-project-root))
+
+;;;; Projectile
+(defun dotspacemacs/user-config/misc/projectile ()
+  (setq projectile-indexing-method 'native))  ; respect .projectile files
+
+;;;; Shell
+(defun dotspacemacs/user-config/misc/shell ()
+  "Quick eshell with vim interaction."
+
+  (defun my-spacemacs/shell-pop-eshell ()
+    (interactive)
+    (spacemacs/shell-pop-eshell nil)
+    (if (string= major-mode "eshell-mode")
+        (evil-insert 1)
+      (evil-escape)))
+
+  (evil-global-set-key 'normal (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
+  (evil-global-set-key 'insert (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
+
+  ;; Enables Python shell to print unicode
+  ;; TODO might have to make this pyvenv hook
+  (setenv "PYTHONIOENCODING" "utf-8")
+  (setenv "LANG" "en_US.UTF-8"))
+
+;;;; Windows
+(defun dotspacemacs/user-config/misc/windows ()
+  (evil-define-key 'normal outline-minor-mode-map (kbd "C-M-i")  ; M-tab
+    'spacemacs/alternate-buffer)
+
+  (global-set-key (kbd "M-d") 'spacemacs/delete-window))
+
+;;;; Yassnippet
+(defun dotspacemacs/user-config/misc/yassnippet ()
+  (global-set-key (kbd "C-SPC") 'hippie-expand))
+
 ;;; Navigation
 (defun dotspacemacs/user-config/navigation ()
   (dotspacemacs/user-config/navigation/avy)
@@ -1039,178 +1177,6 @@
   (advice-add 'evil-ex-search-previous :after
               (lambda (&rest x) (evil-scroll-line-to-center (line-number-at-pos)))))
 
-;;; Misc
-(defun dotspacemacs/user-config/misc ()
-  (when-linux-call 'dotspacemacs/user-config/misc/spotify)
-  (dotspacemacs/user-config/misc/aspell)
-  (dotspacemacs/user-config/misc/auto-completion)
-  (dotspacemacs/user-config/misc/lisp-state)
-  (dotspacemacs/user-config/misc/macros)
-  (dotspacemacs/user-config/misc/neotree)
-  (dotspacemacs/user-config/misc/projectile)
-  (dotspacemacs/user-config/misc/shell)
-  (dotspacemacs/user-config/misc/windows)
-  (dotspacemacs/user-config/misc/yassnippet))
-
-;;;; Spotify
-(defun dotspacemacs/user-config/misc/spotify ()
-  ;; TODO most overwrite navi mode for M-s s
-  (global-set-key (kbd "M-s s") 'helm-spotify-plus)
-  (global-set-key (kbd "M-s j") 'helm-spotify-plus-play)
-  (global-set-key (kbd "M-s SPC") 'helm-spotify-plus-pause)
-  (global-set-key (kbd "M-s l") 'helm-spotify-plus-next)
-  (global-set-key (kbd "M-s h") 'helm-spotify-plus-previous))
-
-;;;; Aspell
-(defun dotspacemacs/user-config/misc/aspell ()
-  (setq ispell-program-name "aspell"))
-
-;;;; Auto-completion
-(defun dotspacemacs/user-config/misc/auto-completion ()
-  (custom-set-faces
-   '(company-tooltip-common
-     ((t (:inherit company-tooltip :weight bold :underline nil))))
-   '(company-tooltip-common-selection
-     ((t (:inherit company-tooltip-selection :weight bold :underline nil))))))
-
-;;;; Lisp-state
-(defun dotspacemacs/user-config/misc/lisp-state ()
-  "Add lisp state shortcut to Clojure and Hy."
-  (spacemacs/set-leader-keys-for-major-mode
-    'clojure-mode (kbd ",") 'lisp-state-toggle-lisp-state)
-  (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state))
-
-;;;; Macros
-(defun dotspacemacs/user-config/misc/macros ()
-  "Evil Q shortcut for vim macros set at @q."
-  (evil-global-set-key 'normal (kbd "Q")
-                       (lambda () (interactive) (evil-execute-macro 1 "@q"))))
-
-;;;; Neotree
-(defun dotspacemacs/user-config/misc/neotree ()
-  (setq neo-theme 'icons
-        neo-window-width 28)
-
-  (setq neo-hidden-regexp-list '("^\\." "\\.pyc$" "~$" "^#.*#$" "\\.elc$"
-                                 ;; Pycache and init rarely want to see
-                                 "__pycache__" "__init__\\.py"))
-
-  (evil-global-set-key 'normal (kbd "M-f") 'winum-select-window-0)
-  (evil-global-set-key 'normal (kbd "M-p") 'neotree-find-project-root))
-
-;;;; Projectile
-(defun dotspacemacs/user-config/misc/projectile ()
-  (setq projectile-indexing-method 'native))  ; respect .projectile files
-
-;;;; Shell
-(defun dotspacemacs/user-config/misc/shell ()
-  "Quick eshell with vim interaction."
-
-  (defun my-spacemacs/shell-pop-eshell ()
-    (interactive)
-    (spacemacs/shell-pop-eshell nil)
-    (if (string= major-mode "eshell-mode")
-        (evil-insert 1)
-      (evil-escape)))
-
-  (evil-global-set-key 'normal (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
-  (evil-global-set-key 'insert (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
-
-  ;; Enables Python shell to print unicode
-  ;; TODO might have to make this pyvenv hook
-  (setenv "PYTHONIOENCODING" "utf-8")
-  (setenv "LANG" "en_US.UTF-8"))
-
-;;;; Windows
-(defun dotspacemacs/user-config/misc/windows ()
-  (evil-define-key 'normal outline-minor-mode-map (kbd "C-M-i")  ; M-tab
-    'spacemacs/alternate-buffer)
-
-  (global-set-key (kbd "M-d") 'spacemacs/delete-window))
-
-;;;; Yassnippet
-(defun dotspacemacs/user-config/misc/yassnippet ()
-  (global-set-key (kbd "C-SPC") 'hippie-expand))
-
-;;; Python
-(defun dotspacemacs/user-config/python ()
-  (with-eval-after-load 'python
-    (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
-    (dotspacemacs/user-config/python/fixes)
-    (dotspacemacs/user-config/python/mypy)
-    (dotspacemacs/user-config/python/venvs)))
-
-;;;; Windows-pytest
-(defun dotspacemacs/user-config/python/windows-pytest ()
-  "Pytest is broken on Windows. Basic functionality is provided for Windows."
-  (defun ek-pytest-module ()
-    (interactive)
-    (shell-command (format "py.test -x -s %s&" buffer-file-name)))
-
-  (defun ek-pytest-one ()
-    (interactive)
-    (save-excursion
-      (let ((test-name
-             (progn
-               (re-search-backward "^[ ]*def \\(test_[a-zA-Z0-9_]*\\)")
-               (match-string 1))))
-        (shell-command
-         (format "py.test -x -s %s::%s&" buffer-file-name test-name)))))
-
-  (spacemacs/set-leader-keys-for-major-mode
-    'python-mode (kbd "t m") 'ek-pytest-module)
-  (spacemacs/set-leader-keys-for-major-mode
-    'python-mode (kbd "t t") 'ek-pytest-one))
-
-;;;; Fixes
-(defun dotspacemacs/user-config/python/fixes ()
-  "Various python bugfixes."
-  ;; Sometimes ipython shells trigger a bad error to popup
-  (defun python-shell-completion-native-try ()
-    "Return non-nil if can trigger native completion."
-    (let ((python-shell-completion-native-enable t)
-          (python-shell-completion-native-output-timeout
-           python-shell-completion-native-try-output-timeout))
-      (python-shell-completion-native-get-completions
-       (get-buffer-process (current-buffer))
-       nil "_")))
-
-  ;; No log output in pytests
-  ;; (setq pytest-cmd-flags "-x --no-print-logs")
-  (setq pytest-cmd-flags "-x -s")
-
-  ;; Remove flyspell from python buffers
-  (dolist (hook '(python-mode-hook))
-    (add-hook hook (lambda () (flyspell-mode -1)))))
-
-;;;; Mypy
-(defun dotspacemacs/user-config/python/mypy ()
-  "Enable mypy flycheck integration in-tandem with pylint."
-  (flycheck-define-checker
-      python-mypy ""
-      :command ("mypy"
-                "--ignore-missing-imports" "--fast-parser"
-                "--python-version" "3.6"
-                source-original)
-      :error-patterns
-      ((error line-start (file-name) ":" line ": error:" (message) line-end))
-      :modes python-mode)
-
-  (add-to-list 'flycheck-checkers 'python-mypy t)
-  (flycheck-add-next-checker 'python-pylint 'python-mypy t))
-
-;;;; Venvs
-(defun dotspacemacs/user-config/python/venvs ()
-  (with-eval-after-load 'virtualenvwrapper
-    (pyvenv-mode 1)
-
-    ;; Fixes hy-mode environment when pyvenv is activated
-    (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode)
-
-    (venv-initialize-interactive-shells)
-    (venv-initialize-eshell)))
-
 ;;; Org
 (defun dotspacemacs/user-config/org ()
   (with-eval-after-load 'org
@@ -1218,6 +1184,7 @@
     (dotspacemacs/user-config/org/agenda)
     (dotspacemacs/user-config/org/babel)
     (dotspacemacs/user-config/org/exports)
+    (dotspacemacs/user-config/org/gcal)
     (dotspacemacs/user-config/org/misc)
     (dotspacemacs/user-config/org/templates)
     (dotspacemacs/user-config/org/theming)))
@@ -1266,6 +1233,23 @@
        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
        ))))
+
+;;;; Gcal
+(defun dotspacemacs/user-config/org/gcal ()
+  ;; TODO bind everything
+  ;; TODO try calfw
+  ;; TODO setup dropbox daemon on linux
+  (require 'org-gcal)
+  (require 'org-contacts)
+  (load (if-linux "~/Dropbox/secrets.el"
+                  "c:/~/Dropbox/secrets.el"))
+  (setq org-gcal-file-alist
+        `(("ekaschalk@gmail.com" .
+           ,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org"))))
+  (setq org-contacts-files
+        `(,(if-linux "~/Dropbox/contacts.org" "c:/~/Dropbox/contacts.org")))
+  (setq org-agenda-files
+        `(,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org"))))
 
 ;;;; Misc
 (defun dotspacemacs/user-config/org/misc ()
@@ -1485,77 +1469,80 @@
   ;; Enables outline-minor-mode for *ALL* programming buffers!
   (add-hook 'prog-mode-hook 'outline-minor-mode))
 
-;;; GNUs
-(defun dotspacemacs/user-config/gnus ()
-  (setq user-mail-address	"ekaschalk@gmail.com"
-        user-full-name	"Eric Kaschalk"
+;;; Python
+(defun dotspacemacs/user-config/python ()
+  (with-eval-after-load 'python
+    (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
+    (dotspacemacs/user-config/python/fixes)
+    (dotspacemacs/user-config/python/mypy)
+    (dotspacemacs/user-config/python/venvs)))
 
-        ;; Get mail
-        gnus-secondary-select-methods
-        '((nnimap "gmail"
-                  (nnimap-address "imap.gmail.com")
-                  (nnimap-server-port 993)
-                  (nnimap-stream ssl))
-          (nntp "gmane"
-                (nntp-address "news.gmane.org"))
-          (nntp "news.gwene.org"))
+;;;; Windows-pytest
+(defun dotspacemacs/user-config/python/windows-pytest ()
+  "Pytest is broken on Windows. Basic functionality is provided for Windows."
+  (defun ek-pytest-module ()
+    (interactive)
+    (shell-command (format "py.test -x -s %s&" buffer-file-name)))
 
-        ;; Send mail
-        message-send-mail-function 'smtpmail-send-it
+  (defun ek-pytest-one ()
+    (interactive)
+    (save-excursion
+      (let ((test-name
+             (progn
+               (re-search-backward "^[ ]*def \\(test_[a-zA-Z0-9_]*\\)")
+               (match-string 1))))
+        (shell-command
+         (format "py.test -x -s %s::%s&" buffer-file-name test-name)))))
 
-        ;; Archive outgoing email in Sent folder on imap.gmail.com
-        gnus-message-archive-method '(nnimap "imap.gmail.com")
-        gnus-message-archive-group "[Gmail]/Sent Mail"
+  (spacemacs/set-leader-keys-for-major-mode
+    'python-mode (kbd "t m") 'ek-pytest-module)
+  (spacemacs/set-leader-keys-for-major-mode
+    'python-mode (kbd "t t") 'ek-pytest-one))
 
-        ;; Auth
-        smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-        smtpmail-auth-credentials '(("smtp.gmail.com" 587
-                                     "ekaschalk@gmail.com" nil))
+;;;; Fixes
+(defun dotspacemacs/user-config/python/fixes ()
+  "Various python bugfixes."
+  ;; Sometimes ipython shells trigger a bad error to popup
+  (defun python-shell-completion-native-try ()
+    "Return non-nil if can trigger native completion."
+    (let ((python-shell-completion-native-enable t)
+          (python-shell-completion-native-output-timeout
+           python-shell-completion-native-try-output-timeout))
+      (python-shell-completion-native-get-completions
+       (get-buffer-process (current-buffer))
+       nil "_")))
 
-        ;; SMPT Server config
-        smtpmail-default-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 587
+  ;; No log output in pytests
+  ;; (setq pytest-cmd-flags "-x --no-print-logs")
+  (setq pytest-cmd-flags "-x -s")
 
-        ;; set return email address based on incoming email address
-        gnus-posting-styles
-        '(((header "to" "address@outlook.com")
-           (address  "address@outlook.com"))
-          ((header "to" "address@gmail.com")
-           (address "address@gmail.com")))
+  ;; Remove flyspell from python buffers
+  (dolist (hook '(python-mode-hook))
+    (add-hook hook (lambda () (flyspell-mode -1)))))
 
-        ;; store email in ~/gmail directory
-        nnml-directory "~/gmail"
-        message-directory "~/gmail"
+;;;; Mypy
+(defun dotspacemacs/user-config/python/mypy ()
+  "Enable mypy flycheck integration in-tandem with pylint."
+  (flycheck-define-checker
+      python-mypy ""
+      :command ("mypy"
+                "--ignore-missing-imports" "--fast-parser"
+                "--python-version" "3.6"
+                source-original)
+      :error-patterns
+      ((error line-start (file-name) ":" line ": error:" (message) line-end))
+      :modes python-mode)
 
-        ;; Full size images
-        mm-inline-large-images 'resize))
+  (add-to-list 'flycheck-checkers 'python-mypy t)
+  (flycheck-add-next-checker 'python-pylint 'python-mypy t))
 
-;;; Org-gcal
-(defun dotspacemacs/user-config/org-gcal ()
-  ;; TODO bind everything
-  ;; TODO try calfw
-  ;; TODO setup dropbox daemon on linux
-  ;; https://github.com/myuhe/org-gcal.el
-  ;; http://cestlaz.github.io/posts/using-emacs-26-gcal/#.WG52MOtj0wE.reddit
+;;;; Venvs
+(defun dotspacemacs/user-config/python/venvs ()
+  (with-eval-after-load 'virtualenvwrapper
+    (pyvenv-mode 1)
 
-  (require 'org-gcal)
-  (require 'org-contacts)
-  (load (if-linux "~/Dropbox/secrets.el"
-                  "c:/~/Dropbox/secrets.el"))
-  (setq org-gcal-file-alist
-        `(("ekaschalk@gmail.com" .
-           ,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org"))))
-  (setq org-contacts-files
-        `(,(if-linux "~/Dropbox/contacts.org" "c:/~/Dropbox/contacts.org")))
-  (setq org-agenda-files
-        `(,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org")))
+    ;; Fixes hy-mode environment when pyvenv is activated
+    (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode)
 
-  ;; (org-gcal-sync)
-  ;;   (add-to-list 'org-capture-templates
-  ;;                '("c" "Contacts" entry (file "~/Org/contacts.org")
-  ;;                  "* %(org-contacts-template-name)
-  ;; :PROPERTIES:
-  ;; :EMAIL: %(org-contacts-template-email)
-  ;; :END:"))
-  )
+    (venv-initialize-interactive-shells)
+    (venv-initialize-eshell)))
