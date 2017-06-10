@@ -1,12 +1,16 @@
 * Screens
 
+Editing my Spacemacs configuration with everything open:
+
 [[file:./imgs/full-example.png]]
+
+Closer look at my shell, ivy prompt, and neotree.
 
 | Shell                        | Ivy                       | Neotree                 |
 |------------------------------+---------------------------+-------------------------|
 | [[file:./imgs/pretty-shell.png]] | [[file:./imgs/icons-ivy.png]] | [[file:./imgs/neotree.png]] |
 
-Code showing examples of unicode replacement of user-defined symbols:
+Example code showing unicode symbol replacements:
 
 [[file:./imgs/example-code.png]] |
 
