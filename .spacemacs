@@ -10,20 +10,12 @@
 ;;
 ;; Organization
 ;; ---------
-;; Literate configs with org-mode are not natively supported by spacemacs
-;; due to org-mode's interaction with spacemacs layers systems.
-;;
-;; The approach taken is to use the `outline-minor-mode' in conjuction
-;; with `outshine-mode' and `navi-mode' to maintain benefits of literate
-;; documentation and org-modes navigation, collapsing, and narrowing facilities.
-;;
 ;; Configuration is grouped by theme. The current groups are:
 ;; Display - Ivy - Configuration - Misc - Navigation - Python - Org - Outshine
 ;;
 ;; Each group is broken into further components for targetted enabling/disabling
 ;; Some groups require a specific execution ordering. Ordering requirements are
 ;; specifed with Group x comments. Within the group, the packages are lexical.
-;;
 ;; Notable
 ;; ---------
 ;; 1. Outline-minor-mode + Navi + Outshine mode enhancements.
@@ -40,8 +32,6 @@
 ;;    - Many premium keybindings (C-SPC, C-h, C-e, 0, M-d...) have been rebound
 ;;    - Extra avy motions
 ;;
-;; TODO Add screenshots to the repo
-;; TODO Rename repo to be specific to .spacemacs rather than dotfiles
 ;; TODO Add cloning instructions
 ;; TODO Add tool that creates documentation from the elisp
 ;; TODO Move this entire section to a README

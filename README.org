@@ -1,5 +1,4 @@
 * Screens
-
 Editing my Spacemacs configuration with everything open:
 
 [[file:./imgs/full-example.png]]
@@ -10,7 +9,7 @@ Closer look at my shell, ivy prompt, and neotree.
 |------------------------------+---------------------------+-------------------------|
 | [[file:./imgs/pretty-shell.png]] | [[file:./imgs/icons-ivy.png]] | [[file:./imgs/neotree.png]] |
 
-Example code showing unicode symbol replacements:
+Example code showing unicode symbol replacements (the replacement is purely visual):
 
 [[file:./imgs/example-code.png]] |
 
@@ -18,3 +17,27 @@ Magit commits and logs of the form "Fix:, Add:, Docs:, etc..." are displayed wit
 icons:
 
 [[file:./imgs/pretty-magit.png]]
+
+* My Spacemacs
+
+My Spacemacs notably implements:
+
+1. Visual enhancements - see screens.
+   1. Unicode symbol replacement for mimicking mathematical notation in
+      programming buffers.
+   2. Fira Code ligature integration (any font can be used in-tandem).
+   3. Magit commit header fontification with ivy integration.
+   4. Eshell fontification with icon integration.
+2. Org-like navigation and visualization in programming buffers - see outshine.
+
+Literate configs with org-mode are not natively supported by spacemacs
+due to org-mode's interaction with spacemacs layers systems.
+
+The approach taken is to use the `outline-minor-mode' in conjuction
+with `outshine-mode' and `navi-mode' to maintain benefits of literate
+documentation and org-modes navigation, collapsing, and narrowing facilities.
+
+** Version
+Dual config for Windows and Arch Linux for Emacs 25.2.1
+
+Spacemacs Dev Branch - Release 0.200.9.x - pulled: 6/9/17 - packages updated: 6/9/17
