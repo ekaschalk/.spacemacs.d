@@ -5,6 +5,7 @@
 !.gitignore
 !.spacemacs
 !README.org
+!tasks.org
 
 !elisp/
 !elisp/*

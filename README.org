@@ -11,7 +11,7 @@ Closer look at my shell, ivy prompt, and neotree.
 
 Magit commits and logs of the form "Fix:, Add:, Docs:, etc..." are displayed with
 icons. Symbols in programming buffers are replaced with icons. These changes are
-entirely visual, searching your logs for "Fix:" or "lambda" will jump to the icons.
+entirely visual, searching for "Fix:" or "lambda" will jump to the icons.
 
 | Magit                        | Code                         |
 |------------------------------+------------------------------|

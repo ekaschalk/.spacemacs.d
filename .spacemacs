@@ -8,6 +8,8 @@
 ;; -- Dual config for Windows and Arch Linux --
 ;; -- Contact: ekaschalk@gmail.com --
 ;;
+;; See the README for details
+;;
 ;; Organization
 ;; ---------
 ;; Configuration is grouped by theme. The current groups are:
@@ -16,27 +18,6 @@
 ;; Each group is broken into further components for targetted enabling/disabling
 ;; Some groups require a specific execution ordering. Ordering requirements are
 ;; specifed with Group x comments. Within the group, the packages are lexical.
-;; Notable
-;; ---------
-;; 1. Outline-minor-mode + Navi + Outshine mode enhancements.
-;;    - Org-like headings, navigation, faces in programming buffers.
-;;    - Vim bindings for outline-minor-mode and navi-mode.
-;;    - Enhanced narrowing.
-;; 2. Unique visual enhancements.
-;;    - Fira code ligature integration (Fira Code font not required, I use Hack)
-;;    - Math and other custom symbols for major modes
-;;    - Pretty magit commits with ivy integration
-;;    - Pretty eshell
-;; x. Miscellaneous small snippets.
-;;    - Mypy flychecking integrated with pylint.
-;;    - Many premium keybindings (C-SPC, C-h, C-e, 0, M-d...) have been rebound
-;;    - Extra avy motions
-;;
-;; TODO Add cloning instructions
-;; TODO Add tool that creates documentation from the elisp
-;; TODO Move this entire section to a README
-;; TODO Reference icons by variable name rather than the direct string
-;;
 
 ;;; OS-Config
 ;; Utilities for integrating Windows and Linux.
@@ -281,6 +262,7 @@
                     codes)))
           code-font-alist))
 
+  ;; NOTE The icons you see are not the correct icons until this is evaluated
   (set-icon-fonts
    '(("fontawesome"
       ;;              
