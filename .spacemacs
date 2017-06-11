@@ -924,12 +924,14 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
         completion-in-region-function 'ivy-completion-in-region))
 
 ;;; Configuration
+
 (defun dotspacemacs/user-config/configuration ()
   (dotspacemacs/user-config/configuration/editing)
   (dotspacemacs/user-config/configuration/evil)
   (dotspacemacs/user-config/configuration/visual))
 
 ;;;; Editing
+
 (defun dotspacemacs/user-config/configuration/editing ()
   "Editing toggles."
 
@@ -938,6 +940,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1))))  ; SPC splits past 80
 
 ;;;; Evil
+
 (defun dotspacemacs/user-config/configuration/evil ()
   "Update evil settings."
 
@@ -945,6 +948,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
                 evil-escape-unordered-key-sequence "true"))
 
 ;;;; Visual
+
 (defun dotspacemacs/user-config/configuration/visual ()
   "Visual toggles."
 
@@ -955,6 +959,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (spacemacs/toggle-mode-line-minor-modes-off))  ; no uni symbs next to major
 
 ;;; Misc
+
 (defun dotspacemacs/user-config/misc ()
   (when-linux-call 'dotspacemacs/user-config/misc/spotify)
   (dotspacemacs/user-config/misc/aspell)
@@ -969,8 +974,11 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (dotspacemacs/user-config/misc/yassnippet))
 
 ;;;; Spotify
+
 (defun dotspacemacs/user-config/misc/spotify ()
-  ;; TODO most overwrite navi mode for M-s s
+  "Spotify-plus bindings."
+
+  ;; TODO must overwrite navi mode for M-s s
   (global-set-key (kbd "M-s s") 'helm-spotify-plus)
   (global-set-key (kbd "M-s j") 'helm-spotify-plus-play)
   (global-set-key (kbd "M-s SPC") 'helm-spotify-plus-pause)
@@ -978,11 +986,17 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (global-set-key (kbd "M-s h") 'helm-spotify-plus-previous))
 
 ;;;; Aspell
+
 (defun dotspacemacs/user-config/misc/aspell ()
+  "Setup aspell."
+
   (setq ispell-program-name "aspell"))
 
 ;;;; Auto-completion
+
 (defun dotspacemacs/user-config/misc/auto-completion ()
+  "Autocompletion face modifications."
+
   (custom-set-faces
    '(company-tooltip-common
      ((t (:inherit company-tooltip :weight bold :underline nil))))
@@ -990,7 +1004,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
      ((t (:inherit company-tooltip-selection :weight bold :underline nil))))))
 
 ;;;; GNUs
+
 (defun dotspacemacs/user-config/misc/gnus ()
+  "GNUS setup and user details. Nothing significant atm."
+
   (setq user-mail-address	"ekaschalk@gmail.com"
         user-full-name	"Eric Kaschalk"
 
@@ -1036,21 +1053,27 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
         mm-inline-large-images 'resize))
 
 ;;;; Lisp-state
+
 (defun dotspacemacs/user-config/misc/lisp-state ()
   "Add lisp state shortcut to Clojure and Hy."
+
   (spacemacs/set-leader-keys-for-major-mode
     'clojure-mode (kbd ",") 'lisp-state-toggle-lisp-state)
   (spacemacs/set-leader-keys-for-major-mode
     'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state))
 
 ;;;; Macros
+
 (defun dotspacemacs/user-config/misc/macros ()
   "Evil Q shortcut for vim macros set at @q."
+
   (evil-global-set-key 'normal (kbd "Q")
                        (lambda () (interactive) (evil-execute-macro 1 "@q"))))
 
 ;;;; Neotree
 (defun dotspacemacs/user-config/misc/neotree ()
+  "Neotree configuration."
+
   (setq neo-theme 'icons
         neo-window-width 28)
 
@@ -1062,10 +1085,14 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (evil-global-set-key 'normal (kbd "M-p") 'neotree-find-project-root))
 
 ;;;; Projectile
+
 (defun dotspacemacs/user-config/misc/projectile ()
-  (setq projectile-indexing-method 'native))  ; respect .projectile files
+  "Project config, respect .projectile files."
+
+  (setq projectile-indexing-method 'native))
 
 ;;;; Shell
+
 (defun dotspacemacs/user-config/misc/shell ()
   "Quick eshell with vim interaction."
 
@@ -1085,17 +1112,24 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (setenv "LANG" "en_US.UTF-8"))
 
 ;;;; Windows
+
 (defun dotspacemacs/user-config/misc/windows ()
+  "Additional window management bindings."
+
   (evil-define-key 'normal outline-minor-mode-map (kbd "C-M-i")  ; M-tab
     'spacemacs/alternate-buffer)
 
   (global-set-key (kbd "M-d") 'spacemacs/delete-window))
 
 ;;;; Yassnippet
+
 (defun dotspacemacs/user-config/misc/yassnippet ()
+  "Yassnippet bindings and config."
+
   (global-set-key (kbd "C-SPC") 'hippie-expand))
 
 ;;; Navigation
+
 (defun dotspacemacs/user-config/navigation ()
   (dotspacemacs/user-config/navigation/avy)
   (dotspacemacs/user-config/navigation/extra-bindings)
@@ -1103,16 +1137,18 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (dotspacemacs/user-config/navigation/searching))
 
 ;;;; Avy
+
 (defun dotspacemacs/user-config/navigation/avy ()
-  "Avy keybindings and custom commands."
+  "Avy keybindings and custom motions."
+
+  (require 'avy)  ; TODO must require for to get avy--generic-jump loaded
+
   (global-set-key (kbd "C-h") 'avy-pop-mark)
   (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
   (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
   (global-set-key (kbd "C-l") 'evil-avy-goto-line)
 
-  ;; TODO for some reason must require avy to get avy--generic-jump loaded
-  (require 'avy)
-  ;; TODO this should be major-mode specific and handle navi altogether
+  ;; TODO this motion should be major-mode specific and handle navi altogether
   (defun avy-navi-goto-outline ()
     (interactive)
     (avy--generic-jump "[;]+\\( \\)" nil 'post))  ; must be post
@@ -1145,7 +1181,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
       python-mode-map (kbd "C-j") 'evil-avy-goto-char-2)))
 
 ;;;; Extra-bindings
+
 (defun dotspacemacs/user-config/navigation/extra-bindings ()
+  "Rebind H, L, and 0 to BOL, EOL, old %."
+
   ;; H and L move to modified BOL and EOL
   (evil-global-set-key 'normal (kbd "H") 'evil-first-non-blank)
   (evil-global-set-key 'visual (kbd "H") 'evil-first-non-blank)
@@ -1164,12 +1203,16 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (evil-global-set-key 'motion (kbd "0") 'evil-jump-item))
 
 ;;;; File-links
+
 (defun dotspacemacs/user-config/navigation/file-links ()
+  "Quick binding for opening org-formatted links anywhere."
+
   (spacemacs/set-leader-keys (kbd "aof") 'org-open-at-point-global))
 
 ;;;; Searching
 (defun dotspacemacs/user-config/navigation/searching ()
-  ;; Evil searching scrolls to center of match
+  "Evil searching scrolls to center of match."
+
   (advice-add 'evil-ex-search-next :after
               (lambda (&rest x) (evil-scroll-line-to-center (line-number-at-pos))))
   (advice-add 'evil-ex-search-previous :after
