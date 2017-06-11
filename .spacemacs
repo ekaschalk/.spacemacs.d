@@ -776,27 +776,33 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
                :logic :sets :sub-and-superscripts)))
 
 ;;;; Shell
+
 (defun dotspacemacs/user-config/display/shell ()
   "Eshell prettification."
+
   (setq eshell-prompt-number 0)
   (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
   (advice-add 'eshell-send-input :before
               (lambda (&rest args)
                 (setq eshell-prompt-number (+ 1 eshell-prompt-number))))
 
-  (defmacro with-face (str &rest properties)
-    `(propertize ,str 'face (list ,@properties)))
+  (defmacro with-face (STR &rest PROPS)
+    "Return STR propertized with PROPS."
+    `(propertize ,STR 'face (list ,@PROPS)))
 
-  (defun set-eshell-prompt-icon (icon face)
-    (let ((prompt (concat icon " ")))
+  (defun set-eshell-prompt-icon (ICON PROPS)
+    "Update eshell prompt with ICON propertized with PROPS."
+    (let ((prompt (concat ICON " ")))
       (setq eshell-prompt-regexp prompt)
-      (concat "\n" (with-face prompt face))))
+      (concat "\n" (with-face prompt PROPS))))
 
-  (defun eshell-section (icon str &rest properties)
+  (defun eshell-section (ICON STR &rest PROPS)
+    "Return eshell section string with ICON header for STR with PROPS."
     (when str
-      (with-face (concat icon " " str) properties)))
+      (with-face (concat ICON " " STR) PROPS)))
 
   (defun esh-prompt-function ()
+    "Custom `eshell-prompt-function'."
     (let* ((esh-header "\n ")
            (esh-header-face nil)
            (esh-prompt "")
@@ -834,15 +840,16 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (setq eshell-prompt-function 'esh-prompt-function))
 
 ;;;; Theme-updates
+
 (defun dotspacemacs/user-config/display/theme-updates ()
-  "Face configuration for themes."
-  ;; file:/root/.emacs.d/elpa/solarized-theme-20170430.800/solarized.el
+  "Face configuration for themes, atm solarized-light."
 
   (setq my-black "#1b1b1e")
 
   (custom-theme-set-faces
    'solarized-light
 
+   ;; Makes matching parens obvious
    `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
                                            :background "light gray"))))
 
@@ -856,6 +863,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
    ;; Inactive modeline has tint
    `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
 
+   ;; Org and outline header updates
    `(org-level-1 ((t (:height 1.25 :foreground ,my-black
                               :background "#C9DAEA"
                               :weight bold))))
