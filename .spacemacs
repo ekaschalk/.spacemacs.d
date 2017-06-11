@@ -799,7 +799,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
   (defun eshell-section (ICON STR &rest PROPS)
     "Return eshell section string with ICON header for STR with PROPS."
-    (when str
+    (when STR
       (with-face (concat ICON " " STR) PROPS)))
 
   (defun esh-prompt-function ()
