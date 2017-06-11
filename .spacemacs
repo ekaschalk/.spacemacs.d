@@ -242,6 +242,7 @@
 
 (defun dotspacemacs/user-config/display/windows-frame-size-fix ()
   "Surface has 200% scaling, doesn't apply to emacs, fixes with push of `f2`."
+
   (add-to-list 'default-frame-alist '(font . "Hack"))
   (set-face-attribute 'default t :font "Hack")
   (global-set-key (kbd "<f2>")
@@ -430,6 +431,7 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
   ))
 
 ;;;;; Language-font-locks
+
 (defconst emacs-lisp-font-lock-alist
   ;; Outlines not using * so better overlap with in-the-wild packages.
   ;; Intentionally not requiring BOL for eg. fira config modularization
@@ -470,11 +472,13 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
 
 
 ;;;; All-the-icons
+
 (defun dotspacemacs/user-config/display/all-the-icons ()
   "Add hylang icon to all-the-icons for neotree and modeline integration."
+
+  ;; Both all-the-icons-icon-alist and all-the-icons-mode-icon-alist
+  ;; need to be updated for either modification to take effect.
   (with-eval-after-load 'all-the-icons
-    ;; Both all-the-icons-icon-alist and all-the-icons-mode-icon-alist
-    ;; Need to be updated for either modification to take effect.
     (add-to-list
      'all-the-icons-icon-alist
      '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
@@ -483,14 +487,18 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
      '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange))))
 
 ;;;; Extra-syntax-highlighting
+
 (defun dotspacemacs/user-config/display/extra-syntax-highlighting ()
   "Extra syntax highlighting for desired keywords."
+
   (defun hy-extra-syntax ()
     (font-lock-add-keywords
-     nil '(
+     nil '(;; self is not defined by hy-mode as a keyword
          ("\\<\\(self\\)" . 'font-lock-constant-face)
-         ;; Highlight entire line for all decorators through reader macro
+
+         ;; Highlight entire line for decorators
          ("\\(#@.*$\\)" . 'font-lock-function-name-face)
+
          ;; Syntax highlighting for reader-macros
          ("\\(#.\\)" . 'font-lock-function-name-face))))
 
@@ -505,8 +513,10 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
   (add-hook 'navi-mode-hook 'navi-extra-syntax))
 
 ;;;; Modeline
+
 (defun dotspacemacs/user-config/display/modeline ()
   "Minimalistic spaceline-all-the-icons configuration."
+
   (use-package spaceline-all-the-icons
     :after spaceline  ; eval-after-load doesn't work for this setup
     :config (progn
@@ -534,28 +544,37 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
               (spaceline-toggle-hud-off))))
 
 ;;;; Outline-ellipsis-modification
+
 (defun dotspacemacs/user-config/display/outline-ellipsis-modification ()
   "Org-ellipsis but for outline-minor-mode headings"
+
   (defvar outline-display-table (make-display-table))
   (set-display-table-slot outline-display-table 'selective-display
                           (vector (make-glyph-code ?▼ 'escape-glyph)))
   (defun set-outline-display-table ()
     (setf buffer-display-table outline-display-table))
+
   (add-hook 'outline-mode-hook 'set-outline-display-table)
   (add-hook 'outline-minor-mode-hook 'set-outline-display-table))
 
 ;;;; Prettify-magit
-(defun dotspacemacs/user-config/display/prettify-magit ()
-  "Add faces to Magit manually for things like commit headers eg. (Add: ...)."
 
-  ;; https://github.com/domtronn/all-the-icons.el
-  ;; Can look through the icons by opening a scratch a buffer and running eg.
-  ;; (all-the-icons-insert-icons-for 'material)
+(defun dotspacemacs/user-config/display/prettify-magit ()
+  "Add faces to Magit manually for things like commit headers eg. (Add: ...).
+
+Adding faces to Magit is non-trivial since any use of font-lock will break
+fontification of the buffer. This is due to Magit doing all styling with
+`propertize' and black magic. So we apply the faces the manual way.
+
+Adds Ivy integration so a prompt of (Add, Docs, ...) appears when commiting.
+Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)
+"
+
   (setq my-magit-colors '(:feature "silver"
-                          :fix "#FB6542"  ; sunset
-                          :add "#375E97"  ; sky
+                          :fix "#FB6542"    ; sunset
+                          :add "#375E97"    ; sky
                           :clean "#FFBB00"  ; sunflower
-                          :docs "#3F681C" ; grass
+                          :docs "#3F681C"   ; grass
                           ))
 
   (defface my-magit-base-face
@@ -614,11 +633,8 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
                                ("\\<\\(master\\)\\>"     ?)
                                ("\\<\\(origin/master\\)" ?)))
 
-  ;; Font-lock mode breaks magit. Magit uses propertized strings and does lots
-  ;; of magic since it assumes a read-only buffer. Doing anything with
-  ;; font-lock-keywords will break styling of the whole status buffer.
-  ;; So we update the magit faces mannually.
   (defun add-magit-faces ()
+    "Apply `pretty-magit-faces' and `pretty-magit-symbols' to magit buffers."
     (interactive)
     (with-silent-modifications
       (--each pretty-magit-faces
@@ -634,12 +650,6 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
             (compose-region
              (match-beginning 1) (match-end 1) (cdr it)))))))
 
-  ;; Ivy prompt for commit keywords.
-  ;; Now due to the delayed use of minibuffer in commit buffers, we cannot
-  ;; use add-advice and instead use `git-commit-setup-hook' to run the prompt.
-  ;; However, we only want the prompt for c-c `magit-commit' and not its
-  ;; variants. The only way to distinguish the calling commit mode is through
-  ;; the caller, so we use advice add on `magit-commit' for a prompt predicate.
   (setq use-magit-commit-prompt-p nil)
   (defun use-magit-commit-prompt (&rest args)
     (setq use-magit-commit-prompt-p t))
@@ -657,24 +667,18 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
       (add-magit-faces)
       (evil-insert 1)))
 
-  ;; TODO Escaping ivy-read in commit prompt will make the next call
-  ;; to commit jump to commit template without prompt. This is an issue
-  ;; between integrating ivy and magit exiting, not simple.
-  ;; So use , k rather than ESC on a commit prompt to cancel commit
-  ;; TODO the symbol stays but the face is overwritten in commit buffers
-  ;; In fact it is overwritten continuously! Magit uses font lock here.
-  ;; However doing anything (any trivial mod) with font-lock-add-keywords
-  ;; will break highlighting the buffer. We can get the symbols added
-  ;; but not the coloring, sizing, and other face attributes.
-  (with-eval-after-load 'magit
-    ;; Hook is overwritten by ivy prompt
-    (remove-hook 'git-commit-setup-hook 'with-editor-usage-message)
+  ;; Now due to the delayed use of minibuffer in commit buffers, we cannot
+  ;; use add-advice and instead use `git-commit-setup-hook' to run the prompt.
+  ;; However, we only want the prompt for c-c `magit-commit' and not its
+  ;; variants. The only way to distinguish the calling commit mode is through
+  ;; the caller, so we use advice add on `magit-commit' for a prompt predicate.
 
-    (advice-add 'magit-status :after 'add-magit-faces)
-    (advice-add 'magit-refresh-buffer :after 'add-magit-faces)
-    (advice-add 'magit-commit :after 'use-magit-commit-prompt)
+  (remove-hook 'git-commit-setup-hook 'with-editor-usage-message)
+  (add-hook 'git-commit-setup-hook 'magit-commit-prompt)
 
-    (add-hook 'git-commit-setup-hook 'magit-commit-prompt)))
+  (advice-add 'magit-status :after 'add-magit-faces)
+  (advice-add 'magit-refresh-buffer :after 'add-magit-faces)
+  (advice-add 'magit-commit :after 'use-magit-commit-prompt))
 
 ;;;; Prettify-symbols
 (defun dotspacemacs/user-config/display/prettify-symbols ()

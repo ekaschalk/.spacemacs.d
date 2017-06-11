@@ -11,13 +11,20 @@
 * Bugs
 ** Outline-Outshine-Navi
 
-Reproducible:
 1.
 
 Not reliably reproducible:
 1. When a buffer has been open long enough, sometimes it will take two movements
    to traverse through collapsed headings. The extra movement jumps to the
    ellipsis.
+
+** Magit
+
+1. Cannot maintain new faces in commit buffers, but can keep symbol updates. 2.
+2. Escaping the ivy commit prompt will make the next call to commit jump to the
+   commit template without prompting. This is an issue between integrating ivy
+   and magit exiting, no luck fixing. So use , k rather than ESC on a commit
+   prompt to cancel a commit.
 
 * Completed
 ** Week of <2017-06-05 Mon>
