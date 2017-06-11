@@ -755,9 +755,6 @@
 ;;;; Shell
 (defun dotspacemacs/user-config/display/shell ()
   "Eshell prettification."
-  (require 'virtualenvwrapper)  ; TODO integrate these better way
-  (pyvenv-mode 1)
-
   (setq eshell-prompt-number 0)
   (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
   (advice-add 'eshell-send-input :before
@@ -1391,7 +1388,6 @@
   ;; Outline minor mode vim keybindings
   (let ((map outline-minor-mode-map))
     ;; Core functions
-    ;; (define-key map (kbd "s-n") 'my-outshine-navi)
     (define-key map (kbd "M-n") 'my-outshine-navi)
     (define-key map (kbd "<backtab>") 'outshine-cycle-buffer)
     (define-key map (kbd "M-h") 'outline-promote)
@@ -1439,11 +1435,11 @@
 
 ;;; Python
 (defun dotspacemacs/user-config/python ()
-  (with-eval-after-load 'python
-    (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
-    (dotspacemacs/user-config/python/fixes)
-    (dotspacemacs/user-config/python/mypy)
-    (dotspacemacs/user-config/python/venvs)))
+  (require 'python)
+  (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
+  (dotspacemacs/user-config/python/fixes)
+  (dotspacemacs/user-config/python/mypy)
+  (dotspacemacs/user-config/python/venvs))
 
 ;;;; Windows-pytest
 (defun dotspacemacs/user-config/python/windows-pytest ()
@@ -1506,11 +1502,11 @@
 
 ;;;; Venvs
 (defun dotspacemacs/user-config/python/venvs ()
-  (with-eval-after-load 'virtualenvwrapper
-    (pyvenv-mode 1)
+  (require 'virtualenvwrapper)
+  (pyvenv-mode 1)
 
-    ;; Fixes hy-mode environment when pyvenv is activated
-    (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode)
+  ;; Fixes hy-mode environment when pyvenv is activated
+  (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode)
 
-    (venv-initialize-interactive-shells)
-    (venv-initialize-eshell)))
+  (venv-initialize-interactive-shells)
+  (venv-initialize-eshell))
