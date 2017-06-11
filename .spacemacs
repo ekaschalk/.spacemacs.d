@@ -757,7 +757,6 @@
   "Eshell prettification."
   (require 'virtualenvwrapper)  ; TODO integrate these better way
   (pyvenv-mode 1)
-  (load (if-linux "~/elisp/eshell-git.el" "c:/~/elisp/eshell-git.el"))
 
   (setq eshell-prompt-number 0)
   (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
@@ -788,7 +787,7 @@
            (esh-dir-section (abbreviate-file-name (eshell/pwd)))
            (esh-dir-face nil)
 
-           (esh-git-section (eshell-git-prompt--branch-name))
+           (esh-git-section (magit-get-current-branch))
            (esh-git-face nil)
 
            (esh-venv-section pyvenv-virtual-env-name)
