@@ -1617,10 +1617,12 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 ;;; Blog
 
 (defun module/blog ()
-  "Hugo blog utilities. See https://ekaschalk.github.io."
+  "Hugo blog utilities. Hosted at https://ekaschalk.github.io."
 
   (setq blog-dir "~/dev/blog"
-        public-blog-dir "~/dev/public-blog")
+        public-blog-dir "~/dev/public-blog"
+        hugo-process "Hugo Server"
+        hugo-server-site "http://localhost:1313/")
 
   (defun deploy-blog ()
     "Run hugo and push changes upstream from anywhere."
@@ -1638,19 +1640,22 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
       (cd original-dir)))
 
   (defun start-blog-server ()
-    "Run hugo server."
+    "Run hugo server if not already running and open its webpage."
     (interactive)
     (let ((original-dir default-directory))
-      (cd blog-dir)
-      (async-shell-command "hugo server")
-      ;; (start-process "Hugo Server" nil "hugo server")
+      (unless (get-process hugo-process)
+        (cd blog-dir)
+        (start-process hugo-process nil "hugo" "server")
+        (cd original-dir))
 
-      ;; use start-process so no shell popup
-      ;; close the server if already executing
-      ;; automatically open the webpage
+      (browse-url hugo-server-site)))
 
-      (cd original-dir)
-      ))
+  (defun end-blog-server ()
+    "End hugo server process if running."
+    (interactive)
+    (--when-let (get-process hugo-process)
+      (delete-process it)))
 
   (spacemacs/set-leader-keys (kbd "ab") 'deploy-blog)
-  (spacemacs/set-leader-keys (kbd "aa") 'start-blog-server))
+  (spacemacs/set-leader-keys (kbd "aa") 'start-blog-server)
+  (spacemacs/set-leader-keys (kbd "ae") 'end-blog-server))
