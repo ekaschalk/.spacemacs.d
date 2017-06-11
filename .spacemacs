@@ -1287,7 +1287,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (require 'org-gcal)
   (require 'org-contacts)
   (load (if-linux "~/Dropbox/secrets.el"
-                  "c:/~/Dropbox/secrets.el"))
+                  "c:/~/Dropbox/secrets.el") t)
   (setq org-gcal-file-alist
         `(("ekaschalk@gmail.com" .
            ,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org"))))

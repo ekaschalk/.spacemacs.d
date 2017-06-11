@@ -51,6 +51,18 @@ pleasant. Further, many source files, especially Emacs lisp files, both
 intentionally and unintentionally use outline compatible comments improving
 their navigation and comprehensibility.
 
+** Install
+
+Display module requirements:
+- Install [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] fonts.
+- Font-locks ligatures component requires [[https://github.com/tonsky/FiraCode][Fira Code Symbol]] (Only need for the
+  ligatures).
+
+Other requirements:
+- Pandoc layer requires [[http://pandoc.org/][pandoc]] installed.
+
+That's it. I would be appreciative to hear your experience with my config.
+
 ** Version
 Dual config for Windows and Arch Linux for Emacs 25.2.1
 

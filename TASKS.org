@@ -1,6 +1,5 @@
 * Tasks
 ** Queued
-*** TODO Add cloning instructions
 *** TODO Enumerate module dependencies
 ** Backlog
 *** TODO Reference icons by variable name rather than the direct string
@@ -41,3 +40,5 @@ Not reliably reproducible:
     CLOSED: [2017-06-10 Sat 21:33]
 *** DONE Possibly change naming scheme to modules
     CLOSED: [2017-06-10 Sat 21:33]
+*** DONE Add cloning instructions
+    CLOSED: [2017-06-10 Sat 21:38]
