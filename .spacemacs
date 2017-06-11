@@ -332,12 +332,13 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
                     mode-hooks)))
           FONT-LOCK-HOOKS-ALIST))
 
+  (require 'navi-mode)  ; TODO handle this require better for the navi font-locks
   (add-font-locks
    `((,fira-font-lock-alist        prog-mode-hook  org-mode-hook)
      (,python-font-lock-alist      python-mode-hook)
      (,emacs-lisp-font-lock-alist  emacs-lisp-mode-hook)
      (,hy-font-lock-alist          hy-mode-hook)
-     ;; (,navi-font-lock-alist ,navi-mode-hook) ; TODO reenable
+     (,navi-font-lock-alist        navi-mode-hook)
      )))
 
 ;;;;; Fira-font-locks
