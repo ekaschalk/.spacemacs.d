@@ -1360,19 +1360,21 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
         org-ellipsis "▼"))
 
 ;;; Outshine
-(defun dotspacemacs/user-config/outshine ()
-  ;; Group 1
-  (dotspacemacs/user-config/outshine/navi-mode)
 
-  ;; Rest
+(defun dotspacemacs/user-config/outshine ()
+  (dotspacemacs/user-config/outshine/navi-mode)
   (dotspacemacs/user-config/outshine/outshine-mode))
 
 ;;;; Navi-mode
+
 (defun dotspacemacs/user-config/outshine/navi-mode ()
+  "Navi mode bar vim bindings and improvements."
+
+  (require 'navi-mode)
+
   ;; TODO doesnt work well with more than 2 windows
   ;; TODO if navi buffer exists then M-n doesnt do open window
 
-  (require 'navi-mode)
   (add-to-list 'navi-key-mappings
                '("python" .
                  ((:FUN . "f")
@@ -1446,12 +1448,14 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
     (setq navi-mode-map map)))
 
 ;;;; Outshine-mode
+
 (defun dotspacemacs/user-config/outshine/outshine-mode ()
+  "Outline/Outshine mode bindings and Navi integration."
+
   (require 'outshine)
-  ;; 1. Adds functionality to run on narrowed buffers
-  ;; 2. Shows up to including level 3 headings on load
 
   (defun my-outshine-navi ()
+    "Enhanced narrowing and popwin-like functionality to start navi mode."
     ;; TODO Couldnt get popwin to work
     ;; However, managed neotree-like behavior but not 100% consistent
     (interactive)
@@ -1523,6 +1527,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (add-hook 'prog-mode-hook 'outline-minor-mode))
 
 ;;; Python
+
 (defun dotspacemacs/user-config/python ()
   (require 'python)
   (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
@@ -1531,8 +1536,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (dotspacemacs/user-config/python/venvs))
 
 ;;;; Windows-pytest
+
 (defun dotspacemacs/user-config/python/windows-pytest ()
   "Pytest is broken on Windows. Basic functionality is provided for Windows."
+
   (defun ek-pytest-module ()
     (interactive)
     (shell-command (format "py.test -x -s %s&" buffer-file-name)))
@@ -1553,8 +1560,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
     'python-mode (kbd "t t") 'ek-pytest-one))
 
 ;;;; Fixes
+
 (defun dotspacemacs/user-config/python/fixes ()
   "Various python bugfixes."
+
   ;; Sometimes ipython shells trigger a bad error to popup
   (defun python-shell-completion-native-try ()
     "Return non-nil if can trigger native completion."
@@ -1574,8 +1583,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
     (add-hook hook (lambda () (flyspell-mode -1)))))
 
 ;;;; Mypy
+
 (defun dotspacemacs/user-config/python/mypy ()
   "Enable mypy flycheck integration in-tandem with pylint."
+
   (flycheck-define-checker
       python-mypy ""
       :command ("mypy"
@@ -1590,7 +1601,9 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (flycheck-add-next-checker 'python-pylint 'python-mypy t))
 
 ;;;; Venvs
+
 (defun dotspacemacs/user-config/python/venvs ()
+  "Initialize virtual environment management for Python."
   (require 'virtualenvwrapper)
   (pyvenv-mode 1)
 
