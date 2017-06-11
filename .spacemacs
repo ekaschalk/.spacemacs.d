@@ -207,40 +207,40 @@
 
 (defun dotspacemacs/user-config ()
   ;; Group 1
-  (dotspacemacs/user-config/display)
+  (module/display)
 
   ;; Rest
-  (dotspacemacs/user-config/configuration)
-  (dotspacemacs/user-config/ivy)
-  (dotspacemacs/user-config/misc)
-  (dotspacemacs/user-config/navigation)
-  (dotspacemacs/user-config/org)
-  (dotspacemacs/user-config/outshine)
-  (dotspacemacs/user-config/python))
+  (module/configuration)
+  (module/ivy)
+  (module/misc)
+  (module/navigation)
+  (module/org)
+  (module/outshine)
+  (module/python))
 
 ;;; Display
 
-(defun dotspacemacs/user-config/display ()
+(defun module/display ()
   ;; Group 1
-  (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
+  (unless-linux-call 'module/display/windows-frame-size-fix)
 
   ;; Group 2
-  (dotspacemacs/user-config/display/fontsets)
-  (dotspacemacs/user-config/display/font-locks)
+  (module/display/fontsets)
+  (module/display/font-locks)
 
   ;; Rest
-  (dotspacemacs/user-config/display/all-the-icons)
-  (dotspacemacs/user-config/display/extra-syntax-highlighting)
-  (dotspacemacs/user-config/display/modeline)
-  (dotspacemacs/user-config/display/outline-ellipsis-modification)
-  (dotspacemacs/user-config/display/prettify-magit)
-  (dotspacemacs/user-config/display/prettify-symbols)
-  (dotspacemacs/user-config/display/shell)
-  (dotspacemacs/user-config/display/theme-updates))
+  (module/display/all-the-icons)
+  (module/display/extra-syntax-highlighting)
+  (module/display/modeline)
+  (module/display/outline-ellipsis-modification)
+  (module/display/prettify-magit)
+  (module/display/prettify-symbols)
+  (module/display/shell)
+  (module/display/theme-updates))
 
 ;;;; Windows-frame-size-fix
 
-(defun dotspacemacs/user-config/display/windows-frame-size-fix ()
+(defun module/display/windows-frame-size-fix ()
   "Surface has 200% scaling, doesn't apply to emacs, fixes with push of `f2`."
 
   (add-to-list 'default-frame-alist '(font . "Hack"))
@@ -250,7 +250,7 @@
 
 ;;;; Fontsets
 
-(defun dotspacemacs/user-config/display/fontsets ()
+(defun module/display/fontsets ()
   "Set right fonts for missing and all-the-icons unicode points."
 
   ;; Fira code ligatures. Fira Code Symbol is a different font than Fira Code!
@@ -300,7 +300,7 @@ CODE-FONT-ALIST is an alist of a font and unicode points to force to use it."
 ;;;; Font-locks
 ;;;;; Core
 
-(defun dotspacemacs/user-config/display/font-locks ()
+(defun module/display/font-locks ()
   "Enable following font-locks for appropriate modes."
 
   (defun -add-font-lock-kwds (FONT-LOCK-ALIST)
@@ -473,7 +473,7 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
 
 ;;;; All-the-icons
 
-(defun dotspacemacs/user-config/display/all-the-icons ()
+(defun module/display/all-the-icons ()
   "Add hylang icon to all-the-icons for neotree and modeline integration."
 
   ;; Both all-the-icons-icon-alist and all-the-icons-mode-icon-alist
@@ -488,7 +488,7 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
 
 ;;;; Extra-syntax-highlighting
 
-(defun dotspacemacs/user-config/display/extra-syntax-highlighting ()
+(defun module/display/extra-syntax-highlighting ()
   "Extra syntax highlighting for desired keywords."
 
   (defun hy-extra-syntax ()
@@ -514,7 +514,7 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
 
 ;;;; Modeline
 
-(defun dotspacemacs/user-config/display/modeline ()
+(defun module/display/modeline ()
   "Minimalistic spaceline-all-the-icons configuration."
 
   (use-package spaceline-all-the-icons
@@ -545,7 +545,7 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
 
 ;;;; Outline-ellipsis-modification
 
-(defun dotspacemacs/user-config/display/outline-ellipsis-modification ()
+(defun module/display/outline-ellipsis-modification ()
   "Org-ellipsis but for outline-minor-mode headings"
 
   (defvar outline-display-table (make-display-table))
@@ -559,7 +559,7 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
 
 ;;;; Prettify-magit
 
-(defun dotspacemacs/user-config/display/prettify-magit ()
+(defun module/display/prettify-magit ()
   "Add faces to Magit manually for things like commit headers eg. (Add: ...).
 
 Adding faces to Magit is non-trivial since any use of font-lock will break
@@ -682,7 +682,7 @@ Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)
 
 ;;;; Prettify-symbols
 
-(defun dotspacemacs/user-config/display/prettify-symbols ()
+(defun module/display/prettify-symbols ()
   "Visually replace text with unicode.
 
 Ivy keybinding has 'SPC i u' for consel-unicode-char for exploring options."
@@ -777,7 +777,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Shell
 
-(defun dotspacemacs/user-config/display/shell ()
+(defun module/display/shell ()
   "Eshell prettification."
 
   (setq eshell-prompt-number 0)
@@ -841,7 +841,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Theme-updates
 
-(defun dotspacemacs/user-config/display/theme-updates ()
+(defun module/display/theme-updates ()
   "Face configuration for themes, atm solarized-light."
 
   (setq my-black "#1b1b1e")
@@ -882,7 +882,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;; Ivy
 
-(defun dotspacemacs/user-config/ivy ()
+(defun module/ivy ()
   "Ivy completion framework configuration."
 
   (defun ivy-file-transformer-fixed-for-files (s)
@@ -925,14 +925,14 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;; Configuration
 
-(defun dotspacemacs/user-config/configuration ()
-  (dotspacemacs/user-config/configuration/editing)
-  (dotspacemacs/user-config/configuration/evil)
-  (dotspacemacs/user-config/configuration/visual))
+(defun module/configuration ()
+  (module/configuration/editing)
+  (module/configuration/evil)
+  (module/configuration/visual))
 
 ;;;; Editing
 
-(defun dotspacemacs/user-config/configuration/editing ()
+(defun module/configuration/editing ()
   "Editing toggles."
 
   (hungry-delete-mode 1)                                ; cut contiguous space
@@ -941,7 +941,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Evil
 
-(defun dotspacemacs/user-config/configuration/evil ()
+(defun module/configuration/evil ()
   "Update evil settings."
 
   (setq-default evil-escape-key-sequence "jk"
@@ -949,7 +949,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Visual
 
-(defun dotspacemacs/user-config/configuration/visual ()
+(defun module/configuration/visual ()
   "Visual toggles."
 
   (spacemacs/toggle-highlight-long-lines-globally-on)
@@ -960,22 +960,22 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;; Misc
 
-(defun dotspacemacs/user-config/misc ()
-  (when-linux-call 'dotspacemacs/user-config/misc/spotify)
-  (dotspacemacs/user-config/misc/aspell)
-  (dotspacemacs/user-config/misc/auto-completion)
-  (dotspacemacs/user-config/misc/gnus)
-  (dotspacemacs/user-config/misc/lisp-state)
-  (dotspacemacs/user-config/misc/macros)
-  (dotspacemacs/user-config/misc/neotree)
-  (dotspacemacs/user-config/misc/projectile)
-  (dotspacemacs/user-config/misc/shell)
-  (dotspacemacs/user-config/misc/windows)
-  (dotspacemacs/user-config/misc/yassnippet))
+(defun module/misc ()
+  (when-linux-call 'module/misc/spotify)
+  (module/misc/aspell)
+  (module/misc/auto-completion)
+  (module/misc/gnus)
+  (module/misc/lisp-state)
+  (module/misc/macros)
+  (module/misc/neotree)
+  (module/misc/projectile)
+  (module/misc/shell)
+  (module/misc/windows)
+  (module/misc/yassnippet))
 
 ;;;; Spotify
 
-(defun dotspacemacs/user-config/misc/spotify ()
+(defun module/misc/spotify ()
   "Spotify-plus bindings."
 
   ;; TODO must overwrite navi mode for M-s s
@@ -987,14 +987,14 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Aspell
 
-(defun dotspacemacs/user-config/misc/aspell ()
+(defun module/misc/aspell ()
   "Setup aspell."
 
   (setq ispell-program-name "aspell"))
 
 ;;;; Auto-completion
 
-(defun dotspacemacs/user-config/misc/auto-completion ()
+(defun module/misc/auto-completion ()
   "Autocompletion face modifications."
 
   (custom-set-faces
@@ -1005,7 +1005,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; GNUs
 
-(defun dotspacemacs/user-config/misc/gnus ()
+(defun module/misc/gnus ()
   "GNUS setup and user details. Nothing significant atm."
 
   (setq user-mail-address	"ekaschalk@gmail.com"
@@ -1054,7 +1054,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Lisp-state
 
-(defun dotspacemacs/user-config/misc/lisp-state ()
+(defun module/misc/lisp-state ()
   "Add lisp state shortcut to Clojure and Hy."
 
   (spacemacs/set-leader-keys-for-major-mode
@@ -1064,14 +1064,14 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Macros
 
-(defun dotspacemacs/user-config/misc/macros ()
+(defun module/misc/macros ()
   "Evil Q shortcut for vim macros set at @q."
 
   (evil-global-set-key 'normal (kbd "Q")
                        (lambda () (interactive) (evil-execute-macro 1 "@q"))))
 
 ;;;; Neotree
-(defun dotspacemacs/user-config/misc/neotree ()
+(defun module/misc/neotree ()
   "Neotree configuration."
 
   (setq neo-theme 'icons
@@ -1086,14 +1086,14 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Projectile
 
-(defun dotspacemacs/user-config/misc/projectile ()
+(defun module/misc/projectile ()
   "Project config, respect .projectile files."
 
   (setq projectile-indexing-method 'native))
 
 ;;;; Shell
 
-(defun dotspacemacs/user-config/misc/shell ()
+(defun module/misc/shell ()
   "Quick eshell with vim interaction."
 
   (defun my-spacemacs/shell-pop-eshell ()
@@ -1113,7 +1113,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Windows
 
-(defun dotspacemacs/user-config/misc/windows ()
+(defun module/misc/windows ()
   "Additional window management bindings."
 
   (evil-define-key 'normal outline-minor-mode-map (kbd "C-M-i")  ; M-tab
@@ -1123,22 +1123,22 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Yassnippet
 
-(defun dotspacemacs/user-config/misc/yassnippet ()
+(defun module/misc/yassnippet ()
   "Yassnippet bindings and config."
 
   (global-set-key (kbd "C-SPC") 'hippie-expand))
 
 ;;; Navigation
 
-(defun dotspacemacs/user-config/navigation ()
-  (dotspacemacs/user-config/navigation/avy)
-  (dotspacemacs/user-config/navigation/extra-bindings)
-  (dotspacemacs/user-config/navigation/file-links)
-  (dotspacemacs/user-config/navigation/searching))
+(defun module/navigation ()
+  (module/navigation/avy)
+  (module/navigation/extra-bindings)
+  (module/navigation/file-links)
+  (module/navigation/searching))
 
 ;;;; Avy
 
-(defun dotspacemacs/user-config/navigation/avy ()
+(defun module/navigation/avy ()
   "Avy keybindings and custom motions."
 
   (require 'avy)  ; TODO must require for to get avy--generic-jump loaded
@@ -1182,7 +1182,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Extra-bindings
 
-(defun dotspacemacs/user-config/navigation/extra-bindings ()
+(defun module/navigation/extra-bindings ()
   "Rebind H, L, and 0 to BOL, EOL, old %."
 
   ;; H and L move to modified BOL and EOL
@@ -1204,13 +1204,13 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; File-links
 
-(defun dotspacemacs/user-config/navigation/file-links ()
+(defun module/navigation/file-links ()
   "Quick binding for opening org-formatted links anywhere."
 
   (spacemacs/set-leader-keys (kbd "aof") 'org-open-at-point-global))
 
 ;;;; Searching
-(defun dotspacemacs/user-config/navigation/searching ()
+(defun module/navigation/searching ()
   "Evil searching scrolls to center of match."
 
   (advice-add 'evil-ex-search-next :after
@@ -1220,19 +1220,19 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;; Org
 
-(defun dotspacemacs/user-config/org ()
+(defun module/org ()
   (with-eval-after-load 'org
-    (when-linux-call 'dotspacemacs/user-config/org/linux-file-apps)
-    (dotspacemacs/user-config/org/babel)
-    (dotspacemacs/user-config/org/exports)
-    (dotspacemacs/user-config/org/gcal)
-    (dotspacemacs/user-config/org/misc)
-    (dotspacemacs/user-config/org/templates)
-    (dotspacemacs/user-config/org/theming)))
+    (when-linux-call 'module/org/linux-file-apps)
+    (module/org/babel)
+    (module/org/exports)
+    (module/org/gcal)
+    (module/org/misc)
+    (module/org/templates)
+    (module/org/theming)))
 
 ;;;; Linux-file-apps
 
-(defun dotspacemacs/user-config/org/linux-file-apps ()
+(defun module/org/linux-file-apps ()
   "Modify default file apps for Linux."
 
   (setq org-file-apps '((auto-mode . emacs)
@@ -1242,7 +1242,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Babel
 
-(defun dotspacemacs/user-config/org/babel ()
+(defun module/org/babel ()
   "Org babel languages and config."
 
   (setq org-confirm-babel-evaluate nil
@@ -1260,7 +1260,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Exports
 
-(defun dotspacemacs/user-config/org/exports ()
+(defun module/org/exports ()
   "Org exporting setup."
 
   (with-eval-after-load 'ox-bibtex  ; This eval might not be needed
@@ -1280,7 +1280,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Gcal
 
-(defun dotspacemacs/user-config/org/gcal ()
+(defun module/org/gcal ()
   "Org google calendar integration. Not actively using atm."
 
   ;; TODO setup dropbox daemon on linux, try calfw, bind stuff
@@ -1298,7 +1298,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Misc
 
-(defun dotspacemacs/user-config/org/misc ()
+(defun module/org/misc ()
   "Misc org-mode bindings and improvements."
 
   ;; Useful header navigation binding inspired from outline-mode
@@ -1330,7 +1330,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Templates
 
-(defun dotspacemacs/user-config/org/templates ()
+(defun module/org/templates ()
   "Org-babel template code-block expansions."
 
   (mapc (lambda (x) (add-to-list 'org-structure-template-alist x))
@@ -1350,7 +1350,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Theming
 
-(defun dotspacemacs/user-config/org/theming ()
+(defun module/org/theming ()
   "Org theming updates."
 
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
@@ -1361,19 +1361,16 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;; Outshine
 
-(defun dotspacemacs/user-config/outshine ()
-  (dotspacemacs/user-config/outshine/navi-mode)
-  (dotspacemacs/user-config/outshine/outshine-mode))
+(defun module/outshine ()
+  (module/outshine/navi-mode)
+  (module/outshine/outshine-mode))
 
 ;;;; Navi-mode
 
-(defun dotspacemacs/user-config/outshine/navi-mode ()
+(defun module/outshine/navi-mode ()
   "Navi mode bar vim bindings and improvements."
 
   (require 'navi-mode)
-
-  ;; TODO doesnt work well with more than 2 windows
-  ;; TODO if navi buffer exists then M-n doesnt do open window
 
   (add-to-list 'navi-key-mappings
                '("python" .
@@ -1449,15 +1446,13 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Outshine-mode
 
-(defun dotspacemacs/user-config/outshine/outshine-mode ()
+(defun module/outshine/outshine-mode ()
   "Outline/Outshine mode bindings and Navi integration."
 
   (require 'outshine)
 
   (defun my-outshine-navi ()
     "Enhanced narrowing and popwin-like functionality to start navi mode."
-    ;; TODO Couldnt get popwin to work
-    ;; However, managed neotree-like behavior but not 100% consistent
     (interactive)
     (let ((line nil))
       (widen)  ; Otherwise broken on narrowed buffers
@@ -1528,16 +1523,16 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;; Python
 
-(defun dotspacemacs/user-config/python ()
+(defun module/python ()
   (require 'python)
-  (unless-linux-call 'dotspacemacs/user-config/python/windows-pytest)
-  (dotspacemacs/user-config/python/fixes)
-  (dotspacemacs/user-config/python/mypy)
-  (dotspacemacs/user-config/python/venvs))
+  (unless-linux-call 'module/python/windows-pytest)
+  (module/python/fixes)
+  (module/python/mypy)
+  (module/python/venvs))
 
 ;;;; Windows-pytest
 
-(defun dotspacemacs/user-config/python/windows-pytest ()
+(defun module/python/windows-pytest ()
   "Pytest is broken on Windows. Basic functionality is provided for Windows."
 
   (defun ek-pytest-module ()
@@ -1561,7 +1556,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Fixes
 
-(defun dotspacemacs/user-config/python/fixes ()
+(defun module/python/fixes ()
   "Various python bugfixes."
 
   ;; Sometimes ipython shells trigger a bad error to popup
@@ -1584,7 +1579,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Mypy
 
-(defun dotspacemacs/user-config/python/mypy ()
+(defun module/python/mypy ()
   "Enable mypy flycheck integration in-tandem with pylint."
 
   (flycheck-define-checker
@@ -1602,7 +1597,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Venvs
 
-(defun dotspacemacs/user-config/python/venvs ()
+(defun module/python/venvs ()
   "Initialize virtual environment management for Python."
   (require 'virtualenvwrapper)
   (pyvenv-mode 1)

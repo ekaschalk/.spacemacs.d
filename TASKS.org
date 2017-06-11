@@ -1,17 +1,15 @@
 * Tasks
 ** Queued
 *** TODO Add cloning instructions
-*** TODO More detail to docstrings and include everywhere
-*** TODO Move documented bugs in comments to this file
 *** TODO Enumerate module dependencies
 ** Backlog
-*** TODO Possibly change naming scheme to modules
 *** TODO Reference icons by variable name rather than the direct string
 *** TODO Change foreground face for org todo headings
 * Bugs
 ** Outline-Outshine-Navi
 
-1.
+1. Want M-n to return to same navi buffer rather than make another.
+2. Want it to go to Window 0 like neotree, couldn't get popwin to work with it.
 
 Not reliably reproducible:
 1. When a buffer has been open long enough, sometimes it will take two movements
@@ -37,3 +35,9 @@ Not reliably reproducible:
     CLOSED: [2017-06-10 Sat 14:36]
 *** DONE Improve load calls
     CLOSED: [2017-06-10 Sat 17:55]
+*** DONE More detail to docstrings and include everywhere
+    CLOSED: [2017-06-10 Sat 21:33]
+*** DONE Move documented bugs in comments to this file
+    CLOSED: [2017-06-10 Sat 21:33]
+*** DONE Possibly change naming scheme to modules
+    CLOSED: [2017-06-10 Sat 21:33]
