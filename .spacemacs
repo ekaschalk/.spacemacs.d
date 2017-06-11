@@ -1219,10 +1219,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
               (lambda (&rest x) (evil-scroll-line-to-center (line-number-at-pos)))))
 
 ;;; Org
+
 (defun dotspacemacs/user-config/org ()
   (with-eval-after-load 'org
     (when-linux-call 'dotspacemacs/user-config/org/linux-file-apps)
-    (dotspacemacs/user-config/org/agenda)
     (dotspacemacs/user-config/org/babel)
     (dotspacemacs/user-config/org/exports)
     (dotspacemacs/user-config/org/gcal)
@@ -1231,20 +1231,20 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
     (dotspacemacs/user-config/org/theming)))
 
 ;;;; Linux-file-apps
+
 (defun dotspacemacs/user-config/org/linux-file-apps ()
+  "Modify default file apps for Linux."
+
   (setq org-file-apps '((auto-mode . emacs)
                         ("\\.mm\\'" . default)
                         ("\\.x?html?\\'" . "/usr/bin/firefox %s")
                         ("\\.pdf\\'" . default))))
 
-;;;; Agenda
-(defun dotspacemacs/user-config/org/agenda ()
-  ;; Agenda workflow integration being investigated
-  ;; (setq org-agenda-files '("c:/~/.org"))
-  )
-
 ;;;; Babel
+
 (defun dotspacemacs/user-config/org/babel ()
+  "Org babel languages and config."
+
   (setq org-confirm-babel-evaluate nil
         org-src-fontify-natively t
         org-src-tab-acts-natively t
@@ -1259,7 +1259,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
                                )))
 
 ;;;; Exports
+
 (defun dotspacemacs/user-config/org/exports ()
+  "Org exporting setup."
+
   (with-eval-after-load 'ox-bibtex  ; This eval might not be needed
     (add-to-list 'org-latex-packages-alist '("" "minted"))
     (setq
@@ -1276,10 +1279,11 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
        ))))
 
 ;;;; Gcal
+
 (defun dotspacemacs/user-config/org/gcal ()
-  ;; TODO bind everything
-  ;; TODO try calfw
-  ;; TODO setup dropbox daemon on linux
+  "Org google calendar integration. Not actively using atm."
+
+  ;; TODO setup dropbox daemon on linux, try calfw, bind stuff
   (require 'org-gcal)
   (require 'org-contacts)
   (load (if-linux "~/Dropbox/secrets.el"
@@ -1293,7 +1297,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
         `(,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org"))))
 
 ;;;; Misc
+
 (defun dotspacemacs/user-config/org/misc ()
+  "Misc org-mode bindings and improvements."
+
   ;; Useful header navigation binding inspired from outline-mode
   (evil-define-key '(normal visual motion) org-mode-map
     "gu" 'outline-previous-visible-heading)
@@ -1322,7 +1329,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (add-hook 'org-mode-hook 'flyspell-mode))
 
 ;;;; Templates
+
 (defun dotspacemacs/user-config/org/templates ()
+  "Org-babel template code-block expansions."
+
   (mapc (lambda (x) (add-to-list 'org-structure-template-alist x))
         (list
          ;; Name block
@@ -1339,7 +1349,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
          )))
 
 ;;;; Theming
+
 (defun dotspacemacs/user-config/org/theming ()
+  "Org theming updates."
+
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
         org-priority-faces '((65 :foreground "red")
                              (66 :foreground "yellow")
