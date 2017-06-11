@@ -99,6 +99,12 @@
         org-gcal
         ;; Org vcard for contact export/import
         org-vcard
+
+        ;; Ivy icon integration
+        all-the-icons-ivy
+
+        ;; (all-the-icons-ivy :location (recipe :fetcher github
+        ;;                                      :repo "Ilazki/prettify-utils.el"))
         ;; Prettify utilities
         (prettify-utils :location (recipe :fetcher github
                                           :repo "Ilazki/prettify-utils.el"))
@@ -195,10 +201,7 @@
 
 (defun dotspacemacs/user-init ()
   ;; Rids the verbose custom settings from being written to .spacemacs
-  (setq custom-file "./elisp/.custom-settings.el")
-  (load (if-linux "~/elisp/.custom-settings.el"
-                  "c:/~/elisp/.custom-settings.el"))
-  )
+  (setq custom-file "./elisp/.custom-settings.el"))
 
 ;;; Spacemacs-User-config
 (defun dotspacemacs/user-config ()
@@ -864,11 +867,17 @@
 ;;; Ivy
 (defun dotspacemacs/user-config/ivy ()
   "Ivy completion framework configuration."
+  (defun ivy-file-transformer-fixed-for-files (s)
+    "Gets file icon for string, fixing bug for folders and windows box."
+    (format "%s\t%s"
+            (if (and is-linuxp (s-ends-with? "/" s))
+                (propertize "\t" 'display "" 'face 'all-the-icons-silver)
+              (propertize "\t" 'display (all-the-icons-icon-for-file s)))
+            s))
 
-  ;; TODO handle loading better
-  (require 's)
-  (load (if-linux "~/elisp/all-the-icons-ivy.el"
-                  "c:/~/elisp/all-the-icons-ivy.el"))
+  (advice-add 'all-the-icons-ivy-file-transformer
+              :override 'ivy-file-transformer-fixed-for-files)
+
   (all-the-icons-ivy-setup)
 
   ;; Perform default action on avy-selected minibuffer line
