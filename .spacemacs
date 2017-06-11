@@ -8,7 +8,8 @@
 ;; -- Dual config for Windows and Arch Linux --
 ;; -- Contact: ekaschalk@gmail.com --
 ;;
-;; See the README for details
+;; See README for details
+;; See TASKS for project management such as known bugs, planned updates, history
 ;;
 ;; Organization
 ;; ---------
@@ -64,14 +65,11 @@
                 python-test-runner 'pytest))
 
       dotspacemacs/layers/rare
-      '(;; Pandoc for more export options, used for blogging
-        pandoc
-        ;; Markdown mode for viewing outside documentation
-        markdown
-        ;; Graphviz mode for usage with org-babel
-        graphviz
-        ;; REST client for usage with org-babel
-        restclient)
+      '(pandoc      ; Pandoc for more export options, used for blogging
+        markdown    ; Markdown mode for viewing outside documentation
+        graphviz    ; Graphviz mode for usage with org-babel
+        restclient  ; REST client for usage with org-babel
+        )
 
       ;; OS-Specific and Local Packages
       dotspacemacs/layers/windows '()
@@ -82,26 +80,27 @@
 
 (setq dotspacemacs/additional/packages
       '(;; Outline mode base package enhancements
-        outshine
-        navi-mode
+        outshine                 ; Required for navi-mode
+        navi-mode                ; Navbar on buffer outlines
+
+        ;; Org
+        org-gcal                 ; google calendar syncing
+        org-vcard                ; Import/export google contacts
+
+        ;; Misc
+        helm-spotify-plus        ; Spotify improvements
+        virtualenvwrapper        ; Python environment management
 
         ;; Visual Enhancements
-        all-the-icons-ivy
-        pretty-mode
-        (prettify-utils :location (recipe :fetcher github
-                                          :repo "Ilazki/prettify-utils.el"))
-        spaceline-all-the-icons
+        all-the-icons-ivy        ; Ivy prompts use file icons
+        pretty-mode              ; Adds onto prettify-mode
+        spaceline-all-the-icons  ; Spaceline integrates file and other icons
+        (prettify-utils          ; Useful add pretty symbols macro
+         :location (recipe :fetcher github
+                           :repo "Ilazki/prettify-utils.el"))
 
         ;; Themes
         solarized-theme
-
-        ;; Org
-        org-gcal   ; google calendar syncing
-        org-vcard  ; Import/export google contacts
-
-        ;; Misc
-        helm-spotify-plus  ; Spotify improvements
-        virtualenvwrapper  ; Python environment management
         ))
 
 ;;;; Spacemacs
@@ -244,7 +243,7 @@
   "Set unicode points to point to the right fonts."
 
   ;; Fira code ligatures. Fira Code Symbol is a different font than Fira Code!
-  ;; You can use any font you wish just the ligatures, I use Hack.
+  ;; You can use any font you wish with just the ligatures, I use Hack.
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
 
   (defun set-icon-fonts (code-font-alist)
@@ -806,18 +805,6 @@
        (set-eshell-prompt-icon esh-prompt esh-prompt-face))))
 
   (setq eshell-prompt-function 'esh-prompt-function))
-
-;; NOTE This is template for adding modeline style chained faces
-;; (defun get-esh-seg-section (prev-face next-face)
-;;   esh-sections
-;;   (-interleave esh-sections
-;;                (map 'get-esh-seg-section
-;;                     (-partition-in-steps 2 1 esh-sections))))
-;;   (when (and prev-face next-face)
-;;     (with-face seg
-;;       ;; face-attribute face :background
-;;       `(:foreground ,(plist-get prev-face :background)
-;;                     :background ,(plist-get next-face :foreground)))))
 
 ;;;; Theme-updates
 (defun dotspacemacs/user-config/display/theme-updates ()

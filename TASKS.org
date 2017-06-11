@@ -1,15 +1,15 @@
 * Tasks
 ** Queued
 *** TODO Add cloning instructions
-*** TODO Improve load calls
 *** TODO More detail to docstrings and include everywhere
+*** TODO Move documented bugs in comments to this file
 ** Backlog
 *** TODO Reference icons by variable name rather than the direct string
 *** TODO Change foreground face for org todo headings
-** Someday
-*** TODO Make tool that creates documentation from elisp in outline format
 * Bugs
 * Completed
 ** Week of <2017-06-05 Mon>
 *** DONE Created tasks for public-facing dotspacemacs task management
     CLOSED: [2017-06-10 Sat 14:36]
+*** DONE Improve load calls
+    CLOSED: [2017-06-10 Sat 17:55]
