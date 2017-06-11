@@ -26,6 +26,11 @@ Not reliably reproducible:
    and magit exiting, no luck fixing. So use , k rather than ESC on a commit
    prompt to cancel a commit.
 
+** Pretty symbols
+
+1. The plist approach drops support for spaces in RHS of replacements that
+   prettify utils added support for.
+
 * Completed
 ** Week of <2017-06-05 Mon>
 *** DONE Created tasks for public-facing dotspacemacs task management

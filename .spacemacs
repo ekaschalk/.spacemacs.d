@@ -324,8 +324,8 @@ Used as: (add-hook 'a-mode-hook (-partial '-add-font-lock-kwds the-alist))"
 
 FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
     (mapc (lambda (x)
-            (let ((font-lock-alist (car x))
-                  (mode-hooks (cdr x)))
+            (lexical-let ((font-lock-alist (car x))
+                          (mode-hooks (cdr x)))
               (mapc (lambda (mode-hook)
                       (add-hook mode-hook
                                 (-partial '-add-font-lock-kwds font-lock-alist)))
@@ -681,13 +681,12 @@ Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)
   (advice-add 'magit-commit :after 'use-magit-commit-prompt))
 
 ;;;; Prettify-symbols
-(defun dotspacemacs/user-config/display/prettify-symbols ()
-  "Visually replace text with unicode."
-  ;; Ivy keybinding has 'SPC i u' for consel-unicode-char
-  ;; This function is extremely useful when exploring symbols
 
-  ;; Try `what-cursor-position' if the symbol doesnt render.
-  ;; NOTE This plist approach doesn't preserve spaces in unicode str
+(defun dotspacemacs/user-config/display/prettify-symbols ()
+  "Visually replace text with unicode.
+
+Ivy keybinding has 'SPC i u' for consel-unicode-char for exploring options."
+
   (setq pretty-options
         (-flatten
          (prettify-utils-generate
@@ -711,16 +710,18 @@ Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)
           (:pipe        "")
           )))
 
-  (defun get-pairs (KWDS)
-    "KWDS '(:def-symb mode-symb), returns alist for prettify-symbols-alist."
+  (defun get-pretty-pairs (KWDS)
+    "Utility to build an alist for prettify-symbols-alist from components.
+
+KWDS is a plist of pretty option and the text to be replaced for it."
     (-non-nil
      (--map (when-let (major-mode-sym (plist-get KWDS it))
              `(,major-mode-sym
                ,(plist-get pretty-options it)))
            pretty-options)))
 
-  (setq hy-pretty-choices
-        (get-pairs
+  (setq hy-pretty-pairs
+        (get-pretty-pairs
          '(:lambda "fn" :def "defn"
                    :composition "comp"
                    :null "None" :true "True" :false "False"
@@ -729,38 +730,37 @@ Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)
                    :pipe "ap-pipe"
                    ))
 
-        python-pretty-choices
-        (get-pairs
-         '(:lambda "lambda" :def "def"
-                   :null "None" :true "True" :false "False"
-                   :int "int" :float "float" :str "str" :bool "bool"
-                   :not "not" :for "for" :in "in" :not-in "not in"
-                   :return "return" :yield "yield"
-                   :tuple "Tuple"
-                   :pipe "tz-pipe"
-                   ))
+        python-pretty-pairs
+        (append
+         (get-pretty-pairs
+          '(:lambda "lambda" :def "def"
+                    :null "None" :true "True" :false "False"
+                    :int "int" :float "float" :str "str" :bool "bool"
+                    :not "not" :for "for" :in "in" :not-in "not in"
+                    :return "return" :yield "yield"
+                    :tuple "Tuple"
+                    :pipe "tz-pipe"
+                    ))
+         (prettify-utils-generate
+          ;; Mypy Stuff
+          ("Dict"     "𝔇") ("List"     "ℒ")
+          ("Callable" "ℱ") ("Mapping"  "ℳ") ("Iterable" "𝔗")
+          ("Union"    "⋃") ("Any"      "❔")))
         )
 
-  ;; Pretty pairs for modes
-  (defun set-hy-pretty-pairs ()
-    (setq prettify-symbols-alist hy-pretty-choices))
+  (defun set-pretty-pairs (HOOK-PAIRS-ALIST)
+    "Utility to set pretty pairs for many modes.
 
-  (defun set-python-pretty-pairs ()
-    (setq prettify-symbols-alist
-          (append python-pretty-choices
-                  (prettify-utils-generate
-                   ;; Self for hy necessarily done through font-lock
-                   ("self"     "⊙")
+MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
+    (mapc (lambda (x)
+            (lexical-let ((pretty-pairs (cadr x)))
+              (add-hook (car x)
+                        (lambda ()
+                          (setq prettify-symbols-alist pretty-pairs)))))
+          HOOK-PAIRS-ALIST))
 
-                   ;; Mypy Stuff
-                   ("Dict"     "𝔇") ("List"     "ℒ")
-                   ("Callable" "ℱ") ("Mapping"  "ℳ") ("Iterable" "𝔗")
-                   ("Union"    "⋃") ("Any"      "❔")
-                   ))))
-
-  ;; Enable pretty modes
-  (add-hook 'hy-mode-hook 'set-hy-pretty-pairs)
-  (add-hook 'python-mode-hook 'set-python-pretty-pairs)
+  (set-pretty-pairs `((hy-mode-hook     ,hy-pretty-pairs)
+                      (python-mode-hook ,python-pretty-pairs)))
 
   (global-prettify-symbols-mode 1)
   (global-pretty-mode t)
