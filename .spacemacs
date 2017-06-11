@@ -1619,23 +1619,38 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 (defun module/blog ()
   "Hugo blog utilities. See https://ekaschalk.github.io."
 
+  (setq blog-dir "~/dev/blog"
+        public-blog-dir "~/dev/public-blog")
+
   (defun deploy-blog ()
     "Run hugo and push changes upstream from anywhere."
     (interactive)
-    (setq original-dir default-directory
-          blog-dir "~/dev/blog"
-          public-blog-dir "~/dev/public-blog"
-          run-hugo (concat "hugo -d " public-blog-dir))
+    (let ((original-dir default-directory)
+          (run-hugo (concat "hugo -d " public-blog-dir)))
+      (cd blog-dir)
+      (shell-command run-hugo)
+      (cd public-blog-dir)
 
-    (cd blog-dir)
-    (shell-command run-hugo)
-    (cd public-blog-dir)
+      (shell-command "git add .")
+      (shell-command (concat "git commit -m \"" (current-time-string) "\""))
+      (magit-push-current-to-upstream nil)
 
-    ;; Cant use magit-commit since I advice-add ivy integration.
-    (shell-command "git add .")
-    (shell-command (concat "git commit -m \"" (current-time-string) "\""))
-    (magit-push-current-to-upstream nil)
+      (cd original-dir)))
 
-    (cd original-dir))
+  (defun start-blog-server ()
+    "Run hugo server."
+    (interactive)
+    (let ((original-dir default-directory))
+      (cd blog-dir)
+      (async-shell-command "hugo server")
+      ;; (start-process "Hugo Server" nil "hugo server")
 
-  (spacemacs/set-leader-keys (kbd "ab") 'deploy-blog))
+      ;; use start-process so no shell popup
+      ;; close the server if already executing
+      ;; automatically open the webpage
+
+      (cd original-dir)
+      ))
+
+  (spacemacs/set-leader-keys (kbd "ab") 'deploy-blog)
+  (spacemacs/set-leader-keys (kbd "aa") 'start-blog-server))
