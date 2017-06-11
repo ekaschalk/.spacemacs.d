@@ -1343,12 +1343,13 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
          ;; Name block
          '("n" "#+NAME: ?")
          ;; Language Blocks
-         '("c" "#+begin_src clojure\n\n#+end_src")
-         '("e" "#+begin_src emacs-lisp\n\n#+end_src")
-         '("h" "#+begin_src haskell\n\n#+end_src")
-         '("p" "#+begin_src python\n\n#+end_src")
+         '("c" "#+BEGIN_SRC clojure\n\n#+END_SRC")
+         '("e" "#+BEGIN_SRC emacs-lisp\n\n#+END_SRC")
+         '("l" "#+BEGIN_SRC lisp\n\n#+END_SRC")
+         '("h" "#+BEGIN_SRC haskell\n\n#+END_SRC")
+         '("p" "#+BEGIN_SRC python\n\n#+END_SRC")
          ;; Graphviz Block
-         '("d" "#+begin_src dot\n\n#+end_src")
+         '("d" "#+BEGIN_SRC dot\n\n#+END_SRC")
          ;; Collapse previous header by default in themed html export
          '("clps" ":PROPERTIES:\n :HTML_CONTAINER_CLASS: hsCollapsed\n :END:\n")
          )))
