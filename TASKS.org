@@ -3,10 +3,22 @@
 *** TODO Add cloning instructions
 *** TODO More detail to docstrings and include everywhere
 *** TODO Move documented bugs in comments to this file
+*** TODO Enumerate module dependencies
 ** Backlog
+*** TODO Possibly change naming scheme to modules
 *** TODO Reference icons by variable name rather than the direct string
 *** TODO Change foreground face for org todo headings
 * Bugs
+** Outline-Outshine-Navi
+
+Reproducible:
+1.
+
+Not reliably reproducible:
+1. When a buffer has been open long enough, sometimes it will take two movements
+   to traverse through collapsed headings. The extra movement jumps to the
+   ellipsis.
+
 * Completed
 ** Week of <2017-06-05 Mon>
 *** DONE Created tasks for public-facing dotspacemacs task management

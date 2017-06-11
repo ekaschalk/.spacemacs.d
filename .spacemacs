@@ -6,6 +6,7 @@
 ;; -- Emacs 25.2.1 --
 ;; -- Dev Branch - Release 0.200.9.x - pulled: 5/29 - packages updated: 5/29 --
 ;; -- Dual config for Windows and Arch Linux --
+;; -- MIT License --
 ;; -- Contact: ekaschalk@gmail.com --
 ;;
 ;; See README for details
@@ -21,6 +22,7 @@
 ;; specifed with Group x comments. Within the group, the packages are lexical.
 
 ;;; OS-Config
+
 ;; Utilities for integrating Windows and Linux.
 (setq is-linuxp (eq system-type 'gnu/linux))
 (defun if-linux (x y) (if is-linuxp x y))
@@ -32,6 +34,7 @@
 
 ;;; Spacemacs-Layers
 ;;;; Layers
+
 (setq dotspacemacs/layers/core
       '(better-defaults
         git
@@ -72,9 +75,9 @@
         )
 
       ;; OS-Specific and Local Packages
-      dotspacemacs/layers/windows '()
+      dotspacemacs/layers/local '()
       dotspacemacs/layers/linux '()
-      dotspacemacs/layers/local '())
+      dotspacemacs/layers/windows '())
 
 ;;;; Additional Packages
 
@@ -104,6 +107,7 @@
         ))
 
 ;;;; Spacemacs
+
 (defun dotspacemacs/layers ()
   (setq-default
    dotspacemacs-distribution 'spacemacs
@@ -119,11 +123,12 @@
            dotspacemacs/layers/langs
            dotspacemacs/layers/rare
            dotspacemacs/layers/local
-           (unless-linux dotspacemacs/layers/windows)
-           (when-linux dotspacemacs/layers/linux))))
+           (when-linux dotspacemacs/layers/linux)
+           (unless-linux dotspacemacs/layers/windows))))
 
 ;;; Spacemacs-Init
 ;;;; Configuration
+
 (defun dotspacemacs/init ()
   (setq-default
    dotspacemacs-themes '(solarized-light)
@@ -131,6 +136,7 @@
                                :size ,(if-linux 18 12)
                                :powerline-scale 1.5)
 ;;;; Static
+
    dotspacemacs-elpa-https t
    dotspacemacs-elpa-timeout 5
    dotspacemacs-check-for-update nil
@@ -198,6 +204,7 @@
   (setq custom-file "./elisp/.custom-settings.el"))
 
 ;;; Spacemacs-User-config
+
 (defun dotspacemacs/user-config ()
   ;; Group 1
   (dotspacemacs/user-config/display)
@@ -212,6 +219,7 @@
   (dotspacemacs/user-config/python))
 
 ;;; Display
+
 (defun dotspacemacs/user-config/display ()
   ;; Group 1
   (unless-linux-call 'dotspacemacs/user-config/display/windows-frame-size-fix)
@@ -231,6 +239,7 @@
   (dotspacemacs/user-config/display/theme-updates))
 
 ;;;; Windows-frame-size-fix
+
 (defun dotspacemacs/user-config/display/windows-frame-size-fix ()
   "Surface has 200% scaling, doesn't apply to emacs, fixes with push of `f2`."
   (add-to-list 'default-frame-alist '(font . "Hack"))
@@ -239,22 +248,25 @@
                   (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
 
 ;;;; Fontsets
+
 (defun dotspacemacs/user-config/display/fontsets ()
-  "Set unicode points to point to the right fonts."
+  "Set right fonts for missing and all-the-icons unicode points."
 
   ;; Fira code ligatures. Fira Code Symbol is a different font than Fira Code!
   ;; You can use any font you wish with just the ligatures, I use Hack.
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
 
-  (defun set-icon-fonts (code-font-alist)
-    "Utility to associate unicode points with a chosen font."
+  (defun set-icon-fonts (CODE-FONT-ALIST)
+    "Utility to associate unicode points with a chosen font.
+
+CODE-FONT-ALIST is an alist of a font and unicode points to force to use it."
     (mapc (lambda (x)
             (let ((font (car x))
                   (codes (cdr x)))
               (mapc (lambda (code)
                       (set-fontset-font t `(,code . ,code) font))
                     codes)))
-          code-font-alist))
+          CODE-FONT-ALIST))
 
   ;; NOTE The icons you see are not the correct icons until this is evaluated
   (set-icon-fonts
@@ -286,18 +298,25 @@
 
 ;;;; Font-locks
 ;;;;; Core
+
 (defun dotspacemacs/user-config/display/font-locks ()
   "Enable following font-locks for appropriate modes."
-  (defun -add-font-lock-kwds (font-lock-alist)
-    (defun -build-font-lock-alist (regex-char-pair)
+
+  (defun -add-font-lock-kwds (FONT-LOCK-ALIST)
+    "Add unicode font lock replacements.
+
+FONT-LOCK-ALIST is an alist of a regexp and the unicode point to replace with.
+Used as: (add-hook 'a-mode-hook (-partial '-add-font-lock-kwds the-alist))"
+    (defun -build-font-lock-alist (REGEX-CHAR-PAIR)
+      "Compose region for each REGEX-CHAR-PAIR in FONT-LOCK-ALIST."
       `(,(car regex-char-pair)
         (0 (prog1 ()
              (compose-region
               (match-beginning 1)
               (match-end 1)
               ,(concat "	"
-                       (list (cadr regex-char-pair))))))))
-    (font-lock-add-keywords nil (mapcar '-build-font-lock-alist font-lock-alist)))
+                       (list (cadr REGEX-CHAR-PAIR))))))))
+    (font-lock-add-keywords nil (mapcar '-build-font-lock-alist FONT-LOCK-ALIST)))
 
   ;; Fira Code
   (add-hook 'prog-mode-hook
@@ -318,6 +337,7 @@
             (-partial '-add-font-lock-kwds navi-font-lock-alist)))
 
 ;;;;; Fira-font-locks
+
 (defconst fira-font-lock-alist
   '(;;;; OPERATORS
     ;;;;; Pipes
