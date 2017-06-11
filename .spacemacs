@@ -881,8 +881,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
    ))
 
 ;;; Ivy
+
 (defun dotspacemacs/user-config/ivy ()
   "Ivy completion framework configuration."
+
   (defun ivy-file-transformer-fixed-for-files (s)
     "Gets file icon for string, fixing bug for folders and windows box."
     (format "%s\t%s"
@@ -929,21 +931,27 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 ;;;; Editing
 (defun dotspacemacs/user-config/configuration/editing ()
-  (hungry-delete-mode 1)  ; in edit mode back gets all contiguous whitespace
-  (spacemacs/toggle-aggressive-indent-globally-on)  ; auto-indentation
+  "Editing toggles."
+
+  (hungry-delete-mode 1)                                ; cut contiguous space
+  (spacemacs/toggle-aggressive-indent-globally-on)      ; auto-indentation
   (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1))))  ; SPC splits past 80
 
 ;;;; Evil
 (defun dotspacemacs/user-config/configuration/evil ()
+  "Update evil settings."
+
   (setq-default evil-escape-key-sequence "jk"
                 evil-escape-unordered-key-sequence "true"))
 
 ;;;; Visual
 (defun dotspacemacs/user-config/configuration/visual ()
+  "Visual toggles."
+
   (spacemacs/toggle-highlight-long-lines-globally-on)
-  (fringe-mode '(1 . 1))  ; Minimal left padding and ~ end newline markers
-  (rainbow-delimiters-mode-enable)  ; Paren color based on depth
-  (global-highlight-parentheses-mode 1)  ; Highlight containing parens
+  (fringe-mode '(1 . 1))                         ; Minimal left padding
+  (rainbow-delimiters-mode-enable)               ; Paren color based on depth
+  (global-highlight-parentheses-mode 1)          ; Highlight containing parens
   (spacemacs/toggle-mode-line-minor-modes-off))  ; no uni symbs next to major
 
 ;;; Misc
