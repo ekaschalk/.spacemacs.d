@@ -1636,4 +1636,6 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
     (shell-command (concat "git commit -m \"" (current-time-string) "\""))
     (magit-push-current-to-upstream nil)
 
-    (cd original-dir)))
+    (cd original-dir))
+
+  (spacemacs/set-leader-keys (kbd "ab") 'deploy-blog))
