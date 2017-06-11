@@ -6,9 +6,9 @@
 !.spacemacs
 !LICENSE
 !README.org
-!tasks.org
+!TASKS.org
 
-!elisp/
-!elisp/*
 !imgs/
 !imgs/*
+# !elisp/
+# !elisp/*
