@@ -216,7 +216,10 @@
   (module/navigation)
   (module/org)
   (module/outshine)
-  (module/python))
+  (module/python)
+
+  ;; Personal use
+  (module/blog))
 
 ;;; Display
 
@@ -1600,6 +1603,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
 (defun module/python/venvs ()
   "Initialize virtual environment management for Python."
+
   (require 'virtualenvwrapper)
   (pyvenv-mode 1)
 
@@ -1608,3 +1612,27 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
   (venv-initialize-interactive-shells)
   (venv-initialize-eshell))
+
+;;; Blog
+
+(defun module/blog ()
+  "Hugo blog utilities. See https://ekaschalk.github.io."
+
+  (defun deploy-blog ()
+    "Run hugo and push changes upstream from anywhere."
+    (interactive)
+    (setq original-dir default-directory
+          blog-dir "~/dev/blog"
+          public-blog-dir "~/dev/public-blog"
+          run-hugo (concat "hugo -d " public-blog-dir))
+
+    (cd blog-dir)
+    (shell-command run-hugo)
+    (cd public-blog-dir)
+
+    ;; Cant use magit-commit since I advice-add ivy integration.
+    (shell-command "git add .")
+    (shell-command (concat "git commit -m \"" (current-time-string) "\""))
+    (magit-push-current-to-upstream nil)
+
+    (cd original-dir)))
