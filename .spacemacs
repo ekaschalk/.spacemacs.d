@@ -59,6 +59,7 @@
       dotspacemacs/layers/langs
       `(emacs-lisp
         html
+        rust  ; I only use atm for .toml configuratino files
         (clojure :variables
                  clojure-enable-fancify-symbols t)
         (haskell :variables

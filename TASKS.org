@@ -5,6 +5,10 @@
 *** TODO Reference icons by variable name rather than the direct string
 *** TODO Change foreground face for org todo headings
 * Bugs
+** General
+
+1. Toggling theme with `SPC T n` changes the font and breaks modeline display.
+
 ** Outline-Outshine-Navi
 
 1. Want M-n to return to same navi buffer rather than make another.
