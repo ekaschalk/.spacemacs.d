@@ -4,6 +4,7 @@
 # Whitelist
 !.gitignore
 !.spacemacs
+!LICENSE
 !README.org
 !tasks.org
 
