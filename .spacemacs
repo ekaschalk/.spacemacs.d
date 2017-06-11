@@ -76,8 +76,7 @@
       ;; OS-Specific and Local Packages
       dotspacemacs/layers/windows '()
       dotspacemacs/layers/linux '()
-      dotspacemacs/layers/local '()
-      )
+      dotspacemacs/layers/local '())
 
 ;;;; Additional Packages
 
@@ -100,6 +99,9 @@
         org-gcal
         ;; Org vcard for contact export/import
         org-vcard
+        ;; Prettify utilities
+        (prettify-utils :location (recipe :fetcher github
+                                          :repo "Ilazki/prettify-utils.el"))
         ))
 
 ;;;; Spacemacs
@@ -125,9 +127,7 @@
 ;;;; Configuration
 (defun dotspacemacs/init ()
   (setq-default
-   dotspacemacs-themes '(
-                         solarized-light
-                         )
+   dotspacemacs-themes '(solarized-light)
    dotspacemacs-default-font `("Hack"
                                :size ,(if-linux 18 12)
                                :powerline-scale 1.5)
@@ -198,8 +198,6 @@
   (setq custom-file "./elisp/.custom-settings.el")
   (load (if-linux "~/elisp/.custom-settings.el"
                   "c:/~/elisp/.custom-settings.el"))
-  (load (if-linux "~/elisp/prettify-utils.el"
-                  "c:/~/elisp/prettify-utils.el"))
   )
 
 ;;; Spacemacs-User-config
