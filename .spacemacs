@@ -81,33 +81,27 @@
 ;;;; Additional Packages
 
 (setq dotspacemacs/additional/packages
-      '(;; Enhancements to outline minor mode
+      '(;; Outline mode base package enhancements
         outshine
-        ;; Navigation buffer for outline minor mode
         navi-mode
-        ;; Virtualenv management for Python
-        virtualenvwrapper
-        ;; Additional ligature replacements for eg. greeks
-        pretty-mode
-        ;; Spotify layer improvements behind SPC a m s prefix
-        helm-spotify-plus
-        ;; Themes
-        solarized-theme
-        ;; All-the-icons integration with mode line
-        spaceline-all-the-icons
-        ;; Org google calendar integration
-        org-gcal
-        ;; Org vcard for contact export/import
-        org-vcard
 
-        ;; Ivy icon integration
+        ;; Visual Enhancements
         all-the-icons-ivy
-
-        ;; (all-the-icons-ivy :location (recipe :fetcher github
-        ;;                                      :repo "Ilazki/prettify-utils.el"))
-        ;; Prettify utilities
+        pretty-mode
         (prettify-utils :location (recipe :fetcher github
                                           :repo "Ilazki/prettify-utils.el"))
+        spaceline-all-the-icons
+
+        ;; Themes
+        solarized-theme
+
+        ;; Org
+        org-gcal   ; google calendar syncing
+        org-vcard  ; Import/export google contacts
+
+        ;; Misc
+        helm-spotify-plus  ; Spotify improvements
+        virtualenvwrapper  ; Python environment management
         ))
 
 ;;;; Spacemacs
@@ -200,23 +194,23 @@
 ;;;; User-init
 
 (defun dotspacemacs/user-init ()
+  "Special settings to run before user-config runs."
   ;; Rids the verbose custom settings from being written to .spacemacs
   (setq custom-file "./elisp/.custom-settings.el"))
 
 ;;; Spacemacs-User-config
 (defun dotspacemacs/user-config ()
-  (with-eval-after-load 'dash
-    ;; Group 1
-    (dotspacemacs/user-config/display)
+  ;; Group 1
+  (dotspacemacs/user-config/display)
 
-    ;; Rest
-    (dotspacemacs/user-config/configuration)
-    (dotspacemacs/user-config/ivy)
-    (dotspacemacs/user-config/misc)
-    (dotspacemacs/user-config/navigation)
-    (dotspacemacs/user-config/org)
-    (dotspacemacs/user-config/outshine)
-    (dotspacemacs/user-config/python)))
+  ;; Rest
+  (dotspacemacs/user-config/configuration)
+  (dotspacemacs/user-config/ivy)
+  (dotspacemacs/user-config/misc)
+  (dotspacemacs/user-config/navigation)
+  (dotspacemacs/user-config/org)
+  (dotspacemacs/user-config/outshine)
+  (dotspacemacs/user-config/python))
 
 ;;; Display
 (defun dotspacemacs/user-config/display ()
