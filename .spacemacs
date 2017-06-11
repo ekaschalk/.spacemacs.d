@@ -309,7 +309,7 @@ FONT-LOCK-ALIST is an alist of a regexp and the unicode point to replace with.
 Used as: (add-hook 'a-mode-hook (-partial '-add-font-lock-kwds the-alist))"
     (defun -build-font-lock-alist (REGEX-CHAR-PAIR)
       "Compose region for each REGEX-CHAR-PAIR in FONT-LOCK-ALIST."
-      `(,(car regex-char-pair)
+      `(,(car REGEX-CHAR-PAIR)
         (0 (prog1 ()
              (compose-region
               (match-beginning 1)
@@ -318,23 +318,26 @@ Used as: (add-hook 'a-mode-hook (-partial '-add-font-lock-kwds the-alist))"
                        (list (cadr REGEX-CHAR-PAIR))))))))
     (font-lock-add-keywords nil (mapcar '-build-font-lock-alist FONT-LOCK-ALIST)))
 
-  ;; Fira Code
-  (add-hook 'prog-mode-hook
-            (-partial '-add-font-lock-kwds fira-font-lock-alist))
-  (add-hook 'org-mode-hook
-            (-partial '-add-font-lock-kwds fira-font-lock-alist))
-  ;; Python
-  (add-hook 'python-mode-hook
-            (-partial '-add-font-lock-kwds python-font-lock-alist))
-  ;; Emacs Lisp
-  (add-hook 'emacs-lisp-mode-hook
-            (-partial '-add-font-lock-kwds emacs-lisp-font-lock-alist))
-  ;; Hy
-  (add-hook 'hy-mode-hook
-            (-partial '-add-font-lock-kwds hy-font-lock-alist))
-  ;; Navi-mode
-  (add-hook 'navi-mode-hook
-            (-partial '-add-font-lock-kwds navi-font-lock-alist)))
+  (defun add-font-locks (FONT-LOCK-HOOKS-ALIST)
+    "Utility to add font lock alist to many hooks.
+
+FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
+    (mapc (lambda (x)
+            (let ((font-lock-alist (car x))
+                  (mode-hooks (cdr x)))
+              (mapc (lambda (mode-hook)
+                      (add-hook mode-hook
+                                (-partial '-add-font-lock-kwds font-lock-alist)))
+                    mode-hooks)))
+          FONT-LOCK-HOOKS-ALIST))
+
+  (add-font-locks
+   `((,fira-font-lock-alist        prog-mode-hook  org-mode-hook)
+     (,python-font-lock-alist      python-mode-hook)
+     (,emacs-lisp-font-lock-alist  emacs-lisp-mode-hook)
+     (,hy-font-lock-alist          hy-mode-hook)
+     ;; (,navi-font-lock-alist ,navi-mode-hook) ; TODO reenable
+     )))
 
 ;;;;; Fira-font-locks
 
