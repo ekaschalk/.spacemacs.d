@@ -883,6 +883,11 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
    '(outline-2 ((t (:inherit org-level-2))))
    '(outline-3 ((t (:inherit org-level-3))))
    '(outline-4 ((t (:inherit org-level-4))))
+
+   `(org-todo ((t (:foreground ,my-black :weight extra-bold
+                               :background "light gray"))))
+   `(org-priority ((t (:foreground ,my-black :weight bold
+                                   :background "light gray"))))
    ))
 
 ;;; Ivy
@@ -1306,10 +1311,6 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 (defun module/org/misc ()
   "Misc org-mode bindings and improvements."
 
-  ;; Useful header navigation binding inspired from outline-mode
-  (evil-define-key '(normal visual motion) org-mode-map
-    "gu" 'outline-previous-visible-heading)
-
   ;; Header property ignore for true no-export of header and its contents
   (with-eval-after-load 'ox-extra
     (ox-extras-activate '(ignore-headlines)))
@@ -1368,9 +1369,9 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   "Org theming updates."
 
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
-        org-priority-faces '((65 :foreground "red")
-                             (66 :foreground "yellow")
-                             (67 :foreground "blue"))
+        org-priority-faces '((65 :inherit org-priority :foreground "red")
+                             (66 :inherit org-priority :foreground "yellow")
+                             (67 :inherit org-priority :foreground "blue"))
         org-ellipsis "▼"))
 
 ;;; Outshine
