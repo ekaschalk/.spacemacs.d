@@ -1331,7 +1331,15 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (define-key org-mode-map (kbd "C-c t") 'org-toggle-blocks)
 
   ;; Enable flyspell in org-mode
-  (add-hook 'org-mode-hook 'flyspell-mode))
+  (add-hook 'org-mode-hook 'flyspell-mode)
+
+  ;; Outline style navigation
+  (evil-define-key '(normal visual motion) org-mode-map
+    "gh" 'outline-up-heading
+    "gj" 'outline-forward-same-level
+    "gk" 'outline-backward-same-level
+    "gl" 'outline-next-visible-heading
+    "gu" 'outline-previous-visible-heading))
 
 ;;;; Templates
 
