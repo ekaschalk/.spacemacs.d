@@ -59,7 +59,8 @@
       dotspacemacs/layers/langs
       `(emacs-lisp
         html
-        rust  ; I only use atm for .toml configuratino files
+        javascript
+        rust  ; I only use atm for .toml configuration files
         (clojure :variables
                  clojure-enable-fancify-symbols t)
         (haskell :variables
@@ -1370,7 +1371,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
   (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
         org-priority-faces '((65 :inherit org-priority :foreground "red")
-                             (66 :inherit org-priority :foreground "yellow")
+                             (66 :inherit org-priority :foreground "brown")
                              (67 :inherit org-priority :foreground "blue"))
         org-ellipsis "▼"))
 
