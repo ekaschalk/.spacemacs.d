@@ -710,6 +710,7 @@ Ivy keybinding has 'SPC i u' for consel-unicode-char for exploring options."
           (:return     "⟼") (:yield      "⟻")
           (:not         "￢")
           (:for         "∀")
+          (:some        "∃")
 
           ;;;;; Other
           (:tuple       "⨂")
@@ -732,6 +733,7 @@ KWDS is a plist of pretty option and the text to be replaced for it."
                    :composition "comp"
                    :null "None" :true "True" :false "False"
                    :in "in" :not "not"
+                   :some "some"
                    :tuple "#t"
                    :pipe "ap-pipe"
                    ))
