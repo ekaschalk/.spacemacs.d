@@ -717,6 +717,7 @@ Ivy keybinding has 'SPC i u' for consel-unicode-char for exploring options."
           (:return     "⟼") (:yield      "⟻")
           (:not         "￢")
           (:for         "∀")
+          (:some        "∃")
 
           ;;;;; Other
           (:tuple       "⨂")
@@ -739,6 +740,7 @@ KWDS is a plist of pretty option and the text to be replaced for it."
                    :composition "comp"
                    :null "None" :true "True" :false "False"
                    :in "in" :not "not"
+                   :some "some"
                    :tuple "#t"
                    :pipe "ap-pipe"
                    ))
@@ -1590,6 +1592,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (require 'python)
   (unless-linux-call 'module/python/windows-pytest)
   (module/python/fixes)
+  (module/python/hy)
   (module/python/mypy)
   (module/python/venvs))
 
@@ -1639,6 +1642,24 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   ;; Remove flyspell from python buffers
   (dolist (hook '(python-mode-hook))
     (add-hook hook (lambda () (flyspell-mode -1)))))
+
+;;;; Hy
+
+(defun module/python/hy ()
+  "Hylang integration improvements."
+
+  (defun hy-insert-pdb ()
+    (interactive)
+    (insert "(do (import pdb) (pdb.set-trace))"))
+
+  (defun hy-insert-thread-pdb ()
+    (interactive)
+    (insert "((tz.do (do (import pdb) (pdb.set-trace))))"))
+
+  (spacemacs/set-leader-keys-for-major-mode
+    'hy-mode (kbd "dd") 'hy-insert-pdb)
+  (spacemacs/set-leader-keys-for-major-mode
+    'hy-mode (kbd "dt") 'hy-insert-thread-pdb))
 
 ;;;; Mypy
 
