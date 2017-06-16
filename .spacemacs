@@ -1021,6 +1021,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (when-linux-call 'module/misc/spotify)
   (module/misc/aspell)
   (module/misc/auto-completion)
+  (module/misc/eww)
   (module/misc/gnus)
   (module/misc/lisp-state)
   (module/misc/macros)
@@ -1059,6 +1060,20 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
      ((t (:inherit company-tooltip :weight bold :underline nil))))
    '(company-tooltip-common-selection
      ((t (:inherit company-tooltip-selection :weight bold :underline nil))))))
+
+;;;; Eww
+
+(defun module/misc/eww ()
+  ;; Auto-rename new eww buffers
+  (defun rename-eww-hook ()
+    "Rename eww browser's buffer so sites open in new page."
+    (rename-buffer "eww" t))
+  (add-hook 'eww-mode-hook #'rename-eww-hook)
+
+  ;; eventually add a func that opens current docs im using all at once
+  ;; http://toolz.readthedocs.io/en/latest/api.html#toolz.itertoolz.interleave
+  ;; http://docs.hylang.org/en/stable/language/api.html
+  )
 
 ;;;; GNUs
 
