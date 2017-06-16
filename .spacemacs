@@ -260,13 +260,7 @@
   (add-to-list 'default-frame-alist '(font . "Hack"))
   (set-face-attribute 'default t :font "Hack")
   (global-set-key (kbd "<f2>")
-                  (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2))))
-
-  ;; (global-set-key (kbd "<f3>")
-  ;;                 (lambda () (interactive) (mapc (lambda (x) (zoom-frm-in))
-  ;;                                           '(1 2 3 4 5 6 7 8 9 10
-  ;;                                               11 12 13 14 15 16 17 18))))
-  )
+                  (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
 
 ;;;; Fontsets
 
