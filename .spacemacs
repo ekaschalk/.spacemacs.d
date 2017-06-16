@@ -1685,8 +1685,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 (defun module/blog ()
   "Hugo blog utilities. Hosted at https://ekaschalk.github.io."
 
-  (setq blog-dir "~/dev/blog"
-        public-blog-dir "~/dev/public-blog"
+  (setq blog-dir (if is-linuxp
+                     "~/dev/blog" "c:/~/dev/blog")
+        public-blog-dir (if is-linuxp
+                            "~/dev/public-blog" "c:/~/dev/public-blog")
         hugo-process "Hugo Server"
         hugo-server-site "http://localhost:1313/")
 
