@@ -299,17 +299,9 @@ CODE-FONT-ALIST is an alist of a font and unicode points to force to use it."
       ;;    
       #xe907 #xe928)
 
-     ("material"
-      ;; 
-      #xe192)
-
      ("github-octicons"
-      ;;              
-      #xf091 #xf059 #xf076 #xf075)
-
-     ("fileicons"
-      ;; 
-      #xf016)
+      ;;                          
+      #xf091 #xf059 #xf076 #xf075 #xe192  #xf016)
 
      ("Symbola"
       ;; 𝕊    ⨂      ∅      ⟻    ⟼     ⊙      𝕋       𝔽
@@ -652,7 +644,7 @@ Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)
                                ("\\<\\(Clean:\\)"        ?)
                                ("\\<\\(Docs:\\)"         ?)
                                ("\\<\\(master\\)\\>"     ?)
-                               ("\\<\\(origin/master\\)" ?)))
+                               ("\\<\\(origin/master\\)" ?)))
 
   (defun add-magit-faces ()
     "Apply `pretty-magit-faces' and `pretty-magit-symbols' to magit buffers."
