@@ -129,7 +129,7 @@
            (unless-linux dotspacemacs/layers/windows))))
 
 ;;; Spacemacs-Init
-;;;; Utlities
+;;;; Utilities
 
 (setq theme-to-use (if (< (string-to-number
                            (substring
@@ -250,8 +250,7 @@
   (module/display/prettify-magit)
   (module/display/prettify-symbols)
   (module/display/shell)
-  (module/display/theme-updates)
-  )
+  (module/display/theme-updates))
 
 ;;;; Windows-frame-size-fix
 
@@ -867,7 +866,39 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   "Face configuration for themes, atm solarized-light."
 
   (defun update-solarize-dark ()
-    )
+    (custom-theme-set-faces
+     'solarized-dark
+
+     ;; Makes matching parens obvious
+     `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
+                                             :background "#586e75"))))
+
+     ;; active modeline has no colors
+     `(mode-line ((t (:inherit mode-line :background "#002b36"))))
+     `(mode-line-inactive ((t (:inherit mode-line :background "#002b36"))))
+     `(spaceline-highlight-face ((t (:inherit mode-line :background "#002b36"))))
+     `(powerline-active1 ((t (:inherit mode-line :background "#002b36"))))
+     `(powerline-active2 ((t (:inherit mode-line :background "#002b36"))))
+
+     ;; Inactive modeline has tint
+     `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
+
+     ;; Org and outline header updates
+     `(org-level-1 ((t (:height 1.25 :foreground ,my-black
+                                :background "#268bd2"
+                                :weight bold))))
+     `(org-level-2 ((t (:height 1.15 :foreground ,my-black
+                                :background "#2aa198"
+                                :weight bold))))
+     `(org-level-3 ((t (:height 1.05 :foreground ,my-black
+                                :background "#b58900"
+                                :weight bold))))
+
+     '(outline-1 ((t (:inherit org-level-1))))
+     '(outline-2 ((t (:inherit org-level-2))))
+     '(outline-3 ((t (:inherit org-level-3))))
+     '(outline-4 ((t (:inherit org-level-4))))
+     ))
 
   (setq my-black "#1b1b1e")
 
