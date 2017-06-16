@@ -129,11 +129,20 @@
            (unless-linux dotspacemacs/layers/windows))))
 
 ;;; Spacemacs-Init
+;;;; Utlities
+
+(setq theme-to-use (if (< (string-to-number
+                           (substring
+                            (current-time-string) 11 13))
+                          20)
+                       'solarized-light
+                     'solarized-dark))
+
 ;;;; Configuration
 
 (defun dotspacemacs/init ()
   (setq-default
-   dotspacemacs-themes '(solarized-light)
+   dotspacemacs-themes `(,theme-to-use)
    dotspacemacs-default-font `("Hack"
                                :size ,(if-linux 18 12)
                                :powerline-scale 1.5)
@@ -241,7 +250,8 @@
   (module/display/prettify-magit)
   (module/display/prettify-symbols)
   (module/display/shell)
-  (module/display/theme-updates))
+  (module/display/theme-updates)
+  )
 
 ;;;; Windows-frame-size-fix
 
@@ -251,7 +261,13 @@
   (add-to-list 'default-frame-alist '(font . "Hack"))
   (set-face-attribute 'default t :font "Hack")
   (global-set-key (kbd "<f2>")
-                  (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
+                  (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2))))
+
+  ;; (global-set-key (kbd "<f3>")
+  ;;                 (lambda () (interactive) (mapc (lambda (x) (zoom-frm-in))
+  ;;                                           '(1 2 3 4 5 6 7 8 9 10
+  ;;                                               11 12 13 14 15 16 17 18))))
+  )
 
 ;;;; Fontsets
 
@@ -850,46 +866,54 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 (defun module/display/theme-updates ()
   "Face configuration for themes, atm solarized-light."
 
+  (defun update-solarize-dark ()
+    )
+
   (setq my-black "#1b1b1e")
 
-  (custom-theme-set-faces
-   'solarized-light
+  (defun update-solarize-light ()
+    (custom-theme-set-faces
+     'solarized-light
 
-   ;; Makes matching parens obvious
-   `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
-                                           :background "light gray"))))
+     ;; Makes matching parens obvious
+     `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
+                                             :background "light gray"))))
 
-   ;; active modeline has no colors
-   `(mode-line ((t (:inherit mode-line :background "#fdf6e3"))))
-   `(mode-line-inactive ((t (:inherit mode-line :background "#fdf6e3"))))
-   `(spaceline-highlight-face ((t (:inherit mode-line :background "#fdf6e3"))))
-   `(powerline-active1 ((t (:inherit mode-line :background "#fdf6e3"))))
-   `(powerline-active2 ((t (:inherit mode-line :background "#fdf6e3"))))
+     ;; active modeline has no colors
+     `(mode-line ((t (:inherit mode-line :background "#fdf6e3"))))
+     `(mode-line-inactive ((t (:inherit mode-line :background "#fdf6e3"))))
+     `(spaceline-highlight-face ((t (:inherit mode-line :background "#fdf6e3"))))
+     `(powerline-active1 ((t (:inherit mode-line :background "#fdf6e3"))))
+     `(powerline-active2 ((t (:inherit mode-line :background "#fdf6e3"))))
 
-   ;; Inactive modeline has tint
-   `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
+     ;; Inactive modeline has tint
+     `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
 
-   ;; Org and outline header updates
-   `(org-level-1 ((t (:height 1.25 :foreground ,my-black
-                              :background "#C9DAEA"
-                              :weight bold))))
-   `(org-level-2 ((t (:height 1.15 :foreground ,my-black
-                              :background "#7CDF64"
-                              :weight bold))))
-   `(org-level-3 ((t (:height 1.05 :foreground ,my-black
-                              :background "#F8DE7E"
-                              :weight bold))))
+     ;; Org and outline header updates
+     `(org-level-1 ((t (:height 1.25 :foreground ,my-black
+                                :background "#C9DAEA"
+                                :weight bold))))
+     `(org-level-2 ((t (:height 1.15 :foreground ,my-black
+                                :background "#7CDF64"
+                                :weight bold))))
+     `(org-level-3 ((t (:height 1.05 :foreground ,my-black
+                                :background "#F8DE7E"
+                                :weight bold))))
 
-   '(outline-1 ((t (:inherit org-level-1))))
-   '(outline-2 ((t (:inherit org-level-2))))
-   '(outline-3 ((t (:inherit org-level-3))))
-   '(outline-4 ((t (:inherit org-level-4))))
+     '(outline-1 ((t (:inherit org-level-1))))
+     '(outline-2 ((t (:inherit org-level-2))))
+     '(outline-3 ((t (:inherit org-level-3))))
+     '(outline-4 ((t (:inherit org-level-4))))
 
-   `(org-todo ((t (:foreground ,my-black :weight extra-bold
-                               :background "light gray"))))
-   `(org-priority ((t (:foreground ,my-black :weight bold
-                                   :background "light gray"))))
-   ))
+     `(org-todo ((t (:foreground ,my-black :weight extra-bold
+                                 :background "light gray"))))
+     `(org-priority ((t (:foreground ,my-black :weight bold
+                                     :background "light gray"))))
+     ))
+
+  (if (string= 'solarized-dark (car custom-enabled-themes))
+      (update-solarize-dark)
+    (update-solarize-light)))
 
 ;;; Ivy
 
