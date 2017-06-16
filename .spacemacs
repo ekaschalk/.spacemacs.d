@@ -11,6 +11,7 @@
 ;;
 ;; See README for details
 ;; See TASKS for project management such as known bugs, planned updates, history
+;; Theme is solarized-light or solarized-dark dependent on time of day
 ;;
 ;; Organization
 ;; ---------
@@ -20,6 +21,8 @@
 ;; Each group is broken into further components for targetted enabling/disabling
 ;; Some groups require a specific execution ordering. Ordering requirements are
 ;; specifed with Group x comments. Within the group, the packages are lexical.
+
+(setq time-to-use-dark 20)
 
 ;;; OS-Config
 
@@ -134,7 +137,7 @@
 (setq theme-to-use (if (< (string-to-number
                            (substring
                             (current-time-string) 11 13))
-                          20)
+                          time-to-use-dark)
                        'solarized-light
                      'solarized-dark))
 
