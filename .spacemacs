@@ -22,7 +22,7 @@
 ;; Some groups require a specific execution ordering. Ordering requirements are
 ;; specifed with Group x comments. Within the group, the packages are lexical.
 
-(setq time-to-use-dark 20)
+(setq time-to-use-dark 0)
 
 ;;; OS-Config
 
@@ -747,15 +747,18 @@ KWDS is a plist of pretty option and the text to be replaced for it."
            pretty-options)))
 
   (setq hy-pretty-pairs
-        (get-pretty-pairs
-         '(:lambda "fn" :def "defn"
-                   :composition "comp"
-                   :null "None" :true "True" :false "False"
-                   :in "in" :not "not"
-                   :some "some"
-                   :tuple "#t"
-                   :pipe "ap-pipe"
-                   ))
+        (append
+         (get-pretty-pairs
+          '(:lambda "fn" :def "defn"
+                    :composition "comp"
+                    :null "None" :true "True" :false "False"
+                    :in "in" :not "not"
+                    :some "some"
+                    :tuple "#t"
+                    :pipe "ap-pipe"
+                    ))
+         (prettify-utils-generate
+          ("#l"    " ")))
 
         python-pretty-pairs
         (append
