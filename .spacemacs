@@ -510,7 +510,22 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
          ("\\(#@.*$\\)" . 'font-lock-function-name-face)
 
          ;; Syntax highlighting for reader-macros
-         ("\\(#.\\)" . 'font-lock-function-name-face))))
+         ("\\(#.\\)" . 'font-lock-function-name-face)
+
+         ;; Highlight with macros
+         ("\\(with[^ ]*\\)" . 'font-lock-keyword-face)
+
+         ;; Highlight functions after specific macros
+         ("\-fixture \\([^ ]*\\)" 1 'font-lock-function-name-face)
+         ("\-fixtures \\([^ ]*\\)" 1 'font-lock-function-name-face)
+
+         ;; Fixture macros
+         ("\\(deffixture\\)" . 'font-lock-keyword-face)
+         ("deffixture \\([^ ]*\\)" 1 'font-lock-function-name-face)
+
+         ;; Asserts
+         ("(\\(assert[^ ]*\\)" 1 font-lock-keyword-face)
+         )))
 
   (defun navi-extra-syntax ()
     (font-lock-add-keywords
