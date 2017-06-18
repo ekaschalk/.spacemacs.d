@@ -341,10 +341,13 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
                     mode-hooks)))
           FONT-LOCK-HOOKS-ALIST))
 
+  (add-hook 'toml-mode-hook (lambda () (setq-local outline-regexp "[*\f]+")))
+
+
   (require 'navi-mode)  ; TODO handle this require better for the navi font-locks
   (add-font-locks
    `((,fira-font-lock-alist        prog-mode-hook  org-mode-hook)
-     (,python-font-lock-alist      python-mode-hook)
+     (,python-font-lock-alist      python-mode-hook toml-mode-hook)
      (,emacs-lisp-font-lock-alist  emacs-lisp-mode-hook)
      (,hy-font-lock-alist          hy-mode-hook)
      (,navi-font-lock-alist        navi-mode-hook)
@@ -1739,10 +1742,18 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
     (interactive)
     (let ((original-dir default-directory)
           (run-hugo (concat "hugo -d " public-blog-dir)))
+
+      ;; Clean hugo output directory
+      (cd public-blog-dir)
+      (shell-command "git rm -rf .")
+      (shell-command "git clean -fxd")
+
+      ;; Execute hugo
       (cd blog-dir)
       (shell-command run-hugo)
       (cd public-blog-dir)
 
+      ;; Commit and push all
       (shell-command "git add .")
       (shell-command (concat "git commit -m \"" (current-time-string) "\""))
       (magit-push-current-to-upstream nil)
