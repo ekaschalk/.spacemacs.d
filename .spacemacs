@@ -551,10 +551,9 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
 
               ;; Configuration
               (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
-                    powerline-default-separator 'bar
                     spaceline-all-the-icons-icon-set-modified 'chain
                     spaceline-all-the-icons-icon-set-window-numbering 'circle
-                    spaceline-all-the-icons-separators-type 'arrow
+                    spaceline-all-the-icons-separator-type 'none
                     spaceline-all-the-icons-primary-separator "")
 
               ;; Toggles
