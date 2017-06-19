@@ -107,6 +107,12 @@
          :location (recipe :fetcher github
                            :repo "Ilazki/prettify-utils.el"))
 
+        ;; Documentation viewing
+        helm-dash
+        counsel-dash
+
+        lispy
+
         ;; Themes
         solarized-theme
         ))
@@ -1044,6 +1050,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (when-linux-call 'module/misc/spotify)
   (module/misc/aspell)
   (module/misc/auto-completion)
+  (module/misc/dash)
   (module/misc/eww)
   (module/misc/gnus)
   (module/misc/lisp-state)
@@ -1083,6 +1090,21 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
      ((t (:inherit company-tooltip :weight bold :underline nil))))
    '(company-tooltip-common-selection
      ((t (:inherit company-tooltip-selection :weight bold :underline nil))))))
+
+;;;; Dash
+
+(defun module/misc/dash ()
+  (require 'helm-dash)
+  (require 'counsel-dash)
+  (setq helm-dash-common-docsets '("Python 3" "toolz" "hy"))
+  ;; (setq counsel-dash-common-docsets '("Python 3" "hy"))
+  ;; doc2dash ~/Downloads/hy-docs/hy-stable -n hy -d ~/.docsets
+  ;; doc2dash ~/Downloads/hy-docs/hy-stable/ -n hy -d ~/.docsets -f -j -v
+  ;; doc2dash ~/Downloads/hy-docs-master/hy-master -n hy -d ~/.docsets -f -j
+  ;; doc2dash ~/Downloads/toolz/doc/build/html -n toolz -d ~/.docsets -f
+  ;; toolz-doc/toolz-latest
+  ;; (setq counsel-dash-common-docsets '("hy"))
+  )
 
 ;;;; Eww
 
