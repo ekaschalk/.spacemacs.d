@@ -729,6 +729,7 @@ Ivy keybinding has 'SPC i u' for consel-unicode-char for exploring options."
           ;;;;; Flow
           (:in          "∈") (:not-in      "∉")
           (:return     "⟼") (:yield      "⟻")
+          (:and         "∧") (:or          "∨")
           (:not         "￢")
           (:for         "∀")
           (:some        "∃")
@@ -755,6 +756,7 @@ KWDS is a plist of pretty option and the text to be replaced for it."
                     :composition "comp"
                     :null "None" :true "True" :false "False"
                     :in "in" :not "not"
+                    :and "and" :or "or"
                     :some "some"
                     :tuple "#t"
                     :pipe "ap-pipe"
@@ -770,6 +772,7 @@ KWDS is a plist of pretty option and the text to be replaced for it."
                     :int "int" :float "float" :str "str" :bool "bool"
                     :not "not" :for "for" :in "in" :not-in "not in"
                     :return "return" :yield "yield"
+                    :and "and" :or "or"
                     :tuple "Tuple"
                     :pipe "tz-pipe"
                     ))
