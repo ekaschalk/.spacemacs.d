@@ -1716,7 +1716,13 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (spacemacs/set-leader-keys-for-major-mode
     'hy-mode (kbd "dd") 'hy-insert-pdb)
   (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd "dt") 'hy-insert-thread-pdb))
+    'hy-mode (kbd "dt") 'hy-insert-thread-pdb)
+
+
+  (setq org-babel-default-header-args:python
+        (cons '(:results . "output org drawer replace")
+              (assq-delete-all :results org-babel-default-header-args)))
+  )
 
 ;;;; Mypy
 
