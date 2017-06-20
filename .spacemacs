@@ -98,6 +98,7 @@
         ;; Misc
         helm-spotify-plus        ; Spotify improvements
         virtualenvwrapper        ; Python environment management
+        ob-async                 ; Asynchronous org-babel source block execution
 
         ;; Visual Enhancements
         all-the-icons-ivy        ; Ivy prompts use file icons
@@ -107,14 +108,11 @@
          :location (recipe :fetcher github
                            :repo "Ilazki/prettify-utils.el"))
 
-        ;; Documentation viewing
-        helm-dash
-        counsel-dash
-
-        lispy
-
         ;; Themes
         solarized-theme
+
+        ;; May use in the future
+        ;; lispy
         ))
 
 ;;;; Spacemacs
@@ -1050,7 +1048,6 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (when-linux-call 'module/misc/spotify)
   (module/misc/aspell)
   (module/misc/auto-completion)
-  (module/misc/dash)
   (module/misc/eww)
   (module/misc/gnus)
   (module/misc/lisp-state)
@@ -1090,21 +1087,6 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
      ((t (:inherit company-tooltip :weight bold :underline nil))))
    '(company-tooltip-common-selection
      ((t (:inherit company-tooltip-selection :weight bold :underline nil))))))
-
-;;;; Dash
-
-(defun module/misc/dash ()
-  (require 'helm-dash)
-  (require 'counsel-dash)
-  (setq helm-dash-common-docsets '("Python 3" "toolz" "hy"))
-  ;; (setq counsel-dash-common-docsets '("Python 3" "hy"))
-  ;; doc2dash ~/Downloads/hy-docs/hy-stable -n hy -d ~/.docsets
-  ;; doc2dash ~/Downloads/hy-docs/hy-stable/ -n hy -d ~/.docsets -f -j -v
-  ;; doc2dash ~/Downloads/hy-docs-master/hy-master -n hy -d ~/.docsets -f -j
-  ;; doc2dash ~/Downloads/toolz/doc/build/html -n toolz -d ~/.docsets -f
-  ;; toolz-doc/toolz-latest
-  ;; (setq counsel-dash-common-docsets '("hy"))
-  )
 
 ;;;; Eww
 
@@ -1373,7 +1355,16 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
                                (clojure . t)
                                (dot .     t)  ; Graphviz
                                (http .    t)  ; Requests
-                               )))
+                               )
+
+   ;; Enables interactive plotting
+   (setq org-babel-default-header-args:python
+         (cons '(:results . "output file replace")
+               (assq-delete-all :results org-babel-default-header-args)))
+
+   ;; Blocks with :async will be executed asynchronously
+   (require 'ob-async)
+   (add-to-list 'org-ctrl-c-ctrl-c-hook 'ob-async-org-babel-execute-src-block)))
 
 ;;;; Exports
 
@@ -1716,13 +1707,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (spacemacs/set-leader-keys-for-major-mode
     'hy-mode (kbd "dd") 'hy-insert-pdb)
   (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd "dt") 'hy-insert-thread-pdb)
-
-
-  (setq org-babel-default-header-args:python
-        (cons '(:results . "output org drawer replace")
-              (assq-delete-all :results org-babel-default-header-args)))
-  )
+    'hy-mode (kbd "dt") 'hy-insert-thread-pdb))
 
 ;;;; Mypy
 
