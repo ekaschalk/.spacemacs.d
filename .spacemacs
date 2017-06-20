@@ -1355,16 +1355,16 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
                                (clojure . t)
                                (dot .     t)  ; Graphviz
                                (http .    t)  ; Requests
-                               )
+                               ))
 
-   ;; Enables interactive plotting
-   (setq org-babel-default-header-args:python
-         (cons '(:results . "output file replace")
-               (assq-delete-all :results org-babel-default-header-args)))
+  ;; Enables interactive plotting
+  (setq org-babel-default-header-args:python
+        (cons '(:results . "output file replace")
+              (assq-delete-all :results org-babel-default-header-args)))
 
-   ;; Blocks with :async will be executed asynchronously
-   (require 'ob-async)
-   (add-to-list 'org-ctrl-c-ctrl-c-hook 'ob-async-org-babel-execute-src-block)))
+  ;; Blocks with :async will be executed asynchronously
+  (require 'ob-async)
+  (add-to-list 'org-ctrl-c-ctrl-c-hook 'ob-async-org-babel-execute-src-block))
 
 ;;;; Exports
 
