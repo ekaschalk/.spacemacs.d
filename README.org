@@ -10,17 +10,17 @@ Coding with custom unicode replacements and ligatures:
 
 Closer looks:
 
-| Ivy                        | Neotree                        | Outline-Navi mode         |
-|----------------------------+--------------------------------+-----------------------------|
+| Ivy                           | Neotree                           | Outline-Navi mode              |
+|-------------------------------+-----------------------------------+--------------------------------|
 | [[file:./imgs/spacemacs/ivy.png]] | [[file:./imgs/spacemacs/neotree.png]] | [[file:./imgs/spacemacs/navi.png]] |
 
 | Eshell & Modeline            |
 |-------------------------------|
 | [[file:./imgs/spacemacs/eshell.png]] |
 
-| Magit                        |
-|------------------------------|
-| [[file:./imgs/spacemacs/magit.png]] |
+| Magit Commits                           | The actual commits                  |
+|-----------------------------------------+-------------------------------------|
+| [[file:./imgs/spacemacs/magit-symbols.png]] | [[file:./imgs/spacemacs/magit-raw.png]] |
 
 * My Spacemacs
 My Spacemacs notably implements:
