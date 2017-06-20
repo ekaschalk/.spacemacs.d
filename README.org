@@ -1,5 +1,5 @@
 * Screens
-Check out [[https://ekaschalk.github.io/]] for more information.
+Check out [[https://ekaschalk.github.io/]] for articles.
 
 | Solarized-Dark                   |  Solarized-Light                       |
 |----------------------------------+----------------------------------------|
