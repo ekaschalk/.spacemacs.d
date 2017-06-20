@@ -1,4 +1,6 @@
 * Screens
+Check out [[https://ekaschalk.github.io/]] for more information.
+
 | Solarized-Dark                   |  Solarized-Light                       |
 |----------------------------------+----------------------------------------|
 | [[file:./imgs/spacemacs/coding.png]] | [[file:./imgs/spacemacs/coding-light.png]] |
@@ -8,15 +10,15 @@ Coding with custom unicode replacements and ligatures:
 [[file:./imgs/spacemacs/python-code.png]]
 [[file:./imgs/spacemacs/hy-code.png]]
 
+The Eshell and Modeline:
+
+[[file:./imgs/spacemacs/eshell.png]]
+
 Closer looks:
 
 | Ivy                           | Neotree                           | Outline-Navi mode              |
 |-------------------------------+-----------------------------------+--------------------------------|
 | [[file:./imgs/spacemacs/ivy.png]] | [[file:./imgs/spacemacs/neotree.png]] | [[file:./imgs/spacemacs/navi.png]] |
-
-The Eshell and Modeline:
-
-[[file:./imgs/spacemacs/eshell.png]]
 
 Magit customization:
 
