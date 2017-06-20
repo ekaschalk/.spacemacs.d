@@ -884,6 +884,8 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   "Face configuration for themes, atm solarized-light."
 
   (defun update-solarize-dark ()
+    (setq org-src-block-faces `(("python" (:background "#073642"))))
+
     (custom-theme-set-faces
      'solarized-dark
 
