@@ -1,21 +1,26 @@
 * Screens
-Editing my Spacemacs configuration with everything open:
+| Solarized-Dark                   |  Solarized-Light                       |
+|----------------------------------+----------------------------------------|
+| [[file:./imgs/spacemacs/coding.png]] | [[file:./imgs/spacemacs/coding-light.png]] |
 
-[[file:./imgs/full-example.png]]
+Coding with custom unicode replacements and ligatures:
 
-Closer look at my shell, ivy prompt, and neotree.
+[[file:./imgs/spacemacs/python-code.png]]
+[[file:./imgs/spacemacs/hy-code.png]]
 
-| Shell                        | Ivy                       | Neotree                 |
-|------------------------------+---------------------------+-------------------------|
-| [[file:./imgs/pretty-shell.png]] | [[file:./imgs/icons-ivy.png]] | [[file:./imgs/neotree.png]] |
+Closer looks:
 
-Magit commits and logs of the form "Fix:, Add:, Docs:, etc..." are displayed with
-icons. Symbols in programming buffers are replaced with icons. These changes are
-entirely visual, searching for "Fix:" or "lambda" will jump to the icons.
+| Ivy                        | Neotree                        | Outline-Navi mode         |
+|----------------------------+--------------------------------+-----------------------------|
+| [[file:./imgs/spacemacs/ivy.png]] | [[file:./imgs/spacemacs/neotree.png]] | [[file:./imgs/spacemacs/navi.png]] |
 
-| Magit                        | Code                         |
-|------------------------------+------------------------------|
-| [[file:./imgs/pretty-magit.png]] | [[file:./imgs/example-code.png]] |
+| Eshell & Modeline            |
+|-------------------------------|
+| [[file:./imgs/spacemacs/eshell.png]] |
+
+| Magit                        |
+|------------------------------|
+| [[file:./imgs/spacemacs/magit.png]] |
 
 * My Spacemacs
 My Spacemacs notably implements:
