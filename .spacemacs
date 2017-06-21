@@ -904,20 +904,29 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
      `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
 
      ;; Org and outline header updates
-     `(org-level-1 ((t (:height 1.25 :foreground ,my-black
-                                :background "#268bd2"
-                                :weight bold))))
-     `(org-level-2 ((t (:height 1.15 :foreground ,my-black
-                                :background "#2aa198"
-                                :weight bold))))
-     `(org-level-3 ((t (:height 1.05 :foreground ,my-black
-                                :background "#b58900"
-                                :weight bold))))
+     `(outline-1 ((t (:height 1.25 :foreground ,my-black
+                              :background "#268bd2"
+                              :weight bold))))
+     `(outline-2 ((t (:height 1.15 :foreground ,my-black
+                              :background "#2aa198"
+                              :weight bold))))
+     `(outline-3 ((t (:height 1.05 :foreground ,my-black
+                              :background "#b58900"
+                              :weight bold))))
 
-     '(outline-1 ((t (:inherit org-level-1))))
-     '(outline-2 ((t (:inherit org-level-2))))
-     '(outline-3 ((t (:inherit org-level-3))))
-     '(outline-4 ((t (:inherit org-level-4))))
+     `(org-level-1 ((t (:height 1.25 :foreground "#268bd2"
+                                :underline t
+                                :weight ultra-bold))))
+     `(org-level-2 ((t (:height 1.15 :foreground "#2aa198"
+                                :underline t
+                                :weight ultra-bold))))
+     `(org-level-3 ((t (:height 1.05 :foreground "#b58900"
+                                :underline t
+                                :weight ultra-bold))))
+
+     ;; #586e75
+     `(org-block-begin-line ((t (:height 1.05 :foreground "#576e75"
+                                         :box t :weight bold))))
      ))
 
   (setq my-black "#1b1b1e")
