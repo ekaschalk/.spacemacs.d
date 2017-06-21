@@ -1764,39 +1764,36 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
         hugo-process "Hugo Server"
         hugo-server-site "http://localhost:1313/")
 
+  (defmacro with-dir (DIR &rest FORMS)
+    "Execute FORMS in DIR."
+    (let ((orig-dir (gensym)))
+      `(progn (setq ,orig-dir default-directory)
+              (cd ,DIR) ,@FORMS (cd ,orig-dir))))
+
   (defun deploy-blog ()
-    "Run hugo and push changes upstream from anywhere."
+    "Run hugo and push changes upstream."
     (interactive)
-    (let ((original-dir default-directory)
-          (run-hugo (concat "hugo -d " public-blog-dir)))
+    (with-dir public-blog-dir
+              (shell-command "git rm -rf .")
+              (shell-command "git clean -fxd")
 
-      ;; Clean hugo output directory
-      (cd public-blog-dir)
-      (shell-command "git rm -rf .")
-      (shell-command "git clean -fxd")
+              (with-dir blog-dir (->> public-blog-dir
+                                    (concat "hugo -d ")
+                                    shell-command))
 
-      ;; Execute hugo
-      (cd blog-dir)
-      (shell-command run-hugo)
-      (cd public-blog-dir)
-
-      ;; Commit and push all
-      (shell-command "git add .")
-      (shell-command (concat "git commit -m \"" (current-time-string) "\""))
-      (magit-push-current-to-upstream nil)
-
-      (cd original-dir)))
+              (shell-command "git add .")
+              (--> (current-time-string)
+                 (concat "git commit -m \"" it "\"")
+                 (shell-command it))
+              (magit-push-current-to-upstream nil)))
 
   (defun start-blog-server ()
     "Run hugo server if not already running and open its webpage."
     (interactive)
-    (let ((original-dir default-directory))
-      (unless (get-process hugo-process)
-        (cd blog-dir)
-        (start-process hugo-process nil "hugo" "server")
-        (cd original-dir))
-
-      (browse-url hugo-server-site)))
+    (with-dir blog-dir
+              (unless (get-process hugo-process)
+                (start-process hugo-process nil "hugo" "server"))
+              (browse-url hugo-server-site)))
 
   (defun end-blog-server ()
     "End hugo server process if running."
