@@ -112,6 +112,9 @@
         solarized-theme
 
         ;; May use in the future
+        (dash-functional
+         :location (recipe :fetcher github
+                           :repo "magnars/dash.el"))
         ;; lispy
         ))
 
@@ -224,6 +227,11 @@
 ;;; Spacemacs-User-config
 
 (defun dotspacemacs/user-config ()
+  (require 'dash-functional)  ; dash/s.el loaded by default, not dash-functional
+
+  ;; Group 0
+  (module/macros)
+
   ;; Group 1
   (module/display)
 
@@ -238,6 +246,16 @@
 
   ;; Personal use
   (module/blog))
+
+;;; Macros
+
+(defun module/macros ()
+  (defmacro xi (&rest FORMS)
+    "Anonymous func maco, see https://ekaschalk.github.io/post/xi-macro/."
+    `(lambda ,(--filter (s-contains? (symbol-name it)
+                               (prin1-to-string FORMS))
+                  '(x1 x2 x3 x4 x5))
+       ,FORMS)))
 
 ;;; Display
 
@@ -815,68 +833,74 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
                :logic :sets :sub-and-superscripts)))
 
 ;;;; Shell
-
 (defun module/display/shell ()
   "Eshell prettification."
 
-  (setq eshell-prompt-number 0)
-  (add-hook 'eshell-exit-hook (lambda () (setq eshell-prompt-number 0)))
-  (advice-add 'eshell-send-input :before
-              (lambda (&rest args)
-                (setq eshell-prompt-number (+ 1 eshell-prompt-number))))
+  ;; TODO make it so the prompt face can depend on some pred
+  ;; TODO make it so the esh-section face can depend on some pred
+  ;; http://andrew.yurisich.com/work/2014/07/16/dont-link-that-line-number/
 
   (defmacro with-face (STR &rest PROPS)
     "Return STR propertized with PROPS."
     `(propertize ,STR 'face (list ,@PROPS)))
 
-  (defun set-eshell-prompt-icon (ICON PROPS)
-    "Update eshell prompt with ICON propertized with PROPS."
-    (let ((prompt (concat ICON " ")))
-      (setq eshell-prompt-regexp prompt)
-      (concat "\n" (with-face prompt PROPS))))
-
-  (defun eshell-section (ICON STR &rest PROPS)
+  (defmacro esh-section (NAME ICON STR &rest PROPS)
     "Return eshell section string with ICON header for STR with PROPS."
-    (when STR
-      (with-face (concat ICON " " STR) PROPS)))
+    `(setq ,NAME
+           (lambda () (when ,STR
+                   (-> ,ICON
+                      (concat esh-section-delim ,STR)
+                      (with-face ,@PROPS))))))
 
-  (defun esh-prompt-function ()
-    "Custom `eshell-prompt-function'."
-    (let* ((esh-header "\n ")
-           (esh-header-face nil)
-           (esh-prompt "")
-           (esh-prompt-face nil)
-           (esh-sep " | ")
-           (esh-sep-face nil)
+  (defun esh-acc (acc x)
+    (--if-let (funcall x)
+        (if (s-blank? acc)
+            it
+          (concat acc esh-sep it))
+      acc))
 
-           (esh-dir-section (abbreviate-file-name (eshell/pwd)))
-           (esh-dir-face nil)
+  (defun esh-prompt-func ()
+    (concat esh-header
+            (-reduce-from 'esh-acc "" eshell-funcs)
+            "\n"
+            eshell-prompt-string))
 
-           (esh-git-section (magit-get-current-branch))
-           (esh-git-face nil)
+  (esh-section esh-dir
+               ""
+               (abbreviate-file-name (eshell/pwd))
+               '(:foreground "gold" :bold ultra-bold :underline t))
 
-           (esh-venv-section pyvenv-virtual-env-name)
-           (esh-venv-face nil)
+  (esh-section esh-git
+               ""
+               (magit-get-current-branch)
+               '(:foreground "pink"))
 
-           (esh-time-section (format-time-string "%H:%M" (current-time)))
-           (esh-time-face nil)
+  (esh-section esh-python
+               ""
+               pyvenv-virtual-env-name)
 
-           (esh-prompt-num-section (number-to-string eshell-prompt-number))
-           (esh-prompt-num-face nil)
+  (esh-section esh-clock
+               ""
+               (format-time-string "%H:%M" (current-time))
+               '(:foreground "forest green"))
 
-           (esh-sections (list
-                          (eshell-section "" esh-dir-section esh-dir-face)
-                          (eshell-section "" esh-git-section esh-git-face)
-                          (eshell-section "" esh-venv-section esh-venv-face)
-                          (eshell-section "" esh-time-section esh-time-face)
-                          (eshell-section "" esh-prompt-num-section esh-prompt-num-face))))
-      (concat
-       (with-face esh-header esh-header-face)
-       (s-join (with-face esh-sep esh-sep-face)
-               (-non-nil esh-sections))
-       (set-eshell-prompt-icon esh-prompt esh-prompt-face))))
+  (add-hook 'eshell-load-hook (lambda () (setq esh-prompt-num 0)))
+  (advice-add 'eshell-send-input :before
+              (lambda (&rest args) (setq esh-prompt-num (incf esh-prompt-num))))
 
-  (setq eshell-prompt-function 'esh-prompt-function))
+  (esh-section esh-num
+               ""
+               (number-to-string esh-prompt-num)
+               '(:foreground "brown"))
+
+  (setq esh-sep "  ")
+  (setq esh-section-delim " ")
+  (setq esh-header "\n ")
+  (setq eshell-prompt-regexp " ")
+  (setq eshell-prompt-string " ")
+  (setq eshell-funcs (list esh-dir esh-git esh-python esh-clock esh-num))
+
+  (setq eshell-prompt-function 'esh-prompt-func))
 
 ;;;; Theme-updates
 
@@ -961,7 +985,11 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
      `(org-priority ((t (:foreground ,my-black :weight bold
                                      :background "light gray"))))
      ))
-
+  ;; syntax-propertize-function
+  ;; (eval-after-load 're-builder '(setq reb-re-syntax 'rx))
+  ;; rx macro
+  ;; http://www.lunaryorn.com/posts/search-based-fontification-with-keywords
+  ;; http://www.lunaryorn.com/posts/advanced-syntactic-fontification
   (if (string= 'solarized-dark (car custom-enabled-themes))
       (update-solarize-dark)
     (update-solarize-light)))
