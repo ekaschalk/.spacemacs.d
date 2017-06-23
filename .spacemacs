@@ -1489,6 +1489,8 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
          '("d" "#+BEGIN_SRC dot\n\n#+END_SRC")
          ;; Collapse previous header by default in themed html export
          '("clps" ":PROPERTIES:\n :HTML_CONTAINER_CLASS: hsCollapsed\n :END:\n")
+         ;; Hugo title template
+         '("b" "#+TITLE: \n#+SLUG: \n#+DATE: 2017-mm-dd\n#+CATEGORIES: \n#+SUMMARY: \n#+DRAFT: false")
          )))
 
 ;;;; Theming
