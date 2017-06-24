@@ -1,14 +1,10 @@
 * Tasks
 ** Queued
+*** TODO Replace custom regexes with rx builder macro
 *** TODO Enumerate module dependencies
 ** Backlog
 *** TODO Reference icons by variable name rather than the direct string
-*** TODO Change foreground face for org todo headings
 * Bugs
-** General
-
-1. Toggling theme with `SPC T n` changes the font and breaks modeline display.
-
 ** Outline-Outshine-Navi
 
 1. Want M-n to return to same navi buffer rather than make another.
@@ -33,7 +29,9 @@ Not reliably reproducible:
    prettify utils added support for.
 
 * Completed
-** Week of <2017-06-05 Mon>
+** Month of <2017-06-01 Mon>
+*** DONE Change foreground face for org todo headings
+    CLOSED: [2017-06-24 Sat 09:00]
 *** DONE Created tasks for public-facing dotspacemacs task management
     CLOSED: [2017-06-10 Sat 14:36]
 *** DONE Improve load calls
