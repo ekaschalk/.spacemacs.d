@@ -252,36 +252,28 @@
 (defun module/macros ()
   "Macros utilized throughout my configuration."
 
-  (defun $-find-args (seq)
+  (defun xi-find-args (seq)
+    "Collect xi args."
     (seq-sort
      (lambda (sym1 sym2)
        (< (string-to-number (substring (symbol-name sym1) 1))
           (string-to-number (substring (symbol-name sym2) 1))))
      (seq-filter
       (lambda (x)
-        (and (symbolp x) (equal 0 (string-match "\\$[0-9]+" (symbol-name x)))))
+        (and (symbolp x) (equal 0 (string-match "x[0-9]+" (symbol-name x)))))
       (-flatten seq))))
 
-  (defmacro $ (&rest body)
-    "Anonymous func maco, see https://ekaschalk.github.io/post/xi-macro/.
+  (defmacro xi (&rest BODY)
+    "Anonymous func maco, see https://ekaschalk.github.io/post/xi-macro/."
+    `(lambda ,($-find-args BODY) ,BODY))
 
-Enables eg. (funcall ($(print (concat $2 $1))) "there" "hi")
+  (defmacro xi-interactive (&rest BODY)
+    "Anonymous func maco with interactive."
+    `(lambda ,($-find-args BODY) (interactive) ,BODY))
 
-Inside this form symbols in the form $N where N is a positive
-integer are to stand for positional arguments to the generated
-lambda.
-
-If the car of the BODY is a vector though, that vector becomes
-the argument list of the new lambda."
-    (let ((head (car body))
-          (tail (cdr body))
-          args the-body)
-      (if (vectorp head)
-          (setf args (seq-into head 'list)
-                the-body tail)
-        (setf args ($-find-args body)
-              the-body body))
-      `(lambda ,args ,@the-body))))
+  (defmacro xis (&rest BODY)
+    "Anonymous func maco without collecting next form, for progns."
+    `(lambda ,($-find-args BODY) ,@BODY)))
 
 ;;; Display
 
@@ -311,7 +303,7 @@ the argument list of the new lambda."
   (add-to-list 'default-frame-alist '(font . "Hack"))
   (set-face-attribute 'default t :font "Hack")
   (global-set-key (kbd "<f2>")
-                  (lambda () (interactive) (mapc (lambda (x) (zoom-frm-out)) '(1 2)))))
+                  (xi-interactive mapc (lambda (x) (zoom-frm-out)) '(1 2))))
 
 ;;;; Fontsets
 
