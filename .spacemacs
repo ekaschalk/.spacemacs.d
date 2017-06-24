@@ -250,12 +250,39 @@
 ;;; Macros
 
 (defun module/macros ()
-  (defmacro xi (&rest FORMS)
-    "Anonymous func maco, see https://ekaschalk.github.io/post/xi-macro/."
-    `(lambda ,(--filter (s-contains? (symbol-name it)
-                               (prin1-to-string FORMS))
-                  '(x1 x2 x3 x4 x5))
-       ,FORMS)))
+  "Macros utilized throughout my configuration."
+
+  (defun $-find-args (seq)
+    (seq-sort
+     (lambda (sym1 sym2)
+       (< (string-to-number (substring (symbol-name sym1) 1))
+          (string-to-number (substring (symbol-name sym2) 1))))
+     (seq-filter
+      (lambda (x)
+        (and (symbolp x) (equal 0 (string-match "\\$[0-9]+" (symbol-name x)))))
+      (-flatten seq))))
+
+  (defmacro $ (&rest body)
+    "Anonymous func maco, see https://ekaschalk.github.io/post/xi-macro/.
+
+Enables eg. (funcall ($(print (concat $2 $1))) "there" "hi")
+
+Inside this form symbols in the form $N where N is a positive
+integer are to stand for positional arguments to the generated
+lambda.
+
+If the car of the BODY is a vector though, that vector becomes
+the argument list of the new lambda."
+    (let ((head (car body))
+          (tail (cdr body))
+          args the-body)
+      (if (vectorp head)
+          ;; Convert it to a list.
+          (setf args (seq-into head 'list)
+                the-body tail)
+        (setf args ($-find-args body)
+              the-body body))
+      `(lambda ,args ,@the-body))))
 
 ;;; Display
 
