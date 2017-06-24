@@ -343,44 +343,28 @@
   "Enable following font-locks for appropriate modes."
 
   (defun -add-font-lock-kwds (FONT-LOCK-ALIST)
-    "Add unicode font lock replacements.
+    (font-lock-add-keywords
+     nil (--map (-let (((rgx uni-point) it))
+                `(,rgx (0 (progn
+                            (compose-region (match-beginning 1) (match-end 1)
+                                            ,(concat "\t" (list uni-point)))
+                            nil))))
+              FONT-LOCK-ALIST)))
 
-FONT-LOCK-ALIST is an alist of a regexp and the unicode point to replace with.
-Used as: (add-hook 'a-mode-hook (-partial '-add-font-lock-kwds the-alist))"
-    (defun -build-font-lock-alist (REGEX-CHAR-PAIR)
-      "Compose region for each REGEX-CHAR-PAIR in FONT-LOCK-ALIST."
-      `(,(car REGEX-CHAR-PAIR)
-        (0 (prog1 ()
-             (compose-region
-              (match-beginning 1)
-              (match-end 1)
-              ,(concat "	"
-                       (list (cadr REGEX-CHAR-PAIR))))))))
-    (font-lock-add-keywords nil (mapcar '-build-font-lock-alist FONT-LOCK-ALIST)))
+  (defmacro add-font-locks (FONT-LOCK-HOOKS-ALIST)
+    `(--each ,FONT-LOCK-HOOKS-ALIST
+       (-let (((font-lock-alist . mode-hooks) it))
+         (--each mode-hooks
+           (add-hook it (-partial '-add-font-lock-kwds
+                                  (symbol-value font-lock-alist)))))))
 
-  (defun add-font-locks (FONT-LOCK-HOOKS-ALIST)
-    "Utility to add font lock alist to many hooks.
-
-FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
-    (mapc (lambda (x)
-            (lexical-let ((font-lock-alist (car x))
-                          (mode-hooks (cdr x)))
-              (mapc (lambda (mode-hook)
-                      (add-hook mode-hook
-                                (-partial '-add-font-lock-kwds font-lock-alist)))
-                    mode-hooks)))
-          FONT-LOCK-HOOKS-ALIST))
-
-  (add-hook 'toml-mode-hook (lambda () (setq-local outline-regexp "[*\f]+")))
-
-
-  (require 'navi-mode)  ; TODO handle this require better for the navi font-locks
+  (require 'navi-mode)  ; TODO handle this require better
   (add-font-locks
-   `((,fira-font-lock-alist        prog-mode-hook  org-mode-hook)
-     (,python-font-lock-alist      python-mode-hook toml-mode-hook)
-     (,emacs-lisp-font-lock-alist  emacs-lisp-mode-hook)
-     (,hy-font-lock-alist          hy-mode-hook)
-     (,navi-font-lock-alist        navi-mode-hook)
+   '((fira-font-lock-alist        prog-mode-hook  org-mode-hook)
+     (python-font-lock-alist      python-mode-hook toml-mode-hook)
+     (emacs-lisp-font-lock-alist  emacs-lisp-mode-hook)
+     (hy-font-lock-alist          hy-mode-hook)
+     (navi-font-lock-alist        navi-mode-hook)
      )))
 
 ;;;;; Fira-font-locks
