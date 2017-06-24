@@ -311,8 +311,8 @@ CODE-FONT-ALIST is an alist of a font and unicode points to force to use it."
   ;; NOTE The icons you see are not the correct icons until this is evaluated
   (set-icon-fonts
    '(("fontawesome"
-      ;;              
-      #xf07c #xf0c9 #xf0c4 #xf0cb)
+      ;;                         
+      #xf07c #xf0c9 #xf0c4 #xf0cb #xf017 #xf101)
 
      ("all-the-icons"
       ;;    
@@ -321,6 +321,7 @@ CODE-FONT-ALIST is an alist of a font and unicode points to force to use it."
      ("github-octicons"
       ;;                          
       #xf091 #xf059 #xf076 #xf075 #xe192  #xf016)
+
 
      ("Symbola"
       ;; 𝕊    ⨂      ∅      ⟻    ⟼     ⊙      𝕋       𝔽
@@ -844,12 +845,12 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
     "Return STR propertized with PROPS."
     `(propertize ,STR 'face (list ,@PROPS)))
 
-  (defmacro esh-section (NAME ICON STR &rest PROPS)
-    "Return eshell section string with ICON header for STR with PROPS."
+  (defmacro esh-section (NAME ICON FORM &rest PROPS)
+    "Build eshell section NAME with ICON prepended to evaled FORM with PROPS."
     `(setq ,NAME
-           (lambda () (when ,STR
+           (lambda () (when ,FORM
                    (-> ,ICON
-                      (concat esh-section-delim ,STR)
+                      (concat esh-section-delim ,FORM)
                       (with-face ,@PROPS))))))
 
   (defun esh-acc (acc x)
@@ -868,21 +869,21 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
             eshell-prompt-string))
 
   (esh-section esh-dir
-               ""
+               "\xf07c"  ; 
                (abbreviate-file-name (eshell/pwd))
                '(:foreground "gold" :bold ultra-bold :underline t))
 
   (esh-section esh-git
-               ""
+               "\xe907"  ; 
                (magit-get-current-branch)
                '(:foreground "pink"))
 
   (esh-section esh-python
-               ""
+               "\xe928"  ; 
                pyvenv-virtual-env-name)
 
   (esh-section esh-clock
-               ""
+               "\xf017"  ; 
                (format-time-string "%H:%M" (current-time))
                '(:foreground "forest green"))
 
@@ -892,7 +893,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
               (lambda (&rest args) (setq esh-prompt-num (incf esh-prompt-num))))
 
   (esh-section esh-num
-               ""
+               "\xf0c9"  ; 
                (number-to-string esh-prompt-num)
                '(:foreground "brown"))
 
@@ -903,7 +904,8 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (setq eshell-prompt-string " ")
   (setq eshell-funcs (list esh-dir esh-git esh-python esh-clock esh-num))
 
-  (setq eshell-prompt-function 'esh-prompt-func))
+  (setq eshell-prompt-function 'esh-prompt-func)
+  )
 
 ;;;; Theme-updates
 
