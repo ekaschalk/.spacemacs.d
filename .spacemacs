@@ -853,6 +853,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
                       (with-face ,@PROPS))))))
 
   (defun esh-acc (acc x)
+    "Accumulator for evaluating and concatenating esh-sections."
     (--if-let (funcall x)
         (if (s-blank? acc)
             it
@@ -860,6 +861,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
       acc))
 
   (defun esh-prompt-func ()
+    "Build `eshell-prompt-function'"
     (concat esh-header
             (-reduce-from 'esh-acc "" eshell-funcs)
             "\n"
@@ -884,7 +886,8 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
                (format-time-string "%H:%M" (current-time))
                '(:foreground "forest green"))
 
-  (add-hook 'eshell-load-hook (lambda () (setq esh-prompt-num 0)))
+  (setq esh-prompt-num 0)
+  (add-hook 'eshell-exit-hook (lambda () (setq esh-prompt-num 0)))
   (advice-add 'eshell-send-input :before
               (lambda (&rest args) (setq esh-prompt-num (incf esh-prompt-num))))
 
