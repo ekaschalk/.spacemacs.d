@@ -99,6 +99,9 @@
         helm-spotify-plus        ; Spotify improvements
         virtualenvwrapper        ; Python environment management
         ob-async                 ; Asynchronous org-babel source block execution
+        (dash-functional         ; More dash functional programming utils
+         :location (recipe :fetcher github
+                           :repo "magnars/dash.el"))
 
         ;; Visual Enhancements
         all-the-icons-ivy        ; Ivy prompts use file icons
@@ -110,12 +113,6 @@
 
         ;; Themes
         solarized-theme
-
-        ;; May use in the future
-        (dash-functional
-         :location (recipe :fetcher github
-                           :repo "magnars/dash.el"))
-        ;; lispy
         ))
 
 ;;;; Spacemacs
@@ -221,18 +218,21 @@
 
 (defun dotspacemacs/user-init ()
   "Special settings to run before user-config runs."
+
   ;; Rids the verbose custom settings from being written to .spacemacs
   (setq custom-file "./elisp/.custom-settings.el"))
 
 ;;; Spacemacs-User-config
 
 (defun dotspacemacs/user-config ()
+  "Require for .spacemacs, evaluates modules."
+
   (require 'dash-functional)  ; dash/s.el loaded by default, not dash-functional
 
-  ;; Group 0
+  ;; Group 1
   (module/macros)
 
-  ;; Group 1
+  ;; Group 2
   (module/display)
 
   ;; Rest
@@ -277,7 +277,6 @@ the argument list of the new lambda."
           (tail (cdr body))
           args the-body)
       (if (vectorp head)
-          ;; Convert it to a list.
           (setf args (seq-into head 'list)
                 the-body tail)
         (setf args ($-find-args body)
@@ -498,10 +497,14 @@ FONT-LOCK-HOOKS-ALIST is an alist of a font-lock-alist and its desired hooks."
 (defconst emacs-lisp-font-lock-alist
   ;; Outlines not using * so better overlap with in-the-wild packages.
   ;; Intentionally not requiring BOL for eg. fira config modularization
-  '(("\\(^;;;\\)"                   ?■)
-    ("\\(^;;;;\\)"                  ?○)
-    ("\\(^;;;;;\\)"                 ?✸)
-    ("\\(^;;;;;;\\)"                ?✿)))
+  `((,(rx (group bol ";;;") space)                ?■)
+    (,(rx (group bol ";;;;") space)               ?○)
+    (,(rx (group bol ";;;;;") space)              ?✸)
+    (,(rx (group bol ";;;;;;") space)             ?✿)
+
+    ;; Anonymous function macro
+    ("\\(\$\\)("                    ?ƒ)
+    ))
 
 (defconst navi-font-lock-alist
   ;; TODO ideally this would be major-mode specific, atm elisp
@@ -863,10 +866,6 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 ;;;; Shell
 (defun module/display/shell ()
   "Eshell prettification."
-
-  ;; TODO make it so the prompt face can depend on some pred
-  ;; TODO make it so the esh-section face can depend on some pred
-  ;; http://andrew.yurisich.com/work/2014/07/16/dont-link-that-line-number/
 
   (defmacro with-face (STR &rest PROPS)
     "Return STR propertized with PROPS."

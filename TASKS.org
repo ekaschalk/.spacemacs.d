@@ -1,5 +1,6 @@
 * Tasks
 ** Queued
+*** TODO Integrate the new "$" anonymous function macro in config
 *** TODO Replace custom regexes with rx builder macro
 *** TODO Enumerate module dependencies
 ** Backlog
