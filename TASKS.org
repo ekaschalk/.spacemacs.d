@@ -1,6 +1,7 @@
 * Tasks
 ** Queued
-*** TODO Integrate the new "$" anonymous function macro in config
+*** TODO Collect all keybinding confiuration at top level
+*** TODO Integrate the new "xi" anonymous function macro in config
 *** TODO Replace custom regexes with rx builder macro
 *** TODO Enumerate module dependencies
 ** Backlog

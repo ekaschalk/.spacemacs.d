@@ -265,15 +265,11 @@
 
   (defmacro xi (&rest BODY)
     "Anonymous func maco, see https://ekaschalk.github.io/post/xi-macro/."
-    `(lambda ,($-find-args BODY) ,BODY))
-
-  (defmacro xi-interactive (&rest BODY)
-    "Anonymous func maco with interactive."
-    `(lambda ,($-find-args BODY) (interactive) ,BODY))
+    `(lambda ,(xi-find-args BODY) ,BODY))
 
   (defmacro xis (&rest BODY)
     "Anonymous func maco without collecting next form, for progns."
-    `(lambda ,($-find-args BODY) ,@BODY)))
+    `(lambda ,(xi-find-args BODY) ,@BODY)))
 
 ;;; Display
 
@@ -298,12 +294,11 @@
 ;;;; Windows-frame-size-fix
 
 (defun module/display/windows-frame-size-fix ()
-  "Surface has 200% scaling, doesn't apply to emacs, fixes with push of `f2`."
+  "Surface has 200% scaling, doesn't apply to emacs, f2 to fix init zooming."
 
   (add-to-list 'default-frame-alist '(font . "Hack"))
   (set-face-attribute 'default t :font "Hack")
-  (global-set-key (kbd "<f2>")
-                  (xi-interactive mapc (lambda (x) (zoom-frm-out)) '(1 2))))
+  (global-set-key (kbd "<f2>") (xis (interactive) (zoom-frm-out) (zoom-frm-out))))
 
 ;;;; Fontsets
 
@@ -315,18 +310,13 @@
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
 
   (defun set-icon-fonts (CODE-FONT-ALIST)
-    "Utility to associate unicode points with a chosen font.
+    "Utility to associate many unicode points with specified fonts."
+    (--each CODE-FONT-ALIST
+      (-let (((font . codes) it))
+        (--each codes
+          (set-fontset-font t `(,it . ,it) font)))))
 
-CODE-FONT-ALIST is an alist of a font and unicode points to force to use it."
-    (mapc (lambda (x)
-            (let ((font (car x))
-                  (codes (cdr x)))
-              (mapc (lambda (code)
-                      (set-fontset-font t `(,code . ,code) font))
-                    codes)))
-          CODE-FONT-ALIST))
-
-  ;; NOTE The icons you see are not the correct icons until this is evaluated
+  ;; The icons you see are not the correct icons until this is evaluated!
   (set-icon-fonts
    '(("fontawesome"
       ;;                         
@@ -339,7 +329,6 @@ CODE-FONT-ALIST is an alist of a font and unicode points to force to use it."
      ("github-octicons"
       ;;                          
       #xf091 #xf059 #xf076 #xf075 #xe192  #xf016)
-
 
      ("Symbola"
       ;; 𝕊    ⨂      ∅      ⟻    ⟼     ⊙      𝕋       𝔽
