@@ -345,18 +345,18 @@
   (defun -add-font-lock-kwds (FONT-LOCK-ALIST)
     (font-lock-add-keywords
      nil (--map (-let (((rgx uni-point) it))
-                `(,rgx (0 (progn
-                            (compose-region (match-beginning 1) (match-end 1)
-                                            ,(concat "\t" (list uni-point)))
-                            nil))))
+               `(,rgx (0 (progn
+                           (compose-region (match-beginning 1) (match-end 1)
+                                           ,(concat "\t" (list uni-point)))
+                           nil))))
               FONT-LOCK-ALIST)))
 
   (defmacro add-font-locks (FONT-LOCK-HOOKS-ALIST)
     `(--each ,FONT-LOCK-HOOKS-ALIST
-       (-let (((font-lock-alist . mode-hooks) it))
+       (-let (((font-locks . mode-hooks) it))
          (--each mode-hooks
            (add-hook it (-partial '-add-font-lock-kwds
-                                  (symbol-value font-lock-alist)))))))
+                                  (symbol-value font-locks)))))))
 
   (require 'navi-mode)  ; TODO handle this require better
   (add-font-locks
@@ -678,22 +678,21 @@ Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)
                                ("\\<\\(master\\)\\>"     ?)
                                ("\\<\\(origin/master\\)" ?)))
 
-  (defun add-magit-faces ()
-    "Apply `pretty-magit-faces' and `pretty-magit-symbols' to magit buffers."
+  (defun apply-mods (REGEX-SYMBOL-ALIST TEXT-FUNC)
     (interactive)
     (with-silent-modifications
-      (--each pretty-magit-faces
-        (save-excursion
-          (evil-goto-first-line)
-          (while (search-forward-regexp (car it) nil t)
-            (add-face-text-property
-             (match-beginning 1) (match-end 1) (cdr it)))))
-      (--each pretty-magit-symbols
-        (save-excursion
-          (evil-goto-first-line)
-          (while (search-forward-regexp (car it) nil t)
-            (compose-region
-             (match-beginning 1) (match-end 1) (cdr it)))))))
+      (--each REGEX-SYMBOL-ALIST
+        (-let (((rgx prop) it))
+          (save-excursion
+            (evil-goto-first-line)
+            (while (search-forward-regexp rgx nil t)
+              (funcall TEXT-FUNC
+                       (match-beginning 1) (match-end 1) prop)))))))
+
+  (defun add-magit-faces ()
+    (interactive)
+    (apply-mods pretty-magit-faces 'add-face-text-property)
+    (apply-mods pretty-magit-symbols 'compose-region))
 
   (setq use-magit-commit-prompt-p nil)
   (defun use-magit-commit-prompt (&rest args)
