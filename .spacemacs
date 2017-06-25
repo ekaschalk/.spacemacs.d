@@ -612,87 +612,51 @@ fontification of the buffer. This is due to Magit doing all styling with
 `propertize' and black magic. So we apply the faces the manual way.
 
 Adds Ivy integration so a prompt of (Add, Docs, ...) appears when commiting.
-Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)
-"
+Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)"
 
-  (setq my-magit-colors '(:feature "silver"
-                          :fix "#FB6542"    ; sunset
-                          :add "#375E97"    ; sky
-                          :clean "#FFBB00"  ; sunflower
-                          :docs "#3F681C"   ; grass
-                          ))
+  (setq pretty-magit
+        '(("\\<\\(Feature:\\)"
+           ?
+           (:foreground "slate gray"))
 
-  (defface my-magit-base-face
-    `((t :weight bold  :height 1.2))
-    "Base face for magit commit headers."
-    :group 'magit-faces)
+          ("\\<\\(Add:\\)"
+           ?
+           (:foreground "#375E97"))
 
-  (defface my-magit-feature-face
-    `((t :foreground ,(plist-get my-magit-colors :feature)
-         :inherit my-magit-base-face))
-    "Feature commit header face.")
+          ("\\<\\(Fix:\\)"
+           ?
+           (:foreground "#FB6542"))
 
-  (defface my-magit-fix-face
-    `((t :foreground ,(plist-get my-magit-colors :fix)
-         :inherit my-magit-base-face))
-    "Fix commit header face.")
+          ("\\<\\(Clean:\\)"
+           ?
+           (:foreground "#FFBB00"))
 
-  (defface my-magit-add-face
-    `((t :foreground ,(plist-get my-magit-colors :add)
-         :inherit my-magit-base-face))
-    "Add commit header face.")
+          ("\\<\\(Docs:\\)"
+           ?
+           (:foreground "#3F681C"))
 
-  (defface my-magit-clean-face
-    `((t :foreground ,(plist-get my-magit-colors :clean)
-         :inherit my-magit-base-face))
-    "Clean commit header face.")
+          ("\\<\\(master\\)\\>"
+           ?
+           (:box t))
 
-  (defface my-magit-docs-face
-    `((t :foreground ,(plist-get my-magit-colors :docs)
-         :inherit my-magit-base-face))
-    "Docs commit header face.")
-
-  (defface my-magit-master-face
-    `((t :box t
-         :inherit my-magit-base-face))
-    "Docs commit header face.")
-
-  (defface my-magit-origin-face
-    `((t :box t
-         :inherit my-magit-base-face))
-    "Docs commit header face.")
-
-  (setq pretty-magit-faces '(("\\<\\(Feature:\\)"         'my-magit-feature-face)
-                             ("\\<\\(Add:\\)"             'my-magit-add-face)
-                             ("\\<\\(Fix:\\)"             'my-magit-fix-face)
-                             ("\\<\\(Clean:\\)"           'my-magit-clean-face)
-                             ("\\<\\(Docs:\\)"            'my-magit-docs-face)
-                             ("\\<\\(master\\)\\>"        'my-magit-master-face)
-                             ("\\<\\(origin/master\\)\\>" 'my-magit-origin-face))
-
-        pretty-magit-symbols '(("\\<\\(Feature:\\)"      ?)
-                               ("\\<\\(Add:\\)"          ?)
-                               ("\\<\\(Fix:\\)"          ?)
-                               ("\\<\\(Clean:\\)"        ?)
-                               ("\\<\\(Docs:\\)"         ?)
-                               ("\\<\\(master\\)\\>"     ?)
-                               ("\\<\\(origin/master\\)" ?)))
-
-  (defun apply-mods (REGEX-SYMBOL-ALIST TEXT-FUNC)
-    (interactive)
-    (with-silent-modifications
-      (--each REGEX-SYMBOL-ALIST
-        (-let (((rgx prop) it))
-          (save-excursion
-            (evil-goto-first-line)
-            (while (search-forward-regexp rgx nil t)
-              (funcall TEXT-FUNC
-                       (match-beginning 1) (match-end 1) prop)))))))
+          ("\\<\\(origin/master\\)\\>"
+           ?
+           (:box t))
+          ))
 
   (defun add-magit-faces ()
     (interactive)
-    (apply-mods pretty-magit-faces 'add-face-text-property)
-    (apply-mods pretty-magit-symbols 'compose-region))
+    (with-silent-modifications
+      (--each pretty-magit
+        (-let (((rgx symb props) it))
+          (save-excursion
+            (evil-goto-first-line)
+            (while (search-forward-regexp rgx nil t)
+              (compose-region
+               (match-beginning 1) (match-end 1) symb)
+              (when props
+                (add-face-text-property
+                 (match-beginning 1) (match-end 1) props))))))))
 
   (setq use-magit-commit-prompt-p nil)
   (defun use-magit-commit-prompt (&rest args)
@@ -828,6 +792,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
                :logic :sets :sub-and-superscripts)))
 
 ;;;; Shell
+
 (defun module/display/shell ()
   "Eshell prettification."
 
