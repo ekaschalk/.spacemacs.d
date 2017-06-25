@@ -615,17 +615,22 @@ Adds Ivy integration so a prompt of (Add, Docs, ...) appears when commiting.
 Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)"
 
   (defmacro pretty-magit (WORD ICON PROPS &optional NO-PROMPT?)
-    `(add-to-list 'pretty-magit-alist
-                  (list (rx bow (group ,WORD ":")) ,ICON ',PROPS)))
+    `(progn
+       (add-to-list 'pretty-magit-alist
+                    (list (rx bow (group ,WORD (eval (if ,NO-PROMPT? "" ":"))))
+                          ,ICON ',PROPS))
+       (unless ,NO-PROMPT?
+         (add-to-list 'pretty-magit-prompt (concat ,WORD ": ")))))
 
   (setq pretty-magit-alist nil)
-  (pretty-magit "Feature"       ? (:foreground "slate gray"))
-  (pretty-magit "Add"           ? (:foreground "#375E97"))
-  (pretty-magit "Fix"           ? (:foreground "#FB6542"))
-  (pretty-magit "Clean"         ? (:foreground "#FFBB00"))
-  (pretty-magit "Docs"          ? (:foreground "#3F681C"))
-  (pretty-magit "master"        ? (:box t) t)
-  (pretty-magit "origin/master" ? (:box t) t)
+  (setq pretty-magit-prompt nil)
+  (pretty-magit "Feature" ? (:foreground "slate gray" :height 1.2))
+  (pretty-magit "Add"     ? (:foreground "#375E97" :height 1.2))
+  (pretty-magit "Fix"     ? (:foreground "#FB6542" :height 1.2))
+  (pretty-magit "Clean"   ? (:foreground "#FFBB00" :height 1.2))
+  (pretty-magit "Docs"    ? (:foreground "#3F681C" :height 1.2))
+  (pretty-magit "master"  ? (:box t :height 1.2) t)
+  (pretty-magit "origin"  ? (:box t :height 1.2) t)
 
   (defun add-magit-faces ()
     (interactive)
@@ -650,11 +655,8 @@ Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)"
     (interactive)
     (when use-magit-commit-prompt-p
       (setq use-magit-commit-prompt-p nil)
-      (insert (ivy-read "Commit Type "
-                        '("Feature: " "Add: " "Fix: " "Clean: " "Docs: ")
-                        :require-match t
-                        :sort t
-                        :preselect "Add: "))
+      (insert (ivy-read "Commit Type " pretty-magit-prompt
+                        :require-match t :sort t :preselect "Add: "))
       (add-magit-faces)
       (evil-insert 1)))
 
