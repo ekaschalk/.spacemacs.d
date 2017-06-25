@@ -614,46 +614,29 @@ fontification of the buffer. This is due to Magit doing all styling with
 Adds Ivy integration so a prompt of (Add, Docs, ...) appears when commiting.
 Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)"
 
-  (setq pretty-magit
-        '(("\\<\\(Feature:\\)"
-           ?
-           (:foreground "slate gray"))
+  (defmacro pretty-magit (WORD ICON PROPS &optional NO-PROMPT?)
+    `(add-to-list 'pretty-magit-alist
+                  (list (rx bow (group ,WORD ":")) ,ICON ',PROPS)))
 
-          ("\\<\\(Add:\\)"
-           ?
-           (:foreground "#375E97"))
-
-          ("\\<\\(Fix:\\)"
-           ?
-           (:foreground "#FB6542"))
-
-          ("\\<\\(Clean:\\)"
-           ?
-           (:foreground "#FFBB00"))
-
-          ("\\<\\(Docs:\\)"
-           ?
-           (:foreground "#3F681C"))
-
-          ("\\<\\(master\\)\\>"
-           ?
-           (:box t))
-
-          ("\\<\\(origin/master\\)\\>"
-           ?
-           (:box t))
-          ))
+  (setq pretty-magit-alist nil)
+  (pretty-magit "Feature"       ? (:foreground "slate gray"))
+  (pretty-magit "Add"           ? (:foreground "#375E97"))
+  (pretty-magit "Fix"           ? (:foreground "#FB6542"))
+  (pretty-magit "Clean"         ? (:foreground "#FFBB00"))
+  (pretty-magit "Docs"          ? (:foreground "#3F681C"))
+  (pretty-magit "master"        ? (:box t) t)
+  (pretty-magit "origin/master" ? (:box t) t)
 
   (defun add-magit-faces ()
     (interactive)
     (with-silent-modifications
-      (--each pretty-magit
-        (-let (((rgx symb props) it))
+      (--each pretty-magit-alist
+        (-let (((rgx icon props) it))
           (save-excursion
-            (evil-goto-first-line)
+            (goto-char (point-min))
             (while (search-forward-regexp rgx nil t)
               (compose-region
-               (match-beginning 1) (match-end 1) symb)
+               (match-beginning 1) (match-end 1) icon)
               (when props
                 (add-face-text-property
                  (match-beginning 1) (match-end 1) props))))))))
