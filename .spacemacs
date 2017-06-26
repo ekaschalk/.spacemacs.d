@@ -615,6 +615,7 @@ Adds Ivy integration so a prompt of (Add, Docs, ...) appears when commiting.
 Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)"
 
   (defmacro pretty-magit (WORD ICON PROPS &optional NO-PROMPT?)
+    "Replace sanitized WORD with ICON, PROPS and by default add to prompts."
     `(progn
        (add-to-list 'pretty-magit-alist
                     (list (rx bow (group ,WORD (eval (if ,NO-PROMPT? "" ":"))))
@@ -633,6 +634,7 @@ Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)"
   (pretty-magit "origin"  ? (:box t :height 1.2) t)
 
   (defun add-magit-faces ()
+    "Add face properties and compose symbols for buffer from pretty-magit."
     (interactive)
     (with-silent-modifications
       (--each pretty-magit-alist
@@ -652,6 +654,7 @@ Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)"
 
   (defun magit-commit-prompt ()
     "Magit prompt and insert commit header with faces."
+
     (interactive)
     (when use-magit-commit-prompt-p
       (setq use-magit-commit-prompt-p nil)
@@ -1261,7 +1264,15 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 
   (with-eval-after-load 'python
     (evil-define-key '(normal insert visual replace operator motion emacs)
-      python-mode-map (kbd "C-j") 'evil-avy-goto-char-2)))
+      python-mode-map (kbd "C-j") 'evil-avy-goto-char-2))
+
+  (evil-global-set-key 'normal (kbd "s") 'avy-goto-char-timer)
+  (evil-global-set-key 'visual (kbd "s") 'avy-goto-char-timer)
+  (evil-global-set-key 'replace (kbd "s") 'avy-goto-char-timer)
+  (evil-global-set-key 'operator (kbd "s") 'avy-goto-char-timer)
+  (evil-global-set-key 'motion (kbd "s") 'avy-goto-char-timer)
+  (evil-global-set-key 'emacs (kbd "s") 'avy-goto-char-timer)
+  (setq avy-timeout-seconds 0.35))
 
 ;;;; Extra-bindings
 
