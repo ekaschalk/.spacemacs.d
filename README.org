@@ -25,10 +25,6 @@ All the icons integration and outline improvements.
 |-------------------------------+-----------------------------------+--------------------------------|
 | [[file:./imgs/spacemacs/ivy.png]] | [[file:./imgs/spacemacs/neotree.png]] | [[file:./imgs/spacemacs/navi.png]] |
 
-# | Solarized-Dark                   |  Solarized-Light                       |
-# |----------------------------------+----------------------------------------|
-# | [[file:./imgs/spacemacs/coding.png]] | [[file:./imgs/spacemacs/coding-light.png]] |
-
 * My Spacemacs
 My Spacemacs notably implements:
 - Visual enhancements
