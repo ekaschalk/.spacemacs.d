@@ -1,30 +1,33 @@
-* Screens
-Check out [[https://ekaschalk.github.io/]] for articles.
+* Intro
 
-| Solarized-Dark                   |  Solarized-Light                       |
-|----------------------------------+----------------------------------------|
-| [[file:./imgs/spacemacs/coding.png]] | [[file:./imgs/spacemacs/coding-light.png]] |
+My Spacemacs has a number of unique enhancements [[https://ekaschalk.github.io/][with accompanying blog posts]].
 
-Coding with custom unicode replacements and ligatures:
+[[https://ekaschalk.github.io/post/prettify-mode/][Coding with Mathematical Notation]]
 
 [[file:./imgs/spacemacs/python-code.png]]
 [[file:./imgs/spacemacs/hy-code.png]]
 
-The Eshell and Modeline:
+[[https://ekaschalk.github.io/post/custom-eshell/][Eshell Customization]]
 
-[[file:./imgs/spacemacs/eshell.png]]
+[[file:./imgs/esh-ex.png]]
 
-Closer looks:
+[[https://ekaschalk.github.io/post/pretty-magit/][Pretty Magit - Integrated commit leaders]]
+
+| Magit Commits                           | The actual commits                  |
+|-----------------------------------------+-------------------------------------|
+| [[file:./imgs/spacemacs/magit-symbols.png]] | [[file:./imgs/spacemacs/magit-raw.png]] |
+
+[[file:./imgs/magit-prompt.png]]
+
+All the icons integration and outline improvements.
 
 | Ivy                           | Neotree                           | Outline-Navi mode              |
 |-------------------------------+-----------------------------------+--------------------------------|
 | [[file:./imgs/spacemacs/ivy.png]] | [[file:./imgs/spacemacs/neotree.png]] | [[file:./imgs/spacemacs/navi.png]] |
 
-Magit customization:
-
-| Magit Commits                           | The actual commits                  |
-|-----------------------------------------+-------------------------------------|
-| [[file:./imgs/spacemacs/magit-symbols.png]] | [[file:./imgs/spacemacs/magit-raw.png]] |
+# | Solarized-Dark                   |  Solarized-Light                       |
+# |----------------------------------+----------------------------------------|
+# | [[file:./imgs/spacemacs/coding.png]] | [[file:./imgs/spacemacs/coding-light.png]] |
 
 * My Spacemacs
 My Spacemacs notably implements:
