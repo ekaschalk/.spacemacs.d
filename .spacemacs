@@ -1799,6 +1799,21 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 (defun module/stuff ()
   "Atm trying to rebuild navi mode in counsel imenu."
 
+  (defface ivy-outline-match-face
+    '((t :height 1.25 :background "#268bd2" :weight bold))
+    "Match face for ivy outline prompt.")
+
+  (defun format-ivy-outline (s level)
+    (with-face
+     (pcase level
+       (2 (format " %s" s))
+       (3 (format "  %s" s))
+       (_ s))
+     (pcase level
+       (1 '(:foreground "#268bd2" :height 1.25 :underline t :weight ultra-bold))
+       (2 '(:foreground "#2aa198" :height 1.1 :weight semi-bold))
+       (3 '(:foreground "steel blue")))))
+
   (defun collect-outlines ()
     (interactive)
     (save-excursion
@@ -1809,21 +1824,25 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
                 (search-forward-regexp nil t))
          (save-excursion
            (beginning-of-line)
-           (-let ((level (outshine-calc-outline-level))
-                  (name (match-string-no-properties 1)))
+           (-let* ((level (outshine-calc-outline-level))
+                   (name (-> (match-string-no-properties 1)
+                            (format-ivy-outline level))))
              (->> (point-marker)
                 (cons name)
                 (when level)
                 (cons it)))))
        nil)))
 
-  (defun my-imenu ()
+  (defun outline-imenu ()
     ;; Add in :preselect by traversing backwards
     (interactive)
+    (make-local-variable 'face-remapping-alist)
+    (setq face-remapping-alist '((ivy-current-match ivy-outline-match-face)))
     (ivy-read "Outline " (collect-outlines)
               :action (-lambda ((_ . marker))
                         (with-ivy-window
-                          (-> marker marker-position goto-char)))))
+                          (-> marker marker-position goto-char)
+                          (recenter 2)))))
 
-  (global-set-key (kbd "C-j") 'my-imenu)
+  (global-set-key (kbd "C-j") 'outline-imenu)
   )
