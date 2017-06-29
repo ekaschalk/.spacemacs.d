@@ -1799,27 +1799,31 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 (defun module/stuff ()
   "Atm trying to rebuild navi mode in counsel imenu."
 
-  (setq test `((nil ,(rx bol ";;" (1+ ";") (* nonl)) 0)))
+  (defun collect-outlines ()
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (--unfold
+       (when (-> outshine-imenu-preliminary-generic-expression
+                cadar
+                (search-forward-regexp nil t))
+         (save-excursion
+           (beginning-of-line)
+           (-let ((level (outshine-calc-outline-level))
+                  (name (match-string-no-properties 1)))
+             (->> (point-marker)
+                (cons name)
+                (when level)
+                (cons it)))))
+       nil)))
 
-  (defun tf-imenu (s)
-    (if (s-starts-with? ";;;;" s)
-        (with-face
-         (concat "■" s)
-         '(:foreground "red"
-                       :height 1.2
-                       ))
-      s)
-    )
+  (defun my-imenu ()
+    ;; Add in :preselect by traversing backwards
+    (interactive)
+    (ivy-read "Outline " (collect-outlines)
+              :action (-lambda ((_ . marker))
+                        (with-ivy-window
+                          (-> marker marker-position goto-char)))))
 
-  (ivy-set-display-transformer 'counsel-imenu 'tf-imenu)
-
-  (defun my-imenu (&optional PREFER-IMENU-P)
-    "Convenience function for calling imenu/idomenu from outshine."
-    (interactive "P")
-    (let* ((imenu-generic-expression test)
-           (imenu-prev-index-position-function nil)
-           (imenu-extract-index-name-function nil)
-           (imenu-auto-rescan t)
-           (imenu-auto-rescan-maxout 360000))
-      (funcall 'imenu (imenu-choose-buffer-index "Headline: "))))
+  (global-set-key (kbd "C-j") 'my-imenu)
   )
