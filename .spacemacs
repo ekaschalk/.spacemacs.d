@@ -1836,13 +1836,14 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (defun outline-imenu ()
     ;; Add in :preselect by traversing backwards
     (interactive)
-    (make-local-variable 'face-remapping-alist)
-    (setq face-remapping-alist '((ivy-current-match ivy-outline-match-face)))
     (ivy-read "Outline " (collect-outlines)
               :action (-lambda ((_ . marker))
                         (with-ivy-window
                           (-> marker marker-position goto-char)
-                          (recenter 2)))))
+                          (recenter 2)))
+              :update-fn (lambda ()
+                           (set (make-local-variable 'face-remapping-alist)
+                                '((ivy-current-match ivy-outline-match-face))))))
 
   (global-set-key (kbd "C-j") 'outline-imenu)
   )
