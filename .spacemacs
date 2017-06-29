@@ -1799,6 +1799,26 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 (defun module/stuff ()
   "Atm trying to rebuild navi mode in counsel imenu."
 
+  ;; (defun collect-outlines ()
+  ;;   (interactive)
+  ;;   (save-excursion
+  ;;     (goto-char (point-min))
+  ;;     (--unfold
+  ;;      (when (-> outshine-imenu-preliminary-generic-expression
+  ;;               cadar
+  ;;               (search-forward-regexp nil t))
+  ;;        (save-excursion
+  ;;          (beginning-of-line)
+  ;;          (-let* ((level (outshine-calc-outline-level))
+  ;;                  (name (-> (match-string-no-properties 1)
+  ;;                           (format-ivy-outline level))))
+  ;;            (->> (point-marker)
+  ;;               (cons name)
+  ;;               (when level)
+  ;;               (cons it)))))
+  ;;      nil)))
+
+
   (defface ivy-outline-match-face
     '((t :height 1.25 :background "#268bd2" :weight bold))
     "Match face for ivy outline prompt.")
@@ -1814,29 +1834,57 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
        (2 '(:foreground "#2aa198" :height 1.1 :weight semi-bold))
        (3 '(:foreground "steel blue")))))
 
+  (defun format-ivy-outline-raw (s level)
+    (pcase level
+      (2 (format " %s" s))
+      (3 (format "  %s" s))
+      (_ s)))
+
+  (defun collect-outline ()
+    (when (-> outshine-imenu-preliminary-generic-expression
+             cadar
+             (search-forward-regexp nil t))
+      (save-excursion
+        (beginning-of-line)
+        (-> (match-string-no-properties 1)
+           (format-ivy-outline-raw (outshine-calc-outline-level))))))
+
   (defun collect-outlines ()
     (interactive)
     (save-excursion
       (goto-char (point-min))
-      (--unfold
-       (when (-> outshine-imenu-preliminary-generic-expression
-                cadar
-                (search-forward-regexp nil t))
-         (save-excursion
-           (beginning-of-line)
-           (-let* ((level (outshine-calc-outline-level))
-                   (name (-> (match-string-no-properties 1)
-                            (format-ivy-outline level))))
-             (->> (point-marker)
-                (cons name)
-                (when level)
-                (cons it)))))
-       nil)))
+      (append
+       (--unfold
+        (when (-> outshine-imenu-preliminary-generic-expression
+                 cadar
+                 (search-forward-regexp nil t))
+          (save-excursion
+            (beginning-of-line)
+            (-let* ((level (outshine-calc-outline-level))
+                    (name (-> (match-string-no-properties 1)
+                             (format-ivy-outline level))))
+              (->> (point-marker)
+                 (cons name)
+                 (when level)
+                 (cons it)))))
+        nil)
+       (save-excursion
+         (beginning-of-line)
+         (-let* ((level (outshine-calc-outline-level))
+                 (name (-> (match-string-no-properties 1)
+                          (format-ivy-outline level))))
+           (->> (point-marker)
+              (cons name)
+              (when level)
+              list))))))
 
   (defun outline-imenu ()
-    ;; Add in :preselect by traversing backwards
     (interactive)
     (ivy-read "Outline " (collect-outlines)
+              :preselect (save-excursion
+                           (unless (outline-on-heading-p t)
+                             (outline-previous-heading))
+                           (collect-outline))
               :action (-lambda ((_ . marker))
                         (with-ivy-window
                           (-> marker marker-position goto-char)
