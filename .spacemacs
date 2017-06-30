@@ -247,7 +247,7 @@
   (module/outshine)
   (module/python)
 
-  ;; My Packages
+  ;; My Packages (Too large to keep in config)
   (load-file (if-linux "~/elisp/outline-ivy.el" "c:/~/elisp/outline-ivy.el"))
   (global-set-key (kbd "C-j") 'oi-jump)
 

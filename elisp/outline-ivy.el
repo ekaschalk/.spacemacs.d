@@ -1,5 +1,7 @@
 ;; A fancy, functional ivy prompt for outlines
+;; Faces and formatting only provided for up to level 3 outlines
 ;; See this blog post for details
+;; http://ekaschalk.github.io/post/outline-ivy/
 
 (require 'dash)
 (require 'ivy)
@@ -7,7 +9,7 @@
 
 ;;; Config
 
-(defvar oi-height 30
+(defvar oi-height 20
   "Number of outlines to display, overrides ivy-height.")
 
 (defface oi-match-face
@@ -41,9 +43,10 @@
 
 (defun oi-format-name-pretty (STR PARENTS LEVEL)
   "Prepend invisible PARENTS to propertized STR at LEVEL."
-  (concat (when PARENTS
-            (propertize (apply 'concat PARENTS)
-                        'invisible t))
+  (concat (propertize
+           (concat (when LEVEL (number-to-string LEVEL))
+                   (apply 'concat PARENTS))
+           'invisible t)
           (propertize (oi-format-name STR LEVEL)
                       'face (pcase LEVEL
                               (1 'oi-face-1)
