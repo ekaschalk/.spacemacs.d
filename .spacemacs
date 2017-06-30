@@ -365,13 +365,17 @@
            (add-hook it (-partial '-add-font-lock-kwds
                                   (symbol-value font-locks)))))))
 
-  (require 'navi-mode)  ; TODO handle this require better
   (add-font-locks
-   '((fira-font-lock-alist        prog-mode-hook  org-mode-hook)
-     (python-font-lock-alist      python-mode-hook toml-mode-hook)
-     (emacs-lisp-font-lock-alist  emacs-lisp-mode-hook)
-     (hy-font-lock-alist          hy-mode-hook)
-     (navi-font-lock-alist        navi-mode-hook)
+   '(;; Ligatures
+     (fira-font-lock-alist prog-mode-hook org-mode-hook)
+
+     ;; Outlines
+     (emacs-outlines-font-lock-alist   emacs-lisp-mode-hook)
+     (lisp-outlines-font-lock-alist    clojure-mode-hook  hy-mode-hook)
+     (python-outlines-font-lock-alist  python-mode-hook)
+
+     ;; Language updates not possible with prettify-symbols
+     (hy-font-lock-alist     hy-mode-hook)
      )))
 
 ;;;;; Fira-font-locks
@@ -466,48 +470,27 @@
 
 ;;;;; Language-font-locks
 
-(defconst emacs-lisp-font-lock-alist
-  ;; Outlines not using * so better overlap with in-the-wild packages.
-  ;; Intentionally not requiring BOL for eg. fira config modularization
-  `((,(rx (group bol ";;;") space)                ?■)
-    (,(rx (group bol ";;;;") space)               ?○)
-    (,(rx (group bol ";;;;;") space)              ?✸)
-    (,(rx (group bol ";;;;;;") space)             ?✿)
+(defconst emacs-outlines-font-lock-alist
+  '(("\\(^;;;\\) "          ?■)
+    ("\\(^;;;;\\) "         ?○)
+    ("\\(^;;;;;\\) "        ?✸)
+    ("\\(^;;;;;;\\) "       ?✿)))
 
-    ;; Anonymous function macro
-    ("\\(\$\\)("                    ?ƒ)
-    ))
+(defconst lisp-outlines-font-lock-alist
+  '(("\\(^;; \\*\\) "          ?■)
+    ("\\(^;; \\*\\*\\) "       ?○)
+    ("\\(^;; \\*\\*\\*\\) "    ?✸)
+    ("\\(^;; \\*\\*\\*\\*\\) " ?✿)))
 
-(defconst navi-font-lock-alist
-  ;; TODO ideally this would be major-mode specific, atm elisp
-  '(;; Outlines
-    ;; Hides numbers (numbers still needed for internal navi methods)
-    ("\\([ ]+[0-9]+:;;;\\) "                   ?■)
-    ("\\([ ]+[0-9]+:;;;;\\) "                  ?○)
-    ("\\([ ]+[0-9]+:;;;;;\\) "                 ?✸)
-    ("\\([ ]+[0-9]+:;;;;;;\\) "                ?✿)
-
-    ;; Hide first line
-    ("\\(.*matches.*$\\)"            ? )
-    ))
-
-(defconst python-font-lock-alist
-  ;; Outlines
-  '(("\\(^# \\*\\)[ \t\n]"          ?■)
-    ("\\(^# \\*\\*\\)[ \t\n]"       ?○)
-    ("\\(^# \\*\\*\\*\\)[ \t\n]"    ?✸)
-    ("\\(^# \\*\\*\\*\\*\\)[^\\*]"  ?✿)))
+(defconst python-outlines-font-lock-alist
+  '(("\\(^# \\*\\) "          ?■)
+    ("\\(^# \\*\\*\\) "       ?○)
+    ("\\(^# \\*\\*\\*\\) "    ?✸)
+    ("\\(^# \\*\\*\\*\\*\\) " ?✿)))
 
 (defconst hy-font-lock-alist
-  ;; Outlines
-  '(("\\(^;; \\*\\)[ \t\n]"          ?■)
-    ("\\(^;; \\*\\*\\)[ \t\n]"       ?○)
-    ("\\(^;; \\*\\*\\*\\)[ \t\n]"    ?✸)
-    ("\\(^;; \\*\\*\\*\\*\\)[^\\*]"  ?✿)
-
-    ;; self does not work as a prettify symbol for hy, unlike python
-    ("\\(self\\)"   ?⊙)))
-
+  ;; self does not work as a prettify symbol for hy, unlike python
+  '(("\\(self\\)"   ?⊙)))
 
 ;;;; All-the-icons
 
@@ -555,15 +538,7 @@
          ("(\\(assert[^ ]*\\)" 1 font-lock-keyword-face)
          )))
 
-  (defun navi-extra-syntax ()
-    (font-lock-add-keywords
-     nil '(("\\([ ]+[0-9]+:;;;\\) .*$" .    'org-level-1)
-         ("\\([ ]+[0-9]+:;;;;\\) .*$" .   'org-level-2)
-         ("\\([ ]+[0-9]+:;;;;;\\) .*$" .  'org-level-3)
-         ("\\([ ]+[0-9]+:;;;;;\\) .*$" .  'org-level-4))))
-
-  (add-hook 'hy-mode-hook 'hy-extra-syntax)
-  (add-hook 'navi-mode-hook 'navi-extra-syntax))
+  (add-hook 'hy-mode-hook 'hy-extra-syntax))
 
 ;;;; Modeline
 
@@ -1234,52 +1209,11 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 (defun module/navigation/avy ()
   "Avy keybindings and custom motions."
 
-  (require 'avy)  ; TODO must require for to get avy--generic-jump loaded
+  (setq avy-timeout-seconds 0.35)
+  (evil-global-set-key 'normal (kbd "s") 'avy-goto-char-timer)
 
   (global-set-key (kbd "C-h") 'avy-pop-mark)
-  (global-set-key (kbd "C-j") 'evil-avy-goto-char-2)
-  (global-set-key (kbd "C-k") 'evil-avy-goto-word-or-subword-1)
-  (global-set-key (kbd "C-l") 'evil-avy-goto-line)
-
-  ;; TODO this motion should be major-mode specific and handle navi altogether
-  (defun avy-navi-goto-outline ()
-    (interactive)
-    (avy--generic-jump "[;]+\\( \\)" nil 'post))  ; must be post
-
-  (defun avy-navi-goto-comment ()
-    (interactive)
-    (avy--generic-jump comment-start-skip nil 'pre))
-
-  (global-set-key (kbd "C-;") 'avy-navi-goto-outline)
-  ;; TODO probably better way to do multi evil global set
-  (evil-global-set-key 'normal (kbd "C-o") 'avy-navi-goto-outline)
-  (evil-global-set-key 'visual (kbd "C-o") 'avy-navi-goto-outline)
-  (evil-global-set-key 'replace (kbd "C-o") 'avy-navi-goto-outline)
-  (evil-global-set-key 'operator (kbd "C-o") 'avy-navi-goto-outline)
-  (evil-global-set-key 'motion (kbd "C-o") 'avy-navi-goto-outline)
-  (evil-global-set-key 'emacs (kbd "C-o") 'avy-navi-goto-outline)
-
-  (with-eval-after-load 'flyspell
-    (evil-define-key '(normal insert visual replace operator motion emacs)
-      flyspell-mode-map (kbd "C-;") 'avy-navi-goto-comment))
-
-  (with-eval-after-load 'org
-    (evil-define-key '(normal insert visual replace operator motion emacs)
-      org-mode-map (kbd "C-j") 'evil-avy-goto-char-2)
-    (evil-define-key '(normal insert visual replace operator motion emacs)
-      org-mode-map (kbd "C-k") 'evil-avy-goto-word-or-subword-1))
-
-  (with-eval-after-load 'python
-    (evil-define-key '(normal insert visual replace operator motion emacs)
-      python-mode-map (kbd "C-j") 'evil-avy-goto-char-2))
-
-  (evil-global-set-key 'normal (kbd "s") 'avy-goto-char-timer)
-  (evil-global-set-key 'visual (kbd "s") 'avy-goto-char-timer)
-  (evil-global-set-key 'replace (kbd "s") 'avy-goto-char-timer)
-  (evil-global-set-key 'operator (kbd "s") 'avy-goto-char-timer)
-  (evil-global-set-key 'motion (kbd "s") 'avy-goto-char-timer)
-  (evil-global-set-key 'emacs (kbd "s") 'avy-goto-char-timer)
-  (setq avy-timeout-seconds 0.35))
+  (global-set-key (kbd "C-l") 'evil-avy-goto-line))
 
 ;;;; Extra-bindings
 
@@ -1311,6 +1245,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (spacemacs/set-leader-keys (kbd "aof") 'org-open-at-point-global))
 
 ;;;; Searching
+
 (defun module/navigation/searching ()
   "Evil searching scrolls to center of match."
 
@@ -1479,159 +1414,37 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 ;;; Outshine
 
 (defun module/outshine ()
-  (module/outshine/navi-mode)
-  (module/outshine/outshine-mode))
-
-;;;; Navi-mode
-
-(defun module/outshine/navi-mode ()
-  "Navi mode bar vim bindings and improvements."
-
-  (require 'navi-mode)
-
-  (add-to-list 'navi-key-mappings
-               '("python" .
-                 ((:FUN . "f")
-                  (:OBJ . "x"))))
-  (add-to-list 'navi-keywords
-               '("python" .
-                 ((:FUN . "\\(^[ ]*def[a-zA-Z0-9_ ]*\\|^[ ]*class[a-zA-Z0-9_ ]*\\)")
-                  (:OBJ . "^[ ]*\\(class[a-zA-Z0-9_ ]*\\)"))))
-
-  (defun my-outline-show-context ()
-    "Helper utility for evil navi bindings."
-    (interactive)
-    (outline-show-entry)
-    (outline-show-branches))
-
-  (let ((map (make-sparse-keymap)))
-    ;; Cycle Navi
-    (define-key map (kbd "TAB") 'navi-cycle-subtree)
-    (define-key map (kbd "<backtab>") 'navi-cycle-buffer)
-    ;; Modify subtree hierarchy
-    (define-key map (kbd "M-h") 'navi-promote-subtree)
-    (define-key map (kbd "M-j") 'navi-move-down-subtree)
-    (define-key map (kbd "M-k") 'navi-move-up-subtree)
-    (define-key map (kbd "M-l") 'navi-demote-subtree)
-    ;; another way to exit
-    (define-key map (kbd "M-n") 'spacemacs/delete-window)
-
-    ;; Custom vim bindings for navi-mode
-    ;; Also fixes various bugs related to narrowing/context/scrolling
-    (evil-define-key '(normal visual motion) map
-      "f" (lambda () (interactive) (navi-generic-command ?f current-prefix-arg))
-      "v" (lambda () (interactive) (navi-generic-command ?v current-prefix-arg))
-      "x" (lambda () (interactive) (navi-generic-command ?x current-prefix-arg))
-      "a" (lambda () (interactive) (navi-generic-command ?a current-prefix-arg))
-
-      "1" (lambda () (interactive) (navi-generic-command ?1 current-prefix-arg))
-      "2" (lambda () (interactive) (navi-generic-command ?2 current-prefix-arg))
-      "3" (lambda () (interactive) (navi-generic-command ?3 current-prefix-arg))
-      "4" (lambda () (interactive) (navi-generic-command ?4 current-prefix-arg))
-
-      ;; Narrow on occurrence
-      "n" (lambda () (interactive)
-            (navi-narrow-to-thing-at-point)
-            (other-window 1)
-            (my-outline-show-context)
-            (other-window 1))
-      ;; Open occurence but do not goto
-      "d" (lambda () (interactive)
-            (occur-mode-display-occurrence)
-            (other-window 1)
-            (my-outline-show-context)
-            (recenter 3)
-            (other-window 1))
-      ;; Open and goto occurrence. Capital for closing navi
-      "o" (lambda () (interactive)
-            (navi-goto-occurrence-other-window)
-            (my-outline-show-context)
-            (recenter 3))
-      "O" (lambda () (interactive)
-            (navi-goto-occurrence-other-window)
-            (delete-other-windows)
-            (my-outline-show-context)
-            (recenter 3))
-      ;; Exit Navi
-      "q" 'spacemacs/delete-window
-      ;; Widen narrowed navi buffer
-      "w" 'navi-widen
-      ;; Undo modifications to headers done within navi buffer
-      "u" 'navi-undo)
-
-    (setq navi-mode-map map)))
-
-;;;; Outshine-mode
-
-(defun module/outshine/outshine-mode ()
   "Outline/Outshine mode bindings and Navi integration."
 
   (require 'outshine)
 
-  (defun my-outshine-navi ()
-    "Enhanced narrowing and popwin-like functionality to start navi mode."
-    (interactive)
-    (let ((line nil))
-      (widen)  ; Otherwise broken on narrowed buffers
-      (save-excursion
-        (unless (outline-on-heading-p t)
-          (outline-previous-visible-heading 1))
-        (setq line
-              (replace-regexp-in-string "\n$" ""
-                                        (thing-at-point 'line t))))
-      ;; window stuff
-      (split-window-below)
-      (outshine-navi)
-      (evil-window-move-far-left)
-      (shrink-window-horizontally (- (window-width) 35))
-      ;; default to 3 heading levels
-      (navi-generic-command ?3 nil)
-      (search-forward-regexp line)))
+  ;; Narrowing now works within the headline rather than requiring to be on it
+  (advice-add 'outshine-narrow-to-subtree :before
+              (lambda (&rest args) (unless (outline-on-heading-p t)
+                                (outline-previous-visible-heading 1))))
 
-  (define-key org-mode-map (kbd "M-n") 'my-outshine-navi)
+  (spacemacs/set-leader-keys
+    ;; Narrowing
+    "nn" 'outshine-narrow-to-subtree
+    "nw" 'widen
 
-  ;; Outline minor mode vim keybindings
-  (let ((map outline-minor-mode-map))
-    ;; Core functions
-    (define-key map (kbd "M-n") 'my-outshine-navi)
-    (define-key map (kbd "<backtab>") 'outshine-cycle-buffer)
-    (define-key map (kbd "M-h") 'outline-promote)
-    (define-key map (kbd "M-l") 'outline-demote)
+    ;; Structural edits
+    "nj" 'outline-move-subtree-down
+    "nk" 'outline-move-subtree-up
+    "nh" 'outline-promote
+    "nl" 'outline-demote)
 
-    ;; Insert Heading
-    (define-key map (kbd "M-RET") 'outshine-insert-heading)
-    ;; Insert Subheading
-    (define-key map (kbd "C-M-<return>")
-      (lambda ()
-        (interactive)
-        (let ((line nil) (str nil))
-          (save-excursion
-            (outline-previous-visible-heading 1)
-            (setq level (outshine-calc-outline-level))
-            (setq str (outshine-calc-outline-string-at-level (+ 1 level))))
-          (evil-unimpaired/insert-space-below 1)
-          (evil-next-line 1)
-          (insert str))))
+  (let ((kmap outline-minor-mode-map))
+    (define-key kmap (kbd "M-RET") 'outshine-insert-heading)
+    (define-key kmap (kbd "<backtab>") 'outshine-cycle-buffer)
 
-    ;; Bring org-mode g-based evil navigation to outline-minor-mode
-    (evil-define-key '(normal visual motion) map
+    ;; Evil outline navigation keybindings
+    (evil-define-key '(normal visual motion) kmap
       "gh" 'outline-up-heading
       "gj" 'outline-forward-same-level
       "gk" 'outline-backward-same-level
       "gl" 'outline-next-visible-heading
-      "gu" 'outline-previous-visible-heading
-
-      ;; Narrows buffer without needing to have cursor on heading
-      (kbd "SPC n n") (lambda ()
-                        (interactive)
-                        (save-excursion
-                          (unless (outline-on-heading-p t)
-                            (outline-previous-visible-heading 1))
-                          (outshine-narrow-to-subtree)))
-      (kbd "SPC n j") 'outline-move-subtree-down
-      (kbd "SPC n k") 'outline-move-subtree-up))
-
-  (setq outshine-use-speed-commands t)
+      "gu" 'outline-previous-visible-heading))
 
   ;; Required for outshine
   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
