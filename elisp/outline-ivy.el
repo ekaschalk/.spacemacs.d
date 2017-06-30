@@ -56,19 +56,19 @@
     (beginning-of-line)
     (-let* ((level (outshine-calc-outline-level))
             (parents (when level
-                       (--map (plist-get test it)
+                       (--map (plist-get oi--parents-plist it)
                              (number-sequence 1 (- level 1)))))
             (str (match-string-no-properties 1))
             (name (oi-format-name-pretty str parents level)))
       (when level
-        (setq test (plist-put test level str)))
+        (setq oi--parents-plist (plist-put oi--parents-plist level str)))
       (->> (point-marker)
          (cons name)
          (when level)))))
 
 (defun oi-collect-outlines ()
   "Collect fontified outline strings and their markers for ivy-read."
-  (setq test nil)
+  (setq oi--parents-plist nil)
   (save-excursion
     (goto-char (point-min))
     (-snoc (--unfold
