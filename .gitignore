@@ -10,5 +10,5 @@
 
 !imgs/
 !imgs/*
-# !elisp/
-# !elisp/*
+!elisp/
+!elisp/outline-ivy.el

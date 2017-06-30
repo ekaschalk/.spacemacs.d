@@ -247,6 +247,10 @@
   (module/outshine)
   (module/python)
 
+  ;; My Packages
+  (load-file (if-linux "~/elisp/outline-ivy.el" "c:/~/elisp/outline-ivy.el"))
+  (global-set-key (kbd "C-j") 'oi-jump)
+
   ;; Personal use
   (module/blog))
 
@@ -1408,8 +1412,8 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   "Misc org-mode bindings and improvements."
 
   ;; Header property ignore for true no-export of header and its contents
-  (with-eval-after-load 'ox-extra
-    (ox-extras-activate '(ignore-headlines)))
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines))
 
   ;; Quick refile of project tasks
   (setq org-refile-targets
@@ -1793,105 +1797,3 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (spacemacs/set-leader-keys (kbd "ab") 'deploy-blog)
   (spacemacs/set-leader-keys (kbd "aa") 'start-blog-server)
   (spacemacs/set-leader-keys (kbd "ae") 'end-blog-server))
-
-;;; Experimenting
-
-(defun module/stuff ()
-  "Atm trying to rebuild navi mode in counsel imenu."
-
-  ;; (defun collect-outlines ()
-  ;;   (interactive)
-  ;;   (save-excursion
-  ;;     (goto-char (point-min))
-  ;;     (--unfold
-  ;;      (when (-> outshine-imenu-preliminary-generic-expression
-  ;;               cadar
-  ;;               (search-forward-regexp nil t))
-  ;;        (save-excursion
-  ;;          (beginning-of-line)
-  ;;          (-let* ((level (outshine-calc-outline-level))
-  ;;                  (name (-> (match-string-no-properties 1)
-  ;;                           (format-ivy-outline level))))
-  ;;            (->> (point-marker)
-  ;;               (cons name)
-  ;;               (when level)
-  ;;               (cons it)))))
-  ;;      nil)))
-
-
-  (defface ivy-outline-match-face
-    '((t :height 1.25 :background "#268bd2" :weight bold))
-    "Match face for ivy outline prompt.")
-
-  (defun format-ivy-outline (s level)
-    (with-face
-     (pcase level
-       (2 (format " %s" s))
-       (3 (format "  %s" s))
-       (_ s))
-     (pcase level
-       (1 '(:foreground "#268bd2" :height 1.25 :underline t :weight ultra-bold))
-       (2 '(:foreground "#2aa198" :height 1.1 :weight semi-bold))
-       (3 '(:foreground "steel blue")))))
-
-  (defun format-ivy-outline-raw (s level)
-    (pcase level
-      (2 (format " %s" s))
-      (3 (format "  %s" s))
-      (_ s)))
-
-  (defun collect-outline ()
-    (when (-> outshine-imenu-preliminary-generic-expression
-             cadar
-             (search-forward-regexp nil t))
-      (save-excursion
-        (beginning-of-line)
-        (-> (match-string-no-properties 1)
-           (format-ivy-outline-raw (outshine-calc-outline-level))))))
-
-  (defun collect-outlines ()
-    (interactive)
-    (save-excursion
-      (goto-char (point-min))
-      (append
-       (--unfold
-        (when (-> outshine-imenu-preliminary-generic-expression
-                 cadar
-                 (search-forward-regexp nil t))
-          (save-excursion
-            (beginning-of-line)
-            (-let* ((level (outshine-calc-outline-level))
-                    (name (-> (match-string-no-properties 1)
-                             (format-ivy-outline level))))
-              (->> (point-marker)
-                 (cons name)
-                 (when level)
-                 (cons it)))))
-        nil)
-       (save-excursion
-         (beginning-of-line)
-         (-let* ((level (outshine-calc-outline-level))
-                 (name (-> (match-string-no-properties 1)
-                          (format-ivy-outline level))))
-           (->> (point-marker)
-              (cons name)
-              (when level)
-              list))))))
-
-  (defun outline-imenu ()
-    (interactive)
-    (ivy-read "Outline " (collect-outlines)
-              :preselect (save-excursion
-                           (unless (outline-on-heading-p t)
-                             (outline-previous-heading))
-                           (collect-outline))
-              :action (-lambda ((_ . marker))
-                        (with-ivy-window
-                          (-> marker marker-position goto-char)
-                          (recenter 2)))
-              :update-fn (lambda ()
-                           (set (make-local-variable 'face-remapping-alist)
-                                '((ivy-current-match ivy-outline-match-face))))))
-
-  (global-set-key (kbd "C-j") 'outline-imenu)
-  )
