@@ -17,15 +17,15 @@
   "Match face for ivy outline prompt.")
 
 (defface oi-face-1
-  '((t :foreground "#268bd2" :height 1.25 :underline t :weight ultra-bold))
+  '((t :foreground "#C3A29E" :height 1.25 :underline t :weight ultra-bold))
   "Ivy outline face for level 1")
 
 (defface oi-face-2
-  '((t :foreground "#2aa198" :height 1.1 :weight semi-bold))
+  '((t :foreground "#8D6B94" :height 1.15 :weight semi-bold))
   "Ivy outline face for level 2")
 
 (defface oi-face-3
-  '((t :foreground "steel blue"))
+  '((t :foreground "#8C5f66"))
   "Ivy outline face for level 3")
 
 ;;; Utils

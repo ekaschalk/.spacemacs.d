@@ -845,6 +845,12 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
     (custom-theme-set-faces
      'solarized-dark
 
+     ;; Italicized faces for Operator Mono font
+     `(font-lock-comment-face ((t (:foreground "#586e75" :italic t))))
+     `(avy-background-face ((t (:foreground "#586e75"))))
+     `(font-lock-doc-face ((t (:foreground "#2aa198"
+                               :italic t))))
+
      ;; Makes matching parens obvious
      `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
                                              :background "#586e75"))))
@@ -860,20 +866,20 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
      `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
 
      ;; Org and outline header updates
-     `(outline-1 ((t (:height 1.8
+     `(outline-1 ((t (:height 1.25
+                              :foreground "#C3A29E"
                               :weight ultra-bold
-                              :italic t
-                              :underline "white"))))
+                              :underline t))))
 
-     `(outline-2 ((t (:height 1.15 :foreground ,my-black
-                              :italic t
+     `(outline-2 ((t (:height 1.15
+                              :foreground "#8D6B94"
+                              :weight extra-bold
+                              :underline t))))
+
+     `(outline-3 ((t (:height 1.15
+                              :foreground "#8C5F66"
                               :weight bold
-                              :background "#2aa198"
-                              :weight bold))))
-     `(outline-3 ((t (:height 1.05 :foreground ,my-black
-                              :italic t
-                              :background "#b58900"
-                              :weight bold))))
+                              :underline t))))
 
      `(org-level-1 ((t (:height 1.25 :foreground "#268bd2"
                                 :underline t
@@ -888,9 +894,9 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
      ;; #586e75
      `(org-block-begin-line ((t (:height 1.05 :foreground "#576e75"
                                          :box t :weight bold))))
-     ))
+     )
 
-  (setq my-black "#1b1b1e")
+    (setq my-black "#1b1b1e"))
 
   (defun update-solarize-light ()
     (custom-theme-set-faces
@@ -931,11 +937,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
      `(org-priority ((t (:foreground ,my-black :weight bold
                                      :background "light gray"))))
      ))
-  ;; syntax-propertize-function
-  ;; (eval-after-load 're-builder '(setq reb-re-syntax 'rx))
-  ;; rx macro
-  ;; http://www.lunaryorn.com/posts/search-based-fontification-with-keywords
-  ;; http://www.lunaryorn.com/posts/advanced-syntactic-fontification
+
   (if (string= 'solarized-dark (car custom-enabled-themes))
       (update-solarize-dark)
     (update-solarize-light)))
