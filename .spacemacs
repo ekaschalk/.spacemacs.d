@@ -153,7 +153,8 @@
 (defun dotspacemacs/init ()
   (setq-default
    dotspacemacs-themes `(,theme-to-use)
-   dotspacemacs-default-font `("Hack"
+   dotspacemacs-default-font `("operator mono medium"
+                               ;; "Fira Code Retina"
                                :size ,(if-linux 18 12)
                                :powerline-scale 1.5)
 ;;;; Static
@@ -303,8 +304,9 @@
 (defun module/display/windows-frame-size-fix ()
   "Surface has 200% scaling, doesn't apply to emacs, f2 to fix init zooming."
 
-  (add-to-list 'default-frame-alist '(font . "Hack"))
-  (set-face-attribute 'default t :font "Hack")
+  (add-to-list 'default-frame-alist '(font . "operator mono medium"))
+  (set-face-attribute 'default t :font "operator mono medium")
+
   (global-set-key (kbd "<f2>") (xis (interactive) (zoom-frm-out) (zoom-frm-out))))
 
 ;;;; Fontsets
@@ -313,7 +315,7 @@
   "Set right fonts for missing and all-the-icons unicode points."
 
   ;; Fira code ligatures. Fira Code Symbol is a different font than Fira Code!
-  ;; You can use any font you wish with just the ligatures, I use Hack.
+  ;; You can use any font you wish with just the ligatures
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
 
   (defun set-icon-fonts (CODE-FONT-ALIST)
@@ -858,13 +860,18 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
      `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
 
      ;; Org and outline header updates
-     `(outline-1 ((t (:height 1.25 :foreground ,my-black
-                              :background "#268bd2"
-                              :weight bold))))
+     `(outline-1 ((t (:height 1.8
+                              :weight ultra-bold
+                              :italic t
+                              :underline "white"))))
+
      `(outline-2 ((t (:height 1.15 :foreground ,my-black
+                              :italic t
+                              :weight bold
                               :background "#2aa198"
                               :weight bold))))
      `(outline-3 ((t (:height 1.05 :foreground ,my-black
+                              :italic t
                               :background "#b58900"
                               :weight bold))))
 
