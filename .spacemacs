@@ -355,8 +355,9 @@
     (font-lock-add-keywords
      nil (--map (-let (((rgx uni-point) it))
                `(,rgx (0 (progn
-                           (compose-region (match-beginning 1) (match-end 1)
-                                           ,(concat "\t" (list uni-point)))
+                           (compose-region
+                            (match-beginning 1) (match-end 1)
+                            ,(concat "\t" (list uni-point)))
                            nil))))
               FONT-LOCK-ALIST)))
 
@@ -372,13 +373,61 @@
      (fira-font-lock-alist prog-mode-hook org-mode-hook)
 
      ;; Outlines
-     (emacs-outlines-font-lock-alist   emacs-lisp-mode-hook)
      (lisp-outlines-font-lock-alist    clojure-mode-hook  hy-mode-hook)
      (python-outlines-font-lock-alist  python-mode-hook)
 
      ;; Language updates not possible with prettify-symbols
      (hy-font-lock-alist     hy-mode-hook)
-     )))
+     ))
+
+  ;; This section is a new-style unicode replacement solution I'm
+  ;; experimenting with
+
+  (defun -new-add-font-lock-kwds (FONT-LOCK-ALIST)
+    (font-lock-add-keywords
+     nil (--map (-let (((rgx uni-point) it))
+               `(,rgx (0 (progn
+                           (put-text-property
+                            (match-beginning 1) (match-end 1)
+                            'display
+                            ,uni-point)
+                           nil))))
+             FONT-LOCK-ALIST)))
+
+  (defmacro new-add-font-locks (FONT-LOCK-HOOKS-ALIST)
+    `(--each ,FONT-LOCK-HOOKS-ALIST
+       (-let (((font-locks . mode-hooks) it))
+         (--each mode-hooks
+           (add-hook it (-partial '-new-add-font-lock-kwds
+                                  (symbol-value font-locks)))))))
+
+  (defconst emacs-outlines-font-lock-alist
+    '(("\\(^;;;\\) "     "■")
+      ("\\(^;;;;\\) "    " ○")
+      ("\\(^;;;;;\\) "    "  ✸")
+      ))
+
+  (new-add-font-locks
+   '((emacs-outlines-font-lock-alist   emacs-lisp-mode-hook)))
+  )
+
+;;;;; Language-font-locks
+
+(defconst lisp-outlines-font-lock-alist
+  '(("\\(^;; \\*\\) "          ?■)
+    ("\\(^;; \\*\\*\\) "       ?○)
+    ("\\(^;; \\*\\*\\*\\) "    ?✸)
+    ("\\(^;; \\*\\*\\*\\*\\) " ?✿)))
+
+(defconst python-outlines-font-lock-alist
+  '(("\\(^# \\*\\) "          ?■)
+    ("\\(^# \\*\\*\\) "       ?○)
+    ("\\(^# \\*\\*\\*\\) "    ?✸)
+    ("\\(^# \\*\\*\\*\\*\\) " ?✿)))
+
+(defconst hy-font-lock-alist
+  ;; self does not work as a prettify symbol for hy, unlike python
+  '(("\\(self\\)"   ?⊙)))
 
 ;;;;; Fira-font-locks
 
@@ -469,30 +518,6 @@
     ("[^:=]\\(:\\)[^:=]"           #Xe16c)
     ("\\(<=\\)"                    #Xe157)
   ))
-
-;;;;; Language-font-locks
-
-(defconst emacs-outlines-font-lock-alist
-  '(("\\(^;;;\\) "          ?■)
-    ("\\(^;;;;\\) "         ?○)
-    ("\\(^;;;;;\\) "        ?✸)
-    ("\\(^;;;;;;\\) "       ?✿)))
-
-(defconst lisp-outlines-font-lock-alist
-  '(("\\(^;; \\*\\) "          ?■)
-    ("\\(^;; \\*\\*\\) "       ?○)
-    ("\\(^;; \\*\\*\\*\\) "    ?✸)
-    ("\\(^;; \\*\\*\\*\\*\\) " ?✿)))
-
-(defconst python-outlines-font-lock-alist
-  '(("\\(^# \\*\\) "          ?■)
-    ("\\(^# \\*\\*\\) "       ?○)
-    ("\\(^# \\*\\*\\*\\) "    ?✸)
-    ("\\(^# \\*\\*\\*\\*\\) " ?✿)))
-
-(defconst hy-font-lock-alist
-  ;; self does not work as a prettify symbol for hy, unlike python
-  '(("\\(self\\)"   ?⊙)))
 
 ;;;; All-the-icons
 
