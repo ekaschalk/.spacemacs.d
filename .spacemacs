@@ -294,6 +294,7 @@
   (module/display/extra-syntax-highlighting)
   (module/display/modeline)
   (module/display/outline-ellipsis-modification)
+  (module/display/outline-bullets)
   (module/display/prettify-magit)
   (module/display/prettify-symbols)
   (module/display/shell)
@@ -372,57 +373,10 @@
    '(;; Ligatures
      (fira-font-lock-alist prog-mode-hook org-mode-hook)
 
-     ;; Outlines
-     (lisp-outlines-font-lock-alist    clojure-mode-hook  hy-mode-hook)
-     (python-outlines-font-lock-alist  python-mode-hook)
-
      ;; Language updates not possible with prettify-symbols
-     (hy-font-lock-alist     hy-mode-hook)
-     ))
-
-  ;; This section is a new-style unicode replacement solution I'm
-  ;; experimenting with
-
-  (defun -new-add-font-lock-kwds (FONT-LOCK-ALIST)
-    (font-lock-add-keywords
-     nil (--map (-let (((rgx uni-point) it))
-               `(,rgx (0 (progn
-                           (put-text-property
-                            (match-beginning 1) (match-end 1)
-                            'display
-                            ,uni-point)
-                           nil))))
-             FONT-LOCK-ALIST)))
-
-  (defmacro new-add-font-locks (FONT-LOCK-HOOKS-ALIST)
-    `(--each ,FONT-LOCK-HOOKS-ALIST
-       (-let (((font-locks . mode-hooks) it))
-         (--each mode-hooks
-           (add-hook it (-partial '-new-add-font-lock-kwds
-                                  (symbol-value font-locks)))))))
-
-  (defconst emacs-outlines-font-lock-alist
-    '(("\\(^;;;\\) "     "■")
-      ("\\(^;;;;\\) "    " ○")
-      ("\\(^;;;;;\\) "    "  ✸")))
-
-  (new-add-font-locks
-   '((emacs-outlines-font-lock-alist   emacs-lisp-mode-hook)))
-  )
+     (hy-font-lock-alist     hy-mode-hook))))
 
 ;;;;; Language-font-locks
-
-(defconst lisp-outlines-font-lock-alist
-  '(("\\(^;; \\*\\) "          ?■)
-    ("\\(^;; \\*\\*\\) "       ?○)
-    ("\\(^;; \\*\\*\\*\\) "    ?✸)
-    ("\\(^;; \\*\\*\\*\\*\\) " ?✿)))
-
-(defconst python-outlines-font-lock-alist
-  '(("\\(^# \\*\\) "          ?■)
-    ("\\(^# \\*\\*\\) "       ?○)
-    ("\\(^# \\*\\*\\*\\) "    ?✸)
-    ("\\(^# \\*\\*\\*\\*\\) " ?✿)))
 
 (defconst hy-font-lock-alist
   ;; self does not work as a prettify symbol for hy, unlike python
@@ -609,6 +563,46 @@
 
   (add-hook 'outline-mode-hook 'set-outline-display-table)
   (add-hook 'outline-minor-mode-hook 'set-outline-display-table))
+
+;;;; Outline-bullets
+
+(defun module/display/outline-bullets ()
+  "Update outline bullets similarly to `org-bullets-bullet-list'."
+
+  (setq-default outline-bullets-bullet-list org-bullets-bullet-list)
+
+  (defun font-lock-display-updates (FONT-LOCK-ALIST)
+    "Put text property for FONT-LOCK-ALIST for var-width replacements."
+    (font-lock-add-keywords
+     nil (--map (-let (((rgx uni-point) it))
+               `(,rgx (0 (progn
+                           (put-text-property
+                            (match-beginning 1) (match-end 1)
+                            'display
+                            ,uni-point)
+                           nil))))
+             FONT-LOCK-ALIST)))
+
+  (defun outline-bullets-rgx-at-level (LEVEL)
+    "Calculate regex or outline-bullets at LEVEL."
+    (concat "\\(^"
+            (-> LEVEL
+               outshine-calc-outline-string-at-level
+               s-trim-right)
+            "\\) "))
+
+  (defun add-outline-font-locks ()
+    "Use with `add-hook' to enable outline-bullets-bullet-list for mode."
+    (font-lock-display-updates
+     (--map-indexed
+      (list
+       (outline-bullets-rgx-at-level (+ 1 it-index))
+       (-> it-index (s-repeat " ") (concat it)))
+      (-take 8 (-cycle outline-bullets-bullet-list)))))
+
+  (add-hook 'emacs-lisp-mode-hook 'add-outline-font-locks)
+  (add-hook 'hy-mode-hook 'add-outline-font-locks)
+  (add-hook 'python-mode-hook 'add-outline-font-locks))
 
 ;;;; Prettify-magit
 

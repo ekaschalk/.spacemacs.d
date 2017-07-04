@@ -12,3 +12,5 @@
 !imgs/*
 !elisp/
 !elisp/outline-ivy.el
+
+elisp/scratch.el
