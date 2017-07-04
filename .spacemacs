@@ -569,6 +569,7 @@
 (defun module/display/outline-bullets ()
   "Update outline bullets similarly to `org-bullets-bullet-list'."
 
+  (require 'org-bullets)  ; Improve this require
   (setq-default outline-bullets-bullet-list org-bullets-bullet-list)
 
   (defun font-lock-display-updates (FONT-LOCK-ALIST)
