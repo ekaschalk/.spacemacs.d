@@ -389,50 +389,50 @@
 ;;;;; Fira-font-locks
 
 (defconst fira-font-lock-alist
-  '(;;;; OPERATORS
-    ;;;;; Pipes
+  '(;; OPERATORS
+    ;; Pipes
     ("\\(<|\\)" #Xe14d) ("\\(<>\\)" #Xe15b) ("\\(<|>\\)" #Xe14e) ("\\(|>\\)" #Xe135)
 
-    ;;;;; Brackets
+    ;; Brackets
     ("\\(<\\*\\)" #Xe14b) ("\\(<\\*>\\)" #Xe14c) ("\\(\\*>\\)" #Xe104)
     ("\\(<\\$\\)" #Xe14f) ("\\(<\\$>\\)" #Xe150) ("\\(\\$>\\)" #Xe137)
     ("\\(<\\+\\)" #Xe155) ("\\(<\\+>\\)" #Xe156) ("\\(\\+>\\)" #Xe13a)
 
-    ;;;;; Equality
+    ;; Equality
     ("\\(!=\\)" #Xe10e) ("\\(!==\\)"         #Xe10f) ("\\(=/=\\)" #Xe143)
     ("\\(/=\\)" #Xe12c) ("\\(/==\\)"         #Xe12d)
     ("\\(===\\)"#Xe13d) ("[^!/]\\(==\\)[^>]" #Xe13c)
 
-    ;;;;; Equality Special
+    ;; Equality Special
     ("\\(||=\\)"  #Xe133) ("[^|]\\(|=\\)" #Xe134)
     ("\\(~=\\)"   #Xe166)
     ("\\(\\^=\\)" #Xe136)
     ("\\(=:=\\)"  #Xe13b)
 
-    ;;;;; Comparisons
+    ;; Comparisons
     ("\\(<=\\)" #Xe141) ("\\(>=\\)" #Xe145)
     ("\\(</\\)" #Xe162) ("\\(</>\\)" #Xe163)
 
-    ;;;;; Shifts
+    ;; Shifts
     ("[^-=]\\(>>\\)" #Xe147) ("\\(>>>\\)" #Xe14a)
     ("[^-=]\\(<<\\)" #Xe15c) ("\\(<<<\\)" #Xe15f)
 
-    ;;;;; Dots
+    ;; Dots
     ("\\(\\.-\\)"    #Xe122) ("\\(\\.=\\)" #Xe123)
     ("\\(\\.\\.<\\)" #Xe125)
 
-    ;;;;; Hashes
+    ;; Hashes
     ("\\(#{\\)"  #Xe119) ("\\(#(\\)"   #Xe11e) ("\\(#_\\)"   #Xe120)
     ("\\(#_(\\)" #Xe121) ("\\(#\\?\\)" #Xe11f) ("\\(#\\[\\)" #Xe11a)
 
-    ;;;; REPEATED CHARACTERS
-    ;;;;; 2-Repeats
+    ;; REPEATED CHARACTERS
+    ;; 2-Repeats
     ("\\(||\\)" #Xe132)
     ("\\(!!\\)" #Xe10d)
     ("\\(%%\\)" #Xe16a)
     ("\\(&&\\)" #Xe131)
 
-    ;;;;; 2+3-Repeats
+    ;; 2+3-Repeats
     ("\\(##\\)"       #Xe11b) ("\\(###\\)"         #Xe11c) ("\\(####\\)" #Xe11d)
     ("\\(--\\)"       #Xe111) ("\\(---\\)"         #Xe112)
     ("\\({-\\)"       #Xe108) ("\\(-}\\)"          #Xe110)
@@ -442,8 +442,8 @@
     ("\\(//\\)"       #Xe12f) ("\\(///\\)"         #Xe130)
     ("\\(::\\)"       #Xe10a) ("\\(:::\\)"         #Xe10b)
 
-    ;;;; ARROWS
-    ;;;;; Direct
+    ;; ARROWS
+    ;; Direct
     ("[^-]\\(->\\)" #Xe114) ("[^=]\\(=>\\)" #Xe13f)
     ("\\(<-\\)"     #Xe152)
     ("\\(-->\\)"    #Xe113) ("\\(->>\\)"    #Xe115)
@@ -452,18 +452,18 @@
     ("\\(<==\\)"    #Xe158) ("\\(<<=\\)"    #Xe15e)
     ("\\(<->\\)"    #Xe154) ("\\(<=>\\)"    #Xe159)
 
-    ;;;;; Branches
+    ;; Branches
     ("\\(-<\\)"  #Xe116) ("\\(-<<\\)" #Xe117)
     ("\\(>-\\)"  #Xe144) ("\\(>>-\\)" #Xe148)
     ("\\(=<<\\)" #Xe142) ("\\(>>=\\)" #Xe149)
     ("\\(>=>\\)" #Xe146) ("\\(<=<\\)" #Xe15a)
 
-    ;;;;; Squiggly
+    ;; Squiggly
     ("\\(<~\\)" #Xe160) ("\\(<~~\\)" #Xe161)
     ("\\(~>\\)" #Xe167) ("\\(~~>\\)" #Xe169)
     ("\\(-~\\)" #Xe118) ("\\(~-\\)"  #Xe165)
 
-    ;;;; MISC
+    ;; MISC
     ("\\(www\\)"                   #Xe100)
     ("\\(<!--\\)"                  #Xe151)
     ("\\(~@\\)"                    #Xe164)
@@ -577,10 +577,7 @@
   (require 'org-bullets)  ; Improve this require
 
   (set-icon-fonts
-   '(("material icons"
-      ;;        
-      #xe871 #xe918 #xe3e7
-      #xe3d0 #xe3d1 #xe3d2 #xe3d4)))
+   '(("material icons" #xe3d0 #xe3d1 #xe3d2 #xe3d4)))
 
   (setq org-bullets-bullet-list '("" "" "" ""))
   (setq-default outline-bullets-bullet-list org-bullets-bullet-list)
@@ -913,16 +910,19 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
      `(outline-1 ((t (:height 1.25
                               :foreground "#C3A29E"
                               :weight ultra-bold
+                              :italic t
                               :underline t))))
 
      `(outline-2 ((t (:height 1.15
                               :foreground "#8D6B94"
                               :weight extra-bold
+                              :italic t
                               :underline t))))
 
      `(outline-3 ((t (:height 1.15
                               :foreground "#8C5F66"
                               :weight bold
+                              :italic t
                               :underline t))))
 
      `(org-level-1 ((t (:height 1.25 :foreground "#268bd2"
