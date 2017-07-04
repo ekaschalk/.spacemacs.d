@@ -340,6 +340,10 @@
       ;;                          
       #xf091 #xf059 #xf076 #xf075 #xe192  #xf016)
 
+     ("material icons"
+      ;;        
+      #xe871 #xe918 #xe3e7)
+
      ("Symbola"
       ;; 𝕊    ⨂      ∅      ⟻    ⟼     ⊙      𝕋       𝔽
       #x1d54a #x2a02 #x2205 #x27fb #x27fc #x2299 #x1d54b #x1d53d
@@ -557,7 +561,8 @@
 
   (defvar outline-display-table (make-display-table))
   (set-display-table-slot outline-display-table 'selective-display
-                          (vector (make-glyph-code ?▼ 'escape-glyph)))
+                          ;; (vector (make-glyph-code ?▼ 'escape-glyph)))
+                          (vector (make-glyph-code ? 'escape-glyph)))
   (defun set-outline-display-table ()
     (setf buffer-display-table outline-display-table))
 
@@ -570,6 +575,14 @@
   "Update outline bullets similarly to `org-bullets-bullet-list'."
 
   (require 'org-bullets)  ; Improve this require
+
+  (set-icon-fonts
+   '(("material icons"
+      ;;        
+      #xe871 #xe918 #xe3e7
+      #xe3d0 #xe3d1 #xe3d2 #xe3d4)))
+
+  (setq org-bullets-bullet-list '("" "" "" ""))
   (setq-default outline-bullets-bullet-list org-bullets-bullet-list)
 
   (defun font-lock-display-updates (FONT-LOCK-ALIST)
@@ -592,13 +605,25 @@
                s-trim-right)
             "\\) "))
 
+  (defun propertize-bullet (LEVEL BULLET)
+    "Add LEVEL-dependent face to BULLET."
+    (with-face BULLET
+               (pcase LEVEL
+                 (0 '(:inherit outline-1 :underline nil))
+                 (1 '(:inherit outline-2 :underline nil))
+                 (2 '(:inherit outline-3 :underline nil))
+                 (3 '(:inherit outline-4 :underline nil))
+                 (_ nil))))
+
   (defun add-outline-font-locks ()
     "Use with `add-hook' to enable outline-bullets-bullet-list for mode."
     (font-lock-display-updates
      (--map-indexed
       (list
        (outline-bullets-rgx-at-level (+ 1 it-index))
-       (-> it-index (s-repeat " ") (concat it)))
+       (concat
+        (s-repeat it-index " ")
+        (propertize-bullet it-index it)))
       (-take 8 (-cycle outline-bullets-bullet-list)))))
 
   (add-hook 'emacs-lisp-mode-hook 'add-outline-font-locks)
@@ -1433,8 +1458,7 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 (defun module/org/theming ()
   "Org theming updates."
 
-  (setq org-bullets-bullet-list '("■" "○" "✸" "✿")
-        org-priority-faces '((65 :inherit org-priority :foreground "red")
+  (setq org-priority-faces '((65 :inherit org-priority :foreground "red")
                              (66 :inherit org-priority :foreground "brown")
                              (67 :inherit org-priority :foreground "blue"))
         org-ellipsis "▼"))
