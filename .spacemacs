@@ -404,8 +404,7 @@
   (defconst emacs-outlines-font-lock-alist
     '(("\\(^;;;\\) "     "■")
       ("\\(^;;;;\\) "    " ○")
-      ("\\(^;;;;;\\) "    "  ✸")
-      ))
+      ("\\(^;;;;;\\) "    "  ✸")))
 
   (new-add-font-locks
    '((emacs-outlines-font-lock-alist   emacs-lisp-mode-hook)))
