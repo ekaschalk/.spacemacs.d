@@ -1634,6 +1634,8 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
     (with-dir public-blog-dir
               (shell-command "git rm -rf .")
               (shell-command "git clean -fxd")
+              (with-temp-file "CNAME"
+                (insert "www.modernemacs.com\nmodernemacs.com"))
 
               (with-dir blog-dir (->> public-blog-dir
                                     (concat "hugo -d ")
