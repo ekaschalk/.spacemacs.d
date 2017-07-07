@@ -222,9 +222,11 @@
 
 (defun dotspacemacs/user-init ()
   "Special settings to run before user-config runs."
-
   ;; Rids the verbose custom settings from being written to .spacemacs
-  (setq custom-file "./elisp/.custom-settings.el"))
+  (setq custom-file "./elisp/.custom-settings.el")
+
+  ;; Custom Packages
+  (push "c:/~/elisp/" load-path))
 
 ;;; Spacemacs-User-config
 
@@ -248,12 +250,13 @@
   (module/outshine)
   (module/python)
 
-  ;; My Packages (Too large to keep in config)
-  (load-file (if-linux "~/elisp/outline-ivy.el" "c:/~/elisp/outline-ivy.el"))
-  (global-set-key (kbd "C-j") 'oi-jump)
+  ;; Personal Modules
+  (module/blog)
 
-  ;; Personal use
-  (module/blog))
+  ;; Personal Packages
+  ;; https://gist.github.com/TheBB/367096660b203952c162
+  (require 'outline-ivy)
+  (global-set-key (kbd "C-j") 'oi-jump))
 
 ;;; Macros
 
@@ -1625,8 +1628,10 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (defmacro with-dir (DIR &rest FORMS)
     "Execute FORMS in DIR."
     (let ((orig-dir (gensym)))
-      `(progn (setq ,orig-dir default-directory)
-              (cd ,DIR) ,@FORMS (cd ,orig-dir))))
+      `(prog2
+           (setq ,orig-dir default-directory)
+         (progn (cd ,DIR) ,@FORMS)
+         (cd ,orig-dir))))
 
   (defun deploy-blog ()
     "Run hugo and push changes upstream."
