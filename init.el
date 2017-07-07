@@ -255,6 +255,7 @@
 
   ;; Personal Packages
   ;; https://gist.github.com/TheBB/367096660b203952c162
+  (add-to-list 'load-path (expand-file-name "~/.spacemacs.d/elisp"))
   (require 'outline-ivy)
   (global-set-key (kbd "C-j") 'oi-jump))
 
