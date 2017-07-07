@@ -42,6 +42,7 @@
       '(better-defaults
         git
         gnus
+        (ibuffer :variables ibuffer-group-buffers-by 'projects)
         org
         ranger
         syntax-checking
@@ -254,10 +255,15 @@
   (module/blog)
 
   ;; Personal Packages
-  ;; https://gist.github.com/TheBB/367096660b203952c162
   (add-to-list 'load-path (expand-file-name "~/.spacemacs.d/elisp"))
   (require 'outline-ivy)
-  (global-set-key (kbd "C-j") 'oi-jump))
+  (global-set-key (kbd "C-j") 'oi-jump)
+
+  ;; Experimenting
+  (spacemacs/set-leader-keys "bb" 'ibuffer)
+  ;; TODO use theming layer to apply theme updates cleaner
+
+  )
 
 ;;; Macros
 
