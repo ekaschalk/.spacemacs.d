@@ -1,17 +1,3 @@
-# Ignore Everything
-/*
 .#*
-
-# Whitelist
-!.gitignore
-!.spacemacs
-!LICENSE
-!README.org
-!TASKS.org
-
-!imgs/
-!imgs/*
-!elisp/
-!elisp/outline-ivy.el
 
 elisp/scratch.el
