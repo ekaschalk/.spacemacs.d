@@ -42,7 +42,6 @@
       '(better-defaults
         git
         gnus
-        (ibuffer :variables ibuffer-group-buffers-by 'projects)
         org
         ranger
         syntax-checking
@@ -52,6 +51,8 @@
                          auto-completion-enable-snippets-in-popup t)
         (evil-snipe :variables
                     evil-snipe-enable-alternate-f-and-t-behaviors t)
+        (ibuffer :variables
+                 ibuffer-group-buffers-by 'projects)
         (ivy :variables
              ivy-extra-directories nil)
         (shell :variables
@@ -74,10 +75,11 @@
                 python-test-runner 'pytest))
 
       dotspacemacs/layers/rare
-      '(pandoc      ; Pandoc for more export options, used for blogging
+      '(
+        ;; pandoc      ; Pandoc for more export options, used for blogging
+        ;; restclient  ; REST client for usage with org-babel
         markdown    ; Markdown mode for viewing outside documentation
         graphviz    ; Graphviz mode for usage with org-babel
-        restclient  ; REST client for usage with org-babel
         )
 
       ;; OS-Specific and Local Packages
@@ -94,14 +96,8 @@
 (setq dotspacemacs/additional/packages
       '(;; Outline mode base package enhancements
         outshine                 ; Required for navi-mode
-        navi-mode                ; Navbar on buffer outlines
-
-        ;; Org
-        org-gcal                 ; google calendar syncing
-        org-vcard                ; Import/export google contacts
 
         ;; Misc
-        helm-spotify-plus        ; Spotify improvements
         virtualenvwrapper        ; Python environment management
         ob-async                 ; Asynchronous org-babel source block execution
         (dash-functional         ; More dash functional programming utils
@@ -110,11 +106,6 @@
 
         ;; Visual Enhancements
         all-the-icons-ivy        ; Ivy prompts use file icons
-        pretty-mode              ; Adds onto prettify-mode
-        ;; spaceline-all-the-icons  ; Spaceline integrates file and other icons
-        (prettify-utils          ; Useful add pretty symbols macro
-         :location (recipe :fetcher github
-                           :repo "Ilazki/prettify-utils.el"))
 
         ;; Themes
         solarized-theme
@@ -303,9 +294,7 @@
   (module/display/font-locks)
 
   ;; Rest
-  (module/display/all-the-icons)
   (module/display/extra-syntax-highlighting)
-  (module/display/prettify-symbols)
   (module/display/theme-updates))
 
 ;;;; Windows-frame-size-fix
@@ -488,21 +477,6 @@
     ("\\(<=\\)"                    #Xe157)
   ))
 
-;;;; All-the-icons
-
-(defun module/display/all-the-icons ()
-  "Add hylang icon to all-the-icons for neotree and modeline integration."
-
-  ;; Both all-the-icons-icon-alist and all-the-icons-mode-icon-alist
-  ;; need to be updated for either modification to take effect.
-  (with-eval-after-load 'all-the-icons
-    (add-to-list
-     'all-the-icons-icon-alist
-     '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
-    (add-to-list
-     'all-the-icons-mode-icon-alist
-     '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange))))
-
 ;;;; Extra-syntax-highlighting
 
 (defun module/display/extra-syntax-highlighting ()
@@ -535,109 +509,6 @@
          )))
 
   (add-hook 'hy-mode-hook 'hy-extra-syntax))
-
-;;;; Prettify-symbols
-
-(defun module/display/prettify-symbols ()
-  "Visually replace text with unicode.
-
-Ivy keybinding has 'SPC i u' for consel-unicode-char for exploring options."
-
-  (setq pretty-options
-        (-flatten
-         (prettify-utils-generate
-          ;;;;; Functional
-          (:lambda      "λ") (:def         "ƒ")
-          (:composition "∘")
-
-          ;;;;; Types
-          (:null        "∅") (:true        "𝕋") (:false       "𝔽")
-          (:int         "ℤ") (:float       "ℝ")
-          (:str         "𝕊") (:bool        "𝔹")
-
-          ;;;;; Flow
-          (:in          "∈") (:not-in      "∉")
-          (:return     "⟼") (:yield      "⟻")
-          (:and         "∧") (:or          "∨")
-          (:not         "￢")
-          (:for         "∀")
-          (:some        "∃")
-
-          ;;;;; Other
-          (:tuple       "⨂")
-          (:pipe        "")
-          )))
-
-  (defun get-pretty-pairs (KWDS)
-    "Utility to build an alist for prettify-symbols-alist from components.
-
-KWDS is a plist of pretty option and the text to be replaced for it."
-    (-non-nil
-     (--map (when-let (major-mode-sym (plist-get KWDS it))
-             `(,major-mode-sym
-               ,(plist-get pretty-options it)))
-           pretty-options)))
-
-  (setq hy-pretty-pairs
-        (append
-         (get-pretty-pairs
-          '(:lambda "fn" :def "defn"
-                    :composition "comp"
-                    :null "None" :true "True" :false "False"
-                    :in "in" :not "not"
-                    :and "and" :or "or"
-                    :some "some"
-                    :tuple "#t"
-                    :pipe "ap-pipe"
-                    ))
-         (prettify-utils-generate
-          ("#l"    " ")))
-
-        python-pretty-pairs
-        (append
-         (get-pretty-pairs
-          '(:lambda "lambda" :def "def"
-                    :null "None" :true "True" :false "False"
-                    :int "int" :float "float" :str "str" :bool "bool"
-                    :not "not" :for "for" :in "in" :not-in "not in"
-                    :return "return" :yield "yield"
-                    :and "and" :or "or"
-                    :tuple "Tuple"
-                    :pipe "tz-pipe"
-                    ))
-         (prettify-utils-generate
-          ;; Mypy Stuff
-          ("Dict"     "𝔇") ("List"     "ℒ")
-          ("Callable" "ℱ") ("Mapping"  "ℳ") ("Iterable" "𝔗")
-          ("Union"    "⋃") ("Any"      "❔")))
-        )
-
-  (defun set-pretty-pairs (HOOK-PAIRS-ALIST)
-    "Utility to set pretty pairs for many modes.
-
-MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
-    (mapc (lambda (x)
-            (lexical-let ((pretty-pairs (cadr x)))
-              (add-hook (car x)
-                        (lambda ()
-                          (setq prettify-symbols-alist pretty-pairs)))))
-          HOOK-PAIRS-ALIST))
-
-  (set-pretty-pairs `((hy-mode-hook     ,hy-pretty-pairs)
-                      (python-mode-hook ,python-pretty-pairs)))
-
-  (global-prettify-symbols-mode 1)
-  (global-pretty-mode t)
-
-  ;; Activate pretty groups
-  (pretty-activate-groups
-   '(:arithmetic-nary :greek))
-
-  ;; Deactivate pretty groups conflicting with Fira Code ligatures
-  (pretty-deactivate-groups  ; Replaced by Fira Code
-   '(:equality :ordering :ordering-double :ordering-triple
-               :arrows :arrows-twoheaded :punctuation
-               :logic :sets :sub-and-superscripts)))
 
 ;;;; Theme-updates
 
@@ -831,7 +702,6 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 ;;; Misc
 
 (defun module/misc ()
-  (when-linux-call 'module/misc/spotify)
   (module/misc/aspell)
   (module/misc/auto-completion)
   (module/misc/eww)
@@ -843,18 +713,6 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
   (module/misc/shell)
   (module/misc/windows)
   (module/misc/yassnippet))
-
-;;;; Spotify
-
-(defun module/misc/spotify ()
-  "Spotify-plus bindings."
-
-  ;; TODO must overwrite navi mode for M-s s
-  (global-set-key (kbd "M-s s") 'helm-spotify-plus)
-  (global-set-key (kbd "M-s j") 'helm-spotify-plus-play)
-  (global-set-key (kbd "M-s SPC") 'helm-spotify-plus-pause)
-  (global-set-key (kbd "M-s l") 'helm-spotify-plus-next)
-  (global-set-key (kbd "M-s h") 'helm-spotify-plus-previous))
 
 ;;;; Aspell
 
@@ -1108,7 +966,6 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
                                (haskell . t)
                                (clojure . t)
                                (dot .     t)  ; Graphviz
-                               (http .    t)  ; Requests
                                ))
 
   ;; Enables interactive plotting
@@ -1145,18 +1002,18 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 (defun module/org/gcal ()
   "Org google calendar integration. Not actively using atm."
 
-  ;; TODO setup dropbox daemon on linux, try calfw, bind stuff
-  (require 'org-gcal)
   (require 'org-contacts)
-  (load (if-linux "~/Dropbox/secrets.el"
-                  "c:/~/Dropbox/secrets.el") t)
-  (setq org-gcal-file-alist
-        `(("ekaschalk@gmail.com" .
-           ,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org"))))
+  ;; (require 'org-gcal)
+  ;; (load (if-linux "~/Dropbox/secrets.el"
+  ;;                 "c:/~/Dropbox/secrets.el") t)
+  ;; (setq org-gcal-file-alist
+  ;;       `(("ekaschalk@gmail.com" .
+  ;;          ,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org"))))
   (setq org-contacts-files
         `(,(if-linux "~/Dropbox/contacts.org" "c:/~/Dropbox/contacts.org")))
   (setq org-agenda-files
-        `(,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org"))))
+        `(,(if-linux "~/Dropbox/schedule.org" "c:/~/Dropbox/schedule.org")))
+  )
 
 ;;;; Misc
 

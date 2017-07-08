@@ -24,6 +24,8 @@
 
 ;;; Code:
 
+(require 'outshine)
+
 (defvar pretty-outline-bullets-bullet-list '("" "" "" "")
   "An implemention of `org-bullets-bullet-list' for outlines")
 

@@ -8,14 +8,74 @@
 ;;
 ;;; License: GPLv3
 
+;; TODOS
+;; add autoloads to everything
+;; require dash/s/other stuff everywhere thats needed
+;; add xxx-ends here to all, move provide to just under code header
+;; see if i need to add :defer t
+
 (setq display-packages
       '(
         ;; neotree
+
+        all-the-icons
+        outshine
         spaceline-all-the-icons
+
+        (prettify-utils :location (recipe :fetcher github
+                                          :repo "Ilazki/prettify-utils.el"))
+
+        (pretty-code :location local)
         (pretty-eshell :location local)
         (pretty-magit :location local)
         (pretty-outlines :location local)
         ))
+
+(defun display/init-prettify-utils ()
+  (use-package prettify-utils))
+
+;;; All-the-icons
+
+(defun display/post-init-all-the-icons ()
+  (add-to-list
+   'all-the-icons-icon-alist
+   '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
+  (add-to-list
+   'all-the-icons-mode-icon-alist
+   '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange)))
+
+;;; Pretty-code
+
+(defun display/init-pretty-code ()
+  (use-package pretty-code
+    :config
+    (setq hy-pretty-pairs
+          (pretty-code-get-pairs
+           '(:lambda "fn" :def "defn"
+                     :composition "comp"
+                     :null "None" :true "True" :false "False"
+                     :in "in" :not "not"
+                     :and "and" :or "or"
+                     :some "some"
+                     :tuple "#t"
+                     :pipe "ap-pipe")))
+
+    (setq python-pretty-pairs
+          (pretty-code-get-pairs
+           '(:lambda "lambda" :def "def"
+                     :null "None" :true "True" :false "False"
+                     :int "int" :float "float" :str "str" :bool "bool"
+                     :not "not" :for "for" :in "in" :not-in "not in"
+                     :return "return" :yield "yield"
+                     :and "and" :or "or"
+                     :tuple "Tuple"
+                     :pipe "tz-pipe"
+                     )))
+
+    (pretty-code-set-pairs `((hy-mode-hook     ,hy-pretty-pairs)
+                             (python-mode-hook ,python-pretty-pairs)))
+
+    (global-prettify-symbols-mode 1)))
 
 ;;; Pretty-eshell
 
