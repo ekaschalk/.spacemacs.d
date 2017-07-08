@@ -81,7 +81,11 @@
         )
 
       ;; OS-Specific and Local Packages
-      dotspacemacs/layers/local '()
+      dotspacemacs/layers/local
+      '(
+        (display :location local)
+        )
+
       dotspacemacs/layers/linux '()
       dotspacemacs/layers/windows '())
 
@@ -307,7 +311,7 @@
   (module/display/modeline)
   (module/display/outline-ellipsis-modification)
   (module/display/outline-bullets)
-  (module/display/prettify-magit)
+  ;; (module/display/prettify-magit)
   (module/display/prettify-symbols)
   (module/display/shell)
   (module/display/theme-updates))
