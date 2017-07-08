@@ -1,4 +1,4 @@
-;;; pretty-magit.el --- Look up python documents (reference) in Emacs
+;;; pretty-magit.el --- Magit commit leaders
 
 ;; Copyright (C) 2017-2017 Eric Kaschalk
 
