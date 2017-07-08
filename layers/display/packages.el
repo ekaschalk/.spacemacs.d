@@ -10,8 +10,12 @@
 
 (setq display-packages
       '(
+        ;; neotree
+        spaceline-all-the-icons
         (pretty-magit :location local)
         ))
+
+;;; Pretty-magit
 
 (defun display/init-pretty-magit ()
   (use-package pretty-magit
@@ -32,6 +36,40 @@
   (advice-add 'magit-status :after 'add-magit-faces)
   (advice-add 'magit-refresh-buffer :after 'add-magit-faces)
   (advice-add 'magit-commit :after 'use-magit-commit-prompt))
+
+;;; Modeline
+
+(defun display/init-spaceline-all-the-icons ()
+  (use-package spaceline-all-the-icons
+    :after spaceline
+    :config
+    (progn
+      (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
+            spaceline-all-the-icons-icon-set-modified 'chain
+            spaceline-all-the-icons-icon-set-window-numbering 'circle
+            spaceline-all-the-icons-separator-type 'none
+            spaceline-all-the-icons-primary-separator "")
+
+      (spaceline-toggle-all-the-icons-buffer-size-off)
+      (spaceline-toggle-all-the-icons-buffer-position-off)
+      (spaceline-toggle-all-the-icons-vc-icon-off)
+      (spaceline-toggle-all-the-icons-vc-status-off)
+      (spaceline-toggle-all-the-icons-git-status-off)
+      (spaceline-toggle-all-the-icons-flycheck-status-off)
+      (spaceline-toggle-all-the-icons-time-off)
+      (spaceline-toggle-all-the-icons-battery-status-off)
+      (spaceline-toggle-hud-off))))
+
+(defun display/post-init-spaceline-all-the-icons ()
+  (spaceline-all-the-icons-theme)
+  (when (configuration-layer/package-usedp 'neotree)
+    (spaceline-all-the-icons--setup-neotree)))
+
+;;; Neotree
+
+;; (defun display/post-init-neotree ()
+;;   (when (configuration-layer/package-usedp 'neotree)
+;;     (spaceline-all-the-icons--setup-neotree)))
 
 
 ;;; Notes

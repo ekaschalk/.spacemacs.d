@@ -111,7 +111,7 @@
         ;; Visual Enhancements
         all-the-icons-ivy        ; Ivy prompts use file icons
         pretty-mode              ; Adds onto prettify-mode
-        spaceline-all-the-icons  ; Spaceline integrates file and other icons
+        ;; spaceline-all-the-icons  ; Spaceline integrates file and other icons
         (prettify-utils          ; Useful add pretty symbols macro
          :location (recipe :fetcher github
                            :repo "Ilazki/prettify-utils.el"))
@@ -308,10 +308,8 @@
   ;; Rest
   (module/display/all-the-icons)
   (module/display/extra-syntax-highlighting)
-  (module/display/modeline)
   (module/display/outline-ellipsis-modification)
   (module/display/outline-bullets)
-  ;; (module/display/prettify-magit)
   (module/display/prettify-symbols)
   (module/display/shell)
   (module/display/theme-updates))
@@ -540,36 +538,6 @@
 
   (add-hook 'hy-mode-hook 'hy-extra-syntax))
 
-;;;; Modeline
-
-(defun module/display/modeline ()
-  "Minimalistic spaceline-all-the-icons configuration."
-
-  (use-package spaceline-all-the-icons
-    :after spaceline  ; eval-after-load doesn't work for this setup
-    :config (progn
-              ;; Initialization
-              (spaceline-all-the-icons--setup-neotree)
-              (spaceline-all-the-icons-theme)
-
-              ;; Configuration
-              (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
-                    spaceline-all-the-icons-icon-set-modified 'chain
-                    spaceline-all-the-icons-icon-set-window-numbering 'circle
-                    spaceline-all-the-icons-separator-type 'none
-                    spaceline-all-the-icons-primary-separator "")
-
-              ;; Toggles
-              (spaceline-toggle-all-the-icons-buffer-size-off)
-              (spaceline-toggle-all-the-icons-buffer-position-off)
-              (spaceline-toggle-all-the-icons-vc-icon-off)
-              (spaceline-toggle-all-the-icons-vc-status-off)
-              (spaceline-toggle-all-the-icons-git-status-off)
-              (spaceline-toggle-all-the-icons-flycheck-status-off)
-              (spaceline-toggle-all-the-icons-time-off)
-              (spaceline-toggle-all-the-icons-battery-status-off)
-              (spaceline-toggle-hud-off))))
-
 ;;;; Outline-ellipsis-modification
 
 (defun module/display/outline-ellipsis-modification ()
@@ -642,80 +610,6 @@
   (add-hook 'emacs-lisp-mode-hook 'add-outline-font-locks)
   (add-hook 'hy-mode-hook 'add-outline-font-locks)
   (add-hook 'python-mode-hook 'add-outline-font-locks))
-
-;;;; Prettify-magit
-
-(defun module/display/prettify-magit ()
-  "Add faces to Magit manually for things like commit headers eg. (Add: ...).
-
-Adding faces to Magit is non-trivial since any use of font-lock will break
-fontification of the buffer. This is due to Magit doing all styling with
-`propertize' and black magic. So we apply the faces the manual way.
-
-Adds Ivy integration so a prompt of (Add, Docs, ...) appears when commiting.
-Can explore icons by evaluating eg.: (all-the-icons-insert-icons-for 'material)"
-
-  (defmacro pretty-magit (WORD ICON PROPS &optional NO-PROMPT?)
-    "Replace sanitized WORD with ICON, PROPS and by default add to prompts."
-    `(progn
-       (add-to-list 'pretty-magit-alist
-                    (list (rx bow (group ,WORD (eval (if ,NO-PROMPT? "" ":"))))
-                          ,ICON ',PROPS))
-       (unless ,NO-PROMPT?
-         (add-to-list 'pretty-magit-prompt (concat ,WORD ": ")))))
-
-  (setq pretty-magit-alist nil)
-  (setq pretty-magit-prompt nil)
-  (pretty-magit "Feature" ? (:foreground "slate gray" :height 1.2))
-  (pretty-magit "Add"     ? (:foreground "#375E97" :height 1.2))
-  (pretty-magit "Fix"     ? (:foreground "#FB6542" :height 1.2))
-  (pretty-magit "Clean"   ? (:foreground "#FFBB00" :height 1.2))
-  (pretty-magit "Docs"    ? (:foreground "#3F681C" :height 1.2))
-  (pretty-magit "master"  ? (:box t :height 1.2) t)
-  (pretty-magit "origin"  ? (:box t :height 1.2) t)
-
-  (defun add-magit-faces ()
-    "Add face properties and compose symbols for buffer from pretty-magit."
-    (interactive)
-    (with-silent-modifications
-      (--each pretty-magit-alist
-        (-let (((rgx icon props) it))
-          (save-excursion
-            (goto-char (point-min))
-            (while (search-forward-regexp rgx nil t)
-              (compose-region
-               (match-beginning 1) (match-end 1) icon)
-              (when props
-                (add-face-text-property
-                 (match-beginning 1) (match-end 1) props))))))))
-
-  (setq use-magit-commit-prompt-p nil)
-  (defun use-magit-commit-prompt (&rest args)
-    (setq use-magit-commit-prompt-p t))
-
-  (defun magit-commit-prompt ()
-    "Magit prompt and insert commit header with faces."
-
-    (interactive)
-    (when use-magit-commit-prompt-p
-      (setq use-magit-commit-prompt-p nil)
-      (insert (ivy-read "Commit Type " pretty-magit-prompt
-                        :require-match t :sort t :preselect "Add: "))
-      (add-magit-faces)
-      (evil-insert 1)))
-
-  ;; Now due to the delayed use of minibuffer in commit buffers, we cannot
-  ;; use add-advice and instead use `git-commit-setup-hook' to run the prompt.
-  ;; However, we only want the prompt for c-c `magit-commit' and not its
-  ;; variants. The only way to distinguish the calling commit mode is through
-  ;; the caller, so we use advice add on `magit-commit' for a prompt predicate.
-
-  (remove-hook 'git-commit-setup-hook 'with-editor-usage-message)
-  (add-hook 'git-commit-setup-hook 'magit-commit-prompt)
-
-  (advice-add 'magit-status :after 'add-magit-faces)
-  (advice-add 'magit-refresh-buffer :after 'add-magit-faces)
-  (advice-add 'magit-commit :after 'use-magit-commit-prompt))
 
 ;;;; Prettify-symbols
 
