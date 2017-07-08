@@ -14,6 +14,7 @@
         spaceline-all-the-icons
         (pretty-eshell :location local)
         (pretty-magit :location local)
+        (pretty-outlines :location local)
         ))
 
 ;;; Pretty-eshell
@@ -64,6 +65,22 @@
   (advice-add 'magit-status :after 'add-magit-faces)
   (advice-add 'magit-refresh-buffer :after 'add-magit-faces)
   (advice-add 'magit-commit :after 'use-magit-commit-prompt))
+
+;;; Pretty-outlines
+
+(defun display/init-pretty-outlines ()
+  (use-package pretty-outlines))
+
+(defun display/post-init-pretty-outlines ()
+  ;; Outline-ellipsis
+  (add-hook 'outline-mode-hook 'pretty-outline-set-display-table)
+  (add-hook 'outline-minor-mode-hook 'pretty-outline-set-display-table)
+
+  ;; Outline-bullets
+  (add-hook 'emacs-lisp-mode-hook 'pretty-outline-add-bullets)
+  ;; (add-hook 'hy-mode-hook 'pretty-outline-add-bullets)
+  ;; (add-hook 'python-mode-hook 'pretty-outline-add-bullets)
+  )
 
 ;;; Modeline
 

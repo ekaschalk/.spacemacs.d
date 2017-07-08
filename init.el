@@ -305,8 +305,6 @@
   ;; Rest
   (module/display/all-the-icons)
   (module/display/extra-syntax-highlighting)
-  (module/display/outline-ellipsis-modification)
-  (module/display/outline-bullets)
   (module/display/prettify-symbols)
   (module/display/theme-updates))
 
@@ -337,6 +335,10 @@
           (set-fontset-font t `(,it . ,it) font)))))
 
   ;; The icons you see are not the correct icons until this is evaluated!
+  (set-icon-fonts
+   '(("material icons" #xe3d0 #xe3d1 #xe3d2 #xe3d4)))
+
+
   (set-icon-fonts
    '(("fontawesome"
       ;;                         
@@ -533,79 +535,6 @@
          )))
 
   (add-hook 'hy-mode-hook 'hy-extra-syntax))
-
-;;;; Outline-ellipsis-modification
-
-(defun module/display/outline-ellipsis-modification ()
-  "Org-ellipsis but for outline-minor-mode headings"
-
-  (defvar outline-display-table (make-display-table))
-  (set-display-table-slot outline-display-table 'selective-display
-                          ;; (vector (make-glyph-code ?▼ 'escape-glyph)))
-                          (vector (make-glyph-code ? 'escape-glyph)))
-  (defun set-outline-display-table ()
-    (setf buffer-display-table outline-display-table))
-
-  (add-hook 'outline-mode-hook 'set-outline-display-table)
-  (add-hook 'outline-minor-mode-hook 'set-outline-display-table))
-
-;;;; Outline-bullets
-
-(defun module/display/outline-bullets ()
-  "Update outline bullets similarly to `org-bullets-bullet-list'."
-
-  (require 'org-bullets)  ; Improve this require
-
-  (set-icon-fonts
-   '(("material icons" #xe3d0 #xe3d1 #xe3d2 #xe3d4)))
-
-  (setq org-bullets-bullet-list '("" "" "" ""))
-  (setq-default outline-bullets-bullet-list org-bullets-bullet-list)
-
-  (defun font-lock-display-updates (FONT-LOCK-ALIST)
-    "Put text property for FONT-LOCK-ALIST for var-width replacements."
-    (font-lock-add-keywords
-     nil (--map (-let (((rgx uni-point) it))
-               `(,rgx (0 (progn
-                           (put-text-property
-                            (match-beginning 1) (match-end 1)
-                            'display
-                            ,uni-point)
-                           nil))))
-             FONT-LOCK-ALIST)))
-
-  (defun outline-bullets-rgx-at-level (LEVEL)
-    "Calculate regex or outline-bullets at LEVEL."
-    (concat "\\(^"
-            (-> LEVEL
-               outshine-calc-outline-string-at-level
-               s-trim-right)
-            "\\) "))
-
-  (defun propertize-bullet (LEVEL BULLET)
-    "Add LEVEL-dependent face to BULLET."
-    (with-face BULLET
-               (pcase LEVEL
-                 (0 '(:inherit outline-1 :underline nil))
-                 (1 '(:inherit outline-2 :underline nil))
-                 (2 '(:inherit outline-3 :underline nil))
-                 (3 '(:inherit outline-4 :underline nil))
-                 (_ nil))))
-
-  (defun add-outline-font-locks ()
-    "Use with `add-hook' to enable outline-bullets-bullet-list for mode."
-    (font-lock-display-updates
-     (--map-indexed
-      (list
-       (outline-bullets-rgx-at-level (+ 1 it-index))
-       (concat
-        (s-repeat it-index " ")
-        (propertize-bullet it-index it)))
-      (-take 8 (-cycle outline-bullets-bullet-list)))))
-
-  (add-hook 'emacs-lisp-mode-hook 'add-outline-font-locks)
-  (add-hook 'hy-mode-hook 'add-outline-font-locks)
-  (add-hook 'python-mode-hook 'add-outline-font-locks))
 
 ;;;; Prettify-symbols
 
@@ -1293,10 +1222,12 @@ MODE-HOOK-PAIRS-ALIST is an alist of the mode hoook and its pretty pairs."
 (defun module/org/theming ()
   "Org theming updates."
 
+  (require 'org-bullets)
   (setq org-priority-faces '((65 :inherit org-priority :foreground "red")
                              (66 :inherit org-priority :foreground "brown")
                              (67 :inherit org-priority :foreground "blue"))
-        org-ellipsis "▼"))
+        org-ellipsis "▼"
+        org-bullets-bullet-list '("" "" "" "")))
 
 ;;; Outshine
 
