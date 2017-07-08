@@ -104,9 +104,6 @@
          :location (recipe :fetcher github
                            :repo "magnars/dash.el"))
 
-        ;; Visual Enhancements
-        ;; all-the-icons-ivy        ; Ivy prompts use file icons
-
         ;; Themes
         solarized-theme
         ))
@@ -286,14 +283,7 @@
 ;;; Display
 
 (defun module/display ()
-  ;; Group 1
   (unless-linux-call 'module/display/windows-frame-size-fix)
-
-  ;; Group 2
-  (module/display/fontsets)
-  (module/display/font-locks)
-
-  ;; Rest
   (module/display/extra-syntax-highlighting)
   (module/display/theme-updates))
 
@@ -306,176 +296,6 @@
   (set-face-attribute 'default t :font "operator mono medium")
 
   (global-set-key (kbd "<f2>") (xis (interactive) (zoom-frm-out) (zoom-frm-out))))
-
-;;;; Fontsets
-
-(defun module/display/fontsets ()
-  "Set right fonts for missing and all-the-icons unicode points."
-
-  ;; Fira code ligatures. Fira Code Symbol is a different font than Fira Code!
-  ;; You can use any font you wish with just the ligatures
-  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-
-  (defun set-icon-fonts (CODE-FONT-ALIST)
-    "Utility to associate many unicode points with specified fonts."
-    (--each CODE-FONT-ALIST
-      (-let (((font . codes) it))
-        (--each codes
-          (set-fontset-font t `(,it . ,it) font)))))
-
-  ;; The icons you see are not the correct icons until this is evaluated!
-  (set-icon-fonts
-   '(("material icons" #xe3d0 #xe3d1 #xe3d2 #xe3d4)))
-
-
-  (set-icon-fonts
-   '(("fontawesome"
-      ;;                         
-      #xf07c #xf0c9 #xf0c4 #xf0cb #xf017 #xf101)
-
-     ("all-the-icons"
-      ;;    
-      #xe907 #xe928)
-
-     ("github-octicons"
-      ;;                          
-      #xf091 #xf059 #xf076 #xf075 #xe192  #xf016)
-
-     ("material icons"
-      ;;        
-      #xe871 #xe918 #xe3e7)
-
-     ("Symbola"
-      ;; 𝕊    ⨂      ∅      ⟻    ⟼     ⊙      𝕋       𝔽
-      #x1d54a #x2a02 #x2205 #x27fb #x27fc #x2299 #x1d54b #x1d53d
-      ;; 𝔹    𝔇       𝔗
-      #x1d539 #x1d507 #x1d517))))
-
-;;;; Font-locks
-;;;;; Core
-
-(defun module/display/font-locks ()
-  "Enable following font-locks for appropriate modes."
-
-  (defun -add-font-lock-kwds (FONT-LOCK-ALIST)
-    (font-lock-add-keywords
-     nil (--map (-let (((rgx uni-point) it))
-               `(,rgx (0 (progn
-                           (compose-region
-                            (match-beginning 1) (match-end 1)
-                            ,(concat "\t" (list uni-point)))
-                           nil))))
-              FONT-LOCK-ALIST)))
-
-  (defmacro add-font-locks (FONT-LOCK-HOOKS-ALIST)
-    `(--each ,FONT-LOCK-HOOKS-ALIST
-       (-let (((font-locks . mode-hooks) it))
-         (--each mode-hooks
-           (add-hook it (-partial '-add-font-lock-kwds
-                                  (symbol-value font-locks)))))))
-
-  (add-font-locks
-   '(;; Ligatures
-     (fira-font-lock-alist prog-mode-hook org-mode-hook)
-
-     ;; Language updates not possible with prettify-symbols
-     (hy-font-lock-alist     hy-mode-hook))))
-
-;;;;; Language-font-locks
-
-(defconst hy-font-lock-alist
-  ;; self does not work as a prettify symbol for hy, unlike python
-  '(("\\(self\\)"   ?⊙)))
-
-;;;;; Fira-font-locks
-
-(defconst fira-font-lock-alist
-  '(;; OPERATORS
-    ;; Pipes
-    ("\\(<|\\)" #Xe14d) ("\\(<>\\)" #Xe15b) ("\\(<|>\\)" #Xe14e) ("\\(|>\\)" #Xe135)
-
-    ;; Brackets
-    ("\\(<\\*\\)" #Xe14b) ("\\(<\\*>\\)" #Xe14c) ("\\(\\*>\\)" #Xe104)
-    ("\\(<\\$\\)" #Xe14f) ("\\(<\\$>\\)" #Xe150) ("\\(\\$>\\)" #Xe137)
-    ("\\(<\\+\\)" #Xe155) ("\\(<\\+>\\)" #Xe156) ("\\(\\+>\\)" #Xe13a)
-
-    ;; Equality
-    ("\\(!=\\)" #Xe10e) ("\\(!==\\)"         #Xe10f) ("\\(=/=\\)" #Xe143)
-    ("\\(/=\\)" #Xe12c) ("\\(/==\\)"         #Xe12d)
-    ("\\(===\\)"#Xe13d) ("[^!/]\\(==\\)[^>]" #Xe13c)
-
-    ;; Equality Special
-    ("\\(||=\\)"  #Xe133) ("[^|]\\(|=\\)" #Xe134)
-    ("\\(~=\\)"   #Xe166)
-    ("\\(\\^=\\)" #Xe136)
-    ("\\(=:=\\)"  #Xe13b)
-
-    ;; Comparisons
-    ("\\(<=\\)" #Xe141) ("\\(>=\\)" #Xe145)
-    ("\\(</\\)" #Xe162) ("\\(</>\\)" #Xe163)
-
-    ;; Shifts
-    ("[^-=]\\(>>\\)" #Xe147) ("\\(>>>\\)" #Xe14a)
-    ("[^-=]\\(<<\\)" #Xe15c) ("\\(<<<\\)" #Xe15f)
-
-    ;; Dots
-    ("\\(\\.-\\)"    #Xe122) ("\\(\\.=\\)" #Xe123)
-    ("\\(\\.\\.<\\)" #Xe125)
-
-    ;; Hashes
-    ("\\(#{\\)"  #Xe119) ("\\(#(\\)"   #Xe11e) ("\\(#_\\)"   #Xe120)
-    ("\\(#_(\\)" #Xe121) ("\\(#\\?\\)" #Xe11f) ("\\(#\\[\\)" #Xe11a)
-
-    ;; REPEATED CHARACTERS
-    ;; 2-Repeats
-    ("\\(||\\)" #Xe132)
-    ("\\(!!\\)" #Xe10d)
-    ("\\(%%\\)" #Xe16a)
-    ("\\(&&\\)" #Xe131)
-
-    ;; 2+3-Repeats
-    ("\\(##\\)"       #Xe11b) ("\\(###\\)"         #Xe11c) ("\\(####\\)" #Xe11d)
-    ("\\(--\\)"       #Xe111) ("\\(---\\)"         #Xe112)
-    ("\\({-\\)"       #Xe108) ("\\(-}\\)"          #Xe110)
-    ("\\(\\\\\\\\\\)" #Xe106) ("\\(\\\\\\\\\\\\\\)" #Xe107)
-    ("\\(\\.\\.\\)"   #Xe124) ("\\(\\.\\.\\.\\)"   #Xe126)
-    ("\\(\\+\\+\\)"   #Xe138) ("\\(\\+\\+\\+\\)"   #Xe139)
-    ("\\(//\\)"       #Xe12f) ("\\(///\\)"         #Xe130)
-    ("\\(::\\)"       #Xe10a) ("\\(:::\\)"         #Xe10b)
-
-    ;; ARROWS
-    ;; Direct
-    ("[^-]\\(->\\)" #Xe114) ("[^=]\\(=>\\)" #Xe13f)
-    ("\\(<-\\)"     #Xe152)
-    ("\\(-->\\)"    #Xe113) ("\\(->>\\)"    #Xe115)
-    ("\\(==>\\)"    #Xe13e) ("\\(=>>\\)"    #Xe140)
-    ("\\(<--\\)"    #Xe153) ("\\(<<-\\)"    #Xe15d)
-    ("\\(<==\\)"    #Xe158) ("\\(<<=\\)"    #Xe15e)
-    ("\\(<->\\)"    #Xe154) ("\\(<=>\\)"    #Xe159)
-
-    ;; Branches
-    ("\\(-<\\)"  #Xe116) ("\\(-<<\\)" #Xe117)
-    ("\\(>-\\)"  #Xe144) ("\\(>>-\\)" #Xe148)
-    ("\\(=<<\\)" #Xe142) ("\\(>>=\\)" #Xe149)
-    ("\\(>=>\\)" #Xe146) ("\\(<=<\\)" #Xe15a)
-
-    ;; Squiggly
-    ("\\(<~\\)" #Xe160) ("\\(<~~\\)" #Xe161)
-    ("\\(~>\\)" #Xe167) ("\\(~~>\\)" #Xe169)
-    ("\\(-~\\)" #Xe118) ("\\(~-\\)"  #Xe165)
-
-    ;; MISC
-    ("\\(www\\)"                   #Xe100)
-    ("\\(<!--\\)"                  #Xe151)
-    ("\\(~@\\)"                    #Xe164)
-    ("[^<]\\(~~\\)"                #Xe168)
-    ("\\(\\?=\\)"                  #Xe127)
-    ("[^=]\\(:=\\)"                #Xe10c)
-    ("\\(/>\\)"                    #Xe12e)
-    ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d)
-    ("[^:=]\\(:\\)[^:=]"           #Xe16c)
-    ("\\(<=\\)"                    #Xe157)
-  ))
 
 ;;;; Extra-syntax-highlighting
 

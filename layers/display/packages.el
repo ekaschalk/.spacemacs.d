@@ -14,6 +14,7 @@
 ;; add xxx-ends here to all, move provide to just under code header
 ;; see if i need to add :defer t
 ;; pre/post-init only when u dont own the pkg!
+;; make pretty-fonts macro require fonts to be installed
 
 (setq display-packages
       '(
@@ -29,6 +30,7 @@
                                           :repo "Ilazki/prettify-utils.el"))
 
         (pretty-code :location local)
+        (pretty-fonts :location local)
         (pretty-eshell :location local)
         (pretty-magit :location local)
         (pretty-outlines :location local)
@@ -36,6 +38,48 @@
 
 (defun display/init-prettify-utils ()
   (use-package prettify-utils))
+
+;;; Pretty-fonts
+
+(defun display/init-pretty-fonts ()
+  (use-package pretty-fonts
+    :init
+    (progn
+      (defconst pretty-fonts-hy-mode
+        '(("\\(self\\)"   ?⊙))))
+
+    :config
+    (progn
+      (pretty-fonts-set-kwds
+       '(;; Fira Code Ligatures
+         (pretty-fonts-fira-font prog-mode-hook org-mode-hook)
+         ;; Custom replacements not possible with `pretty-code' package
+         (pretty-fonts-hy-mode hy-mode-hook)))
+
+      (pretty-fonts-set-fontsets
+       '(("fontawesome"
+          ;;                         
+          #xf07c #xf0c9 #xf0c4 #xf0cb #xf017 #xf101)
+
+         ("all-the-icons"
+          ;;    
+          #xe907 #xe928)
+
+         ("github-octicons"
+          ;;                          
+          #xf091 #xf059 #xf076 #xf075 #xe192  #xf016)
+
+         ("material icons"
+          ;;        
+          #xe871 #xe918 #xe3e7
+          ;;
+          #xe3d0 #xe3d1 #xe3d2 #xe3d4)
+
+         ("Symbola"
+          ;; 𝕊    ⨂      ∅      ⟻    ⟼     ⊙      𝕋       𝔽
+          #x1d54a #x2a02 #x2205 #x27fb #x27fc #x2299 #x1d54b #x1d53d
+          ;; 𝔹    𝔇       𝔗
+          #x1d539 #x1d507 #x1d517))))))
 
 ;;; All-the-icons
 
