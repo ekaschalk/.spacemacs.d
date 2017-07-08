@@ -105,7 +105,7 @@
                            :repo "magnars/dash.el"))
 
         ;; Visual Enhancements
-        all-the-icons-ivy        ; Ivy prompts use file icons
+        ;; all-the-icons-ivy        ; Ivy prompts use file icons
 
         ;; Themes
         solarized-theme
@@ -625,19 +625,6 @@
 
 (defun module/ivy ()
   "Ivy completion framework configuration."
-
-  (defun ivy-file-transformer-fixed-for-files (s)
-    "Gets file icon for string, fixing bug for folders and windows box."
-    (format "%s\t%s"
-            (if (and is-linuxp (s-ends-with? "/" s))
-                (propertize "\t" 'display "" 'face 'all-the-icons-silver)
-              (propertize "\t" 'display (all-the-icons-icon-for-file s)))
-            s))
-
-  (advice-add 'all-the-icons-ivy-file-transformer
-              :override 'ivy-file-transformer-fixed-for-files)
-
-  (all-the-icons-ivy-setup)
 
   ;; Perform default action on avy-selected minibuffer line
   (define-key ivy-minibuffer-map (kbd "C-l") 'ivy-avy)

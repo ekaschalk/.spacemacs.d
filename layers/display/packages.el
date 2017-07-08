@@ -13,12 +13,15 @@
 ;; require dash/s/other stuff everywhere thats needed
 ;; add xxx-ends here to all, move provide to just under code header
 ;; see if i need to add :defer t
+;; pre/post-init only when u dont own the pkg!
 
 (setq display-packages
       '(
         ;; neotree
+        ;; (need theming layer)
 
         all-the-icons
+        all-the-icons-ivy
         outshine
         spaceline-all-the-icons
 
@@ -36,13 +39,34 @@
 
 ;;; All-the-icons
 
-(defun display/post-init-all-the-icons ()
-  (add-to-list
-   'all-the-icons-icon-alist
-   '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
-  (add-to-list
-   'all-the-icons-mode-icon-alist
-   '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange)))
+(defun display/init-all-the-icons ()
+  (use-package all-the-icons
+    :config
+    (progn
+      (add-to-list
+       'all-the-icons-icon-alist
+       '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
+      (add-to-list
+       'all-the-icons-mode-icon-alist
+       '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange)))))
+
+;;; All-the-icons-ivy
+
+(defun display/init-all-the-icons-ivy ()
+  (defun ivy-file-transformer-fixed-for-files (s)
+    "Gets file icon for string, fixing bug for folders and windows box."
+    (format "%s\t%s"
+            (if (and is-linuxp (s-ends-with? "/" s))
+                (propertize "\t" 'display "" 'face 'all-the-icons-silver)
+              (propertize "\t" 'display (all-the-icons-icon-for-file s)))
+            s))
+
+  (use-package all-the-icons-ivy
+    :config
+    (progn
+      (advice-add 'all-the-icons-ivy-file-transformer
+                  :override 'ivy-file-transformer-fixed-for-files)
+      (all-the-icons-ivy-setup))))
 
 ;;; Pretty-code
 
@@ -175,26 +199,3 @@
 ;; (defun display/post-init-neotree ()
 ;;   (when (configuration-layer/package-usedp 'neotree)
 ;;     (spaceline-all-the-icons--setup-neotree)))
-
-
-;;; Notes
-
-;; OUTSIDE PACKAGES
-;; all-the-icons (check individual fonts in set-icon-fonts)
-;; (check fira code installed for fira-font-lock-alist)
-;; theming layer (to replace custom-set-packages)
-;; spaceline-all-the-icons
-;; org/org-bullets
-;; (prettify-utils-generate maybe)
-;; pretty-mode
-;; dash/s
-
-;; PERSONAL PACKAGES
-;; font-lock-stuff
-;; outline-updates
-;; shell-updates
-;; pretty-magit
-;; prettify-symbols
-
-;; NOTES
-;; use post-init hooks to add language-specific font-locks
