@@ -126,7 +126,8 @@
    dotspacemacs-distribution 'spacemacs
    dotspacemacs-enable-lazy-installation 'unused
    dotspacemacs-ask-for-lazy-installation t
-   dotspacemacs-configuration-layer-path nil
+   dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layers/"
+                                           "c:/~/.spacemacs.d/layers/")
    dotspacemacs-additional-packages dotspacemacs/additional/packages
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages '()
@@ -262,6 +263,7 @@
   ;; Experimenting
   (spacemacs/set-leader-keys "bb" 'ibuffer)
   ;; TODO use theming layer to apply theme updates cleaner
+  ;; http://spacemacs.org/layers/+themes/theming/README.html
 
   )
 
