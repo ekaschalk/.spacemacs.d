@@ -76,8 +76,6 @@
 
       dotspacemacs/layers/rare
       '(
-        ;; pandoc      ; Pandoc for more export options, used for blogging
-        ;; restclient  ; REST client for usage with org-babel
         markdown    ; Markdown mode for viewing outside documentation
         graphviz    ; Graphviz mode for usage with org-babel
         )
@@ -283,7 +281,7 @@
 (defun module/display ()
   (unless-linux-call 'module/display/windows-frame-size-fix)
   (module/display/extra-syntax-highlighting)
-  (module/display/theme-updates))
+  )
 
 ;;;; Windows-frame-size-fix
 
@@ -327,117 +325,6 @@
          )))
 
   (add-hook 'hy-mode-hook 'hy-extra-syntax))
-
-;;;; Theme-updates
-
-(defun module/display/theme-updates ()
-  "Face configuration for themes, atm solarized-light."
-
-  (defun update-solarize-dark ()
-    (setq org-src-block-faces `(("python" (:background "#073642"))))
-
-    (custom-theme-set-faces
-     'solarized-dark
-
-     ;; Italicized faces for Operator Mono font
-     `(font-lock-comment-face ((t (:foreground "#586e75" :italic t))))
-     `(avy-background-face ((t (:foreground "#586e75"))))
-     `(font-lock-doc-face ((t (:foreground "#2aa198"
-                               :italic t))))
-
-     ;; Makes matching parens obvious
-     `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
-                                             :background "#586e75"))))
-
-     ;; active modeline has no colors
-     `(mode-line ((t (:inherit mode-line :background "#002b36"))))
-     `(mode-line-inactive ((t (:inherit mode-line :background "#002b36"))))
-     `(spaceline-highlight-face ((t (:inherit mode-line :background "#002b36"))))
-     `(powerline-active1 ((t (:inherit mode-line :background "#002b36"))))
-     `(powerline-active2 ((t (:inherit mode-line :background "#002b36"))))
-
-     ;; Inactive modeline has tint
-     `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
-
-     ;; Org and outline header updates
-     `(outline-1 ((t (:height 1.25
-                              :foreground "#C3A29E"
-                              :weight ultra-bold
-                              :italic t
-                              :underline t))))
-
-     `(outline-2 ((t (:height 1.15
-                              :foreground "#8D6B94"
-                              :weight extra-bold
-                              :italic t
-                              :underline t))))
-
-     `(outline-3 ((t (:height 1.15
-                              :foreground "#8C5F66"
-                              :weight bold
-                              :italic t
-                              :underline t))))
-
-     `(org-level-1 ((t (:height 1.25 :foreground "#268bd2"
-                                :underline t
-                                :weight ultra-bold))))
-     `(org-level-2 ((t (:height 1.15 :foreground "#2aa198"
-                                :underline t
-                                :weight ultra-bold))))
-     `(org-level-3 ((t (:height 1.05 :foreground "#b58900"
-                                :underline t
-                                :weight ultra-bold))))
-
-     ;; #586e75
-     `(org-block-begin-line ((t (:height 1.05 :foreground "#576e75"
-                                         :box t :weight bold))))
-     )
-
-    (setq my-black "#1b1b1e"))
-
-  (defun update-solarize-light ()
-    (custom-theme-set-faces
-     'solarized-light
-
-     ;; Makes matching parens obvious
-     `(sp-show-pair-match-face ((t (:inherit sp-show-pair-match-face
-                                             :background "light gray"))))
-
-     ;; active modeline has no colors
-     `(mode-line ((t (:inherit mode-line :background "#fdf6e3"))))
-     `(mode-line-inactive ((t (:inherit mode-line :background "#fdf6e3"))))
-     `(spaceline-highlight-face ((t (:inherit mode-line :background "#fdf6e3"))))
-     `(powerline-active1 ((t (:inherit mode-line :background "#fdf6e3"))))
-     `(powerline-active2 ((t (:inherit mode-line :background "#fdf6e3"))))
-
-     ;; Inactive modeline has tint
-     `(powerline-inactive2 ((t (:inherit powerline-inactive1))))
-
-     ;; Org and outline header updates
-     `(org-level-1 ((t (:height 1.25 :foreground ,my-black
-                                :background "#C9DAEA"
-                                :weight bold))))
-     `(org-level-2 ((t (:height 1.15 :foreground ,my-black
-                                :background "#7CDF64"
-                                :weight bold))))
-     `(org-level-3 ((t (:height 1.05 :foreground ,my-black
-                                :background "#F8DE7E"
-                                :weight bold))))
-
-     '(outline-1 ((t (:inherit org-level-1))))
-     '(outline-2 ((t (:inherit org-level-2))))
-     '(outline-3 ((t (:inherit org-level-3))))
-     '(outline-4 ((t (:inherit org-level-4))))
-
-     `(org-todo ((t (:foreground ,my-black :weight extra-bold
-                                 :background "light gray"))))
-     `(org-priority ((t (:foreground ,my-black :weight bold
-                                     :background "light gray"))))
-     ))
-
-  (if (string= 'solarized-dark (car custom-enabled-themes))
-      (update-solarize-dark)
-    (update-solarize-light)))
 
 ;;; Ivy
 

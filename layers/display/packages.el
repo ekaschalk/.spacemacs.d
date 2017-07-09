@@ -232,9 +232,3 @@
   (spaceline-all-the-icons-theme)
   (when (configuration-layer/package-usedp 'neotree)
     (spaceline-all-the-icons--setup-neotree)))
-
-;;; Neotree
-
-;; (defun display/post-init-neotree ()
-;;   (when (configuration-layer/package-usedp 'neotree)
-;;     (spaceline-all-the-icons--setup-neotree)))
