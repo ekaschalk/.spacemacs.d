@@ -280,7 +280,6 @@
 
 (defun module/display ()
   (unless-linux-call 'module/display/windows-frame-size-fix)
-  (module/display/extra-syntax-highlighting)
   )
 
 ;;;; Windows-frame-size-fix
@@ -292,39 +291,6 @@
   (set-face-attribute 'default t :font "operator mono medium")
 
   (global-set-key (kbd "<f2>") (xis (interactive) (zoom-frm-out) (zoom-frm-out))))
-
-;;;; Extra-syntax-highlighting
-
-(defun module/display/extra-syntax-highlighting ()
-  "Extra syntax highlighting for desired keywords."
-
-  (defun hy-extra-syntax ()
-    (font-lock-add-keywords
-     nil '(;; self is not defined by hy-mode as a keyword
-         ("\\<\\(self\\)" . 'font-lock-constant-face)
-
-         ;; Highlight entire line for decorators
-         ("\\(#@.*$\\)" . 'font-lock-function-name-face)
-
-         ;; Syntax highlighting for reader-macros
-         ("\\(#.\\)" . 'font-lock-function-name-face)
-
-         ;; Highlight with macros
-         ("\\(with[^ ]*\\)" . 'font-lock-keyword-face)
-
-         ;; Highlight functions after specific macros
-         ("\-fixture \\([^ ]*\\)" 1 'font-lock-function-name-face)
-         ("\-fixtures \\([^ ]*\\)" 1 'font-lock-function-name-face)
-
-         ;; Fixture macros
-         ("\\(deffixture\\)" . 'font-lock-keyword-face)
-         ("deffixture \\([^ ]*\\)" 1 'font-lock-function-name-face)
-
-         ;; Asserts
-         ("(\\(assert[^ ]*\\)" 1 font-lock-keyword-face)
-         )))
-
-  (add-hook 'hy-mode-hook 'hy-extra-syntax))
 
 ;;; Ivy
 

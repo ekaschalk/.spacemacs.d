@@ -9,17 +9,18 @@
 
 (setq display-packages
       '(
-        ;; neotree
-        ;; (need theming layer)
-
+        ;; Core Display Packages
         all-the-icons
         all-the-icons-ivy
         outshine
         spaceline-all-the-icons
-
         (prettify-utils :location (recipe :fetcher github
                                           :repo "Ilazki/prettify-utils.el"))
 
+        ;; Language specific updates
+        hy-mode
+
+        ;; Local packages
         (pretty-code :location local)
         (pretty-fonts :location local)
         (pretty-eshell :location local)
@@ -28,8 +29,7 @@
         ))
 
 (defun display/init-prettify-utils ()
-  (use-package prettify-utils
-    :defer t))
+  (use-package prettify-utils))
 
 (defun display/init-outshine ()
   (use-package outshine))
@@ -232,3 +232,34 @@
   (spaceline-all-the-icons-theme)
   (when (configuration-layer/package-usedp 'neotree)
     (spaceline-all-the-icons--setup-neotree)))
+
+;;; Hy-mode syntax highlighting
+
+(defun display/post-init-hy-mode ()
+  (defun hy-extra-syntax ()
+    (font-lock-add-keywords
+     nil '(;; self is not defined by hy-mode as a keyword
+           ("\\<\\(self\\)" . 'font-lock-constant-face)
+
+           ;; Highlight entire line for decorators
+           ("\\(#@.*$\\)" . 'font-lock-function-name-face)
+
+           ;; Syntax highlighting for reader-macros
+           ("\\(#.\\)" . 'font-lock-function-name-face)
+
+           ;; Highlight with macros
+           ("\\(with[^ ]*\\)" . 'font-lock-keyword-face)
+
+           ;; Highlight functions after specific macros
+           ("\-fixture \\([^ ]*\\)" 1 'font-lock-function-name-face)
+           ("\-fixtures \\([^ ]*\\)" 1 'font-lock-function-name-face)
+
+           ;; Fixture macros
+           ("\\(deffixture\\)" . 'font-lock-keyword-face)
+           ("deffixture \\([^ ]*\\)" 1 'font-lock-function-name-face)
+
+           ;; Asserts
+           ("(\\(assert[^ ]*\\)" 1 font-lock-keyword-face)
+           )))
+
+  (add-hook 'hy-mode-hook 'hy-extra-syntax))
