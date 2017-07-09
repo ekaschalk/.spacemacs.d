@@ -1,20 +1,11 @@
-;;; packages.el --- Display Layer
-;;
-;; Copyright (c) 2017 Eric Kaschalk
-;;
-;; Author: Eric Kaschalk <ekaschalk@gmail.com>
-;;
-;; This file is not part of GNU Emacs.
-;;
-;;; License: GPLv3
+;;; Display Layer
 
 ;; TODOS
-;; add autoloads to everything
-;; require dash/s/other stuff everywhere thats needed
-;; add xxx-ends here to all, move provide to just under code header
-;; see if i need to add :defer t
 ;; pre/post-init only when u dont own the pkg!
 ;; make pretty-fonts macro require fonts to be installed
+;; use :if is-linuxp
+;; move with-face outside individual pkgs like eshell
+;; move outshine layer
 
 (setq display-packages
       '(
@@ -37,7 +28,11 @@
         ))
 
 (defun display/init-prettify-utils ()
-  (use-package prettify-utils))
+  (use-package prettify-utils
+    :defer t))
+
+(defun display/init-outshine ()
+  (use-package outshine))
 
 ;;; Pretty-fonts
 

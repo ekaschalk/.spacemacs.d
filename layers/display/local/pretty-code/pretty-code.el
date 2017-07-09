@@ -1,4 +1,9 @@
+(require 'dash)
 (require 'prettify-utils)
+
+(provide 'pretty-code)
+
+;;; Config
 
 (defvar pretty-options
   (-flatten
@@ -26,7 +31,9 @@
     ))
   "Options plist for `pretty-code-get-pairs'.")
 
+;;; API
 
+;;;###autoload
 (defun pretty-code-get-pairs (KWDS)
   "Build an alist for prettify-symbols-alist from components from KWDS."
   (-non-nil
@@ -35,7 +42,7 @@
              ,(plist-get pretty-options it)))
          pretty-options)))
 
-
+;;;###autoload
 (defun pretty-code-set-pairs (HOOK-PAIRS-ALIST)
   "Add hooks setting `prettify-symbols-alist' for many modes"
   (mapc (lambda (x)
@@ -44,6 +51,3 @@
                       (lambda ()
                         (setq prettify-symbols-alist pretty-pairs)))))
         HOOK-PAIRS-ALIST))
-
-
-(provide 'pretty-code)

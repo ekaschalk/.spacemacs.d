@@ -1,3 +1,10 @@
+(require 'dash)
+
+(provide 'pretty-fonts)
+
+;;; API
+
+;;;###autoload
 (defun pretty-fonts-set-fontsets (CODE-FONT-ALIST)
   "Utility to associate many unicode points with specified fonts."
   (--each CODE-FONT-ALIST
@@ -5,6 +12,7 @@
       (--each codes
         (set-fontset-font t `(,it . ,it) font)))))
 
+;;;###autoload
 (defun pretty-fonts--add-kwds (FONT-LOCK-ALIST)
   "Exploits `font-lock-add-keywords' to apply regex-unicode replacements."
   (font-lock-add-keywords
@@ -16,6 +24,7 @@
                            nil))))
              FONT-LOCK-ALIST)))
 
+;;;###autoload
 (defmacro pretty-fonts-set-kwds (FONT-LOCK-HOOKS-ALIST)
   "Set regex-unicode replacements to many modes."
   `(--each ,FONT-LOCK-HOOKS-ALIST
@@ -24,6 +33,7 @@
          (add-hook it (-partial 'pretty-fonts--add-kwds
                                 (symbol-value font-locks)))))))
 
+;;; Fira Font
 
 (defconst pretty-fonts-fira-font
   '(;; OPERATORS
@@ -114,6 +124,3 @@
   "Fira font ligatures and their regexes")
 
 (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-
-
-(provide 'pretty-fonts)

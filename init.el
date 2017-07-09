@@ -94,9 +94,7 @@
 ;;;; Additional Packages
 
 (setq dotspacemacs/additional/packages
-      '(;; Outline mode base package enhancements
-        outshine                 ; Required for navi-mode
-
+      '(
         ;; Misc
         virtualenvwrapper        ; Python environment management
         ob-async                 ; Asynchronous org-babel source block execution
