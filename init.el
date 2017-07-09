@@ -84,6 +84,7 @@
       dotspacemacs/layers/local
       '(
         (display :location local)
+        (macros :location local)
         )
 
       dotspacemacs/layers/linux '()
@@ -223,7 +224,7 @@
   (require 'dash-functional)  ; dash/s.el loaded by default, not dash-functional
 
   ;; Group 1
-  (module/macros)
+  ;; (module/macros)
 
   ;; Group 2
   (module/display)
@@ -251,30 +252,6 @@
   ;; http://spacemacs.org/layers/+themes/theming/README.html
 
   )
-
-;;; Macros
-
-(defun module/macros ()
-  "Macros utilized throughout my configuration."
-
-  (defun xi-find-args (seq)
-    "Collect xi args."
-    (seq-sort
-     (lambda (sym1 sym2)
-       (< (string-to-number (substring (symbol-name sym1) 1))
-          (string-to-number (substring (symbol-name sym2) 1))))
-     (seq-filter
-      (lambda (x)
-        (and (symbolp x) (equal 0 (string-match "x[0-9]+" (symbol-name x)))))
-      (-flatten seq))))
-
-  (defmacro xi (&rest BODY)
-    "Anonymous func maco, see https://ekaschalk.github.io/post/xi-macro/."
-    `(lambda ,(xi-find-args BODY) ,BODY))
-
-  (defmacro xis (&rest BODY)
-    "Anonymous func maco without collecting next form, for progns."
-    `(lambda ,(xi-find-args BODY) ,@BODY)))
 
 ;;; Display
 

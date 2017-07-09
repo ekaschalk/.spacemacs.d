@@ -26,11 +26,6 @@
 ;;; Outline-bullets
 
 ;;;###autoload
-(defmacro with-face (STR &rest PROPS)
-  "Return STR propertized with PROPS."
-  `(propertize ,STR 'face (list ,@PROPS)))
-
-;;;###autoload
 (defun pretty-outline--add-font-locks (FONT-LOCK-ALIST)
   "Put text property for FONT-LOCK-ALIST for var-width replacements."
   (font-lock-add-keywords

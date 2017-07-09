@@ -1,11 +1,10 @@
 ;;; Display Layer
 
 ;; TODOS
-;; pre/post-init only when u dont own the pkg!
 ;; make pretty-fonts macro require fonts to be installed
 ;; use :if is-linuxp
 ;; move with-face outside individual pkgs like eshell
-;; move outshine layer
+;;  possibly done with macros layer that it depends on
 
 (setq display-packages
       '(
