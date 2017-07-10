@@ -233,101 +233,13 @@
   (rainbow-delimiters-mode-enable)
   (fringe-mode '(0 . 4))
 
-  ;; Rest
-  (module/configuration)
-  (module/ivy)
-  (module/navigation)
   (module/org)
-
-  ;; Experimenting
-  (spacemacs/set-leader-keys "bb" 'ibuffer)
   )
-
-;;; Ivy
-
-(defun module/ivy ()
-  "Ivy completion framework configuration."
-
-  ;; Perform default action on avy-selected minibuffer line
-  (define-key ivy-minibuffer-map (kbd "C-l") 'ivy-avy)
-  ;; Evil-like scrolling of ivy minibuffer
-  (define-key ivy-minibuffer-map (kbd "C-u") 'ivy-scroll-down-command)
-  (define-key ivy-minibuffer-map (kbd "C-d") 'ivy-scroll-up-command)
-
-  ;; Rebind C-n/C-y/C-p to narrow/yank from buffer/paste into buffer
-  (define-key ivy-minibuffer-map (kbd "C-n") 'ivy-restrict-to-matches)
-  (define-key ivy-minibuffer-map (kbd "C-y") 'ivy-yank-word)
-  ;; Read-only buffer of candidates with shortcuts to dispatches
-  (define-key ivy-minibuffer-map (kbd "C-o") 'ivy-occur)
-
-  ;; Non-exiting default action
-  (define-key ivy-minibuffer-map (kbd "C-<return>") 'ivy-call)
-  ;; Dispatch actions
-  (define-key ivy-minibuffer-map (kbd "C-SPC") 'ivy-dispatching-done)
-  (define-key ivy-minibuffer-map (kbd "C-S-SPC") 'ivy-dispatching-call)
-
-  ;; Resume last ivy session
-  (spacemacs/set-leader-keys (kbd "ai") 'ivy-resume)
-
-  (setq ivy-format-function 'ivy-format-function-arrow
-        ivy-height 20
-        completion-in-region-function 'ivy-completion-in-region))
-
-;;; Configuration
-
-(defun module/configuration ()
-  (module/configuration/editing)
-  )
-
-;;;; Editing
 
 (defun module/configuration/editing ()
   "Editing toggles."
 
   (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1))))  ; SPC splits past 80
-
-;;; Navigation
-
-(defun module/navigation ()
-  (module/navigation/avy)
-  ;; (module/navigation/extra-bindings)
-  (module/navigation/file-links)
-  )
-
-;;;; Avy
-
-(defun module/navigation/avy ()
-  "Avy keybindings and custom motions."
-
-  (setq avy-timeout-seconds 0.35)
-  (evil-global-set-key 'normal (kbd "s") 'avy-goto-char-timer)
-
-  (global-set-key (kbd "C-h") 'avy-pop-mark)
-  (global-set-key (kbd "C-l") 'evil-avy-goto-line))
-
-;;;; Extra-bindings
-
-(defun module/navigation/extra-bindings ()
-  "Rebind H, L, and 0 to BOL, EOL, old %."
-
-  ;; H and L move to modified BOL and EOL
-  (evil-global-set-key 'normal (kbd "H") 'evil-first-non-blank)
-  (evil-global-set-key 'visual (kbd "H") 'evil-first-non-blank)
-  (evil-global-set-key 'motion (kbd "H") 'evil-first-non-blank)
-
-  (evil-global-set-key 'normal (kbd "L") 'evil-end-of-line)
-  (evil-global-set-key 'visual (kbd "L")
-                       (lambda () (interactive)  ; otherwise it goes past EOL
-                         (evil-end-of-line)))
-  (evil-global-set-key 'motion (kbd "L") 'evil-end-of-line)
-
-  ;; I find '%' very useful but an annoying to reach binding.
-  ;; Since H is bound to BOL, we can rebind it to 0.
-  (evil-global-set-key 'normal (kbd "0") 'evil-jump-item)
-  (evil-global-set-key 'visual (kbd "0") 'evil-jump-item)
-  (evil-global-set-key 'motion (kbd "0") 'evil-jump-item))
-
-;;;; File-links
 
 (defun module/navigation/file-links ()
   "Quick binding for opening org-formatted links anywhere."
