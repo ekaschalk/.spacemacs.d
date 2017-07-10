@@ -4,6 +4,7 @@
 ;; make pretty-fonts macro require fonts to be installed
 ;; use :if is-linuxp
 ;; sort out using :variables in layers config for eg python
+;; move dash-functional require to macros
 
 
 ;;; Introduction
@@ -235,9 +236,6 @@
 
   (require 'dash-functional)  ; dash/s.el loaded by default, not dash-functional
 
-  ;; Group 2
-  (module/display)
-
   ;; Rest
   (module/configuration)
   (module/ivy)
@@ -248,22 +246,6 @@
   ;; Experimenting
   (spacemacs/set-leader-keys "bb" 'ibuffer)
   )
-
-;;; Display
-
-(defun module/display ()
-  (unless-linux-call 'module/display/windows-frame-size-fix)
-  )
-
-;;;; Windows-frame-size-fix
-
-(defun module/display/windows-frame-size-fix ()
-  "Surface has 200% scaling, doesn't apply to emacs, f2 to fix init zooming."
-
-  (add-to-list 'default-frame-alist '(font . "operator mono medium"))
-  (set-face-attribute 'default t :font "operator mono medium")
-
-  (global-set-key (kbd "<f2>") (xis (interactive) (zoom-frm-out) (zoom-frm-out))))
 
 ;;; Ivy
 
@@ -478,12 +460,7 @@
       (evil-escape)))
 
   (evil-global-set-key 'normal (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
-  (evil-global-set-key 'insert (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
-
-  ;; Enables Python shell to print unicode
-  ;; TODO might have to make this pyvenv hook
-  (setenv "PYTHONIOENCODING" "utf-8")
-  (setenv "LANG" "en_US.UTF-8"))
+  (evil-global-set-key 'insert (kbd "C-e") 'my-spacemacs/shell-pop-eshell))
 
 ;;;; Windows
 

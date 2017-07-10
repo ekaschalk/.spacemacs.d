@@ -29,6 +29,10 @@
   ;; Whether to print logs in pytest
   ;; (setq pytest-cmd-flags "-x --no-print-logs")
   ;; (setq pytest-cmd-flags "-x -s")
+
+  ;; Enables python shell to print unicode
+  (setenv "PYTHONIOENCODING" "utf-8")
+  (setenv "LANG" "en_US.UTF-8")
   )
 
 ;;; Venvs
@@ -39,12 +43,11 @@
     :config
     (progn
       (pyvenv-mode 1)
+      (venv-initialize-interactive-shells)
+      (venv-initialize-eshell)
 
       ;; Fixes hy-mode environment when pyvenv is activated
-      (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode)
-
-      (venv-initialize-interactive-shells)
-      (venv-initialize-eshell))))
+      (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode))))
 
 ;;; Hy
 

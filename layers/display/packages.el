@@ -19,7 +19,12 @@
         (pretty-eshell :location local)
         (pretty-magit :location local)
         (pretty-outlines :location local)
+        (windows-frame-size-fix :location local)
         ))
+
+(defun display/init-windows-frame-size-fix ()
+  (use-package windows-frame-size-fix
+    :if (not is-linuxp)))
 
 (defun display/init-prettify-utils ()
   (use-package prettify-utils))
