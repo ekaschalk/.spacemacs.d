@@ -2,10 +2,9 @@
 
 ;; TEMP TODOS
 ;; make pretty-fonts macro require fonts to be installed
-;; use :if is-linuxp
 ;; sort out using :variables in layers config for eg python
-;; move dash-functional require to macros
-
+;; check autoloads are ok everywhere
+;; headers everywhere
 
 ;;; Introduction
 
@@ -110,9 +109,6 @@
       '(
         ;; Misc
         ob-async                 ; Asynchronous org-babel source block execution
-        (dash-functional         ; More dash functional programming utils
-         :location (recipe :fetcher github
-                           :repo "magnars/dash.el"))
 
         ;; Themes
         solarized-theme
@@ -230,8 +226,6 @@
 
 (defun dotspacemacs/user-config ()
   "Require for .spacemacs, evaluates modules."
-
-  (require 'dash-functional)  ; dash/s.el loaded by default, not dash-functional
 
   ;; Rest
   (module/configuration)
