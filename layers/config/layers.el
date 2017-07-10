@@ -2,6 +2,7 @@
  '(
    ;; Core Config layers
    gnus
+   org
 
    ;; Personal Layers
    macros
