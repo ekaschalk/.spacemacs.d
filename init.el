@@ -225,7 +225,13 @@
 ;;; Spacemacs-User-config
 
 (defun dotspacemacs/user-config ()
-  "Require for .spacemacs, evaluates modules."
+  "Spacemacs toggles not intended to be put into layers."
+  (spacemacs/toggle-highlight-long-lines-globally-on)
+  (spacemacs/toggle-mode-line-minor-modes-off)
+  (spacemacs/toggle-aggressive-indent-globally-on)
+  (global-highlight-parentheses-mode 1)
+  (rainbow-delimiters-mode-enable)
+  (fringe-mode '(0 . 4))
 
   ;; Rest
   (module/configuration)
@@ -271,44 +277,22 @@
 
 (defun module/configuration ()
   (module/configuration/editing)
-  (module/configuration/evil)
-  (module/configuration/visual))
+  )
 
 ;;;; Editing
 
 (defun module/configuration/editing ()
   "Editing toggles."
 
-  (hungry-delete-mode 1)                                ; cut contiguous space
-  (spacemacs/toggle-aggressive-indent-globally-on)      ; auto-indentation
   (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1))))  ; SPC splits past 80
-
-;;;; Evil
-
-(defun module/configuration/evil ()
-  "Update evil settings."
-
-  (setq-default evil-escape-key-sequence "jk"
-                evil-escape-unordered-key-sequence "true"))
-
-;;;; Visual
-
-(defun module/configuration/visual ()
-  "Visual toggles."
-
-  (spacemacs/toggle-highlight-long-lines-globally-on)
-  (fringe-mode '(1 . 1))                         ; Minimal left padding
-  (rainbow-delimiters-mode-enable)               ; Paren color based on depth
-  (global-highlight-parentheses-mode 1)          ; Highlight containing parens
-  (spacemacs/toggle-mode-line-minor-modes-off))  ; no uni symbs next to major
 
 ;;; Navigation
 
 (defun module/navigation ()
   (module/navigation/avy)
-  (module/navigation/extra-bindings)
+  ;; (module/navigation/extra-bindings)
   (module/navigation/file-links)
-  (module/navigation/searching))
+  )
 
 ;;;; Avy
 
@@ -349,16 +333,6 @@
   "Quick binding for opening org-formatted links anywhere."
 
   (spacemacs/set-leader-keys (kbd "aof") 'org-open-at-point-global))
-
-;;;; Searching
-
-(defun module/navigation/searching ()
-  "Evil searching scrolls to center of match."
-
-  (advice-add 'evil-ex-search-next :after
-              (lambda (&rest x) (evil-scroll-line-to-center (line-number-at-pos))))
-  (advice-add 'evil-ex-search-previous :after
-              (lambda (&rest x) (evil-scroll-line-to-center (line-number-at-pos)))))
 
 ;;; Org
 

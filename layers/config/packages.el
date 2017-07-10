@@ -1,11 +1,25 @@
 (setq config-packages
       '(
+        evil
         ispell
         gnus
         neotree
         projectile
         yasnippet
         ))
+
+(defun config/post-init-evil ()
+  (setq evil-escape-key-sequence "jk")
+  (setq evil-escape-unordered-key-sequence "true")
+
+  (advice-add 'evil-ex-search-next :after 'config/scroll-to-center-advice)
+  (advice-add 'evil-ex-search-previous :after 'config/scroll-to-center-advice)
+
+  (evil-global-set-keys
+   '(normal visual motion)
+   "H" 'evil-first-non-blank
+   "L" 'evil-end-of-line
+   "0" 'evil-jump-item))
 
 (defun config/post-init-yasnippet ()
   (global-set-key (kbd "C-SPC") 'hippie-expand))

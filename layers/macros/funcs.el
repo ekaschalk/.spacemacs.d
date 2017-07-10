@@ -34,3 +34,12 @@
          (setq ,orig-dir default-directory)
          (progn (cd ,DIR) ,@FORMS)
        (cd ,orig-dir))))
+
+;;; Evil-global-set-keys
+
+(defun evil-global-set-keys (STATES &rest BINDINGS)
+  "`Evil-global-set-key' for all STATES with possibly many BINDINGS."
+  (--each STATES
+    (-each (-partition 2 BINDINGS)
+      (-lambda ((key cmd))
+        (evil-global-set-key it key cmd)))))
