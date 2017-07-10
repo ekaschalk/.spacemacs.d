@@ -91,6 +91,7 @@
             s))
 
   (use-package all-the-icons-ivy
+    :after all-the-icons
     :config
     (progn
       (advice-add 'all-the-icons-ivy-file-transformer
@@ -125,6 +126,7 @@
                      :pipe "tz-pipe"
                      )))
 
+    ;; todo require python
     (pretty-code-set-pairs `((hy-mode-hook     ,hy-pretty-pairs)
                              (python-mode-hook ,python-pretty-pairs)))
 
@@ -182,18 +184,21 @@
 ;;; Pretty-outlines
 
 (defun display/init-pretty-outlines ()
-  (use-package pretty-outlines))
+  (use-package pretty-outlines
+    :after outshine
+    :config
+    (progn
+      ;; Ellipsis
+      (add-hook 'outline-mode-hook 'pretty-outline-set-display-table)
+      (add-hook 'outline-minor-mode-hook 'pretty-outline-set-display-table)
 
-(defun display/post-init-pretty-outlines ()
-  ;; Outline-ellipsis
-  (add-hook 'outline-mode-hook 'pretty-outline-set-display-table)
-  (add-hook 'outline-minor-mode-hook 'pretty-outline-set-display-table)
-
-  ;; Outline-bullets
-  (add-hook 'emacs-lisp-mode-hook 'pretty-outline-add-bullets)
-  ;; (add-hook 'hy-mode-hook 'pretty-outline-add-bullets)
-  ;; (add-hook 'python-mode-hook 'pretty-outline-add-bullets)
-  )
+      ;; Outlines
+      (add-hook 'emacs-lisp-mode-hook 'pretty-outline-add-bullets)
+      ;; (with-eval-after-load 'python
+      ;;   (add-hook 'hy-mode-hook 'pretty-outline-add-bullets)
+      ;;   (add-hook 'python-mode-hook 'pretty-outline-add-bullets)
+      ;;   )
+      )))
 
 ;;; Modeline
 

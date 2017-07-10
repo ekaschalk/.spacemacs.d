@@ -6,7 +6,7 @@
         outshine
 
         ;; Locacl Packages
-        ;; (outline-ivy :location local)
+        (outline-ivy :location local)
         ))
 
 ;;; Outshine
@@ -35,7 +35,8 @@
 
 ;;; Outline-ivy
 
-;; (defun outlines/init-outline-ivy ()
-;;   (use-package outline-ivy
-;;     :config
-;;     (global-set-key (kbd "C-j") 'oi-jump)))
+(defun outlines/init-outline-ivy ()
+  (use-package outline-ivy
+    :after outshine
+    :config
+    (global-set-key (kbd "C-j") 'oi-jump)))
