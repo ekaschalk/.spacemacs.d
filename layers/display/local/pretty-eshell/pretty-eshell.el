@@ -34,7 +34,13 @@
 (defmacro esh-section (NAME ICON FORM &rest PROPS)
   "Build eshell section NAME with ICON prepended to evaled FORM with PROPS."
   `(setq ,NAME
-         (lambda () (when ,FORM
+         ;; Roundabout way to handle case that 1. Form is a variable
+         ;; and 2. That variable might not be defined/initialized
+         ;; Eg. pyvenv-virtualenv-name not loaded until pyvenv-workon
+         (lambda () (when (or (and (symbolp (quote ,FORM))
+                               (bound-and-true-p ,FORM))
+                         (and (not (symbolp (quote ,FORM)))
+                              ,FORM))
                  (-> ,ICON
                     (concat esh-section-delim ,FORM)
                     (with-face ,@PROPS))))))
