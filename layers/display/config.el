@@ -8,6 +8,11 @@
 ;;; Solarized-Dark
 
  `((solarized-dark
+    (company-tooltip-common
+     :inherit company-tooltip :weight bold :underline nil)
+    (company-tooltip-common-selection
+     :inherit company-tooltip-selection :weight bold :underline nil)
+
     (font-lock-comment-face :foreground "#586e75" :italic t)
     (avy-background-face :foreground "#586e75")
     (font-lock-doc-face :foreground "#2aa198" :italic t)

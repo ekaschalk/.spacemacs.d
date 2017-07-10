@@ -61,6 +61,8 @@
     (insert "((tz.do (do (import pdb) (pdb.set-trace))))"))
 
   (spacemacs/set-leader-keys-for-major-mode
+    'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state)
+  (spacemacs/set-leader-keys-for-major-mode
     'hy-mode (kbd "dd") 'hy-insert-pdb)
   (spacemacs/set-leader-keys-for-major-mode
     'hy-mode (kbd "dt") 'hy-insert-thread-pdb))

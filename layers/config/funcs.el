@@ -1,0 +1,10 @@
+(defun config/shell-pop-eshell ()
+  (interactive)
+  (spacemacs/shell-pop-eshell nil)
+  (if (string= major-mode "eshell-mode")
+      (evil-insert 1)
+    (evil-escape)))
+
+(defun config/execute-q-macro ()
+  (interactive)
+  (evil-execute-macro 1 "@q"))

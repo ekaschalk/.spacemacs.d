@@ -93,6 +93,7 @@
       ;; OS-Specific and Local Packages
       dotspacemacs/layers/local
       '(
+        (config :location local)
         (display :location local)
         (langs :location local)
         (macros :location local)
@@ -108,7 +109,6 @@
 (setq dotspacemacs/additional/packages
       '(
         ;; Misc
-        virtualenvwrapper        ; Python environment management
         ob-async                 ; Asynchronous org-babel source block execution
         (dash-functional         ; More dash functional programming utils
          :location (recipe :fetcher github
@@ -224,10 +224,7 @@
 (defun dotspacemacs/user-init ()
   "Special settings to run before user-config runs."
   ;; Rids the verbose custom settings from being written to .spacemacs
-  (setq custom-file "./elisp/.custom-settings.el")
-
-  ;; Custom Packages
-  (push "c:/~/elisp/" load-path))
+  (setq custom-file "./elisp/.custom-settings.el"))
 
 ;;; Spacemacs-User-config
 
@@ -239,7 +236,6 @@
   ;; Rest
   (module/configuration)
   (module/ivy)
-  (module/misc)
   (module/navigation)
   (module/org)
 
@@ -311,173 +307,6 @@
   (rainbow-delimiters-mode-enable)               ; Paren color based on depth
   (global-highlight-parentheses-mode 1)          ; Highlight containing parens
   (spacemacs/toggle-mode-line-minor-modes-off))  ; no uni symbs next to major
-
-;;; Misc
-
-(defun module/misc ()
-  (module/misc/aspell)
-  (module/misc/auto-completion)
-  (module/misc/eww)
-  (module/misc/gnus)
-  (module/misc/lisp-state)
-  (module/misc/macros)
-  (module/misc/neotree)
-  (module/misc/projectile)
-  (module/misc/shell)
-  (module/misc/windows)
-  (module/misc/yassnippet))
-
-;;;; Aspell
-
-(defun module/misc/aspell ()
-  "Setup aspell."
-
-  (setq ispell-program-name "aspell"))
-
-;;;; Auto-completion
-
-(defun module/misc/auto-completion ()
-  "Autocompletion face modifications."
-
-  (custom-set-faces
-   '(company-tooltip-common
-     ((t (:inherit company-tooltip :weight bold :underline nil))))
-   '(company-tooltip-common-selection
-     ((t (:inherit company-tooltip-selection :weight bold :underline nil))))))
-
-;;;; Eww
-
-(defun module/misc/eww ()
-  ;; Auto-rename new eww buffers
-  (defun rename-eww-hook ()
-    "Rename eww browser's buffer so sites open in new page."
-    (rename-buffer "eww" t))
-  (add-hook 'eww-mode-hook #'rename-eww-hook)
-
-  ;; eventually add a func that opens current docs im using all at once
-  ;; http://toolz.readthedocs.io/en/latest/api.html#toolz.itertoolz.interleave
-  ;; http://docs.hylang.org/en/stable/language/api.html
-  )
-
-;;;; GNUs
-
-(defun module/misc/gnus ()
-  "GNUS setup and user details. Nothing significant atm."
-
-  (setq user-mail-address	"ekaschalk@gmail.com"
-        user-full-name	"Eric Kaschalk"
-
-        ;; Get mail
-        gnus-secondary-select-methods
-        '((nnimap "gmail"
-                  (nnimap-address "imap.gmail.com")
-                  (nnimap-server-port 993)
-                  (nnimap-stream ssl))
-          (nntp "gmane"
-                (nntp-address "news.gmane.org"))
-          (nntp "news.gwene.org"))
-
-        ;; Send mail
-        message-send-mail-function 'smtpmail-send-it
-
-        ;; Archive outgoing email in Sent folder on imap.gmail.com
-        gnus-message-archive-method '(nnimap "imap.gmail.com")
-        gnus-message-archive-group "[Gmail]/Sent Mail"
-
-        ;; Auth
-        smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-        smtpmail-auth-credentials '(("smtp.gmail.com" 587
-                                     "ekaschalk@gmail.com" nil))
-
-        ;; SMPT Server config
-        smtpmail-default-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 587
-
-        ;; set return email address based on incoming email address
-        gnus-posting-styles
-        '(((header "to" "address@outlook.com")
-           (address  "address@outlook.com"))
-          ((header "to" "address@gmail.com")
-           (address "address@gmail.com")))
-
-        ;; store email in ~/gmail directory
-        nnml-directory "~/gmail"
-        message-directory "~/gmail"
-
-        ;; Full size images
-        mm-inline-large-images 'resize))
-
-;;;; Lisp-state
-
-(defun module/misc/lisp-state ()
-  "Add lisp state shortcut to Clojure and Hy."
-
-  (spacemacs/set-leader-keys-for-major-mode
-    'clojure-mode (kbd ",") 'lisp-state-toggle-lisp-state)
-  (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state))
-
-;;;; Macros
-
-(defun module/misc/macros ()
-  "Evil Q shortcut for vim macros set at @q."
-
-  (evil-global-set-key 'normal (kbd "Q")
-                       (lambda () (interactive) (evil-execute-macro 1 "@q"))))
-
-;;;; Neotree
-(defun module/misc/neotree ()
-  "Neotree configuration."
-
-  (setq neo-theme 'icons
-        neo-window-width 28)
-
-  (setq neo-hidden-regexp-list '("^\\." "\\.pyc$" "~$" "^#.*#$" "\\.elc$"
-                                 ;; Pycache and init rarely want to see
-                                 "__pycache__" "__init__\\.py"))
-
-  (evil-global-set-key 'normal (kbd "M-f") 'winum-select-window-0)
-  (evil-global-set-key 'normal (kbd "M-p") 'neotree-find-project-root))
-
-;;;; Projectile
-
-(defun module/misc/projectile ()
-  "Project config, respect .projectile files."
-
-  (setq projectile-indexing-method 'native))
-
-;;;; Shell
-
-(defun module/misc/shell ()
-  "Quick eshell with vim interaction."
-
-  (defun my-spacemacs/shell-pop-eshell ()
-    (interactive)
-    (spacemacs/shell-pop-eshell nil)
-    (if (string= major-mode "eshell-mode")
-        (evil-insert 1)
-      (evil-escape)))
-
-  (evil-global-set-key 'normal (kbd "C-e") 'my-spacemacs/shell-pop-eshell)
-  (evil-global-set-key 'insert (kbd "C-e") 'my-spacemacs/shell-pop-eshell))
-
-;;;; Windows
-
-(defun module/misc/windows ()
-  "Additional window management bindings."
-
-  (evil-define-key 'normal outline-minor-mode-map (kbd "C-M-i")  ; M-tab
-    'spacemacs/alternate-buffer)
-
-  (global-set-key (kbd "M-d") 'spacemacs/delete-window))
-
-;;;; Yassnippet
-
-(defun module/misc/yassnippet ()
-  "Yassnippet bindings and config."
-
-  (global-set-key (kbd "C-SPC") 'hippie-expand))
 
 ;;; Navigation
 
