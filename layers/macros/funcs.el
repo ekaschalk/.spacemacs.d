@@ -24,3 +24,13 @@
 (defmacro xis (&rest BODY)
   "Anonymous func maco without collecting next form, for progns."
   `(lambda ,(xi-find-args BODY) ,@BODY))
+
+;;; With-dir
+
+(defmacro with-dir (DIR &rest FORMS)
+  "Execute FORMS in DIR."
+  (let ((orig-dir (gensym)))
+    `(prog2
+         (setq ,orig-dir default-directory)
+         (progn (cd ,DIR) ,@FORMS)
+       (cd ,orig-dir))))
