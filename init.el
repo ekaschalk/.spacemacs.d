@@ -1,10 +1,12 @@
 ;; -*- mode: emacs-lisp -*-
 
-;;; Introduction
-
 ;; TEMP TODOS
 ;; make pretty-fonts macro require fonts to be installed
 ;; use :if is-linuxp
+;; sort out using :variables in layers config for eg python
+
+
+;;; Introduction
 
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Emacs 25.2.1 --
@@ -31,6 +33,8 @@
 ;;; OS-Config
 
 ;; Utilities for integrating Windows and Linux.
+;; Used in spacemacs initialization - must load before layers
+
 (setq is-linuxp (eq system-type 'gnu/linux))
 (defun if-linux (x y) (if is-linuxp x y))
 (defun if-linux-call (x y) (if is-linuxp (funcall x) (funcall y)))
@@ -88,6 +92,7 @@
       dotspacemacs/layers/local
       '(
         (display :location local)
+        (langs :location local)
         (macros :location local)
         (outlines :location local)
         )
@@ -237,21 +242,12 @@
   (module/misc)
   (module/navigation)
   (module/org)
-  (module/python)
 
   ;; Personal Modules
   (module/blog)
 
-  ;; Personal Packages
-  ;; (add-to-list 'load-path (expand-file-name "~/.spacemacs.d/elisp"))
-  ;; (require 'outline-ivy)
-  ;; (global-set-key (kbd "C-j") 'oi-jump)
-
   ;; Experimenting
   (spacemacs/set-leader-keys "bb" 'ibuffer)
-  ;; TODO use theming layer to apply theme updates cleaner
-  ;; http://spacemacs.org/layers/+themes/theming/README.html
-
   )
 
 ;;; Display
@@ -721,113 +717,6 @@
                              (67 :inherit org-priority :foreground "blue"))
         org-ellipsis "▼"
         org-bullets-bullet-list '("" "" "" "")))
-
-;;; Python
-
-(defun module/python ()
-  (require 'python)
-  (unless-linux-call 'module/python/windows-pytest)
-  (module/python/fixes)
-  (module/python/hy)
-  (module/python/mypy)
-  (module/python/venvs))
-
-;;;; Windows-pytest
-
-(defun module/python/windows-pytest ()
-  "Pytest is broken on Windows. Basic functionality is provided for Windows."
-
-  (defun ek-pytest-module ()
-    (interactive)
-    (shell-command (format "py.test -x -s %s&" buffer-file-name)))
-
-  (defun ek-pytest-one ()
-    (interactive)
-    (save-excursion
-      (let ((test-name
-             (progn
-               (re-search-backward "^[ ]*def \\(test_[a-zA-Z0-9_]*\\)")
-               (match-string 1))))
-        (shell-command
-         (format "py.test -x -s %s::%s&" buffer-file-name test-name)))))
-
-  (spacemacs/set-leader-keys-for-major-mode
-    'python-mode (kbd "t m") 'ek-pytest-module)
-  (spacemacs/set-leader-keys-for-major-mode
-    'python-mode (kbd "t t") 'ek-pytest-one))
-
-;;;; Fixes
-
-(defun module/python/fixes ()
-  "Various python bugfixes."
-
-  ;; Sometimes ipython shells trigger a bad error to popup
-  (defun python-shell-completion-native-try ()
-    "Return non-nil if can trigger native completion."
-    (let ((python-shell-completion-native-enable t)
-          (python-shell-completion-native-output-timeout
-           python-shell-completion-native-try-output-timeout))
-      (python-shell-completion-native-get-completions
-       (get-buffer-process (current-buffer))
-       nil "_")))
-
-  ;; No log output in pytests
-  ;; (setq pytest-cmd-flags "-x --no-print-logs")
-  (setq pytest-cmd-flags "-x -s")
-
-  ;; Remove flyspell from python buffers
-  (dolist (hook '(python-mode-hook))
-    (add-hook hook (lambda () (flyspell-mode -1)))))
-
-;;;; Hy
-
-(defun module/python/hy ()
-  "Hylang integration improvements."
-
-  (defun hy-insert-pdb ()
-    (interactive)
-    (insert "(do (import pdb) (pdb.set-trace))"))
-
-  (defun hy-insert-thread-pdb ()
-    (interactive)
-    (insert "((tz.do (do (import pdb) (pdb.set-trace))))"))
-
-  (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd "dd") 'hy-insert-pdb)
-  (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd "dt") 'hy-insert-thread-pdb))
-
-;;;; Mypy
-
-(defun module/python/mypy ()
-  "Enable mypy flycheck integration in-tandem with pylint."
-
-  (flycheck-define-checker
-      python-mypy ""
-      :command ("mypy"
-                "--ignore-missing-imports" "--fast-parser"
-                "--python-version" "3.6"
-                source-original)
-      :error-patterns
-      ((error line-start (file-name) ":" line ": error:" (message) line-end))
-      :modes python-mode)
-
-  (add-to-list 'flycheck-checkers 'python-mypy t)
-  (flycheck-add-next-checker 'python-pylint 'python-mypy t))
-
-;;;; Venvs
-
-(defun module/python/venvs ()
-  "Initialize virtual environment management for Python."
-
-  (require 'virtualenvwrapper)
-  (pyvenv-mode 1)
-
-  ;; Fixes hy-mode environment when pyvenv is activated
-  (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode)
-
-  (venv-initialize-interactive-shells)
-  (venv-initialize-eshell))
 
 ;;; Blog
 
