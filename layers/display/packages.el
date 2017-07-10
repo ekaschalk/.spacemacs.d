@@ -2,6 +2,9 @@
 
 (setq display-packages
       '(
+        ;; Language specific updates
+        hy-mode
+
         ;; Core Display Packages
         all-the-icons
         all-the-icons-ivy
@@ -9,9 +12,6 @@
         spaceline-all-the-icons
         (prettify-utils :location (recipe :fetcher github
                                           :repo "Ilazki/prettify-utils.el"))
-
-        ;; Language specific updates
-        hy-mode
 
         ;; Local packages
         (pretty-code :location local)

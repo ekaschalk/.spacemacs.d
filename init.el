@@ -5,6 +5,9 @@
 ;; sort out using :variables in layers config for eg python
 ;; check autoloads are ok everywhere
 ;; headers everywhere
+;; consider placing outlines/outline-ivy in personal layer
+;; fixup tasks.org, readme.org
+;; add readmes to every layer/package and link them
 
 ;;; Introduction
 
@@ -28,8 +31,6 @@
 ;; Some groups require a specific execution ordering. Ordering requirements are
 ;; specifed with Group x comments. Within the group, the packages are lexical.
 
-(setq time-to-use-dark 0)
-
 ;;; OS-Config
 
 ;; Utilities for integrating Windows and Linux.
@@ -45,7 +46,6 @@
 (defun os-path (x) (if is-linuxp x (concat "c:/" x)))
 
 ;;; Spacemacs-Layers
-;;;; Layers
 
 (setq dotspacemacs/layers/core
       '(better-defaults
@@ -71,7 +71,7 @@
                          version-control-diff-tool 'git-gutter+))
 
       dotspacemacs/layers/langs
-      `(emacs-lisp
+      '(emacs-lisp
         html
         javascript
         rust  ; I only use atm for .toml configuration files
@@ -89,37 +89,22 @@
         graphviz    ; Graphviz mode for usage with org-babel
         )
 
-      ;; OS-Specific and Local Packages
       dotspacemacs/layers/local
-      '(
-        (config :location local)
+      '((config :location local)
         (display :location local)
         (langs :location local)
         (macros :location local)
         (outlines :location local)
-        (personal :location local)
-        )
+        (personal :location local)))
 
-      dotspacemacs/layers/linux '()
-      dotspacemacs/layers/windows '())
-
-;;;; Additional Packages
-
-(setq dotspacemacs/additional/packages
-      '(
-        ;; Themes
-        solarized-theme
-        ))
-
-;;;; Spacemacs
+(setq dotspacemacs/additional/packages '(solarized-theme))
 
 (defun dotspacemacs/layers ()
   (setq-default
    dotspacemacs-distribution 'spacemacs
    dotspacemacs-enable-lazy-installation 'unused
    dotspacemacs-ask-for-lazy-installation t
-   dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layers/"
-                                           "c:/~/.spacemacs.d/layers/")
+   dotspacemacs-configuration-layer-path `(,(os-path "~/.spacemacs.d/layers/"))
    dotspacemacs-additional-packages dotspacemacs/additional/packages
    dotspacemacs-frozen-packages '()
    dotspacemacs-excluded-packages '()
@@ -128,19 +113,16 @@
    (append dotspacemacs/layers/core
            dotspacemacs/layers/langs
            dotspacemacs/layers/rare
-           dotspacemacs/layers/local
-           (when-linux dotspacemacs/layers/linux)
-           (unless-linux dotspacemacs/layers/windows))))
+           dotspacemacs/layers/local)))
 
 ;;; Spacemacs-Init
 
 (defun dotspacemacs/init ()
   (setq-default
-   dotspacemacs-themes `(,theme-to-use)
+   dotspacemacs-themes '(solarized-dark solarized-light)
    dotspacemacs-default-font `("operator mono medium"
                                :size ,(if-linux 18 12)
                                :powerline-scale 1.5)
-
    dotspacemacs-elpa-https t
    dotspacemacs-elpa-timeout 5
    dotspacemacs-check-for-update nil
