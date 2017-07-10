@@ -1,11 +1,5 @@
 ;;; Display Layer
 
-;; TODOS
-;; make pretty-fonts macro require fonts to be installed
-;; use :if is-linuxp
-;; move with-face outside individual pkgs like eshell
-;;  possibly done with macros layer that it depends on
-
 (setq display-packages
       '(
         ;; Core Display Packages
@@ -29,9 +23,6 @@
 
 (defun display/init-prettify-utils ()
   (use-package prettify-utils))
-
-(defun display/init-outshine ()
-  (use-package outshine))
 
 ;;; Pretty-fonts
 

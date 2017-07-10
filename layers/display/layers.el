@@ -4,5 +4,6 @@
    theming
 
    ;; Personal layers
-   macros
+   macros    ; with-face macro
+   outlines  ; outshine package
    ))

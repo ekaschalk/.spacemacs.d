@@ -2,6 +2,10 @@
 
 ;;; Introduction
 
+;; TEMP TODOS
+;; make pretty-fonts macro require fonts to be installed
+;; use :if is-linuxp
+
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Emacs 25.2.1 --
 ;; -- Dev Branch - Release 0.200.9.x - pulled: 5/29 - packages updated: 5/29 --
@@ -85,6 +89,7 @@
       '(
         (display :location local)
         (macros :location local)
+        (outlines :location local)
         )
 
       dotspacemacs/layers/linux '()
@@ -223,9 +228,6 @@
 
   (require 'dash-functional)  ; dash/s.el loaded by default, not dash-functional
 
-  ;; Group 1
-  ;; (module/macros)
-
   ;; Group 2
   (module/display)
 
@@ -235,16 +237,15 @@
   (module/misc)
   (module/navigation)
   (module/org)
-  (module/outshine)
   (module/python)
 
   ;; Personal Modules
   (module/blog)
 
   ;; Personal Packages
-  (add-to-list 'load-path (expand-file-name "~/.spacemacs.d/elisp"))
-  (require 'outline-ivy)
-  (global-set-key (kbd "C-j") 'oi-jump)
+  ;; (add-to-list 'load-path (expand-file-name "~/.spacemacs.d/elisp"))
+  ;; (require 'outline-ivy)
+  ;; (global-set-key (kbd "C-j") 'oi-jump)
 
   ;; Experimenting
   (spacemacs/set-leader-keys "bb" 'ibuffer)
@@ -720,46 +721,6 @@
                              (67 :inherit org-priority :foreground "blue"))
         org-ellipsis "▼"
         org-bullets-bullet-list '("" "" "" "")))
-
-;;; Outshine
-
-(defun module/outshine ()
-  "Outline/Outshine mode bindings and Navi integration."
-
-  (require 'outshine)
-
-  ;; Narrowing now works within the headline rather than requiring to be on it
-  (advice-add 'outshine-narrow-to-subtree :before
-              (lambda (&rest args) (unless (outline-on-heading-p t)
-                                (outline-previous-visible-heading 1))))
-
-  (spacemacs/set-leader-keys
-    ;; Narrowing
-    "nn" 'outshine-narrow-to-subtree
-    "nw" 'widen
-
-    ;; Structural edits
-    "nj" 'outline-move-subtree-down
-    "nk" 'outline-move-subtree-up
-    "nh" 'outline-promote
-    "nl" 'outline-demote)
-
-  (let ((kmap outline-minor-mode-map))
-    (define-key kmap (kbd "M-RET") 'outshine-insert-heading)
-    (define-key kmap (kbd "<backtab>") 'outshine-cycle-buffer)
-
-    ;; Evil outline navigation keybindings
-    (evil-define-key '(normal visual motion) kmap
-      "gh" 'outline-up-heading
-      "gj" 'outline-forward-same-level
-      "gk" 'outline-backward-same-level
-      "gl" 'outline-next-visible-heading
-      "gu" 'outline-previous-visible-heading))
-
-  ;; Required for outshine
-  (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-  ;; Enables outline-minor-mode for *ALL* programming buffers!
-  (add-hook 'prog-mode-hook 'outline-minor-mode))
 
 ;;; Python
 
