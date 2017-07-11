@@ -1,0 +1,44 @@
+#+TITLE: Display Layer
+
+* Description
+
+Display houses all theming configuration and my ~pretty~ packages.
+
+- ~pretty-code~ :: Program with custom ligatures and symbols, see
+                   [[http://www.modernemacs.com/post/prettify-mode/][mathematical notation in emacs]].
+- ~pretty-eshell~ :: Customize eshell information and faces, see
+                     [[http://www.modernemacs.com/post/custom-eshell/][making eshell your own]].
+- ~pretty-fonts~ :: All the icons and Fira Code ligature integration.
+- ~pretty-magit~ :: Commit leaders integration and stylizing, see
+                    [[http://www.modernemacs.com/post/pretty-magit/][pretty magit - integrating commit leaders]].
+- ~pretty-outlines~ :: Fancy outline bullets and ellispis, see
+                       [[http://www.modernemacs.com/post/outline-bullets/][fancy outline bullets]].
+
+I currently use the ~solarized~ theme. All theme updates are found ~config.el~.
+
+~packages.el~ contains all pretty package configuration, the local layers just
+define the functions.
+
+* Screenshots
+** Pretty-code/Pretty-fonts
+
+[[file:./imgs/python-code.png]]
+[[file:./imgs/hy-code.png]]
+
+** Pretty-eshell
+
+[[file:./imgs/esh-ex.png]]
+
+** Pretty-magit
+
+| Magit Commits                 | The actual commits        |
+|-------------------------------+---------------------------|
+| [[file:./imgs/magit-symbols.png]] | [[file:./imgs/magit-raw.png]] |
+
+Commit Prompt
+
+[[file:./imgs/magit-prompt.png]]
+
+** Pretty-outlines
+
+[[file:./imgs/outline-bullets-fancy.png]]
