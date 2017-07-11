@@ -2,10 +2,12 @@
 
 * Tasks
 
+- hugo could use: [:if (executable-find "hugo")]
+- use :location built-in
+- see if :defer t at all possible
 - make pretty-fonts macro require fonts to be installed
 - check autoloads are ok everywhere
 - headers everywhere
-- move outlines to personal layer
 - fixup readme
 - add readmes to every layer/package and link them
 - turn personal layers into git submodules

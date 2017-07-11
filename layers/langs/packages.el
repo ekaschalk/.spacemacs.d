@@ -6,7 +6,7 @@
         python
         virtualenvwrapper
 
-        (mypy-flycheck :location local)
+        ;; (mypy-flycheck :location local)
         (windows-pytest :location local)
         ))
 

@@ -22,7 +22,6 @@
     (config :location local)    ; Org, Avy, Evil, Misc... config
     (display :location local)   ; Pretty-eshell/code/outlines... pkgs
     (langs :location local)     ; Language config
-    (outlines :location local)  ; Outlines pkgs
     (personal :location local)  ; Personal pkgs
     )
   "Local layers housed in '~/.spacemacs.d/layers'.")

@@ -3,6 +3,7 @@
 (setq personal-packages
       '(
         (blog :location local)
+        (outline-ivy :location local)
         ))
 
 ;;; Blog
@@ -21,3 +22,11 @@
       (spacemacs/set-leader-keys (kbd "ab") 'blog-deploy)
       (spacemacs/set-leader-keys (kbd "aa") 'blog-start-server)
       (spacemacs/set-leader-keys (kbd "ae") 'blog-end-server))))
+
+;;; Outline-ivy
+
+(defun personal/init-outline-ivy ()
+  (use-package outline-ivy
+    :after outshine
+    :config
+    (global-set-key (kbd "C-j") 'oi-jump)))

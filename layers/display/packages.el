@@ -8,7 +8,6 @@
         ;; Core Display Packages
         all-the-icons
         all-the-icons-ivy
-        outshine
         spaceline-all-the-icons
         (prettify-utils :location (recipe :fetcher github
                                           :repo "Ilazki/prettify-utils.el"))
