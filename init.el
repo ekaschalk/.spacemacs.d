@@ -1,5 +1,8 @@
 ;; -*- mode: emacs-lisp -*-
 
+(setq is-linuxp (eq system-type 'gnu/linux))
+(defun os-path (x) (if is-linuxp x (concat "c:/" x)))
+
 ;; TEMP TODOS
 ;; make pretty-fonts macro require fonts to be installed
 ;; sort out using :variables in layers config for eg python
@@ -8,6 +11,7 @@
 ;; consider placing outlines/outline-ivy in personal layer
 ;; fixup tasks.org, readme.org
 ;; add readmes to every layer/package and link them
+;; turn personal layers into git submodules
 
 ;;; Introduction
 
@@ -31,73 +35,79 @@
 ;; Some groups require a specific execution ordering. Ordering requirements are
 ;; specifed with Group x comments. Within the group, the packages are lexical.
 
-;;; OS-Config
+;;; Layers
+;;;; Local
 
-;; Utilities for integrating Windows and Linux.
-;; Used in spacemacs initialization - must load before layers
+(defvar dotspacemacs/layers/local
+  '((macros :location local)    ; All local layers inherit these macros
 
-(setq is-linuxp (eq system-type 'gnu/linux))
-(defun if-linux (x y) (if is-linuxp x y))
-(defun if-linux-call (x y) (if is-linuxp (funcall x) (funcall y)))
-(defun when-linux (x) (when is-linuxp x))
-(defun when-linux-call (x) (when is-linuxp (funcall x)))
-(defun unless-linux (x) (unless is-linuxp x))
-(defun unless-linux-call (x) (unless is-linuxp (funcall x)))
-(defun os-path (x) (if is-linuxp x (concat "c:/" x)))
+    (config :location local)    ; Org, Avy, Evil, Misc... config
+    (display :location local)   ; Pretty-eshell/code/outlines... pkgs
+    (langs :location local)     ; Language config
+    (outlines :location local)  ; Outlines pkgs
+    (personal :location local)  ; Personal pkgs
+    )
+  "Local layers housed in '~/.spacemacs.d/layers'.")
 
-;;; Spacemacs-Layers
+;;;; Core
 
-(setq dotspacemacs/layers/core
-      '(better-defaults
-        git
-        gnus
-        org
-        ranger
-        syntax-checking
-        (auto-completion :variables
-                         auto-completion-return-key-behavior 'complete
-                         auto-completion-tab-key-behavior 'complete
-                         auto-completion-enable-snippets-in-popup t)
-        (evil-snipe :variables
-                    evil-snipe-enable-alternate-f-and-t-behaviors t)
-        (ibuffer :variables
-                 ibuffer-group-buffers-by 'projects)
-        (ivy :variables
-             ivy-extra-directories nil)
-        (shell :variables
-               shell-default-shell 'eshell)
-        (version-control :variables
-                         version-control-global-margin t
-                         version-control-diff-tool 'git-gutter+))
+(defvar dotspacemacs/layers/core
+  '(better-defaults
+    git
+    org
+    syntax-checking
+    (auto-completion :variables
+                     auto-completion-return-key-behavior 'complete
+                     auto-completion-tab-key-behavior 'complete
+                     auto-completion-enable-snippets-in-popup t)
+    (ivy :variables
+         ivy-extra-directories nil)
+    (shell :variables
+           shell-default-shell 'eshell)
+    (version-control :variables
+                     version-control-global-margin t
+                     version-control-diff-tool 'git-gutter+)
+    )
+  "Layers I consider core to Spacemacs")
 
-      dotspacemacs/layers/langs
-      '(emacs-lisp
-        html
-        javascript
-        rust  ; I only use atm for .toml configuration files
-        (clojure :variables
-                 clojure-enable-fancify-symbols t)
-        (haskell :variables
-                 haskell-completion-backend 'intero)
-        (python :variables
-                python-sort-imports-on-save t
-                python-test-runner 'pytest))
+;;;; Langs
 
-      dotspacemacs/layers/rare
-      '(
-        markdown    ; Markdown mode for viewing outside documentation
-        graphviz    ; Graphviz mode for usage with org-babel
-        )
+(defvar dotspacemacs/layers/langs
+  '(emacs-lisp
+    html
+    javascript
+    markdown
+    rust
+    (clojure :variables
+             clojure-enable-fancify-symbols t)
+    (haskell :variables
+             haskell-completion-backend 'intero)
+    (python :variables
+            python-sort-imports-on-save t
+            python-test-runner 'pytest)
+    )
+  "Programming and markup language layers")
 
-      dotspacemacs/layers/local
-      '((config :location local)
-        (display :location local)
-        (langs :location local)
-        (macros :location local)
-        (outlines :location local)
-        (personal :location local)))
+;;;; Extra
 
-(setq dotspacemacs/additional/packages '(solarized-theme))
+(defvar dotspacemacs/layers/extra
+  '(gnus
+    graphviz
+    ranger
+    (evil-snipe :variables
+                evil-snipe-enable-alternate-f-and-t-behaviors t)
+    (ibuffer :variables
+             ibuffer-group-buffers-by 'projects)
+    )
+  "Miscellaneous layers")
+
+;;;; Additional Packages
+
+(setq dotspacemacs/additional/packages
+      '(solarized-theme  ; Extra themes won't work when loaded from layer
+        ))
+
+;;;; Dotspacemacs
 
 (defun dotspacemacs/layers ()
   (setq-default
@@ -112,7 +122,7 @@
    dotspacemacs-configuration-layers
    (append dotspacemacs/layers/core
            dotspacemacs/layers/langs
-           dotspacemacs/layers/rare
+           dotspacemacs/layers/extra
            dotspacemacs/layers/local)))
 
 ;;; Spacemacs-Init
@@ -121,7 +131,7 @@
   (setq-default
    dotspacemacs-themes '(solarized-dark solarized-light)
    dotspacemacs-default-font `("operator mono medium"
-                               :size ,(if-linux 18 12)
+                               :size ,(if is-linuxp 18 12)
                                :powerline-scale 1.5)
    dotspacemacs-elpa-https t
    dotspacemacs-elpa-timeout 5
@@ -160,7 +170,7 @@
    dotspacemacs-which-key-position 'bottom
    dotspacemacs-switch-to-buffer-prefers-purpose nil
    dotspacemacs-loading-progress-bar t
-   dotspacemacs-fullscreen-at-startup (if-linux nil t)
+   dotspacemacs-fullscreen-at-startup (if is-linuxp nil t)
    dotspacemacs-fullscreen-use-non-native nil
    dotspacemacs-maximized-at-startup nil
    dotspacemacs-active-transparency 90
