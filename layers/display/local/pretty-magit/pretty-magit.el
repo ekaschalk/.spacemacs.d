@@ -52,3 +52,12 @@
                       :require-match t :sort t :preselect "Add: "))
     (add-magit-faces)
     (evil-insert 1)))
+
+;;; Hooks
+
+(remove-hook 'git-commit-setup-hook 'with-editor-usage-message)
+(add-hook 'git-commit-setup-hook 'magit-commit-prompt)
+
+(advice-add 'magit-status :after 'add-magit-faces)
+(advice-add 'magit-refresh-buffer :after 'add-magit-faces)
+(advice-add 'magit-commit :after 'use-magit-commit-prompt)

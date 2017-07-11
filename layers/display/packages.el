@@ -14,21 +14,78 @@
 
         ;; Local packages
         (pretty-code :location local)
-        (pretty-fonts :location local)
         (pretty-eshell :location local)
+        (pretty-fonts :location local)
         (pretty-magit :location local)
         (pretty-outlines :location local)
         (windows-frame-size-fix :location local)
         ))
 
-(defun display/init-windows-frame-size-fix ()
-  (use-package windows-frame-size-fix
-    :if (not is-linuxp)))
+;;; Locals
+;;;; Pretty-code
 
-(defun display/init-prettify-utils ()
-  (use-package prettify-utils))
+(defun display/init-pretty-code ()
+  (use-package pretty-code
+    ;; :after hy-mode python
+    :config
+    (progn
+      (global-prettify-symbols-mode 1)
 
-;;; Pretty-fonts
+      (setq hy-pretty-pairs
+            (pretty-code-get-pairs
+             '(:lambda "fn" :def "defn"
+                       :composition "comp"
+                       :null "None" :true "True" :false "False"
+                       :in "in" :not "not"
+                       :and "and" :or "or"
+                       :some "some"
+                       :tuple "#t"
+                       :pipe "ap-pipe"
+                       )))
+
+      (setq python-pretty-pairs
+            (pretty-code-get-pairs
+             '(:lambda "lambda" :def "def"
+                       :null "None" :true "True" :false "False"
+                       :int "int" :float "float" :str "str" :bool "bool"
+                       :not "not" :for "for" :in "in" :not-in "not in"
+                       :return "return" :yield "yield"
+                       :and "and" :or "or"
+                       :tuple "Tuple"
+                       :pipe "tz-pipe"
+                       )))
+
+      (pretty-code-set-pairs `((hy-mode-hook     ,hy-pretty-pairs)
+                               (python-mode-hook ,python-pretty-pairs))))))
+
+;;;; Pretty-eshell
+
+(defun display/init-pretty-eshell ()
+  (use-package pretty-eshell
+    :config
+    (progn
+      (esh-section esh-dir
+                   "\xf07c"  ; 
+                   (abbreviate-file-name (eshell/pwd))
+                   '(:foreground "gold" :bold ultra-bold :underline t))
+      (esh-section esh-git
+                   "\xe907"  ; 
+                   (magit-get-current-branch)
+                   '(:foreground "pink"))
+      (esh-section esh-python
+                   "\xe928"  ; 
+                   pyvenv-virtual-env-name)
+      (esh-section esh-clock
+                   "\xf017"  ; 
+                   (format-time-string "%H:%M" (current-time))
+                   '(:foreground "forest green"))
+      (esh-section esh-num
+                   "\xf0c9"  ; 
+                   (number-to-string esh-prompt-num)
+                   '(:foreground "brown"))
+      (setq eshell-funcs (list esh-dir esh-git esh-python esh-clock esh-num)))))
+
+;;;; Pretty-fonts
 
 (defun display/init-pretty-fonts ()
   (use-package pretty-fonts
@@ -70,100 +127,7 @@
           ;; 𝔹    𝔇       𝔗
           #x1d539 #x1d507 #x1d517))))))
 
-;;; All-the-icons
-
-(defun display/init-all-the-icons ()
-  (use-package all-the-icons
-    :config
-    (progn
-      (add-to-list
-       'all-the-icons-icon-alist
-       '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
-      (add-to-list
-       'all-the-icons-mode-icon-alist
-       '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange)))))
-
-;;; All-the-icons-ivy
-
-(defun display/init-all-the-icons-ivy ()
-  (defun ivy-file-transformer-fixed-for-files (s)
-    "Gets file icon for string, fixing bug for folders and windows box."
-    (format "%s\t%s"
-            (if (and is-linuxp (s-ends-with? "/" s))
-                (propertize "\t" 'display "" 'face 'all-the-icons-silver)
-              (propertize "\t" 'display (all-the-icons-icon-for-file s)))
-            s))
-
-  (use-package all-the-icons-ivy
-    :after all-the-icons
-    :config
-    (progn
-      (advice-add 'all-the-icons-ivy-file-transformer
-                  :override 'ivy-file-transformer-fixed-for-files)
-      (all-the-icons-ivy-setup))))
-
-;;; Pretty-code
-
-(defun display/init-pretty-code ()
-  (use-package pretty-code
-    :config
-    (setq hy-pretty-pairs
-          (pretty-code-get-pairs
-           '(:lambda "fn" :def "defn"
-                     :composition "comp"
-                     :null "None" :true "True" :false "False"
-                     :in "in" :not "not"
-                     :and "and" :or "or"
-                     :some "some"
-                     :tuple "#t"
-                     :pipe "ap-pipe")))
-
-    (setq python-pretty-pairs
-          (pretty-code-get-pairs
-           '(:lambda "lambda" :def "def"
-                     :null "None" :true "True" :false "False"
-                     :int "int" :float "float" :str "str" :bool "bool"
-                     :not "not" :for "for" :in "in" :not-in "not in"
-                     :return "return" :yield "yield"
-                     :and "and" :or "or"
-                     :tuple "Tuple"
-                     :pipe "tz-pipe"
-                     )))
-
-    ;; todo require python
-    (pretty-code-set-pairs `((hy-mode-hook     ,hy-pretty-pairs)
-                             (python-mode-hook ,python-pretty-pairs)))
-
-    (global-prettify-symbols-mode 1)))
-
-;;; Pretty-eshell
-
-(defun display/init-pretty-eshell ()
-  (use-package pretty-eshell
-    :config
-    (progn
-      (esh-section esh-dir
-                   "\xf07c"  ; 
-                   (abbreviate-file-name (eshell/pwd))
-                   '(:foreground "gold" :bold ultra-bold :underline t))
-      (esh-section esh-git
-                   "\xe907"  ; 
-                   (magit-get-current-branch)
-                   '(:foreground "pink"))
-      (esh-section esh-python
-                   "\xe928"  ; 
-                   pyvenv-virtual-env-name)
-      (esh-section esh-clock
-                   "\xf017"  ; 
-                   (format-time-string "%H:%M" (current-time))
-                   '(:foreground "forest green"))
-      (esh-section esh-num
-                   "\xf0c9"  ; 
-                   (number-to-string esh-prompt-num)
-                   '(:foreground "brown"))
-      (setq eshell-funcs (list esh-dir esh-git esh-python esh-clock esh-num)))))
-
-;;; Pretty-magit
+;;;; Pretty-magit
 
 (defun display/init-pretty-magit ()
   (use-package pretty-magit
@@ -177,15 +141,7 @@
       (pretty-magit "master"  ? (:box t :height 1.2) t)
       (pretty-magit "origin"  ? (:box t :height 1.2) t))))
 
-(defun display/post-init-pretty-magit ()
-  (remove-hook 'git-commit-setup-hook 'with-editor-usage-message)
-  (add-hook 'git-commit-setup-hook 'magit-commit-prompt)
-
-  (advice-add 'magit-status :after 'add-magit-faces)
-  (advice-add 'magit-refresh-buffer :after 'add-magit-faces)
-  (advice-add 'magit-commit :after 'use-magit-commit-prompt))
-
-;;; Pretty-outlines
+;;;; Pretty-outlines
 
 (defun display/init-pretty-outlines ()
   (use-package pretty-outlines
@@ -198,41 +154,42 @@
 
       ;; Outlines
       (add-hook 'emacs-lisp-mode-hook 'pretty-outline-add-bullets)
-      ;; (with-eval-after-load 'python
       ;;   (add-hook 'hy-mode-hook 'pretty-outline-add-bullets)
       ;;   (add-hook 'python-mode-hook 'pretty-outline-add-bullets)
-      ;;   )
       )))
 
-;;; Modeline
+;;;; Windows-frame-size-fix
 
-(defun display/init-spaceline-all-the-icons ()
-  (use-package spaceline-all-the-icons
-    :after spaceline
+(defun display/init-windows-frame-size-fix ()
+  (use-package windows-frame-size-fix
+    :if (not is-linuxp)))
+
+;;; Packages
+;;;; All-the-icons
+
+(defun display/init-all-the-icons ()
+  (use-package all-the-icons
     :config
     (progn
-      (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
-            spaceline-all-the-icons-icon-set-modified 'chain
-            spaceline-all-the-icons-icon-set-window-numbering 'circle
-            spaceline-all-the-icons-separator-type 'none
-            spaceline-all-the-icons-primary-separator "")
+      (add-to-list
+       'all-the-icons-icon-alist
+       '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
+      (add-to-list
+       'all-the-icons-mode-icon-alist
+       '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange)))))
 
-      (spaceline-toggle-all-the-icons-buffer-size-off)
-      (spaceline-toggle-all-the-icons-buffer-position-off)
-      (spaceline-toggle-all-the-icons-vc-icon-off)
-      (spaceline-toggle-all-the-icons-vc-status-off)
-      (spaceline-toggle-all-the-icons-git-status-off)
-      (spaceline-toggle-all-the-icons-flycheck-status-off)
-      (spaceline-toggle-all-the-icons-time-off)
-      (spaceline-toggle-all-the-icons-battery-status-off)
-      (spaceline-toggle-hud-off))))
+;;;; All-the-icons-ivy
 
-(defun display/post-init-spaceline-all-the-icons ()
-  (spaceline-all-the-icons-theme)
-  (when (configuration-layer/package-usedp 'neotree)
-    (spaceline-all-the-icons--setup-neotree)))
+(defun display/init-all-the-icons-ivy ()
+  (use-package all-the-icons-ivy
+    :after all-the-icons
+    :config
+    (progn
+      (all-the-icons-ivy-setup)
+      (advice-add 'all-the-icons-ivy-file-transformer
+                  :override 'ivy-file-transformer-fixed-for-files))))
 
-;;; Hy-mode syntax highlighting
+;;;; Hy-mode
 
 (defun display/post-init-hy-mode ()
   (defun hy-extra-syntax ()
@@ -262,3 +219,31 @@
            )))
 
   (add-hook 'hy-mode-hook 'hy-extra-syntax))
+
+;;;; Prettify-utils
+
+(defun display/init-prettify-utils ()
+  (use-package prettify-utils))
+
+;;;; Spaceline-all-the-icons
+
+(defun display/init-spaceline-all-the-icons ()
+  (use-package spaceline-all-the-icons
+    :after spaceline
+    :config
+    (progn
+      (spaceline-all-the-icons-theme)
+      (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
+            spaceline-all-the-icons-icon-set-modified 'chain
+            spaceline-all-the-icons-icon-set-window-numbering 'circle
+            spaceline-all-the-icons-separator-type 'none
+            spaceline-all-the-icons-primary-separator "")
+      (spaceline-toggle-all-the-icons-buffer-size-off)
+      (spaceline-toggle-all-the-icons-buffer-position-off)
+      (spaceline-toggle-all-the-icons-vc-icon-off)
+      (spaceline-toggle-all-the-icons-vc-status-off)
+      (spaceline-toggle-all-the-icons-git-status-off)
+      (spaceline-toggle-all-the-icons-flycheck-status-off)
+      (spaceline-toggle-all-the-icons-time-off)
+      (spaceline-toggle-all-the-icons-battery-status-off)
+      (spaceline-toggle-hud-off))))

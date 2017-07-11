@@ -31,7 +31,7 @@
     ))
   "Options plist for `pretty-code-get-pairs'.")
 
-;;; API
+;;; Core
 
 ;;;###autoload
 (defun pretty-code-get-pairs (KWDS)

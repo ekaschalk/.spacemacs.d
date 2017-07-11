@@ -1,7 +1,6 @@
-;; (setq org-src-block-faces `(("python" (:background "#073642"))))
 (setq my-black "#1b1b1e")
 
-;;; Solarized-Dark
+;;; Solarized-dark
 
 (setq
  display/solarized-dark-theming
@@ -105,7 +104,9 @@
    (org-priority :foreground ,my-black :weight bold
                  :background "light gray")))
 
-;;; Set theme changes
+;;; Set Theme Changes
 
 (setq theming-modifications (list display/solarized-dark-theming
                                   display/solarized-light-theming))
+
+;; (setq org-src-block-faces `(("python" (:background "#073642"))))
