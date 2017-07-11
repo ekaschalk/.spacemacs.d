@@ -1,0 +1,21 @@
+#+TITLE: Macros Layer
+
+* Description
+
+Macros layer serves as a base layer that all other personal packages declare
+dependence on in their respective ~layers.el~.
+
+Common packages and utilities are defined here.
+
+** Macros and Functions
+
+- ~with-face~ :: Shorthand for ~propertize s 'face '(props)~
+- ~xi~ :: Anonymous function macro. [[http://www.modernemacs.com/post/xi-macro/][See my blog post on it.]]
+- ~with-dir~ :: Executes forms within a directory.
+- ~evil-global-set-keys~ :: Improved to take possibly many states and
+     keybindings.
+
+** Packages
+
+~dash-functional~ is the only included package at the moment. ~dash~ and ~s~ are
+both loaded by default in Spacemacs but not the functional fork.

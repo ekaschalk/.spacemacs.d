@@ -22,12 +22,10 @@
     (interactive)
     (insert "((tz.do (do (import pdb) (pdb.set-trace))))"))
 
-  (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state)
-  (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd "dd") 'hy-insert-pdb)
-  (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd "dt") 'hy-insert-thread-pdb))
+  (spacemacs/set-leader-keys-for-major-mode 'hy-mode
+    "dd" 'hy-insert-pdb
+    "dt" 'hy-insert-thread-pdb
+    "," 'lisp-state-toggle-lisp-state))
 
 ;;; Virtualenvwrapper
 
@@ -61,7 +59,6 @@
 
   ;; Whether to print logs in pytest
   ;; (setq pytest-cmd-flags "-x --no-print-logs")
-  ;; (setq pytest-cmd-flags "-x -s")
 
   ;; Enables python shell to print unicode
   (setenv "PYTHONIOENCODING" "utf-8")
@@ -74,8 +71,6 @@
     :after python
     :if (not is-linuxp)
     :init
-    (progn
-      (spacemacs/set-leader-keys-for-major-mode
-        'python-mode (kbd "t m") 'ek-pytest-module)
-      (spacemacs/set-leader-keys-for-major-mode
-        'python-mode (kbd "t t") 'ek-pytest-one))))
+    (spacemacs/set-leader-keys-for-major-mode 'python-mode
+      "tm" 'ek-pytest-module
+      "tt" 'ek-pytest-one)))
