@@ -1,13 +1,17 @@
 ;; -*- mode: emacs-lisp -*-
 
+;;; Intro
+
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Contact: ekaschalk@gmail.com --
 ;; -- MIT License --
 ;; -- Emacs 25.2.1 - Dev Branch - Release 0.200.9.x - pulled/pkgs updated: 5/29 --
 ;; -- See README for details and VERSION for updates --
+;;
+;; All configuration is housed in personal layers
 
 (setq is-linuxp (eq system-type 'gnu/linux))
-(defun os-path (x) (if is-linuxp x (concat "c:/" x)))
+(defun os-path (x) (if is-linuxp x (expand-file-name x "c:")))
 
 ;;; Layers
 ;;;; Local
@@ -100,6 +104,7 @@
            dotspacemacs/layers/local)))
 
 ;;; Spacemacs-Init
+;;;; Configuration
 
 (defun dotspacemacs/init ()
   (setq-default
