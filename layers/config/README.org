@@ -1,5 +1,21 @@
 #+TITLE: Config Layer
 
+* Description
+
+This layer houses ~dotspacemacs/user-config~ updates and
+~dotspacemacs/additional/packages~. The local package ~org-config~ houses my
+org-mode updates.
+
+Language specific configuration is hosted in the ~langs~ layer.
+
+Display updates, theming and my several ~pretty~ packages are hosted in the
+~display~ layer.
+
+Personal packages not display related are hosted in the ~personal~ layer.
+
+Features are best understood by seeing the utilized packages in
+~config-packages~. The following tables contain all keybindings.
+
 * Keybindings
 ** Evil and Core
 
