@@ -1,5 +1,3 @@
-(setq my-black "#1b1b1e")
-
 ;;; Solarized-dark
 
 (setq
@@ -49,22 +47,34 @@
               :italic t
               :underline t)
 
-   (org-level-1 :height 1.25 :foreground "#268bd2"
-                :underline t
-                :weight ultra-bold)
-   (org-level-2 :height 1.15 :foreground "#2aa198"
-                :underline t
-                :weight ultra-bold)
-   (org-level-3 :height 1.05 :foreground "#b58900"
-                :underline t
-                :weight ultra-bold)
+   (org-level-1 :height 1.25
+                :inherit nil
+                :foreground "#C3A29E"
+                :weight ultra-bold
+                :italic t
+                :underline t)
 
-   ;; #586e75
+   (org-level-2 :height 1.15
+                :inherit nil
+                :foreground "#8D6B94"
+                :weight extra-bold
+                :italic t
+                :underline t)
+
+   (org-level-3 :height 1.15
+                :inherit nil
+                :foreground "#8C5F66"
+                :weight bold
+                :italic t
+                :underline t)
+
    (org-block-begin-line :height 1.05 :foreground "#576e75"
                          :box t :weight bold)))
 
 
 ;;; Solarized-light
+
+(setq my-black "#1b1b1e")
 
 (setq
  display/solarized-light-theming
@@ -108,5 +118,3 @@
 
 (setq theming-modifications (list display/solarized-dark-theming
                                   display/solarized-light-theming))
-
-;; (setq org-src-block-faces `(("python" (:background "#073642"))))
