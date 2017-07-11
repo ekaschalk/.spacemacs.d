@@ -1,0 +1,58 @@
+#+TITLE: Config Layer
+
+* Keybindings
+** Evil and Core
+
+| Key Binding | Function               |
+|-------------+------------------------|
+| ~Q~         | config/execute-q-macro |
+| ~H~         | evil-first-non-blank   |
+| ~L~         | evil-end-of-line       |
+| ~0~         | evil-jump-item         |
+| ~s~         | avy-goto-char-timer    |
+| ~C-SPC~     | hippie-expand              |
+
+** Navigation and Windows
+
+| Key Binding | Function                   |
+|-------------+----------------------------|
+| ~C-h~       | avy-pop-mark               |
+| ~C-l~       | evil-avy-goto-line         |
+| ~C-e~       | config/shell-pop-eshell    |
+| ~M-d~       | spacemacs/delete-window    |
+| ~M-TAB~     | spacemacs/alternate-buffer |
+| ~M-p~       | neotree-find-project-root  |
+| ~M-f~       | winum-select-window-0      |
+
+** Outlines
+
+| Key Binding | Function                         |
+|-------------+----------------------------------|
+| ~g h~       | outline-up-heading               |
+| ~g j~       | outline-forward-same-level       |
+| ~g k~       | outline-backward-same-level      |
+| ~g l~       | outline-next-visible-heading     |
+| ~g u~       | outline-previous-visible-heading |
+| ~SPC n j~   | outline-move-subtree-down        |
+| ~SPC n k~   | outline-move-subtree-up          |
+| ~SPC n h~   | outline-promote                  |
+| ~SPC n l~   | outline-demote                   |
+| ~SPC n n~   | outshine-narrow-to-subtree       |
+| ~SPC n w~   | widen                           |
+| ~M-RET~     | outshine-insert-heading          |
+| ~<backtab>~ | outshine-cycle-buffer            |
+
+** Ivy
+
+| Key Binding | Function                |
+|-------------+-------------------------|
+| ~SPC a i~   | ivy-resume              |
+| ~C-l~       | ivy-avy                 |
+| ~C-u~       | ivy-scroll-down-command |
+| ~C-d~       | ivy-scroll-up-command   |
+| ~C-n~       | ivy-restrict-to-matches |
+| ~C-y~       | ivy-yank-word           |
+| ~C-o~       | ivy-occur               |
+| ~C-RET~     | ivy-call                |
+| ~C-SPC~     | ivy-dispatching-done    |
+| ~C-S-SPC~   | ivy-dispatching-call    |

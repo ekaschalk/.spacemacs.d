@@ -71,8 +71,9 @@
    (org-block-begin-line :height 1.05 :foreground "#576e75"
                          :box t :weight bold)))
 
-
 ;;; Solarized-light
+
+;; Solarized-light not as finalized as solarized-dark updates
 
 (setq my-black "#1b1b1e")
 
