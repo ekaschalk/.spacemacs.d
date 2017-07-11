@@ -1,0 +1,14 @@
+#+TITLE: Langs Layer
+
+* Description
+
+Langs hosts all programming language configuration.
+
+Now only ~python~ and ~hy~ have updates.
+
+** Local Packages
+
+- ~mypy-flycheck~ :: Integrates mypy static-type checking to be used in-tandem
+     with pylint via flycheck.
+- ~windows-pytest~ :: Pytest facilities broken for my Windows install, this pkg
+     mirrors small subset of pytest commands.
