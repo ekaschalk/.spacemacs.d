@@ -1,16 +1,3 @@
 * Versions
 
-* Tasks
-
-** For sure
-
-- use :location built-in
-- see if :defer t at all possible
-- add readmes to every layer/package and link them
-- imgs moved to individual layers
-
-** Eventually
-
-- make pretty-fonts macro require fonts to be installed
-- turn personal layers into git submodules
-- branch that collects all layer screens
+- 7/11 - 1.0 :: Existing 2k lines ~.spacemacs~ migrated into layers.
