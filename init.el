@@ -1,39 +1,13 @@
 ;; -*- mode: emacs-lisp -*-
 
+;; -- Eric Kaschalk's Spacemacs Configuration --
+;; -- Contact: ekaschalk@gmail.com --
+;; -- MIT License --
+;; -- Emacs 25.2.1 - Dev Branch - Release 0.200.9.x - pulled/pkgs updated: 5/29 --
+;; -- See README for details and VERSION for updates --
+
 (setq is-linuxp (eq system-type 'gnu/linux))
 (defun os-path (x) (if is-linuxp x (concat "c:/" x)))
-
-;; TEMP TODOS
-;; make pretty-fonts macro require fonts to be installed
-;; sort out using :variables in layers config for eg python
-;; check autoloads are ok everywhere
-;; headers everywhere
-;; consider placing outlines/outline-ivy in personal layer
-;; fixup tasks.org, readme.org
-;; add readmes to every layer/package and link them
-;; turn personal layers into git submodules
-
-;;; Introduction
-
-;; -- Eric Kaschalk's Spacemacs Configuration --
-;; -- Emacs 25.2.1 --
-;; -- Dev Branch - Release 0.200.9.x - pulled: 5/29 - packages updated: 5/29 --
-;; -- Dual config for Windows and Arch Linux --
-;; -- MIT License --
-;; -- Contact: ekaschalk@gmail.com --
-;;
-;; See README for details
-;; See TASKS for project management such as known bugs, planned updates, history
-;; Theme is solarized-light or solarized-dark dependent on time of day
-;;
-;; Organization
-;; ---------
-;; Configuration is grouped by theme. The current groups are:
-;; Display - Ivy - Configuration - Misc - Navigation - Python - Org - Outshine
-;;
-;; Each group is broken into further components for targetted enabling/disabling
-;; Some groups require a specific execution ordering. Ordering requirements are
-;; specifed with Group x comments. Within the group, the packages are lexical.
 
 ;;; Layers
 ;;;; Local

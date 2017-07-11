@@ -1,0 +1,12 @@
+* Versions
+
+* Tasks
+
+- make pretty-fonts macro require fonts to be installed
+- sort out using :variables in layers config for eg python
+- check autoloads are ok everywhere
+- headers everywhere
+- consider placing outlines/outline-ivy in personal layer
+- fixup tasks.org, readme.org
+- add readmes to every layer/package and link them
+- turn personal layers into git submodules
