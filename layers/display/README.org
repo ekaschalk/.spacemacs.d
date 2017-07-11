@@ -16,7 +16,7 @@ Display houses all theming configuration and my ~pretty~ packages.
 
 I currently use the ~solarized~ theme. All theme updates are found ~config.el~.
 
-~packages.el~ contains all pretty package configuration, the local layers just
+~packages.el~ contains all pretty package configuration, the local packages just
 define the functions.
 
 * Screenshots
@@ -41,4 +41,6 @@ Commit Prompt
 
 ** Pretty-outlines
 
-[[file:./imgs/outline-bullets-fancy.png]]
+| Fancy Outlines                        | Real Example                           |
+|---------------------------------------+----------------------------------------|
+| [[file:./imgs/outline-bullets-fancy.png]] | [[file:./imgs/outline-bullets-config.png]] |
