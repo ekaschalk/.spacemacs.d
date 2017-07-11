@@ -3,8 +3,9 @@
 (setq langs-packages
       '(
         hy-mode
-        python
         virtualenvwrapper
+
+        (python :location built-in)
 
         ;; (mypy-flycheck :location local)
         (windows-pytest :location local)
@@ -12,7 +13,7 @@
 
 ;;; Hy-mode
 
-(defun langs/post-init-hy-mode ()
+(defun langs/pre-init-hy-mode ()
   (defun hy-insert-pdb ()
     (interactive)
     (insert "(do (import pdb) (pdb.set-trace))"))
@@ -27,6 +28,20 @@
     'hy-mode (kbd "dd") 'hy-insert-pdb)
   (spacemacs/set-leader-keys-for-major-mode
     'hy-mode (kbd "dt") 'hy-insert-thread-pdb))
+
+;;; Virtualenvwrapper
+
+(defun langs/init-virtualenvwrapper ()
+  (use-package virtualenvwrapper
+    :after python
+    :config
+    (progn
+      (pyvenv-mode 1)
+      (venv-initialize-interactive-shells)
+      (venv-initialize-eshell)
+
+      ;; Fixes hy-mode environment when pyvenv is activated
+      (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode))))
 
 ;;; Python
 
@@ -50,22 +65,7 @@
 
   ;; Enables python shell to print unicode
   (setenv "PYTHONIOENCODING" "utf-8")
-  (setenv "LANG" "en_US.UTF-8")
-  )
-
-;;; Venvs
-
-(defun langs/init-virtualenvwrapper ()
-  (use-package virtualenvwrapper
-    :after python
-    :config
-    (progn
-      (pyvenv-mode 1)
-      (venv-initialize-interactive-shells)
-      (venv-initialize-eshell)
-
-      ;; Fixes hy-mode environment when pyvenv is activated
-      (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode))))
+  (setenv "LANG" "en_US.UTF-8"))
 
 ;;; Windows-pytest
 
