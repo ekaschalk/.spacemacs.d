@@ -1,8 +1,3 @@
-;; A fancy, functional ivy prompt for outlines
-;; Faces and formatting only provided for up to level 3 outlines
-;; See this blog post for details
-;; http://ekaschalk.github.io/post/outline-ivy/
-
 (require 'dash)
 (require 'ivy)
 (require 'outshine)
@@ -87,7 +82,7 @@
             nil)
            (oi--collect-outline))))
 
-;;; Jump
+;;; Outline Jump
 
 ;;;###autoload
 (defun oi--preselect ()

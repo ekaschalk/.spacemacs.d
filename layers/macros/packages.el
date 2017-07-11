@@ -6,7 +6,7 @@
                          (recipe :fetcher github :repo "magnars/dash.el"))
         ))
 
-;; All layers require dash-functional
+;;; Dash-functional
 
 (defun macros/init-dash-functional ()
   (use-package dash-functional))

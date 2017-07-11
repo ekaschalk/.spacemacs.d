@@ -10,6 +10,24 @@
         (windows-pytest :location local)
         ))
 
+;;; Hy-mode
+
+(defun langs/post-init-hy-mode ()
+  (defun hy-insert-pdb ()
+    (interactive)
+    (insert "(do (import pdb) (pdb.set-trace))"))
+
+  (defun hy-insert-thread-pdb ()
+    (interactive)
+    (insert "((tz.do (do (import pdb) (pdb.set-trace))))"))
+
+  (spacemacs/set-leader-keys-for-major-mode
+    'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state)
+  (spacemacs/set-leader-keys-for-major-mode
+    'hy-mode (kbd "dd") 'hy-insert-pdb)
+  (spacemacs/set-leader-keys-for-major-mode
+    'hy-mode (kbd "dt") 'hy-insert-thread-pdb))
+
 ;;; Python
 
 (defun langs/post-init-python ()
@@ -48,24 +66,6 @@
 
       ;; Fixes hy-mode environment when pyvenv is activated
       (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode))))
-
-;;; Hy
-
-(defun langs/post-init-hy-mode ()
-  (defun hy-insert-pdb ()
-    (interactive)
-    (insert "(do (import pdb) (pdb.set-trace))"))
-
-  (defun hy-insert-thread-pdb ()
-    (interactive)
-    (insert "((tz.do (do (import pdb) (pdb.set-trace))))"))
-
-  (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd ",") 'lisp-state-toggle-lisp-state)
-  (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd "dd") 'hy-insert-pdb)
-  (spacemacs/set-leader-keys-for-major-mode
-    'hy-mode (kbd "dt") 'hy-insert-thread-pdb))
 
 ;;; Windows-pytest
 

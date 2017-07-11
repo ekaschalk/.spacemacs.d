@@ -2,7 +2,6 @@
 
 * Tasks
 
-- hugo could use: [:if (executable-find "hugo")]
 - use :location built-in
 - see if :defer t at all possible
 - make pretty-fonts macro require fonts to be installed
@@ -13,3 +12,4 @@
 - turn personal layers into git submodules
 - imgs moved to individual layers
 - branch that collects all layer screens
+- possibly only inherit from config which inherits from macros

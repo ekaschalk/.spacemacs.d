@@ -1,4 +1,8 @@
+(require 'dash)
+
 (provide 'blog)
+
+;;; Config
 
 (defvar blog-dir nil
   "Hugo content directory")
@@ -6,12 +10,15 @@
 (defvar blog-public-dir nil
   "Hugo output directory")
 
-(defvar blog-hugo-process nil
+(defvar blog-hugo-process "Hugo Server"
   "Name of 'hugo server' process process")
 
-(defvar blog-hugo-server-site nil
+(defvar blog-hugo-server-site "http://localhost:1313/"
   "URL for `blog-hugo-process'")
 
+;;; Blog Commands
+
+;;;###autoload
 (defun blog-deploy ()
   "Run hugo and push changes upstream."
   (interactive)
@@ -31,6 +38,7 @@
                (shell-command it))
             (magit-push-current-to-upstream nil)))
 
+;;;###autoload
 (defun blog-start-server ()
   "Run hugo server if not already running and open its webpage."
   (interactive)
@@ -39,6 +47,7 @@
               (start-process blog-hugo-process nil "hugo" "server"))
             (browse-url blog-hugo-server-site)))
 
+;;;###autoload
 (defun blog-end-server ()
   "End hugo server process if running."
   (interactive)
