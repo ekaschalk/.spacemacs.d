@@ -1,50 +1,31 @@
-* My Spacemacs
-My Spacemacs notably implements:
-- Visual enhancements
-  - Unicode symbol replacement for mimicking mathematical notation in
-     programming buffers.
-  - Fira Code ligature integration (any font can be used in-tandem).
-  - Magit commit header fontification with ivy integration.
-  - Eshell fontification with icon integration.
-- Org-like navigation and visualization in programming buffers
-  - See 'outline-mode', 'outshine-mode', 'navi-mode'.
-- Rebound many core keybindings superfluous with leader-keys and evil
-  - C-h, C-j, C-k, C-l are Avy motions.
-  - C-SPC for yassnippet expansion
-  - C-e eshell popup and so on...
-- Modular organization to enable/disable components easily
+#+TITLE: Modern (Spac)Emacs
 
-** Implementation
-Literate configs with org-mode are not natively supported by Spacemacs due to
-org-mode's interaction with spacemacs layers systems.
+My /[[modernemacs.com][Modern Emacs]]/ configuration:
 
-The alternative is 'outline-mode' which creates faux-headers within different
-major modes based on their comment syntax.
+1. Hosted entirely within custom, idiomatic layers.
+   - config :: Typical emacs package configurations.
+   - display :: Houses my ~pretty~ packages and display updates.
+     - ~pretty-code~ :: Program with custom ligatures and symbols, see
+                        [[http://www.modernemacs.com/post/prettify-mode/][mathematical notation in emacs]].
+     - ~pretty-eshell~ :: Customize eshell information and faces, see
+         [[http://www.modernemacs.com/post/custom-eshell/][making eshell your own]].
+     - ~pretty-fonts~ :: All the icons and Fira Code ligature integration.
+     - ~pretty-magit~ :: Commit leaders integration and stylizing, see
+                         [[http://www.modernemacs.com/post/pretty-magit/][pretty magit - integrating commit leaders]].
+     - ~pretty-outlines~ :: Fancy outline bullets and ellispis, see
+         [[http://www.modernemacs.com/post/outline-bullets/][fancy outline bullets]].
+   - langs :: Language configuration.
+   - macros :: General purpose functions, base layer for all others.
+   - personal :: Personal packages that aren't display related.
+     - ~blog~ :: Hugo integration, see [[http://www.modernemacs.com/post/org-mode-blogging/][an Emacs blogging workflow]].
+     - ~outline-ivy~ :: Jump to outlines with ivy, see [[http://www.modernemacs.com/post/outline-ivy/][managing code with outlines]].
 
-Outlines are improved by providing:
-- Navi and outshine mode - see sections.
-- Enhanced narrowing capabilities.
-- Vim bindings and additional navigation bindings.
-- Bugfixes.
-
-Together, managing large source buffers such as an Emacs configuration becomes
-pleasant. Further, many source files, especially Emacs lisp files, both
-intentionally and unintentionally use outline compatible comments improving
-their navigation and comprehensibility.
+See the display layer for screenshots.
 
 ** Install
 
-Display module requirements:
-- Install [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] fonts.
-- Font-locks ligatures component requires [[https://github.com/tonsky/FiraCode][Fira Code Symbol]] (Only need for the
-  ligatures).
-
-Other requirements:
-- Pandoc layer requires [[http://pandoc.org/][pandoc]] installed.
-
-That's it. I would be appreciative to hear your experience with my config.
-
-** Version
-Dual config for Windows and Arch Linux for Emacs 25.2.1
-
-Spacemacs Dev Branch - Release 0.200.9.x - pulled: 6/9/17 - packages updated: 6/9/17
+Layer requirements:
+- Display layer
+  - ~pretty-fonts~ requires [[https://github.com/tonsky/FiraCode][Fira Code Symbol]], only need for ligatures, any font
+    can be used in-tandem. If you use the same icons/unicode points that I
+    define in ~config.el~, then you must Install [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] fonts.
