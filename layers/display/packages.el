@@ -164,7 +164,7 @@
   (use-package windows-frame-size-fix
     :if (not is-linuxp)))
 
-;;; Packages
+;;; Core Packages
 ;;;; All-the-icons
 
 (defun display/init-all-the-icons ()

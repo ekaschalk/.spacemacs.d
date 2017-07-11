@@ -1,44 +1,86 @@
+;;; Config Layer
+
 (setq config-packages
       '(
-        avy
+        ;; Core
+        evil
+        ivy
+
+        ;; Org
         ob-async
         org
+
+        ;; Navigation
+        avy
         outshine
-        evil
-        ispell
-        ivy
-        gnus
         neotree
         projectile
+
+        ;; Misc
+        ispell
+        gnus
         yasnippet
         ))
 
-(defun config/init-outshine ()
-  (use-package outshine
-    :init
-    (progn
-      (spacemacs/set-leader-keys
-        "nn" 'outshine-narrow-to-subtree
-        "nw" 'widen)
+;;; Core
+;;;; Evil
 
-      (let ((kmap outline-minor-mode-map))
-        (define-key kmap (kbd "M-RET") 'outshine-insert-heading)
-        (define-key kmap (kbd "<backtab>") 'outshine-cycle-buffer)))
+(defun config/post-init-evil ()
+  (setq evil-escape-key-sequence "jk")
+  (setq evil-escape-unordered-key-sequence "true")
 
-    :config
-    (progn
-      ;; Narrowing works within the headline rather than requiring to be on it
-      (advice-add 'outshine-narrow-to-subtree :before
-                  (lambda (&rest args) (unless (outline-on-heading-p t)
-                                         (outline-previous-visible-heading 1))))
+  (advice-add 'evil-ex-search-next :after 'config/scroll-to-center-advice)
+  (advice-add 'evil-ex-search-previous :after 'config/scroll-to-center-advice)
 
-      (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-      (add-hook 'prog-mode-hook 'outline-minor-mode))))
+  ;; Interactive is needed for visual mode end-of-line to not take the \n
+  (evil-global-set-keys
+   '(normal visual motion)
+   "H" 'evil-first-non-blank
+   "L" (lambda () (interactive) (evil-end-of-line))
+   "0" 'evil-jump-item))
+
+;;;; Ivy
+
+(defun config/post-init-ivy ()
+  (setq ivy-format-function 'ivy-format-function-arrow)
+  (setq ivy-height 20)
+  (setq completion-in-region-function 'ivy-completion-in-region)
+
+  ;; Resume last ivy session
+  (spacemacs/set-leader-keys
+    "ai" 'ivy-resume)
+
+  (let ((kmap ivy-minibuffer-map))
+    ;; Perform default action on avy-selected minibuffer line
+    (define-key kmap (kbd "C-l") 'ivy-avy)
+
+    ;; Evil-like scrolling of ivy minibuffer
+    (define-key kmap (kbd "C-u") 'ivy-scroll-down-command)
+    (define-key kmap (kbd "C-d") 'ivy-scroll-up-command)
+
+    ;; Rebind C-n/C-y/C-p to narrow/yank from buffer/paste into buffer
+    (define-key kmap (kbd "C-n") 'ivy-restrict-to-matches)
+    (define-key kmap (kbd "C-y") 'ivy-yank-word)
+
+    ;; Read-only buffer of candidates with shortcuts to dispatches
+    (define-key kmap (kbd "C-o") 'ivy-occur)
+
+    ;; Non-exiting default action
+    (define-key kmap (kbd "C-<return>") 'ivy-call)
+
+    ;; Dispatch actions
+    (define-key kmap (kbd "C-SPC") 'ivy-dispatching-done)
+    (define-key kmap (kbd "C-S-SPC") 'ivy-dispatching-call)))
+
+;;; Org
+;;;; Ob-async
 
 (defun config/init-ob-async ()
   (use-package ob-async
     :config
     (add-to-list 'org-ctrl-c-ctrl-c-hook 'ob-async-org-babel-execute-src-block)))
+
+;;;; Org core
 
 (defun config/post-init-org ()
   ;; TODO figure out how to remove these three requires
@@ -144,36 +186,8 @@
      "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
   )
 
-(defun config/post-init-ivy ()
-  (setq ivy-format-function 'ivy-format-function-arrow)
-  (setq ivy-height 20)
-  (setq completion-in-region-function 'ivy-completion-in-region)
-
-  ;; Resume last ivy session
-  (spacemacs/set-leader-keys
-    "ai" 'ivy-resume)
-
-  (let ((kmap ivy-minibuffer-map))
-    ;; Perform default action on avy-selected minibuffer line
-    (define-key kmap (kbd "C-l") 'ivy-avy)
-
-    ;; Evil-like scrolling of ivy minibuffer
-    (define-key kmap (kbd "C-u") 'ivy-scroll-down-command)
-    (define-key kmap (kbd "C-d") 'ivy-scroll-up-command)
-
-    ;; Rebind C-n/C-y/C-p to narrow/yank from buffer/paste into buffer
-    (define-key kmap (kbd "C-n") 'ivy-restrict-to-matches)
-    (define-key kmap (kbd "C-y") 'ivy-yank-word)
-
-    ;; Read-only buffer of candidates with shortcuts to dispatches
-    (define-key kmap (kbd "C-o") 'ivy-occur)
-
-    ;; Non-exiting default action
-    (define-key kmap (kbd "C-<return>") 'ivy-call)
-
-    ;; Dispatch actions
-    (define-key kmap (kbd "C-SPC") 'ivy-dispatching-done)
-    (define-key kmap (kbd "C-S-SPC") 'ivy-dispatching-call)))
+;;; Navigation
+;;;; Avy
 
 (defun config/post-init-avy ()
   (setq avy-timeout-seconds 0.35)
@@ -182,25 +196,31 @@
   (global-set-key (kbd "C-h") 'avy-pop-mark)
   (global-set-key (kbd "C-l") 'evil-avy-goto-line))
 
-(defun config/post-init-evil ()
-  (setq evil-escape-key-sequence "jk")
-  (setq evil-escape-unordered-key-sequence "true")
+;;;; Outshine
 
-  (advice-add 'evil-ex-search-next :after 'config/scroll-to-center-advice)
-  (advice-add 'evil-ex-search-previous :after 'config/scroll-to-center-advice)
+(defun config/init-outshine ()
+  (use-package outshine
+    :init
+    (progn
+      (spacemacs/set-leader-keys
+        "nn" 'outshine-narrow-to-subtree
+        "nw" 'widen)
 
-  ;; Interactive is needed for visual mode end-of-line to not take the \n
-  (evil-global-set-keys
-   '(normal visual motion)
-   "H" 'evil-first-non-blank
-   "L" (lambda () (interactive) (evil-end-of-line))
-   "0" 'evil-jump-item))
+      (let ((kmap outline-minor-mode-map))
+        (define-key kmap (kbd "M-RET") 'outshine-insert-heading)
+        (define-key kmap (kbd "<backtab>") 'outshine-cycle-buffer)))
 
-(defun config/post-init-yasnippet ()
-  (global-set-key (kbd "C-SPC") 'hippie-expand))
+    :config
+    (progn
+      ;; Narrowing works within the headline rather than requiring to be on it
+      (advice-add 'outshine-narrow-to-subtree :before
+                  (lambda (&rest args) (unless (outline-on-heading-p t)
+                                         (outline-previous-visible-heading 1))))
 
-(defun config/post-init-projectile ()
-  (setq projectile-indexing-method 'native))
+      (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+      (add-hook 'prog-mode-hook 'outline-minor-mode))))
+
+;;;; Neotree
 
 (defun config/post-init-neotree ()
   (setq neo-theme 'icons
@@ -212,6 +232,19 @@
 
   (evil-global-set-key 'normal (kbd "M-f") 'winum-select-window-0)
   (evil-global-set-key 'normal (kbd "M-p") 'neotree-find-project-root))
+
+;;;; Projectile
+
+(defun config/post-init-projectile ()
+  (setq projectile-indexing-method 'native))
+
+;;; Misc
+;;;; Ispell
+
+(defun config/post-init-ispell ()
+  (setq ispell-program-name "aspell"))
+
+;;;; Gnus
 
 (defun config/post-init-gnus ()
   (setq user-mail-address	"ekaschalk@gmail.com"
@@ -258,5 +291,7 @@
         ;; Full size images
         mm-inline-large-images 'resize))
 
-(defun config/post-init-ispell ()
-  (setq ispell-program-name "aspell"))
+;;;; Yasnippet
+
+(defun config/post-init-yasnippet ()
+  (global-set-key (kbd "C-SPC") 'hippie-expand))
