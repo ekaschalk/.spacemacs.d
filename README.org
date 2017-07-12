@@ -1,5 +1,3 @@
-#+TITLE: Modern (Spac)Emacs
-
 See [[./layers/display][display layer for screenshots]].
 
 ** Description
