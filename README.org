@@ -1,8 +1,16 @@
+My /[[http://modernemacs.com][Modern Emacs blog's]]/ configuration.
+
+Read on if you value:
+
+1. A practical, modern, and customizable aesthetic.
+2. You use Evil and are open to overwriting Emacs navigation commands.
+3. Documented, modular, and idiomatic emacs lisp.
+
 * Description
 
 See [[./layers/display][display layer for screenshots]].
 
-My /[[http://modernemacs.com][Modern Emacs blog's]]/ configuration:
+See [[./layers/config][config layer for keybindings]].
 
 - [[./layers/config][config]] :: Typical emacs package configurations.
 - [[./layers/display][display]] :: Houses my ~pretty~ packages and display updates.
@@ -26,4 +34,6 @@ Layer requirements:
 - Display layer
   - ~pretty-fonts~ requires [[https://github.com/tonsky/FiraCode][Fira Code Symbol]], only need for ligatures, any font
     can be used in-tandem. If you use the same icons/unicode points that I
-    define in its ~config.el~, then you must Install [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] fonts.
+    define in its ~config.el~, then you must also install [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] fonts.
+
+To install simply clone to your home directory.
