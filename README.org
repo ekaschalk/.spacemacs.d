@@ -1,6 +1,6 @@
-See [[./layers/display][display layer for screenshots]].
+* Description
 
-** Description
+See [[./layers/display][display layer for screenshots]].
 
 My /[[http://modernemacs.com][Modern Emacs blog's]]/ configuration:
 
@@ -20,7 +20,7 @@ My /[[http://modernemacs.com][Modern Emacs blog's]]/ configuration:
   - /blog/ : Hugo integration, see [[http://www.modernemacs.com/post/org-mode-blogging/][an Emacs blogging workflow]].
   - /outline-ivy/ : Jump to outlines with ivy, see [[http://www.modernemacs.com/post/outline-ivy/][managing code with outlines]].
 
-** Install
+* Install
 
 Layer requirements:
 - Display layer

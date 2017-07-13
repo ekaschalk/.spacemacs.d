@@ -1,5 +1,3 @@
-;; -*- mode: emacs-lisp -*-
-
 ;;; Intro
 
 ;; -- Eric Kaschalk's Spacemacs Configuration --
