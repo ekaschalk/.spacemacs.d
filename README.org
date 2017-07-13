@@ -1,10 +1,8 @@
-My /[[http://modernemacs.com][Modern Emacs blog's]]/ configuration.
+My /[[http://modernemacs.com][Modern Emacs blog's]]/ configuration, for those that value:
 
-Read on if you value:
-
-1. A practical, modern, and customizable aesthetic.
-2. You use Evil and are open to overwriting Emacs navigation commands.
-3. Documented, modular, and idiomatic emacs lisp.
+1. A practical, custom aesthetic.
+2. Documented, idiomatic emacs lisp.
+3. Overwriting core Emacs bindings in favor of Evil.
 
 * Description
 
