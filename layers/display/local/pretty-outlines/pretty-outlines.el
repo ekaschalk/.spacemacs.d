@@ -42,9 +42,10 @@
 (defun pretty-outline--bullets-rgx-at-level (LEVEL)
   "Calculate regex or outline-bullets at LEVEL."
   (concat "\\(^"
-          (-> LEVEL
+          (->> LEVEL
              outshine-calc-outline-string-at-level
-             s-trim-right)
+             s-trim-right
+             (s-replace "*" "\\*"))
           "\\) "))
 
 ;;;###autoload

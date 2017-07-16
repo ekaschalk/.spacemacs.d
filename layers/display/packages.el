@@ -154,8 +154,8 @@
 
       ;; Outlines
       (add-hook 'emacs-lisp-mode-hook 'pretty-outline-add-bullets)
-      ;;   (add-hook 'hy-mode-hook 'pretty-outline-add-bullets)
-      ;;   (add-hook 'python-mode-hook 'pretty-outline-add-bullets)
+      (add-hook 'hy-mode-hook 'pretty-outline-add-bullets)
+      (add-hook 'python-mode-hook 'pretty-outline-add-bullets)
       )))
 
 ;;;; Windows-frame-size-fix
