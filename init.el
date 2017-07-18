@@ -183,4 +183,4 @@
   (spacemacs/toggle-aggressive-indent-globally-on)
   (global-highlight-parentheses-mode 1)
   (rainbow-delimiters-mode-enable)
-  (fringe-mode '(0 . 4)))
+  (fringe-mode '(0 . 0)))

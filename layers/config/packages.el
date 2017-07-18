@@ -18,6 +18,7 @@
         ;; Misc
         ispell
         gnus
+        olivetti
         yasnippet
 
         ;; Large config sections
@@ -114,7 +115,7 @@
       ;; Narrowing works within the headline rather than requiring to be on it
       (advice-add 'outshine-narrow-to-subtree :before
                   (lambda (&rest args) (unless (outline-on-heading-p t)
-                                         (outline-previous-visible-heading 1))))
+                                    (outline-previous-visible-heading 1))))
 
       (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
       (add-hook 'prog-mode-hook 'outline-minor-mode))))
@@ -189,6 +190,25 @@
 
         ;; Full size images
         mm-inline-large-images 'resize))
+
+;;;; Olivetti
+
+(defun config/init-olivetti ()
+  (defun olivetti ()
+    "Integrate `olivetti-mode' and `spacemacs/toggle-maximize-buffer'."
+    (interactive)
+    (if olivetti-mode
+        (spacemacs/toggle-maximize-buffer)
+      (spacemacs/toggle-maximize-buffer)
+      (olivetti-mode 1)))
+
+  (use-package olivetti
+    :init
+    (spacemacs/set-leader-keys "wo" 'olivetti)
+
+    :config
+    (advice-add 'spacemacs/toggle-maximize-buffer :after
+                (lambda (&rest args) (olivetti-mode 0)))))
 
 ;;;; Yasnippet
 
