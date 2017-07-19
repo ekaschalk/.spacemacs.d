@@ -194,21 +194,12 @@
 ;;;; Olivetti
 
 (defun config/init-olivetti ()
-  (defun olivetti ()
-    "Integrate `olivetti-mode' and `spacemacs/toggle-maximize-buffer'."
-    (interactive)
-    (if olivetti-mode
-        (spacemacs/toggle-maximize-buffer)
-      (spacemacs/toggle-maximize-buffer)
-      (olivetti-mode 1)))
-
   (use-package olivetti
-    :init
-    (spacemacs/set-leader-keys "wo" 'olivetti)
-
+    ;; :after frame
     :config
-    (advice-add 'spacemacs/toggle-maximize-buffer :after
-                (lambda (&rest args) (olivetti-mode 0)))))
+    (progn
+      (spacemacs/set-leader-keys "wo" 'olivetti)
+      (advice-add 'spacemacs/toggle-maximize-buffer :after 'olivetti-end))))
 
 ;;;; Yasnippet
 

@@ -14,3 +14,16 @@
 (defun config/scroll-to-center-advice (&rest args)
   "Scroll line to center, for advising functions."
   (evil-scroll-line-to-center (line-number-at-pos)))
+
+(when (configuration-layer/package-usedp 'olivetti)
+  (defun olivetti ()
+    "Integrate `olivetti-mode' and `spacemacs/toggle-maximize-buffer'."
+    (interactive)
+    (if olivetti-mode
+        (spacemacs/toggle-maximize-buffer)
+      (spacemacs/toggle-maximize-buffer)
+      (olivetti-mode 1)))
+
+  (defun olivetti-end (&rest args)
+    "Advise `spacemacs/toggle-maximize-buffer' to disable olivetti."
+    (olivetti-mode 0)))

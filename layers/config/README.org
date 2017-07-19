@@ -72,3 +72,10 @@ Features are best understood by seeing the utilized packages in
 | ~C-RET~     | ivy-call                |
 | ~C-SPC~     | ivy-dispatching-done    |
 | ~C-S-SPC~   | ivy-dispatching-call    |
+
+
+** Misc
+
+| Key Binding | Function                            |
+|-------------+-------------------------------------|
+| ~SPC w o~   | olivetti (distraction-free editing) |
