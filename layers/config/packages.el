@@ -194,12 +194,12 @@
 ;;;; Olivetti
 
 (defun config/init-olivetti ()
+  ;; Binding "SPC w o" is set in init.el, possible spacemacs bug with
+  ;; spacemacs-base/frame.el binding overwriting setting the binding here.
+  ;; The binding is only overwritten on my linux box.
   (use-package olivetti
-    ;; :after frame
     :config
-    (progn
-      (spacemacs/set-leader-keys "wo" 'olivetti)
-      (advice-add 'spacemacs/toggle-maximize-buffer :after 'olivetti-end))))
+    (advice-add 'spacemacs/toggle-maximize-buffer :after 'olivetti-end)))
 
 ;;;; Yasnippet
 

@@ -183,4 +183,13 @@
   (spacemacs/toggle-aggressive-indent-globally-on)
   (global-highlight-parentheses-mode 1)
   (rainbow-delimiters-mode-enable)
-  (fringe-mode '(0 . 0)))
+  (fringe-mode '(0 . 0))
+
+  ;; Possible bug in spacemacs - binding this in config only works on Windows.
+  ;; So setting the binding here.
+  (when (configuration-layer/package-usedp 'olivetti)
+    (spacemacs/set-leader-keys "wo" 'olivetti))
+
+  ;; Experimentation here down
+
+  )
