@@ -8,9 +8,9 @@
    (company-tooltip-common-selection
     :inherit company-tooltip-selection :weight bold :underline nil)
 
-   (font-lock-comment-face :foreground "#586e75" :italic t)
-   (avy-background-face :foreground "#586e75")
-   (font-lock-doc-face :foreground "#2aa198" :italic t)
+   (font-lock-comment-face :foreground "#586e75" :italic t :weight normal)
+   (avy-background-face :foreground "#586e75" :italic nil)
+   (font-lock-doc-face :foreground "#2aa198" :italic t :weight normal)
 
    ;; Makes matching parens obvious
    (sp-show-pair-match-face :inherit sp-show-pair-match-face
@@ -31,41 +31,41 @@
    ;; Org and outline header updates
    (outline-1 :height 1.25
               :foreground "#C3A29E"
-              :weight ultra-bold
-              :italic t
+              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :italic nil
               :underline t)
 
    (outline-2 :height 1.15
               :foreground "#8D6B94"
-              :weight extra-bold
-              :italic t
+              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :italic nil
               :underline t)
 
    (outline-3 :height 1.15
               :foreground "#8C5F66"
-              :weight bold
-              :italic t
+              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :italic nil
               :underline t)
 
    (org-level-1 :height 1.25
                 :inherit nil
                 :foreground "#C3A29E"
-                :weight ultra-bold
-                :italic t
+                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :italic nil
                 :underline t)
 
    (org-level-2 :height 1.15
                 :inherit nil
                 :foreground "#8D6B94"
-                :weight extra-bold
-                :italic t
+                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :italic nil
                 :underline t)
 
    (org-level-3 :height 1.15
                 :inherit nil
                 :foreground "#8C5F66"
-                :weight bold
-                :italic t
+                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :italic nil
                 :underline t)
 
    (org-block-begin-line :height 1.05 :foreground "#576e75"

@@ -107,7 +107,7 @@
   (setq-default
    dotspacemacs-themes '(solarized-dark solarized-light)
    dotspacemacs-default-font `("operator mono medium"
-                               :size ,(if is-linuxp 18 12)
+                               :size ,(if is-linuxp 20 12)
                                :powerline-scale 1.5)
    dotspacemacs-elpa-https t
    dotspacemacs-elpa-timeout 5
