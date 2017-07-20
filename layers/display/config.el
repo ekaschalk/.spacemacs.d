@@ -65,8 +65,7 @@
                 :inherit nil
                 :foreground "#8C5F66"
                 :weight ,(if is-linuxp 'normal 'ultra-bold)
-                :italic nil
-                :underline t)
+                :italic nil)
 
    (org-block-begin-line :height 1.05 :foreground "#576e75"
                          :box t :weight bold)))
