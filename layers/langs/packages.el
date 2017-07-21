@@ -22,10 +22,18 @@
     (interactive)
     (insert "((tz.do (do (import pdb) (pdb.set-trace))))"))
 
+  (spacemacs/declare-prefix-for-mode 'hy-mode "md" "debug")
   (spacemacs/set-leader-keys-for-major-mode 'hy-mode
     "dd" 'hy-insert-pdb
     "dt" 'hy-insert-thread-pdb
-    "," 'lisp-state-toggle-lisp-state))
+    "," 'lisp-state-toggle-lisp-state)
+
+  (spacemacs/declare-prefix-for-mode 'hy-mode "mt" "test")
+  (spacemacs/set-leader-keys-for-major-mode 'hy-mode
+    "tA" 'spacemacs/python-test-pdb-all
+    "ta" 'spacemacs/python-test-all
+    "tM" 'spacemacs/python-test-pdb-module
+    "tm" 'spacemacs/python-test-module))
 
 ;;; Virtualenvwrapper
 
