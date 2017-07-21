@@ -197,11 +197,14 @@
      nil '(;; self is not defined by hy-mode as a keyword
            ("\\<\\(self\\)" . 'font-lock-constant-face)
 
+           ;; defreader now deftag in master branch
+           ("\\(deftag\\)" . 'font-lock-keyword-face)
+
            ;; Highlight entire line for decorators
            ("\\(#@.*$\\)" . 'font-lock-function-name-face)
 
-           ;; Syntax highlighting for reader-macros
-           ("\\(#.\\)" . 'font-lock-function-name-face)
+           ;; Syntax highlighting for tag-macros
+           ("\\(#.+\\) " . 'font-lock-function-name-face)
 
            ;; Highlight with macros
            ("\\(with[^ ]*\\)" . 'font-lock-keyword-face)
