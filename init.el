@@ -11,7 +11,58 @@
 (setq is-linuxp (eq system-type 'gnu/linux))
 (defun os-path (x) (if is-linuxp x (expand-file-name x "c:")))
 
-;;; Layers
+;;; Dotspacemacs
+
+(defun dotspacemacs/init ()
+  (dotspacemacs/init/coding)
+  (dotspacemacs/init/display)
+  (dotspacemacs/init/evil)
+  (dotspacemacs/init/keys)
+  (dotspacemacs/init/layouts)
+  (dotspacemacs/init/misc)
+  (dotspacemacs/init/packages)
+  (dotspacemacs/init/startup))
+
+(defun dotspacemacs/layers ()
+  (setq-default
+   dotspacemacs-distribution 'spacemacs
+   dotspacemacs-enable-lazy-installation 'unused
+   dotspacemacs-ask-for-lazy-installation t
+   dotspacemacs-configuration-layer-path `(,(os-path "~/.spacemacs.d/layers/"))
+   dotspacemacs-additional-packages dotspacemacs/additional/packages
+   dotspacemacs-frozen-packages '()
+   dotspacemacs-excluded-packages '(fringe)
+   dotspacemacs-install-packages 'used-but-keep-unused
+   dotspacemacs-configuration-layers
+   (append dotspacemacs/layers/core
+           dotspacemacs/layers/langs
+           dotspacemacs/layers/extra
+           dotspacemacs/layers/local)))
+
+(defun dotspacemacs/user-init ()
+  "Special settings to run before user-config runs."
+  (setq custom-file "./elisp/.custom-settings.el"))
+
+(defun dotspacemacs/user-config ()
+  "Spacemacs toggles not intended to be put into layers."
+  (spacemacs/toggle-highlight-long-lines-globally-on)
+  (spacemacs/toggle-mode-line-minor-modes-off)
+  (spacemacs/toggle-aggressive-indent-globally-on)
+  (global-highlight-parentheses-mode 1)
+  (rainbow-delimiters-mode-enable)
+
+  ;; Possible bug in spacemacs - binding this in config only works on Windows.
+  ;; So setting the binding here.
+  (when (configuration-layer/package-usedp 'olivetti)
+    (spacemacs/set-leader-keys "wo" 'olivetti))
+
+  ;; Experimentation here down
+
+  ;; (fringe-mode 0)
+  (fringe-mode '(0 . 8))
+  )
+
+;;; Spacemacs/Layers
 ;;;; Local
 
 (defvar dotspacemacs/layers/local
@@ -82,25 +133,21 @@
       '(solarized-theme  ; Extra themes won't work when loaded from layer
         ))
 
-;;;; Dotspacemacs
+;;; Spacemacs/Init
+;;;; Coding
 
-(defun dotspacemacs/layers ()
+(defun dotspacemacs/init/coding ()
   (setq-default
-   dotspacemacs-distribution 'spacemacs
-   dotspacemacs-enable-lazy-installation 'unused
-   dotspacemacs-ask-for-lazy-installation t
-   dotspacemacs-configuration-layer-path `(,(os-path "~/.spacemacs.d/layers/"))
-   dotspacemacs-additional-packages dotspacemacs/additional/packages
-   dotspacemacs-frozen-packages '()
-   dotspacemacs-excluded-packages '()
-   dotspacemacs-install-packages 'used-but-keep-unused
-   dotspacemacs-configuration-layers
-   (append dotspacemacs/layers/core
-           dotspacemacs/layers/langs
-           dotspacemacs/layers/extra
-           dotspacemacs/layers/local)))
+   dotspacemacs-search-tools '("ag" "rg" "pt" "ack" "grep")
+   dotspacemacs-smooth-scrolling t
+   dotspacemacs-folding-method 'evil
+   dotspacemacs-smartparens-strict-mode nil
+   dotspacemacs-smart-closing-parenthesis nil
+   dotspacemacs-highlight-delimiters 'all
+   dotspacemacs-line-numbers nil
+   dotspacemacs-whitespace-cleanup 'trailing
+   ))
 
-;;; Spacemacs-Init
 ;;;; Display
 
 (defun dotspacemacs/init/display ()
@@ -118,28 +165,6 @@
    dotspacemacs-zone-out-when-idle nil
    dotspacemacs-frame-title-format "%I@%S"
    dotspacemacs-icon-title-format nil
-   ))
-
-;;;; Startup
-
-(defun dotspacemacs/init/startup ()
-  (setq-default
-   dotspacemacs-verbose-loading nil
-   dotspacemacs-startup-banner 'official
-   dotspacemacs-startup-lists '()
-   dotspacemacs-startup-buffer-responsive t
-   dotspacemacs-loading-progress-bar t
-   ))
-
-;;;; Packages
-
-(defun dotspacemacs/init/packages ()
-  (setq-default
-   dotspacemacs-default-package-repository nil
-   dotspacemacs-elpa-https t
-   dotspacemacs-elpa-timeout 5
-   dotspacemacs-check-for-update nil
-   dotspacemacs-elpa-subdirectory nil
    ))
 
 ;;;; Evil
@@ -184,20 +209,6 @@
    dotspacemacs-switch-to-buffer-prefers-purpose nil
    ))
 
-;;;; Coding
-
-(defun dotspacemacs/init/coding ()
-  (setq-default
-   dotspacemacs-search-tools '("ag" "rg" "pt" "ack" "grep")
-   dotspacemacs-smooth-scrolling t
-   dotspacemacs-folding-method 'evil
-   dotspacemacs-smartparens-strict-mode nil
-   dotspacemacs-smart-closing-parenthesis nil
-   dotspacemacs-highlight-delimiters 'all
-   dotspacemacs-line-numbers nil
-   dotspacemacs-whitespace-cleanup 'trailing
-   ))
-
 ;;;; Misc
 
 (defun dotspacemacs/init/misc ()
@@ -211,40 +222,24 @@
    dotspacemacs-helm-position 'bottom
    ))
 
-;;;; xxx
+;;;; Packages
 
-(defun dotspacemacs/init ()
-  (dotspacemacs/init/coding)
-  (dotspacemacs/init/display)
-  (dotspacemacs/init/evil)
-  (dotspacemacs/init/keys)
-  (dotspacemacs/init/layouts)
-  (dotspacemacs/init/misc)
-  (dotspacemacs/init/packages)
-  (dotspacemacs/init/startup))
+(defun dotspacemacs/init/packages ()
+  (setq-default
+   dotspacemacs-default-package-repository nil
+   dotspacemacs-elpa-https t
+   dotspacemacs-elpa-timeout 5
+   dotspacemacs-check-for-update nil
+   dotspacemacs-elpa-subdirectory nil
+   ))
 
-;;;; User-init
+;;;; Startup
 
-(defun dotspacemacs/user-init ()
-  "Special settings to run before user-config runs."
-  (setq custom-file "./elisp/.custom-settings.el"))
-
-;;; Spacemacs-User-config
-
-(defun dotspacemacs/user-config ()
-  "Spacemacs toggles not intended to be put into layers."
-  (spacemacs/toggle-highlight-long-lines-globally-on)
-  (spacemacs/toggle-mode-line-minor-modes-off)
-  (spacemacs/toggle-aggressive-indent-globally-on)
-  (global-highlight-parentheses-mode 1)
-  (rainbow-delimiters-mode-enable)
-  (fringe-mode '(0 . 0))
-
-  ;; Possible bug in spacemacs - binding this in config only works on Windows.
-  ;; So setting the binding here.
-  (when (configuration-layer/package-usedp 'olivetti)
-    (spacemacs/set-leader-keys "wo" 'olivetti))
-
-  ;; Experimentation here down
-
-  )
+(defun dotspacemacs/init/startup ()
+  (setq-default
+   dotspacemacs-verbose-loading nil
+   dotspacemacs-startup-banner 'official
+   dotspacemacs-startup-lists '()
+   dotspacemacs-startup-buffer-responsive t
+   dotspacemacs-loading-progress-bar t
+   ))
