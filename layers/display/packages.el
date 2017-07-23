@@ -238,7 +238,7 @@
       (spaceline-all-the-icons-theme)
       (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
             spaceline-all-the-icons-icon-set-modified 'chain
-            spaceline-all-the-icons-icon-set-window-numbering 'circle
+            spaceline-all-the-icons-icon-set-window-numbering 'square
             spaceline-all-the-icons-separator-type 'none
             spaceline-all-the-icons-primary-separator "")
       (spaceline-toggle-all-the-icons-buffer-size-off)

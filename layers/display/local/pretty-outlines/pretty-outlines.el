@@ -9,19 +9,23 @@
 (defvar pretty-outline-bullets-bullet-list '("" "" "" "")
   "An implemention of `org-bullets-bullet-list' for outlines")
 
-(defvar pretty-outline-ellipsis ?
+(defvar pretty-outline-ellipsis ""
   "An implementation of `org-ellipsis' for outlines")
 
 ;;; Outline-ellipsis
 
-(setq pretty-outline-display-table (make-display-table))
-(set-display-table-slot pretty-outline-display-table 'selective-display
-                        (vector (make-glyph-code pretty-outline-ellipsis
-                                                 'escape-glyph)))
-
 ;;;###autoload
 (defun pretty-outline-set-display-table ()
-  (setf buffer-display-table pretty-outline-display-table))
+  (let ((display-table (if buffer-display-table
+                           buffer-display-table
+                         (make-display-table))))
+    (unless buffer-display-table
+      (setq buffer-display-table display-table))
+    (set-display-table-slot
+     display-table 4
+     (vconcat (mapcar (lambda (c)
+                        (make-glyph-code c 'font-lock-keyword-face))
+                      pretty-outline-ellipsis)))))
 
 ;;; Outline-bullets
 
