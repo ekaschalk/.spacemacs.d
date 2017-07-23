@@ -101,72 +101,127 @@
            dotspacemacs/layers/local)))
 
 ;;; Spacemacs-Init
-;;;; Configuration
+;;;; Display
 
-(defun dotspacemacs/init ()
+(defun dotspacemacs/init/display ()
   (setq-default
    dotspacemacs-themes '(solarized-dark solarized-light)
    dotspacemacs-default-font `("operator mono medium"
                                :size ,(if is-linuxp 20 12)
                                :powerline-scale 1.5)
-   dotspacemacs-elpa-https t
-   dotspacemacs-elpa-timeout 5
-   dotspacemacs-check-for-update nil
-   dotspacemacs-elpa-subdirectory nil
-   dotspacemacs-editing-style 'vim
+   dotspacemacs-fullscreen-at-startup (if is-linuxp nil t)
+   dotspacemacs-fullscreen-use-non-native nil
+   dotspacemacs-maximized-at-startup nil
+   dotspacemacs-active-transparency 90
+   dotspacemacs-inactive-transparency 90
+   dotspacemacs-mode-line-unicode-symbols t
+   dotspacemacs-zone-out-when-idle nil
+   dotspacemacs-frame-title-format "%I@%S"
+   dotspacemacs-icon-title-format nil
+   ))
+
+;;;; Startup
+
+(defun dotspacemacs/init/startup ()
+  (setq-default
    dotspacemacs-verbose-loading nil
    dotspacemacs-startup-banner 'official
    dotspacemacs-startup-lists '()
    dotspacemacs-startup-buffer-responsive t
-   dotspacemacs-scratch-mode 'org-mode
+   dotspacemacs-loading-progress-bar t
+   ))
+
+;;;; Packages
+
+(defun dotspacemacs/init/packages ()
+  (setq-default
+   dotspacemacs-default-package-repository nil
+   dotspacemacs-elpa-https t
+   dotspacemacs-elpa-timeout 5
+   dotspacemacs-check-for-update nil
+   dotspacemacs-elpa-subdirectory nil
+   ))
+
+;;;; Evil
+
+(defun dotspacemacs/init/evil ()
+  (setq-default
+   dotspacemacs-editing-style 'vim
    dotspacemacs-colorize-cursor-according-to-state t
+   dotspacemacs-remap-Y-to-y$ t
+   dotspacemacs-retain-visual-state-on-shift t
+   dotspacemacs-visual-line-move-text nil
+   dotspacemacs-ex-substitute-global nil
+   dotspacemacs-enable-paste-transient-state nil
+   dotspacemacs-show-transient-state-title t
+   dotspacemacs-show-transient-state-color-guide t
+   ))
+
+;;;; Keys
+
+(defun dotspacemacs/init/keys ()
+  (setq-default
    dotspacemacs-leader-key "SPC"
    dotspacemacs-emacs-command-key "SPC"
    dotspacemacs-ex-command-key ":"
    dotspacemacs-emacs-leader-key "M-m"
    dotspacemacs-major-mode-leader-key ","
    dotspacemacs-major-mode-emacs-leader-key "C-M-m"
+   dotspacemacs-which-key-delay 0.4
+   dotspacemacs-which-key-position 'bottom
    dotspacemacs-distinguish-gui-tab nil
-   dotspacemacs-remap-Y-to-y$ t
-   dotspacemacs-retain-visual-state-on-shift t
-   dotspacemacs-visual-line-move-text nil
-   dotspacemacs-ex-substitute-global nil
+   ))
+
+;;;; Layouts
+
+(defun dotspacemacs/init/layouts ()
+  (setq-default
+   dotspacemacs-scratch-mode 'org-mode
    dotspacemacs-default-layout-name "Default"
    dotspacemacs-display-default-layout nil
    dotspacemacs-auto-resume-layouts nil
    dotspacemacs-auto-generate-layout-names t
-   dotspacemacs-large-file-size 1
-   dotspacemacs-auto-save-file-location 'cache
-   dotspacemacs-max-rollback-slots 5
-   dotspacemacs-helm-resize nil
-   dotspacemacs-helm-no-header nil
-   dotspacemacs-helm-position 'bottom
-   dotspacemacs-enable-paste-transient-state nil
-   dotspacemacs-which-key-delay 0.4
-   dotspacemacs-which-key-position 'bottom
    dotspacemacs-switch-to-buffer-prefers-purpose nil
-   dotspacemacs-loading-progress-bar t
-   dotspacemacs-fullscreen-at-startup (if is-linuxp nil t)
-   dotspacemacs-fullscreen-use-non-native nil
-   dotspacemacs-maximized-at-startup nil
-   dotspacemacs-active-transparency 90
-   dotspacemacs-inactive-transparency 90
-   dotspacemacs-show-transient-state-title t
-   dotspacemacs-show-transient-state-color-guide t
-   dotspacemacs-mode-line-unicode-symbols t
+   ))
+
+;;;; Coding
+
+(defun dotspacemacs/init/coding ()
+  (setq-default
+   dotspacemacs-search-tools '("ag" "rg" "pt" "ack" "grep")
    dotspacemacs-smooth-scrolling t
-   dotspacemacs-line-numbers nil
    dotspacemacs-folding-method 'evil
    dotspacemacs-smartparens-strict-mode nil
    dotspacemacs-smart-closing-parenthesis nil
    dotspacemacs-highlight-delimiters 'all
-   dotspacemacs-persistent-server nil
-   dotspacemacs-search-tools '("ag" "rg" "pt" "ack" "grep")
-   dotspacemacs-default-package-repository nil
-   dotspacemacs-frame-title-format "%I@%S"
-   dotspacemacs-icon-title-format nil
+   dotspacemacs-line-numbers nil
    dotspacemacs-whitespace-cleanup 'trailing
-   dotspacemacs-zone-out-when-idle nil))
+   ))
+
+;;;; Misc
+
+(defun dotspacemacs/init/misc ()
+  (setq-default
+   dotspacemacs-large-file-size 1
+   dotspacemacs-auto-save-file-location 'cache
+   dotspacemacs-max-rollback-slots 5
+   dotspacemacs-persistent-server nil
+   dotspacemacs-helm-resize nil
+   dotspacemacs-helm-no-header nil
+   dotspacemacs-helm-position 'bottom
+   ))
+
+;;;; xxx
+
+(defun dotspacemacs/init ()
+  (dotspacemacs/init/coding)
+  (dotspacemacs/init/display)
+  (dotspacemacs/init/evil)
+  (dotspacemacs/init/keys)
+  (dotspacemacs/init/layouts)
+  (dotspacemacs/init/misc)
+  (dotspacemacs/init/packages)
+  (dotspacemacs/init/startup))
 
 ;;;; User-init
 
