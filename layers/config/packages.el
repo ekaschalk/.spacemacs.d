@@ -18,6 +18,7 @@
         ;; Misc
         ispell
         gnus
+        ;; magithub
         olivetti
         yasnippet
 
@@ -190,6 +191,21 @@
 
         ;; Full size images
         mm-inline-large-images 'resize))
+
+;;;; Magithub
+
+;; Throwing issue with private repo without issues - fix later
+
+;; (defun config/init-magithub ()
+;;   (use-package magithub
+;;     ;; Secrets sets `ghub-username' and `ghub-token'
+;;     :if (file-exists-p (os-path "~/Dropbox/secrets.el"))
+;;     :after magit
+;;     :config
+;;     (progn
+;;       (defun ghubp--remove-api-links (o &rest _) o)
+;;       (magithub-feature-autoinject t)
+;;       (load-file (os-path "~/Dropbox/secrets.el")))))
 
 ;;;; Olivetti
 
