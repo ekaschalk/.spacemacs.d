@@ -1,4 +1,4 @@
-;;; Intro
+;;; Dotspacemacs
 
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Contact: ekaschalk@gmail.com --
@@ -11,9 +11,8 @@
 (setq is-linuxp (eq system-type 'gnu/linux))
 (defun os-path (x) (if is-linuxp x (expand-file-name x "c:")))
 
-;;; Dotspacemacs
-
 (defun dotspacemacs/init ()
+  "Spacemacs core settings."
   (dotspacemacs/init/coding)
   (dotspacemacs/init/display)
   (dotspacemacs/init/evil)
@@ -24,43 +23,18 @@
   (dotspacemacs/init/startup))
 
 (defun dotspacemacs/layers ()
-  (setq-default
-   dotspacemacs-distribution 'spacemacs
-   dotspacemacs-enable-lazy-installation 'unused
-   dotspacemacs-ask-for-lazy-installation t
-   dotspacemacs-configuration-layer-path `(,(os-path "~/.spacemacs.d/layers/"))
-   dotspacemacs-additional-packages dotspacemacs/additional/packages
-   dotspacemacs-frozen-packages '()
-   dotspacemacs-excluded-packages '(fringe)
-   dotspacemacs-install-packages 'used-but-keep-unused
-   dotspacemacs-configuration-layers
-   (append dotspacemacs/layers/core
-           dotspacemacs/layers/langs
-           dotspacemacs/layers/extra
-           dotspacemacs/layers/local)))
+  "Spacemacs layers declarations and package configurations."
+  (dotspacemacs/layers/config)
+  (dotspacemacs/layers/packages))
 
 (defun dotspacemacs/user-init ()
-  "Special settings to run before user-config runs."
+  "Package independent settings to run before `dotspacemacs/user-config'."
   (setq custom-file "./elisp/.custom-settings.el"))
 
 (defun dotspacemacs/user-config ()
-  "Spacemacs toggles not intended to be put into layers."
-  (spacemacs/toggle-highlight-long-lines-globally-on)
-  (spacemacs/toggle-mode-line-minor-modes-off)
-  (spacemacs/toggle-aggressive-indent-globally-on)
-  (global-highlight-parentheses-mode 1)
-  (rainbow-delimiters-mode-enable)
-
-  ;; Possible bug in spacemacs - binding this in config only works on Windows.
-  ;; So setting the binding here.
-  (when (configuration-layer/package-usedp 'olivetti)
-    (spacemacs/set-leader-keys "wo" 'olivetti))
-
-  ;; Experimentation here down
-
-  ;; (fringe-mode 0)
-  (fringe-mode '(0 . 8))
-  )
+  "Configuration that cannot be delegated to layers."
+  (dotspacemacs/user-config/toggles)
+  (dotspacemacs/user-config/experiments))
 
 ;;; Spacemacs/Layers
 ;;;; Local
@@ -127,11 +101,30 @@
     )
   "Miscellaneous layers")
 
-;;;; Additional Packages
+;;;; Layers/config
 
-(setq dotspacemacs/additional/packages
-      '(solarized-theme  ; Extra themes won't work when loaded from layer
-        ))
+(defun dotspacemacs/layers/config ()
+  (setq-default
+   dotspacemacs-distribution 'spacemacs
+   dotspacemacs-enable-lazy-installation 'unused
+   dotspacemacs-ask-for-lazy-installation t
+
+   dotspacemacs-configuration-layer-path `(,(os-path "~/.spacemacs.d/layers/"))
+   dotspacemacs-configuration-layers (append dotspacemacs/layers/core
+                                             dotspacemacs/layers/langs
+                                             dotspacemacs/layers/extra
+                                             dotspacemacs/layers/local)
+   ))
+
+;;;; Layers/packages
+
+(defun dotspacemacs/layers/packages ()
+  (setq-default
+   dotspacemacs-additional-packages '(solarized-theme)
+   dotspacemacs-excluded-packages '(fringe)
+   dotspacemacs-frozen-packages '()
+   dotspacemacs-install-packages 'used-but-keep-unused
+   ))
 
 ;;; Spacemacs/Init
 ;;;; Coding
@@ -243,3 +236,24 @@
    dotspacemacs-startup-buffer-responsive t
    dotspacemacs-loading-progress-bar t
    ))
+
+;;; Spacemacs/User-Config
+;;;; Toggles
+
+(defun dotspacemacs/user-config/toggles ()
+  "Spacemacs toggles not intended to be put into layers."
+  (spacemacs/toggle-highlight-long-lines-globally-on)
+  (spacemacs/toggle-mode-line-minor-modes-off)
+  (spacemacs/toggle-aggressive-indent-globally-on)
+  (global-highlight-parentheses-mode 1)
+  (rainbow-delimiters-mode-enable))
+
+;;;; Experiments
+
+(defun dotspacemacs/user-config/experiments ()
+  (when (configuration-layer/package-usedp 'olivetti)
+    (spacemacs/set-leader-keys "wo" 'olivetti))
+
+  ;; (fringe-mode 0)
+  (fringe-mode '(0 . 8))
+  )
