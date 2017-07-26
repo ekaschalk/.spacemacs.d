@@ -70,7 +70,10 @@
 
   ;; Enables python shell to print unicode
   (setenv "PYTHONIOENCODING" "utf-8")
-  (setenv "LANG" "en_US.UTF-8"))
+  (setenv "LANG" "en_US.UTF-8")
+
+  ;; Cython numpy symlink
+  (setenv "CFLAGS" "-I /root/.virtualenvs/pop-synthvenv/lib/python3.6/site-packages/numpy/core/include"))
 
 ;;; Windows-pytest
 
