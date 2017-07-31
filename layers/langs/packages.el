@@ -8,6 +8,7 @@
         (python :location built-in)
 
         ;; (mypy-flycheck :location local)
+        (hy-indent-fix :location local)
         (windows-pytest :location local)
         ))
 
@@ -74,6 +75,11 @@
 
   ;; Cython numpy symlink
   (setenv "CFLAGS" "-I /root/.virtualenvs/pop-synthvenv/lib/python3.6/site-packages/numpy/core/include"))
+
+;;; Hy-indent-fix
+
+(defun langs/init-hy-indent-fix ()
+  (use-package hy-indent-fix))
 
 ;;; Windows-pytest
 
