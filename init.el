@@ -54,7 +54,6 @@
 (defvar dotspacemacs/layers/core
   '(better-defaults
     git
-    org
     syntax-checking
     (auto-completion :variables
                      auto-completion-return-key-behavior 'complete
@@ -62,6 +61,8 @@
                      auto-completion-enable-snippets-in-popup t)
     (ivy :variables
          ivy-extra-directories nil)
+    (org :variables
+         org-want-todo-bindings t)
     (shell :variables
            shell-default-shell 'eshell)
     (version-control :variables
@@ -94,8 +95,8 @@
   '(gnus
     graphviz
     ranger
-    (evil-snipe :variables
-                evil-snipe-enable-alternate-f-and-t-behaviors t)
+    ;; (evil-snipe :variables
+    ;;             evil-snipe-enable-alternate-f-and-t-behaviors t)
     (ibuffer :variables
              ibuffer-group-buffers-by 'projects)
     )
@@ -246,14 +247,12 @@
   (spacemacs/toggle-mode-line-minor-modes-off)
   (spacemacs/toggle-aggressive-indent-globally-on)
   (global-highlight-parentheses-mode 1)
-  (rainbow-delimiters-mode-enable))
+  (rainbow-delimiters-mode-enable)
+  (fringe-mode '(0 . 8)))
 
 ;;;; Experiments
 
 (defun dotspacemacs/user-config/experiments ()
   (when (configuration-layer/package-usedp 'olivetti)
     (spacemacs/set-leader-keys "wo" 'olivetti))
-
-  ;; (fringe-mode 0)
-  (fringe-mode '(0 . 8))
   )
