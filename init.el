@@ -95,8 +95,6 @@
   '(gnus
     graphviz
     ranger
-    ;; (evil-snipe :variables
-    ;;             evil-snipe-enable-alternate-f-and-t-behaviors t)
     (ibuffer :variables
              ibuffer-group-buffers-by 'projects)
     )

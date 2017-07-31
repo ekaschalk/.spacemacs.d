@@ -26,6 +26,8 @@
 ;; Quick refile of project tasks
 (setq org-refile-targets '((nil :regexp . "Week of")))
 
+(spacemacs/set-leader-keys-for-major-mode 'org-mode "r" 'org-refile)
+
 ;;; Theming
 
 (setq org-priority-faces '((65 :inherit org-priority :foreground "red")
