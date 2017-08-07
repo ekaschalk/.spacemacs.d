@@ -171,12 +171,22 @@
   (use-package all-the-icons
     :config
     (progn
+      ;; hy-mode
       (add-to-list
        'all-the-icons-icon-alist
        '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
       (add-to-list
        'all-the-icons-mode-icon-alist
-       '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange)))))
+       '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange))
+
+      ;; graphviz-dot-mode
+      (add-to-list
+       'all-the-icons-icon-alist
+       '("\\.dot$" all-the-icons-fileicon "graphviz" :face all-the-icons-pink))
+      (add-to-list
+       'all-the-icons-mode-icon-alist
+       '(graphviz-dot-mode all-the-icons-fileicon "graphviz" :face all-the-icons-pink))
+      )))
 
 ;;;; All-the-icons-ivy
 
