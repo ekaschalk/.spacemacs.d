@@ -16,9 +16,18 @@
 ;;; Hy-mode
 
 (defun langs/pre-init-hy-mode ()
+  (defun hy-start-repl ()
+    (interactive)
+    (inferior-lisp (concat python-shell-virtualenv-path "/bin/hy --spy")))
+
   (defun hy-send-buffer ()
     (interactive)
-    (lisp-load-file (buffer-file-name)))
+    (let ((text (buffer-string)))
+      (unless (get-process "inferior-lisp")
+        (hy-start-repl))
+      (switch-to-buffer-other-window inferior-lisp-buffer)
+      (insert text)
+      (comint-send-input nil t)))
 
   (defun hy-insert-pdb ()
     (interactive)
@@ -29,6 +38,7 @@
     (insert "((tz.do (do (import pdb) (pdb.set-trace))))"))
 
   (spacemacs/set-leader-keys-for-major-mode 'hy-mode
+    "ei" 'hy-start-repl
     "eb" 'hy-send-buffer)
 
   (spacemacs/declare-prefix-for-mode 'hy-mode "md" "debug")
