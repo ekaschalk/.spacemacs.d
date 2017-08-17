@@ -3,6 +3,7 @@
 (setq langs-packages
       '(
         hy-mode
+        lispy
         virtualenvwrapper
 
         (python :location built-in)
@@ -15,6 +16,10 @@
 ;;; Hy-mode
 
 (defun langs/pre-init-hy-mode ()
+  (defun hy-send-buffer ()
+    (interactive)
+    (lisp-load-file (buffer-file-name)))
+
   (defun hy-insert-pdb ()
     (interactive)
     (insert "(do (import pdb) (pdb.set-trace))"))
@@ -22,6 +27,9 @@
   (defun hy-insert-thread-pdb ()
     (interactive)
     (insert "((tz.do (do (import pdb) (pdb.set-trace))))"))
+
+  (spacemacs/set-leader-keys-for-major-mode 'hy-mode
+    "eb" 'hy-send-buffer)
 
   (spacemacs/declare-prefix-for-mode 'hy-mode "md" "debug")
   (spacemacs/set-leader-keys-for-major-mode 'hy-mode
@@ -35,6 +43,12 @@
     "ta" 'spacemacs/python-test-all
     "tM" 'spacemacs/python-test-pdb-module
     "tm" 'spacemacs/python-test-module))
+
+;;; Lispy
+
+(defun langs/init-lispy ()
+  (use-package lispy
+    :config (require 'le-hy)))
 
 ;;; Virtualenvwrapper
 

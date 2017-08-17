@@ -252,5 +252,4 @@
 
 (defun dotspacemacs/user-config/experiments ()
   (when (configuration-layer/package-usedp 'olivetti)
-    (spacemacs/set-leader-keys "wo" 'olivetti))
-  )
+    (spacemacs/set-leader-keys "wo" 'olivetti)))
