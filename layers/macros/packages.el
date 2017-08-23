@@ -2,8 +2,7 @@
 
 (setq macros-packages
       '(
-        (dash-functional :location
-                         (recipe :fetcher github :repo "magnars/dash.el"))
+        dash-functional
         ))
 
 ;;; Dash-functional

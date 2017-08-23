@@ -246,11 +246,13 @@
     :config
     (progn
       (spaceline-all-the-icons-theme)
-      (setq spaceline-highlight-face-func 'spaceline-highlight-face-default
-            spaceline-all-the-icons-icon-set-modified 'chain
-            spaceline-all-the-icons-icon-set-window-numbering 'square
-            spaceline-all-the-icons-separator-type 'none
-            spaceline-all-the-icons-primary-separator "")
+
+      (setq spaceline-highlight-face-func 'spaceline-highlight-face-default)
+      (setq spaceline-all-the-icons-icon-set-modified 'chain)
+      (setq spaceline-all-the-icons-icon-set-window-numbering 'square)
+      (setq spaceline-all-the-icons-separator-type 'none)
+      (setq spaceline-all-the-icons-primary-separator "")
+
       (spaceline-toggle-all-the-icons-buffer-size-off)
       (spaceline-toggle-all-the-icons-buffer-position-off)
       (spaceline-toggle-all-the-icons-vc-icon-off)
@@ -259,4 +261,7 @@
       (spaceline-toggle-all-the-icons-flycheck-status-off)
       (spaceline-toggle-all-the-icons-time-off)
       (spaceline-toggle-all-the-icons-battery-status-off)
-      (spaceline-toggle-hud-off))))
+      (spaceline-toggle-hud-off)
+
+      (setq org-clock-current-task nil)  ; bugfix
+      )))
