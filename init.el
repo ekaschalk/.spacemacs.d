@@ -8,6 +8,9 @@
 ;;
 ;; All configuration is housed in personal layers
 
+(defvar ERIC-ONLY? t
+  "If cloning, set to nil, enable non-layer personal configuration.")
+
 (setq is-linuxp (eq system-type 'gnu/linux))
 (defun os-path (x) (if is-linuxp x (expand-file-name x "c:")))
 
@@ -85,7 +88,10 @@
              haskell-completion-backend 'intero)
     (python :variables
             python-sort-imports-on-save t
-            python-test-runner 'pytest)
+            python-test-runner 'pytest
+            :packages
+            (not hy-mode)  ; I maintain `hy-mode', using local branch
+            )
     )
   "Programming and markup language layers")
 
@@ -120,7 +126,7 @@
 (defun dotspacemacs/layers/packages ()
   (setq-default
    dotspacemacs-additional-packages '(solarized-theme)
-   dotspacemacs-excluded-packages '(fringe)
+   dotspacemacs-excluded-packages '(fringe hy-mode)
    dotspacemacs-frozen-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused
    ))
@@ -252,4 +258,10 @@
 
 (defun dotspacemacs/user-config/experiments ()
   (when (configuration-layer/package-usedp 'olivetti)
-    (spacemacs/set-leader-keys "wo" 'olivetti)))
+    (spacemacs/set-leader-keys "wo" 'olivetti))
+
+  (when ERIC-ONLY?
+    (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
+    (load-file (os-path "~/dev/hy-mode/spacemacs-hy.el"))
+    (require 'hy-mode)
+    (require 'spacemacs-hy)))

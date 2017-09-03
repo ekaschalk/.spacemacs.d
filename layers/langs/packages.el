@@ -2,57 +2,14 @@
 
 (setq langs-packages
       '(
-        hy-mode
         lispy
         virtualenvwrapper
 
         (python :location built-in)
 
         ;; (mypy-flycheck :location local)
-        (hy-indent-fix :location local)
         (windows-pytest :location local)
         ))
-
-;;; Hy-mode
-
-(defun langs/pre-init-hy-mode ()
-  (defun hy-start-repl ()
-    (interactive)
-    (inferior-lisp (concat python-shell-virtualenv-path "/bin/hy --spy")))
-
-  (defun hy-send-buffer ()
-    (interactive)
-    (let ((text (buffer-string)))
-      (unless (get-process "inferior-lisp")
-        (hy-start-repl))
-      (switch-to-buffer-other-window inferior-lisp-buffer)
-      (insert text)
-      (comint-send-input nil t)))
-
-  (defun hy-insert-pdb ()
-    (interactive)
-    (insert "(do (import pdb) (pdb.set-trace))"))
-
-  (defun hy-insert-thread-pdb ()
-    (interactive)
-    (insert "((tz.do (do (import pdb) (pdb.set-trace))))"))
-
-  (spacemacs/set-leader-keys-for-major-mode 'hy-mode
-    "ei" 'hy-start-repl
-    "eb" 'hy-send-buffer)
-
-  (spacemacs/declare-prefix-for-mode 'hy-mode "md" "debug")
-  (spacemacs/set-leader-keys-for-major-mode 'hy-mode
-    "dd" 'hy-insert-pdb
-    "dt" 'hy-insert-thread-pdb
-    "," 'lisp-state-toggle-lisp-state)
-
-  (spacemacs/declare-prefix-for-mode 'hy-mode "mt" "test")
-  (spacemacs/set-leader-keys-for-major-mode 'hy-mode
-    "tA" 'spacemacs/python-test-pdb-all
-    "ta" 'spacemacs/python-test-all
-    "tM" 'spacemacs/python-test-pdb-module
-    "tm" 'spacemacs/python-test-module))
 
 ;;; Lispy
 
@@ -99,11 +56,6 @@
 
   ;; Cython numpy symlink
   (setenv "CFLAGS" "-I /root/.virtualenvs/pop-synthvenv/lib/python3.6/site-packages/numpy/core/include"))
-
-;;; Hy-indent-fix
-
-(defun langs/init-hy-indent-fix ()
-  (use-package hy-indent-fix))
 
 ;;; Windows-pytest
 

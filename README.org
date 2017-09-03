@@ -40,3 +40,5 @@ Layer requirements:
     install [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] fonts.
 
 To install simply clone to your home directory.
+Then set ~ERIC-ONLY?~ at the top of ~init.el~ to nil (due to:
+https://github.com/syl20bnr/spacemacs/issues/4979).

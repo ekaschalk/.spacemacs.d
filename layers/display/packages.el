@@ -2,9 +2,6 @@
 
 (setq display-packages
       '(
-        ;; Language specific updates
-        hy-mode
-
         ;; Core Display Packages
         all-the-icons
         all-the-icons-ivy
@@ -198,40 +195,6 @@
       (all-the-icons-ivy-setup)
       (advice-add 'all-the-icons-ivy-file-transformer
                   :override 'ivy-file-transformer-fixed-for-files))))
-
-;;;; Hy-mode
-
-(defun display/post-init-hy-mode ()
-  (defun hy-extra-syntax ()
-    (font-lock-add-keywords
-     nil '(;; self is not defined by hy-mode as a keyword
-           ("\\<\\(self\\)" . 'font-lock-constant-face)
-
-           ;; defreader now deftag in master branch
-           ("\\(deftag\\)" . 'font-lock-keyword-face)
-
-           ;; Highlight entire line for decorators
-           ("\\(#@.*$\\)" . 'font-lock-function-name-face)
-
-           ;; Syntax highlighting for tag-macros
-           ("\\(#.+\\) " . 'font-lock-function-name-face)
-
-           ;; Highlight with macros
-           ("\\(with[^ ]*\\)" . 'font-lock-keyword-face)
-
-           ;; Highlight functions after specific macros
-           ("\-fixture \\([^ ]*\\)" 1 'font-lock-function-name-face)
-           ("\-fixtures \\([^ ]*\\)" 1 'font-lock-function-name-face)
-
-           ;; Fixture macros
-           ("\\(deffixture\\)" . 'font-lock-keyword-face)
-           ("deffixture \\([^ ]*\\)" 1 'font-lock-function-name-face)
-
-           ;; Asserts
-           ("(\\(assert[^ ]*\\)" 1 font-lock-keyword-face)
-           )))
-
-  (add-hook 'hy-mode-hook 'hy-extra-syntax))
 
 ;;;; Prettify-utils
 
