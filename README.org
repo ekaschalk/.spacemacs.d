@@ -38,5 +38,8 @@ aesthetic.
   You won't have the font ~operator mono~ installed so make sure to select your
   font of choice.
 
+  Theming updates for solarized dark and light are implemented. Apply theme
+  updates for other themes in the display layer's ~config.el~.
+
   To install clone to your home directory.
   Set ~ERIC-ONLY?~ at the top of ~init.el~ to nil ([[https://github.com/syl20bnr/spacemacs/issues/4979][see spacemacs issue 4979]]).
