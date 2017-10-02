@@ -1,44 +1,42 @@
-My /[[http://modernemacs.com][Modern Emacs blog's]]/ configuration, for those that value:
-
-1. A practical, custom aesthetic.
-2. Documented, idiomatic emacs lisp.
-3. Overwriting core Emacs bindings in favor of Evil.
+My personal-layer based Spacemacs configuration providing a practical, unique
+aesthetic.
 
 * Description
 
-See [[./layers/display][display layer for screenshots]].
+  See [[./layers/display][display layer for screenshots]].
 
-See [[./layers/config][config layer for keybindings]].
+  See [[./layers/config][config layer for keybindings]].
 
-- [[./layers/config][config]] :: Typical emacs package configurations.
-- [[./layers/display][display]] :: Houses my ~pretty~ packages and display updates.
-  - /pretty-code/ : Program with custom ligatures and symbols, see
-                     [[http://www.modernemacs.com/post/prettify-mode/][mathematical notation in emacs]].
-  - /pretty-eshell/ : Customize eshell information and faces, see
-                     [[http://www.modernemacs.com/post/custom-eshell/][making eshell your own]].
-  - /pretty-fonts/ : All the icons and Fira Code ligature integration.
-  - /pretty-magit/ : Commit leaders integration and stylizing, see
-                    [[http://www.modernemacs.com/post/pretty-magit/][pretty magit - integrating commit leaders]].
-  - /pretty-outlines/ : Fancy outline bullets and ellipsis, see [[http://www.modernemacs.com/post/outline-bullets/][fancy outline bullets.]]
-- [[./layers/langs][langs]] :: Language configuration.
-- [[./layers/macros][macros]] :: General purpose macros, base layer for all others.
-- [[./layers/personal][personal]] :: Personal packages that aren't display related.
-  - /blog/ : Hugo integration, see [[http://www.modernemacs.com/post/org-mode-blogging/][an Emacs blogging workflow]].
-  - /outline-ivy/ : Jump to outlines with ivy, see [[http://www.modernemacs.com/post/outline-ivy/][managing code with outlines]].
+  - [[./layers/config][config]] :: Typical emacs package configurations.
+  - [[./layers/display][display]] :: Houses my ~pretty~ packages and display updates.
+       - /pretty-code/ : Program with custom ligatures and symbols, see
+         [[http://www.modernemacs.com/post/prettify-mode/][mathematical notation in emacs]].
+       - /pretty-eshell/ : Customize eshell information and faces, see
+         [[http://www.modernemacs.com/post/custom-eshell/][making eshell your own]].
+       - /pretty-fonts/ : All the icons and Fira Code ligature integration.
+       - /pretty-magit/ : Commit leaders integration and stylizing, see
+         [[http://www.modernemacs.com/post/pretty-magit/][pretty magit - integrating commit leaders]].
+       - /pretty-outlines/ : Fancy outline bullets and ellipsis, see [[http://www.modernemacs.com/post/outline-bullets/][fancy outline bullets.]]
+  - [[./layers/langs][langs]] :: Language configuration.
+  - [[./layers/macros][macros]] :: General purpose macros, base layer for all others.
+  - [[./layers/personal][personal]] :: Personal packages that aren't display related.
+       - /blog/ : Hugo integration, see [[http://www.modernemacs.com/post/org-mode-blogging/][an Emacs blogging workflow]].
+       - /outline-ivy/ : Jump to outlines with ivy, see [[http://www.modernemacs.com/post/outline-ivy/][managing code with outlines]].
 
-See [[http://www.modernemacs.com/post/migrate-layers/][Migrating to Spacemacs Layers]] to understand this configuration in better
-depth.
+  See [[http://www.modernemacs.com/post/migrate-layers/][Migrating to Spacemacs Layers]] to understand this configuration in better depth.
 
 * Install
 
-Layer requirements:
-- Display layer
-  - ~pretty-fonts~ requires [[https://github.com/tonsky/FiraCode][Fira Code Symbol]] (download link:
-    https://github.com/tonsky/FiraCode/files/412440/FiraCode-Regular-Symbol.zip),
-    only need for ligatures, any font can be used in-tandem. If you use the same
-    icons/unicode points that I define in its ~config.el~, then you must also
-    install [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] fonts.
+  ~pretty-fonts~, providing programming ligatures, requires [[https://github.com/tonsky/FiraCode][Fira Code Symbol]]
+  ([[https://github.com/tonsky/FiraCode/files/412440/FiraCode-Regular-Symbol.zip][download link]]) font installed. It just uses Fira's ligatures, any font can be
+  used in tandem.
 
-To install simply clone to your home directory.
-Then set ~ERIC-ONLY?~ at the top of ~init.el~ to nil (due to:
-https://github.com/syl20bnr/spacemacs/issues/4979).
+  In the display package's config, I make heavy use of [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] icons.
+  So if you use those packages and want the same icons, make sure to install
+  all-the-icons.
+
+  You won't have the font ~operator mono~ installed so make sure to select your
+  font of choice.
+
+  To install clone to your home directory.
+  Set ~ERIC-ONLY?~ at the top of ~init.el~ to nil ([[https://github.com/syl20bnr/spacemacs/issues/4979][see spacemacs issue 4979]]).
