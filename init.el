@@ -150,7 +150,10 @@
 
 (defun dotspacemacs/init/display ()
   (setq-default
-   dotspacemacs-themes '(solarized-dark solarized-light)
+   dotspacemacs-themes '(
+                         solarized-light
+                         solarized-dark
+                         )
    dotspacemacs-default-font `("operator mono medium"
                                :size ,(if is-linuxp 20 12)
                                :powerline-scale 1.5)
