@@ -3,7 +3,7 @@
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Contact: ekaschalk@gmail.com --
 ;; -- MIT License --
-;; -- Emacs 25.2.1 - Dev Branch - Release 0.200.9.x - pulled/pkgs updated: 8/23 --
+;; -- Emacs 25.2.1 - Dev Branch - Release 0.200.9.x - pulled/pkgs updated: 10/08 --
 ;; -- See README for details and VERSION for updates --
 ;;
 ;; All configuration is housed in personal layers
