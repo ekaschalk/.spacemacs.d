@@ -15,8 +15,6 @@
         ;; Misc
         ispell
         gnus
-        ;; magithub
-        olivetti
         yasnippet
 
         ;; Large config sections
@@ -181,31 +179,6 @@
 
         ;; Full size images
         mm-inline-large-images 'resize))
-
-;;;; Magithub
-
-;; Throwing issue with private repo without issues - fix later
-
-;; (defun config/init-magithub ()
-;;   (use-package magithub
-;;     ;; Secrets sets `ghub-username' and `ghub-token'
-;;     :if (file-exists-p (os-path "~/Dropbox/secrets.el"))
-;;     :after magit
-;;     :config
-;;     (progn
-;;       (defun ghubp--remove-api-links (o &rest _) o)
-;;       (magithub-feature-autoinject t)
-;;       (load-file (os-path "~/Dropbox/secrets.el")))))
-
-;;;; Olivetti
-
-(defun config/init-olivetti ()
-  ;; Binding "SPC w o" is set in init.el, possible spacemacs bug with
-  ;; spacemacs-base/frame.el binding overwriting setting the binding here.
-  ;; The binding is only overwritten on my linux box.
-  (use-package olivetti
-    :config
-    (advice-add 'spacemacs/toggle-maximize-buffer :after 'olivetti-end)))
 
 ;;;; Yasnippet
 
