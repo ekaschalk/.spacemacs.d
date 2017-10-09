@@ -77,7 +77,8 @@
 ;;;; Langs
 
 (defvar dotspacemacs/layers/langs
-  '(emacs-lisp
+  '(c-c++
+    emacs-lisp
     html
     javascript
     markdown
