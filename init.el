@@ -260,9 +260,6 @@
 ;;;; Experiments
 
 (defun dotspacemacs/user-config/experiments ()
-  (when (configuration-layer/package-usedp 'olivetti)
-    (spacemacs/set-leader-keys "wo" 'olivetti))
-
   (when ERIC-ONLY?
     (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
     (load-file (os-path "~/dev/hy-mode/spacemacs-hy.el"))
