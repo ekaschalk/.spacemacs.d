@@ -126,7 +126,10 @@
 
 (defun dotspacemacs/layers/packages ()
   (setq-default
-   dotspacemacs-additional-packages '(solarized-theme)
+   dotspacemacs-additional-packages '(
+                                      solarized-theme
+                                      nord-theme
+                                      )
    dotspacemacs-excluded-packages '(fringe hy-mode)
    dotspacemacs-frozen-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused
@@ -152,6 +155,7 @@
 (defun dotspacemacs/init/display ()
   (setq-default
    dotspacemacs-themes '(
+                         nord
                          solarized-light
                          solarized-dark
                          )
@@ -261,6 +265,9 @@
 ;;;; Experiments
 
 (defun dotspacemacs/user-config/experiments ()
+  (setq nord-comment-brightness 15)
+  (setq nord-uniform-mode-lines t)
+
   (when ERIC-ONLY?
     (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
     (load-file (os-path "~/dev/hy-mode/spacemacs-hy.el"))
