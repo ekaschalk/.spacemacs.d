@@ -11,3 +11,4 @@
     7. Fix outline-ivy bullets in prog buffers
   - 8/xx - 1.0.2 :: in-progress
     1. Mirror theming changes made to solarized dark to light theme.
+    2. Zenburn and nord themes added.

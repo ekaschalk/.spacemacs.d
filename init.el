@@ -155,6 +155,7 @@
 (defun dotspacemacs/init/display ()
   (setq-default
    dotspacemacs-themes '(
+                         zenburn
                          nord
                          solarized-light
                          solarized-dark
