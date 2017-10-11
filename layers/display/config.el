@@ -230,9 +230,7 @@
    (company-tooltip-common-selection
     :inherit company-tooltip-selection :weight bold :underline nil)
 
-   (font-lock-comment-face :italic t :weight normal)
    (avy-background-face :foreground "#586e75" :italic nil)
-   (font-lock-doc-face :italic t :weight normal)
 
    ;; Makes matching parens obvious
    (sp-show-pair-match-face :underline t)
@@ -292,13 +290,24 @@
                 :italic nil
                 :inherit nil)
 
-   (oi-face-2 :inherit outline-2 :underline nil)
-   (oi-face-3 :inherit outline-3 :underline nil)
-
    (org-block-begin-line :height 1.05 :foreground "#576e75"
                          :box t :weight bold)
    (org-block-end-line :height 1.05 :foreground "#576e75"
-                       :box t :weight bold)))
+                       :box t :weight bold)
+
+   ;; zenburn specific changes
+   (oi-face-2 :inherit outline-2 :underline nil)
+   (oi-face-3 :inherit outline-3 :underline nil)
+
+   ;; (default :foreground "#DCDCCC" :background "#383838")
+
+   ;; (font-lock-type-face :foreground "orchid")
+   (font-lock-function-name-face :foreground "CadetBlue1")
+
+   (font-lock-comment-delimiter-face :foreground "gray35")
+   (font-lock-comment-face :italic t :weight normal :foreground "gray50")
+   (font-lock-doc-face :italic t :weight normal :foreground "gray65")
+   ))
 
 ;;; Set Theme Changes
 
