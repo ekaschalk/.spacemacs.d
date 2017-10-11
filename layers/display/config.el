@@ -248,13 +248,13 @@
    (fringe :background nil)
 
    (outline-1 :height 1.35
-              :foreground "#C3A29E"
+              :foreground "#DFAF8F"
               :weight ,(if is-linuxp 'normal 'ultra-bold)
               :italic nil
               :underline t)
 
    (outline-2 :height 1.25
-              :foreground "#93E0E3"
+              :foreground "#BFEBBF"
               :weight ,(if is-linuxp 'normal 'ultra-bold)
               :italic nil
               :underline t
@@ -269,7 +269,7 @@
 
    (org-level-1 :height 1.35
                 :inherit nil
-                :foreground "#C3A29E"
+                :foreground "#DFAF8F"
                 :weight ,(if is-linuxp 'normal 'ultra-bold)
                 :italic nil
                 :underline t
@@ -277,7 +277,7 @@
 
    (org-level-2 :height 1.25
                 :inherit nil
-                :foreground "#93E0E3"
+                :foreground "#BFEBBF"
                 :weight ,(if is-linuxp 'normal 'ultra-bold)
                 :italic nil
                 :underline t
@@ -296,13 +296,12 @@
                        :box t :weight bold)
 
    ;; zenburn specific changes
+   (oi-face-1 :inherit outline-1)
    (oi-face-2 :inherit outline-2 :underline nil)
    (oi-face-3 :inherit outline-3 :underline nil)
 
-   ;; (default :foreground "#DCDCCC" :background "#383838")
-
-   ;; (font-lock-type-face :foreground "orchid")
-   (font-lock-function-name-face :foreground "CadetBlue1")
+   (font-lock-type-face :foreground "LightCoral")
+   (font-lock-function-name-face :foreground "CadetBlue2")
 
    (font-lock-comment-delimiter-face :foreground "gray35")
    (font-lock-comment-face :italic t :weight normal :foreground "gray50")
