@@ -261,7 +261,7 @@
               :inherit nil)
 
    (outline-3 :height 1.15
-              :foreground "#DC8CC3"
+              :foreground "#7CB8BB"
               :weight ,(if is-linuxp 'normal 'ultra-bold)
               :italic nil
               :underline t
@@ -285,7 +285,7 @@
 
    (org-level-3 :height 1.15
                 :inherit nil
-                :foreground "#DC8CC3"
+                :foreground "#7CB8BB"
                 :weight ,(if is-linuxp 'normal 'ultra-bold)
                 :italic nil
                 :inherit nil)

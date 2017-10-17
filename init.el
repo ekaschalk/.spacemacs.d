@@ -273,4 +273,5 @@
     (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
     (load-file (os-path "~/dev/hy-mode/spacemacs-hy.el"))
     (require 'hy-mode)
-    (require 'spacemacs-hy)))
+    (require 'spacemacs-hy)
+    (require 'hy-personal)))
