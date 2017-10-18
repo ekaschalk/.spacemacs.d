@@ -25,5 +25,4 @@
   (use-package outline-ivy
     :after ivy outshine
     :config
-    (global-set-key (kbd "C-j") 'oi-jump)
-    (define-key python-mode-map (kbd "C-j") 'oi-jump)))
+    (global-set-key (kbd "C-j") 'oi-jump)))
