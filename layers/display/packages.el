@@ -5,6 +5,7 @@
         ;; Core Display Packages
         all-the-icons
         all-the-icons-ivy
+        all-the-icons-dired
         spaceline-all-the-icons
         (prettify-utils :location (recipe :fetcher github
                                           :repo "Ilazki/prettify-utils.el"))
@@ -195,6 +196,13 @@
       (all-the-icons-ivy-setup)
       (advice-add 'all-the-icons-ivy-file-transformer
                   :override 'ivy-file-transformer-fixed-for-files))))
+
+;;;; All-the-icons-dired
+
+(defun display/init-all-the-icons-dired ()
+  (use-package all-the-icons-dired
+    :config
+    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
 
 ;;;; Prettify-utils
 
