@@ -79,10 +79,13 @@
 (defvar dotspacemacs/layers/langs
   '(c-c++
     emacs-lisp
-    html
     javascript
-    markdown
     rust
+
+    csv
+    html
+    markdown
+
     (clojure :variables
              clojure-enable-fancify-symbols t)
     (haskell :variables
