@@ -3,7 +3,7 @@
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Contact: ekaschalk@gmail.com --
 ;; -- MIT License --
-;; -- Emacs 25.2.1 - Dev Branch - Release 0.200.9.x - pulled/pkgs updated: 10/08 --
+;; -- Emacs 25.2.1 - Dev Branch - 0.200.9.x - pulled/pkgs updated: 11/01 -
 ;; -- See README for details and VERSION for updates --
 ;;
 ;; All configuration is housed in personal layers
@@ -105,6 +105,7 @@
   '(gnus
     graphviz
     ranger
+    treemacs
     (ibuffer :variables
              ibuffer-group-buffers-by 'projects)
     )
@@ -272,7 +273,34 @@
   (setq nord-comment-brightness 15)
   (setq nord-uniform-mode-lines t)
 
+  ;; Still experimenting with treemacs settings, improvement on neotree
+  (require 'treemacs)  ; Required since these aren't setup until first toggle
+
+  (setq treemacs-show-hidden-files nil)
+  (setq treemacs-silent-refresh t)
+  (setq treemacs-is-never-other-window t)
+  (setq treemacs-filewatch-mode nil)
+
+  (defun evil-previous-line-5 () (interactive) (evil-previous-line 5))
+  (defun evil-next-line-5 () (interactive) (evil-next-line 5))
+
+  (define-key treemacs-mode-map (kbd "C-k") 'evil-previous-line-5)
+  (define-key treemacs-mode-map (kbd "C-j") 'evil-next-line-5)
+  (define-key evil-treemacs-state-map "l" 'treemacs-visit-node-ace)
+
+  (evil-define-key '(normal operator motion emacs) treemacs-mode-map
+    "u" 'treemacs-uproot
+    "h" 'treemacs-goto-parent-node
+    "s" 'treemacs-toggle-show-dotfiles
+    "r" 'treemacs-change-root)
+
+  (push (lambda (f) (pcase f ("__init__.py" f) ("__pycache__" f) (_ nil)))
+        treemacs-ignored-file-predicates)
+
   (when ERIC-ONLY?
+    (-let [treemacs-dir "~/Downloads/"]
+      (treemacs--setup-icon treemacs-hy-icon "hy.png" "hy"))
+
     (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
     (load-file (os-path "~/dev/hy-mode/spacemacs-hy.el"))
     (load-file (os-path "~/dev/hy-mode/hy-personal.el"))

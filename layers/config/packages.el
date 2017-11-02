@@ -9,8 +9,8 @@
         ;; Navigation
         avy
         outshine
-        neotree
         projectile
+        treemacs
 
         ;; Misc
         ispell
@@ -115,18 +115,11 @@
       (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
       (add-hook 'prog-mode-hook 'outline-minor-mode))))
 
-;;;; Neotree
+;;;; Treemacs
 
-(defun config/pre-init-neotree ()
-  (evil-global-set-key 'normal (kbd "M-f") 'winum-select-window-0)
-  (evil-global-set-key 'normal (kbd "M-p") 'neotree-find-project-root))
-
-(defun config/post-init-neotree ()
-  (setq neo-theme 'icons)
-  (setq neo-window-width 28)
-  (setq neo-hidden-regexp-list '("^\\." "\\.pyc$" "~$" "^#.*#$" "\\.elc$"
-                                 ;; Pycache and init rarely want to see
-                                 "__pycache__" "__init__\\.py")))
+(defun config/pre-init-treemacs ()
+  (evil-global-set-key 'normal (kbd "M-f") 'treemacs-select-window)
+  (evil-global-set-key 'normal (kbd "M-p") 'treemacs-projectile-toggle))
 
 ;;;; Projectile
 

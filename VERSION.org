@@ -1,14 +1,15 @@
 * Versions
 
-- 7/11 - 1.0.0 :: Existing 2k lines ~.spacemacs~ migrated into layers.
-  - 8/23 - 1.0.1 ::
-    1. Rebound org-refile and org todo quick bindings since they were changed
-    2. Org mode todo heading styling improvements
-    3. init.el spacemacs variables organized and modularized further
-    4. hy-mode shell, pytest integration, indentation fix
-    5. Graphviz added to all the icons
-    6. Olivetti-mode (distraction free editing mode)
-    7. Fix outline-ivy bullets in prog buffers
   - 8/xx - 1.0.2 :: in-progress
-    1. Mirror theming changes made to solarized dark to light theme.
-    2. Zenburn and nord themes added.
+                    1. Mirror theming changes made to solarized dark to light theme.
+                    2. Zenburn and nord themes added.
+                    3. Moved from Neotree to Treemacs
+  - 8/23 - 1.0.1 :: ..
+                    1. Rebound org-refile and org todo quick bindings since they were changed
+                    2. Org mode todo heading styling improvements
+                    3. init.el spacemacs variables organized and modularized further
+                    4. hy-mode shell, pytest integration, indentation fix
+                    5. Graphviz added to all the icons
+                    6. Olivetti-mode (distraction free editing mode)
+                    7. Fix outline-ivy bullets in prog buffers
+  - 7/11 - 1.0.0 :: Existing 2k lines ~.spacemacs~ migrated into layers.

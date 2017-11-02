@@ -3,6 +3,7 @@
    ;; Core Config layers
    gnus
    org
+   treemacs
 
    ;; Personal Layers
    macros
