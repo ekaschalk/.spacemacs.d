@@ -3,7 +3,6 @@
 (setq config-packages
       '(
         ;; Navigation
-        avy
         outshine
         projectile
         treemacs
@@ -14,21 +13,15 @@
         gnus
         yasnippet
 
-        ;; Grouped config sections
+        ;; Elsehwere-owned packages
+        (avy-config :location local)
         (ivy-config :location local)
         (evil-config :location local)
         (org-config :location local)
         ))
 
+
 ;;; Navigation
-;;;; Avy
-
-(defun config/post-init-avy ()
-  (setq avy-timeout-seconds 0.35)
-  (evil-global-set-key 'normal (kbd "s") 'avy-goto-char-timer)
-  (global-set-key (kbd "C-h") 'avy-pop-mark)
-  (global-set-key (kbd "C-l") 'evil-avy-goto-line))
-
 ;;;; Outshine
 
 (defun config/init-outshine ()
@@ -169,14 +162,18 @@
 
 ;;; Local
 
+(defun config/init-avy-config ()
+  (use-package avy-config
+    :after avy macros))
+
 (defun config/init-evil-config ()
   (use-package evil-config
-    :after macros))
+    :after evil macros))
 
 (defun config/init-ivy-config ()
   (use-package ivy-config
-    :after macros))
+    :after ivy macros))
 
 (defun config/init-org-config ()
   (use-package org-config
-    :after org))
+    :after org macros))

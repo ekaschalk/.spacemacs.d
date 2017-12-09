@@ -15,6 +15,15 @@
     (-lambda ((key def))
       (define-key keymap key def))))
 
+;;; global-set-keys
+
+(defun global-set-keys (&rest pairs)
+  "Set alternating key-def PAIRS globally."
+  (-each
+      (-partition 2 pairs)
+    (-lambda ((key def))
+      (global-set-key key def))))
+
 ;;; evil-global-set-keys
 
 (defun evil-global-set-keys (states &rest pairs)
