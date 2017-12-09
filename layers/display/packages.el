@@ -60,6 +60,7 @@
 
 (defun display/init-pretty-eshell ()
   (use-package pretty-eshell
+    :after macros
     :config
     (progn
       (esh-section esh-dir
@@ -143,7 +144,7 @@
 
 (defun display/init-pretty-outlines ()
   (use-package pretty-outlines
-    :after outshine
+    :after outshine macros
     :config
     (progn
       ;; Ellipsis

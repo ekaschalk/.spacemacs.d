@@ -1,5 +1,4 @@
-(require 'dash)
-(require 's)
+(require 'macros)
 
 (provide 'pretty-eshell)
 

@@ -10,6 +10,7 @@
 
 (defun personal/init-blog ()
   (use-package blog
+    :after macros
     :if (executable-find "hugo")
     :init
     (progn
@@ -23,6 +24,6 @@
 
 (defun personal/init-outline-ivy ()
   (use-package outline-ivy
-    :after ivy outshine
+    :after ivy outshine macros
     :config
     (global-set-key (kbd "C-j") 'oi-jump)))

@@ -1,5 +1,5 @@
-(require 'dash)
 (require 'ivy)
+(require 'macros)
 (require 'outshine)
 
 (provide 'outline-ivy)

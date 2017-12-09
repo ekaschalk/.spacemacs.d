@@ -3,7 +3,6 @@
 (setq config-packages
       '(
         ;; Core
-        evil
         ivy
 
         ;; Navigation
@@ -18,32 +17,16 @@
         gnus
         yasnippet
 
-        ;; Large config sections
+        ;; Grouped config sections
+        (evil-config :location local)
         (org-config :location local)
         ))
 
+(defun config/init-evil-config ()
+  (use-package evil-config
+    :after macros))
+
 ;;; Core
-;;;; Evil
-
-(defun config/post-init-evil ()
-  (setq evil-escape-key-sequence "jk")
-  (setq evil-escape-unordered-key-sequence "true")
-
-  (evil-global-set-key 'normal "H" 'evil-first-non-blank)
-  (evil-global-set-key 'visual "H" 'evil-first-non-blank)
-  (evil-global-set-key 'motion "H" 'evil-first-non-blank)
-
-  (evil-global-set-key 'normal "L" (lambda () (interactive) (evil-end-of-line)))
-  (evil-global-set-key 'visual "L" (lambda () (interactive) (evil-end-of-line)))
-  (evil-global-set-key 'motion "L" (lambda () (interactive) (evil-end-of-line)))
-
-  (evil-global-set-key 'normal "0" 'evil-jump-item)
-  (evil-global-set-key 'visual "0" 'evil-jump-item)
-  (evil-global-set-key 'motion "0" 'evil-jump-item)
-
-  (advice-add 'evil-ex-search-next :after 'config/scroll-to-center-advice)
-  (advice-add 'evil-ex-search-previous :after 'config/scroll-to-center-advice))
-
 ;;;; Ivy
 
 (defun config/post-init-ivy ()

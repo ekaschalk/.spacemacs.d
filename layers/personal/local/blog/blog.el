@@ -1,4 +1,4 @@
-(require 'dash)
+(require 'macros)
 
 (provide 'blog)
 

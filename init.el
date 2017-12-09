@@ -3,7 +3,7 @@
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Contact: ekaschalk@gmail.com --
 ;; -- MIT License --
-;; -- Emacs 25.2.1 ~ Spacemacs Dev Branch 0.200.9.x ~ pkgs updated: 12/07/17 --
+;; -- Emacs 25.2.1 ~ Spacemacs Dev Branch 0.300.0.x ~ pkgs updated: 12/07/17 --
 ;; -- http://modernemacs.com --
 ;;
 ;; All configuration is housed in personal layers - see README.
@@ -141,10 +141,12 @@
    (list (os-path "~/.spacemacs.d/layers/"))
 
    dotspacemacs-configuration-layers
-   (append dotspacemacs/layers/core
-           dotspacemacs/layers/langs
-           dotspacemacs/layers/extra
-           dotspacemacs/layers/local)
+   (append
+    dotspacemacs/layers/local
+    dotspacemacs/layers/core
+    dotspacemacs/layers/langs
+    dotspacemacs/layers/extra
+    )
    ))
 
 ;;;; Layers/packages

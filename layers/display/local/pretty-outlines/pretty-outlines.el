@@ -1,6 +1,5 @@
-(require 'dash)
 (require 'outshine)
-(require 's)
+(require 'macros)
 
 (provide 'pretty-outlines)
 
