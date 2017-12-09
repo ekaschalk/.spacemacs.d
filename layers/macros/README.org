@@ -28,8 +28,8 @@ packages beyond what is defined in ~spacemacs-bootstrap~.
 
 ** Macros and Functions
 
-- ~evil-global-set-keys~ :: Improved to take possibly many states and
-     keybindings.
+- ~define-keys~ :: Takes many bindings.
+- ~evil-global-set-keys~ :: Takes many states and bindings.
 - ~with-face~ :: Shorthand for ~propertize s 'face '(props)~
 - ~with-dir~ :: Executes forms within a directory.
 

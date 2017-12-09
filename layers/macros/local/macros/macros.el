@@ -5,6 +5,16 @@
 
 (provide 'macros)
 
+
+;;; define-keys
+
+(defun define-keys (keymap &rest pairs)
+  "Define alternating key-def PAIRS for KEYMAP."
+  (-each
+      (-partition 2 pairs)
+    (-lambda ((key def))
+      (define-key keymap key def))))
+
 ;;; evil-global-set-keys
 
 (defun evil-global-set-keys (states &rest pairs)

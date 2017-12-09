@@ -2,9 +2,6 @@
 
 (setq config-packages
       '(
-        ;; Core
-        ivy
-
         ;; Navigation
         avy
         outshine
@@ -18,53 +15,10 @@
         yasnippet
 
         ;; Grouped config sections
+        (ivy-config :location local)
         (evil-config :location local)
         (org-config :location local)
         ))
-
-(defun config/init-evil-config ()
-  (use-package evil-config
-    :after macros))
-
-;;; Core
-;;;; Ivy
-
-(defun config/post-init-ivy ()
-  (setq ivy-format-function 'ivy-format-function-arrow)
-  (setq ivy-height 20)
-  (setq completion-in-region-function 'ivy-completion-in-region)
-
-  ;; Resume last ivy session
-  (spacemacs/set-leader-keys
-    "ai" 'ivy-resume)
-
-  (let ((kmap ivy-minibuffer-map))
-    ;; Perform default action on avy-selected minibuffer line
-    (define-key kmap (kbd "C-l") 'ivy-avy)
-
-    ;; Evil-like scrolling of ivy minibuffer
-    (define-key kmap (kbd "C-u") 'ivy-scroll-down-command)
-    (define-key kmap (kbd "C-d") 'ivy-scroll-up-command)
-
-    ;; Rebind C-n/C-y/C-p to narrow/yank from buffer/paste into buffer
-    (define-key kmap (kbd "C-n") 'ivy-restrict-to-matches)
-    (define-key kmap (kbd "C-y") 'ivy-yank-word)
-
-    ;; Read-only buffer of candidates with shortcuts to dispatches
-    (define-key kmap (kbd "C-o") 'ivy-occur)
-
-    ;; Non-exiting default action
-    (define-key kmap (kbd "C-<return>") 'ivy-call)
-
-    ;; Dispatch actions
-    (define-key kmap (kbd "C-SPC") 'ivy-dispatching-done)
-    (define-key kmap (kbd "C-S-SPC") 'ivy-dispatching-call)))
-
-;;; Org-config
-
-(defun config/init-org-config ()
-  (use-package org-config
-    :after org))
 
 ;;; Navigation
 ;;;; Avy
@@ -212,3 +166,17 @@
 
 (defun config/pre-init-yasnippet ()
   (global-set-key (kbd "C-SPC") 'hippie-expand))
+
+;;; Local
+
+(defun config/init-evil-config ()
+  (use-package evil-config
+    :after macros))
+
+(defun config/init-ivy-config ()
+  (use-package ivy-config
+    :after macros))
+
+(defun config/init-org-config ()
+  (use-package org-config
+    :after org))
