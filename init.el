@@ -447,7 +447,14 @@
     "s" 'treemacs-toggle-show-dotfiles
     "r" 'treemacs-change-root)
 
-  (push (lambda (f) (pcase f ("__init__.py" f) ("__pycache__" f) (_ nil)))
+  (defun treemacs-ignore-pyfiles-predicates (f path)
+    "Python files to ignore in treemacs."
+    (pcase f
+      ("__init__.py" f)
+      ("__pycache__" f)
+      (_ nil)))
+
+  (push 'treemacs-ignore-pyfiles-predicates
         treemacs-ignored-file-predicates)
 
   (when ERIC-ONLY?
