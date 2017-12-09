@@ -426,37 +426,6 @@
   (setq nord-comment-brightness 15)
   (setq nord-uniform-mode-lines t)
 
-  ;; Still experimenting with treemacs settings, improvement on neotree
-  (require 'treemacs)  ; Required since these aren't setup until first toggle
-
-  (setq treemacs-show-hidden-files nil)
-  (setq treemacs-silent-refresh t)
-  (setq treemacs-is-never-other-window t)
-  (setq treemacs-filewatch-mode nil)
-
-  (defun evil-previous-line-5 () (interactive) (evil-previous-line 5))
-  (defun evil-next-line-5 () (interactive) (evil-next-line 5))
-
-  (define-key treemacs-mode-map (kbd "C-k") 'evil-previous-line-5)
-  (define-key treemacs-mode-map (kbd "C-j") 'evil-next-line-5)
-  (define-key evil-treemacs-state-map "l" 'treemacs-visit-node-ace)
-
-  (evil-define-key '(normal operator motion emacs) treemacs-mode-map
-    "u" 'treemacs-uproot
-    "h" 'treemacs-goto-parent-node
-    "s" 'treemacs-toggle-show-dotfiles
-    "r" 'treemacs-change-root)
-
-  (defun treemacs-ignore-pyfiles-predicates (f path)
-    "Python files to ignore in treemacs."
-    (pcase f
-      ("__init__.py" f)
-      ("__pycache__" f)
-      (_ nil)))
-
-  (push 'treemacs-ignore-pyfiles-predicates
-        treemacs-ignored-file-predicates)
-
   (when ERIC-ONLY?
     (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
     (load-file (os-path "~/dev/hy-mode/spacemacs-hy.el"))
