@@ -1,21 +1,28 @@
-;;; Dotspacemacs
+;;; .spacemacs
 
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Contact: ekaschalk@gmail.com --
 ;; -- MIT License --
-;; -- Emacs 25.2.1 - Dev Branch - 0.200.9.x - pulled/pkgs updated: 11/01 -
-;; -- See README for details and VERSION for updates --
+;; -- Emacs 25.2.1 ~ Spacemacs Dev Branch 0.200.9.x ~ pkgs updated: 12/07/17 --
+;; -- http://modernemacs.com --
 ;;
-;; All configuration is housed in personal layers
+;; All configuration is housed in personal layers - see README.
+;; `init.el' configures spacemacs, following its `dotspacemacs/...' naming scheme
 
 (defvar ERIC-ONLY? t
   "If cloning, set to nil, enable non-layer personal configuration.")
 
-(setq is-linuxp (eq system-type 'gnu/linux))
-(defun os-path (x) (if is-linuxp x (expand-file-name x "c:")))
+(defvar linux? (eq system-type 'gnu/linux)
+  "Are we on a gnu/linux machine?")
+
+(defun os-path (path)
+  "Prepend drive label to PATH if on windows machine."
+  (if linux?
+      path
+    (expand-file-name path "c:")))
 
 (defun dotspacemacs/init ()
-  "Spacemacs core settings."
+  "Instantiate Spacemacs core settings."
   (dotspacemacs/init/coding)
   (dotspacemacs/init/display)
   (dotspacemacs/init/evil)
@@ -104,6 +111,7 @@
 (defvar dotspacemacs/layers/extra
   '(gnus
     graphviz
+    pdf-tools
     ranger
     treemacs
     (ibuffer :variables
@@ -165,9 +173,9 @@
                          solarized-dark
                          )
    dotspacemacs-default-font `("operator mono medium"
-                               :size ,(if is-linuxp 20 12)
+                               :size ,(if linux? 34 12)
                                :powerline-scale 1.5)
-   dotspacemacs-fullscreen-at-startup (if is-linuxp nil t)
+   dotspacemacs-fullscreen-at-startup (if linux? nil t)
    dotspacemacs-fullscreen-use-non-native nil
    dotspacemacs-maximized-at-startup nil
    dotspacemacs-active-transparency 90
@@ -298,9 +306,6 @@
         treemacs-ignored-file-predicates)
 
   (when ERIC-ONLY?
-    (-let [treemacs-dir "~/Downloads/"]
-      (treemacs--setup-icon treemacs-hy-icon "hy.png" "hy"))
-
     (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
     (load-file (os-path "~/dev/hy-mode/spacemacs-hy.el"))
     (load-file (os-path "~/dev/hy-mode/hy-personal.el"))

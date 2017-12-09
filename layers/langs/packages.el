@@ -55,14 +55,16 @@
   (setenv "LANG" "en_US.UTF-8")
 
   ;; Cython numpy symlink
-  (setenv "CFLAGS" "-I /root/.virtualenvs/pop-synthvenv/lib/python3.6/site-packages/numpy/core/include"))
+  ;; (setenv "CFLAGS" "-I /root/.virtualenvs/pop-synthvenv/lib/python3.6/site-packages/numpy/core/include")
+
+  )
 
 ;;; Windows-pytest
 
 (defun langs/init-windows-pytest ()
   (use-package windows-pytest
     :after python
-    :if (not is-linuxp)
+    :if (not linux?)
     :init
     (spacemacs/set-leader-keys-for-major-mode 'python-mode
       "tm" 'ek-pytest-module

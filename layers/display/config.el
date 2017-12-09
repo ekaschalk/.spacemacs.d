@@ -31,40 +31,40 @@
    ;; Org and outline header updates
    (outline-1 :height 1.25
               :foreground "#C3A29E"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t)
 
    (outline-2 :height 1.15
               :foreground "#8D6B94"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t)
 
    (outline-3 :height 1.15
               :foreground "#8C5F66"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t)
 
    (org-level-1 :height 1.25
                 :inherit nil
                 :foreground "#C3A29E"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil
                 :underline t)
 
    (org-level-2 :height 1.15
                 :inherit nil
                 :foreground "#8D6B94"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil
                 :underline t)
 
    (org-level-3 :height 1.15
                 :inherit nil
                 :foreground "#8C5F66"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil)
 
    (org-block-begin-line :height 1.05 :foreground "#576e75"
@@ -105,40 +105,40 @@
    ;; Org and outline header updates
    (outline-1 :height 1.25
               :foreground "#C3A29E"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t)
 
    (outline-2 :height 1.15
               :foreground "#8D6B94"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t)
 
    (outline-3 :height 1.15
               :foreground "#8C5F66"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t)
 
    (org-level-1 :height 1.25
                 :inherit nil
                 :foreground "#C3A29E"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil
                 :underline t)
 
    (org-level-2 :height 1.15
                 :inherit nil
                 :foreground "#8D6B94"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil
                 :underline t)
 
    (org-level-3 :height 1.15
                 :inherit nil
                 :foreground "#8C5F66"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil)
 
    (org-block-begin-line :height 1.05 :foreground "#576e75"
@@ -174,20 +174,20 @@
 
    (outline-1 :height 1.35
               :foreground "#C3A29E"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t)
 
    (outline-2 :height 1.25
               :foreground "#8D6B94"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t
               :inherit nil)
 
    (outline-3 :height 1.15
               :foreground "#8C5F66"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t
               :inherit nil)
@@ -195,7 +195,7 @@
    (org-level-1 :height 1.35
                 :inherit nil
                 :foreground "#C3A29E"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil
                 :underline t
                 :inherit nil)
@@ -203,7 +203,7 @@
    (org-level-2 :height 1.25
                 :inherit nil
                 :foreground "#8D6B94"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil
                 :underline t
                 :inherit nil)
@@ -211,7 +211,7 @@
    (org-level-3 :height 1.15
                 :inherit nil
                 :foreground "#8C5F66"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil
                 :inherit nil)
 
@@ -249,20 +249,20 @@
 
    (outline-1 :height 1.35
               :foreground "#DFAF8F"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t)
 
    (outline-2 :height 1.25
               :foreground "#BFEBBF"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t
               :inherit nil)
 
    (outline-3 :height 1.15
               :foreground "#7CB8BB"
-              :weight ,(if is-linuxp 'normal 'ultra-bold)
+              :weight ,(if linux? 'normal 'ultra-bold)
               :italic nil
               :underline t
               :inherit nil)
@@ -270,7 +270,7 @@
    (org-level-1 :height 1.35
                 :inherit nil
                 :foreground "#DFAF8F"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil
                 :underline t
                 :inherit nil)
@@ -278,7 +278,7 @@
    (org-level-2 :height 1.25
                 :inherit nil
                 :foreground "#BFEBBF"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil
                 :underline t
                 :inherit nil)
@@ -286,7 +286,7 @@
    (org-level-3 :height 1.15
                 :inherit nil
                 :foreground "#7CB8BB"
-                :weight ,(if is-linuxp 'normal 'ultra-bold)
+                :weight ,(if linux? 'normal 'ultra-bold)
                 :italic nil
                 :inherit nil)
 

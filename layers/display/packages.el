@@ -160,7 +160,7 @@
 
 (defun display/init-windows-frame-size-fix ()
   (use-package windows-frame-size-fix
-    :if (not is-linuxp)))
+    :if (not linux?)))
 
 ;;; Core Packages
 ;;;; All-the-icons
