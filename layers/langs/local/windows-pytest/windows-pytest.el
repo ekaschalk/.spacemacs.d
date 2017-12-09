@@ -2,7 +2,6 @@
 
 (provide 'windows-pytest)
 
-;;; Windows-pytest
 
 (defun ek-pytest-module ()
   (interactive)
@@ -11,9 +10,12 @@
 (defun ek-pytest-one ()
   (interactive)
   (save-excursion
-    (let ((test-name
-           (progn
-             (re-search-backward "^[ ]*def \\(test_[a-zA-Z0-9_]*\\)")
-             (match-string 1))))
+    (let ((test-name (progn
+                       (re-search-backward "^[ ]*def \\(test_[a-zA-Z0-9_]*\\)")
+                       (match-string 1))))
       (shell-command
        (format "py.test -x -s %s::%s&" buffer-file-name test-name)))))
+
+(spacemacs/set-leader-keys-for-major-mode 'python-mode
+  "tm" 'ek-pytest-module
+  "tt" 'ek-pytest-one)

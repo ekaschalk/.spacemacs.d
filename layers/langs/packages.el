@@ -2,20 +2,12 @@
 
 (setq langs-packages
       '(
-        lispy
+        python
         virtualenvwrapper
 
-        (python :location built-in)
-
-        ;; (mypy-flycheck :location local)
+        ;; (mypy-flycheck :location local)  ; Currently not using mypy
         (windows-pytest :location local)
         ))
-
-;;; Lispy
-
-(defun langs/init-lispy ()
-  (use-package lispy
-    :config (require 'le-hy)))
 
 ;;; Virtualenvwrapper
 
@@ -29,12 +21,14 @@
       (venv-initialize-eshell)
 
       ;; Fixes hy-mode environment when pyvenv is activated
+      ;; TODO Check if this is necessary/add to spacemacs-hy
       (add-hook 'pyvenv-post-activate-hooks 'python/init-hy-mode))))
 
 ;;; Python
 
 (defun langs/post-init-python ()
   ;; Sometimes ipython shells trigger a bad error to popup
+  ;; TODO Check if this is still necessary
   (defun python-shell-completion-native-try ()
     "Return non-nil if can trigger native completion."
     (let ((python-shell-completion-native-enable t)
@@ -44,19 +38,16 @@
        (get-buffer-process (current-buffer))
        nil "_")))
 
-  ;; Remove flyspell
-  (add-hook 'python-mode-hook (lambda () (flyspell-mode -1)))
-
-  ;; Whether to print logs in pytest
-  ;; (setq pytest-cmd-flags "-x --no-print-logs")
-
   ;; Enables python shell to print unicode
   (setenv "PYTHONIOENCODING" "utf-8")
   (setenv "LANG" "en_US.UTF-8")
 
-  ;; Cython numpy symlink
-  ;; (setenv "CFLAGS" "-I /root/.virtualenvs/pop-synthvenv/lib/python3.6/site-packages/numpy/core/include")
+  ;; Remove flyspell
+  (add-hook 'python-mode-hook (lambda () (flyspell-mode -1)))
 
+  ;; Disable printing logs within pytest
+  ;; TODO Check if this is still necessary
+  ;; (setq pytest-cmd-flags "-x --no-print-logs")
   )
 
 ;;; Windows-pytest
@@ -64,8 +55,4 @@
 (defun langs/init-windows-pytest ()
   (use-package windows-pytest
     :after python
-    :if (not linux?)
-    :init
-    (spacemacs/set-leader-keys-for-major-mode 'python-mode
-      "tm" 'ek-pytest-module
-      "tt" 'ek-pytest-one)))
+    :if (not linux?)))

@@ -3,7 +3,6 @@
 
 (provide 'mypy-flycheck)
 
-;;; Flycheck
 
 (flycheck-define-checker
     python-mypy ""
