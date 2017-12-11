@@ -31,27 +31,48 @@
 
       (setq hy-pretty-pairs
             (pretty-code-get-pairs
-             '(:lambda "fn" :def "defn"
-                       :composition "comp"
-                       :null "None" :true "True" :false "False"
-                       :in "in" :not "not"
-                       :and "and" :or "or"
-                       :some "some"
-                       :tuple "#t"
-                       :pipe "ap-pipe"
-                       )))
+             '(;; Functional
+               :lambda
+               "fn"
+               :def "defn" :composition "comp"
+
+               ;; Types
+               :null "None"
+               :true "True" :false "False"
+
+               ;; Flow
+               :not "not"
+               :in "in" :not-in "not-in"
+               :and "and" :or "or"
+               :some "some"
+
+               ;; Other
+               :tuple "#t"  ; Tag macro for tuple casting
+               )))
 
       (setq python-pretty-pairs
             (pretty-code-get-pairs
-             '(:lambda "lambda" :def "def"
-                       :null "None" :true "True" :false "False"
-                       :int "int" :float "float" :str "str" :bool "bool"
-                       :not "not" :for "for" :in "in" :not-in "not in"
-                       :return "return" :yield "yield"
-                       :and "and" :or "or"
-                       :tuple "Tuple"
-                       :pipe "tz-pipe"
-                       )))
+             '(;; Functional
+               :lambda
+               "lambda"
+               :def "def"
+
+               ;; Types
+               :null "None"
+               :true "True" :false "False"
+               :int "int" :float "float"
+               :str "str" :bool "bool"
+
+               ;; Flow
+               :not "not"
+               :in "in" :not-in "not in"
+               :and "and" :or "or"
+               :for "for"
+               :return "return" :yield "yield"
+
+               ;; Other
+               :tuple "Tuple" :pipe "tz-pipe"
+               )))
 
       (pretty-code-set-pairs `((hy-mode-hook     ,hy-pretty-pairs)
                                (python-mode-hook ,python-pretty-pairs))))))
