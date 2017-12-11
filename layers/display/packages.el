@@ -149,25 +149,41 @@
     :config
     (progn
       (pretty-magit-add-leader
-       "Feature" ? (:foreground "slate gray" :height 1.2))
+       "Feature"
+       ?
+       (:foreground "slate gray" :height 1.2))
 
       (pretty-magit-add-leader
-       "Add"     ? (:foreground "#375E97" :height 1.2))
+       "Add"
+       ?
+       (:foreground "#375E97" :height 1.2))
 
       (pretty-magit-add-leader
-       "Fix"     ? (:foreground "#FB6542" :height 1.2))
+       "Fix"
+       ?
+       (:foreground "#FB6542" :height 1.2))
 
       (pretty-magit-add-leader
-       "Clean"   ? (:foreground "#FFBB00" :height 1.2))
+       "Clean"
+       ?
+       (:foreground "#FFBB00" :height 1.2))
 
       (pretty-magit-add-leader
-       "Docs"    ? (:foreground "#3F681C" :height 1.2))
+       "Docs"
+       ?
+       (:foreground "#3F681C" :height 1.2))
 
       (pretty-magit-add-leader
-       "master"  ? (:box t :height 1.2) 'no-prompt)
+       "master"
+       ?
+       (:box t :height 1.2)
+       'no-prompt)
 
       (pretty-magit-add-leader
-       "origin"  ? (:box t :height 1.2) 'no-prompt))))
+       "origin"
+       ?
+       (:box t :height 1.2)
+       'no-prompt))))
 
 ;;;; Pretty-outlines
 
@@ -176,15 +192,19 @@
     :after outshine macros
     :config
     (progn
-      ;; Ellipsis
-      (add-hook 'outline-mode-hook 'pretty-outline-set-display-table)
-      (add-hook 'outline-minor-mode-hook 'pretty-outline-set-display-table)
+      (setq pretty-outlines-bullets-bullet-list
+            '("" "" "" ""))
+      (setq pretty-outlines-ellipsis
+            "")
 
-      ;; Outlines
-      (add-hook 'emacs-lisp-mode-hook 'pretty-outline-add-bullets)
-      (add-hook 'hy-mode-hook 'pretty-outline-add-bullets)
-      (add-hook 'python-mode-hook 'pretty-outline-add-bullets)
-      )))
+      (spacemacs/add-to-hooks 'pretty-outlines-set-display-table
+                              '(outline-mode-hook
+                                outline-minor-mode-hook))
+
+      (spacemacs/add-to-hooks 'pretty-outlines-add-bullets
+                              '(emacs-lisp-mode-hook
+                                hy-mode-hook
+                                python-mode-hook)))))
 
 ;;;; Windows-frame-size-fix
 

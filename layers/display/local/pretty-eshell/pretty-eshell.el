@@ -19,7 +19,7 @@
 (defvar pretty-eshell-prompt-string " "
   "Prompt string, must match builtin `eshell-prompt-regexp'")
 
-(defvar pretty-eshell-prop-num 0
+(defvar pretty-eshell-prompt-num 0
   "Prompt number for current eshell session.")
 
 ;;; Section utilities
