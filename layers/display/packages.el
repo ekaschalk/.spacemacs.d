@@ -2,7 +2,7 @@
 
 (setq display-packages
       '(
-        ;; Core Display Packages
+        ;; Owned Display Packages
         all-the-icons
         all-the-icons-ivy
         all-the-icons-dired
@@ -10,7 +10,7 @@
         (prettify-utils :location (recipe :fetcher github
                                           :repo "Ilazki/prettify-utils.el"))
 
-        ;; Local packages
+        ;; Owned Local Display Packages
         (pretty-code :location local)
         (pretty-eshell :location local)
         (pretty-fonts :location local)
@@ -24,7 +24,7 @@
 
 (defun display/init-pretty-code ()
   (use-package pretty-code
-    ;; :after hy-mode python
+    :after prettify-utils macros
     :config
     (progn
       (global-prettify-symbols-mode 1)
@@ -219,22 +219,28 @@
   (use-package all-the-icons
     :config
     (progn
-      ;; hy-mode
-      (add-to-list
-       'all-the-icons-icon-alist
-       '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
-      (add-to-list
-       'all-the-icons-mode-icon-alist
-       '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange))
+      (defconst all-the-icons-icon-hy
+        '("\\.hy$"
+          all-the-icons-fileicon "lisp" :face all-the-icons-orange))
+      (defconst all-the-icons-mode-icon-hy
+        '(hy-mode
+          all-the-icons-fileicon "lisp" :face all-the-icons-orange))
 
-      ;; graphviz-dot-mode
-      (add-to-list
-       'all-the-icons-icon-alist
-       '("\\.dot$" all-the-icons-fileicon "graphviz" :face all-the-icons-pink))
-      (add-to-list
-       'all-the-icons-mode-icon-alist
-       '(graphviz-dot-mode all-the-icons-fileicon "graphviz" :face all-the-icons-pink))
-      )))
+      (defconst all-the-icons-icon-graphviz
+        '("\\.dot$"
+          all-the-icons-fileicon "graphviz" :face all-the-icons-pink))
+      (defconst all-the-icons-mode-icon-graphviz
+        '(graphviz-dot-mode
+          all-the-icons-fileicon "graphviz" :face all-the-icons-pink))
+
+      (add-to-list 'all-the-icons-icon-alist
+                   all-the-icons-icon-hy)
+      (add-to-list 'all-the-icons-icon-alist
+                   all-the-icons-icon-graphviz)
+      (add-to-list 'all-the-icons-mode-icon-alist
+                   all-the-icons-mode-icon-hy)
+      (add-to-list 'all-the-icons-mode-icon-alist
+                   all-the-icons-mode-icon-graphviz))))
 
 ;;;; All-the-icons-ivy
 
@@ -244,15 +250,16 @@
     :config
     (progn
       (all-the-icons-ivy-setup)
-      (advice-add 'all-the-icons-ivy-file-transformer
-                  :override 'ivy-file-transformer-fixed-for-files))))
+      (advice-add 'all-the-icons-ivy-file-transformer :override
+                  'ivy-file-transformer-fixed-for-files))))
 
 ;;;; All-the-icons-dired
 
 (defun display/init-all-the-icons-dired ()
   (use-package all-the-icons-dired
     :config
-    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
+    (add-hook 'dired-mode-hook
+              'all-the-icons-dired-mode)))
 
 ;;;; Prettify-utils
 
@@ -268,21 +275,32 @@
     (progn
       (spaceline-all-the-icons-theme)
 
-      (setq spaceline-highlight-face-func 'spaceline-highlight-face-default)
-      (setq spaceline-all-the-icons-icon-set-modified 'chain)
-      (setq spaceline-all-the-icons-icon-set-window-numbering 'square)
-      (setq spaceline-all-the-icons-separator-type 'none)
-      (setq spaceline-all-the-icons-primary-separator "")
+      (setq
+       spaceline-highlight-face-func
+       'spaceline-highlight-face-default
 
+       spaceline-all-the-icons-icon-set-modified
+       'chain
+
+       spaceline-all-the-icons-icon-set-window-numbering
+       'square
+
+       spaceline-all-the-icons-separator-type
+       'none
+
+       spaceline-all-the-icons-primary-separator
+       "")
+
+      ;; Buffer Segments
       (spaceline-toggle-all-the-icons-buffer-size-off)
       (spaceline-toggle-all-the-icons-buffer-position-off)
+
+      ;; Git Segments
+      (spaceline-toggle-all-the-icons-git-status-off)
       (spaceline-toggle-all-the-icons-vc-icon-off)
       (spaceline-toggle-all-the-icons-vc-status-off)
-      (spaceline-toggle-all-the-icons-git-status-off)
-      (spaceline-toggle-all-the-icons-flycheck-status-off)
-      (spaceline-toggle-all-the-icons-time-off)
-      (spaceline-toggle-all-the-icons-battery-status-off)
-      (spaceline-toggle-hud-off)
 
-      (setq org-clock-current-task nil)  ; bugfix
-      )))
+      ;; Misc Segments
+      (spaceline-toggle-all-the-icons-eyebrowse-workspace-off)
+      (spaceline-toggle-all-the-icons-flycheck-status-off)
+      (spaceline-toggle-all-the-icons-time-off))))
