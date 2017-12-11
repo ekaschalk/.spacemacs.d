@@ -105,9 +105,8 @@
 (defun display/init-pretty-fonts ()
   (use-package pretty-fonts
     :init
-    (progn
-      (defconst pretty-fonts-hy-mode
-        '(("\\(self\\)"   ?⊙))))
+    (defconst pretty-fonts-hy-mode
+      '(("\\(self\\)"   ?⊙)))
 
     :config
     (progn
@@ -146,15 +145,29 @@
 
 (defun display/init-pretty-magit ()
   (use-package pretty-magit
+    :after ivy magit macros
     :config
     (progn
-      (pretty-magit "Feature" ? (:foreground "slate gray" :height 1.2))
-      (pretty-magit "Add"     ? (:foreground "#375E97" :height 1.2))
-      (pretty-magit "Fix"     ? (:foreground "#FB6542" :height 1.2))
-      (pretty-magit "Clean"   ? (:foreground "#FFBB00" :height 1.2))
-      (pretty-magit "Docs"    ? (:foreground "#3F681C" :height 1.2))
-      (pretty-magit "master"  ? (:box t :height 1.2) t)
-      (pretty-magit "origin"  ? (:box t :height 1.2) t))))
+      (pretty-magit-add-leader
+       "Feature" ? (:foreground "slate gray" :height 1.2))
+
+      (pretty-magit-add-leader
+       "Add"     ? (:foreground "#375E97" :height 1.2))
+
+      (pretty-magit-add-leader
+       "Fix"     ? (:foreground "#FB6542" :height 1.2))
+
+      (pretty-magit-add-leader
+       "Clean"   ? (:foreground "#FFBB00" :height 1.2))
+
+      (pretty-magit-add-leader
+       "Docs"    ? (:foreground "#3F681C" :height 1.2))
+
+      (pretty-magit-add-leader
+       "master"  ? (:box t :height 1.2) 'no-prompt)
+
+      (pretty-magit-add-leader
+       "origin"  ? (:box t :height 1.2) 'no-prompt))))
 
 ;;;; Pretty-outlines
 
