@@ -7,7 +7,7 @@
 ;; -- http://modernemacs.com --
 ;;
 ;; All configuration is housed in personal layers - see README.
-;; `init.el' configures spacemacs, following its `dotspacemacs/...' naming scheme
+;; `init.el' configures spacemacs, defining required `dotspacemacs/...' functions.
 
 (defvar ERIC-ONLY? t
   "If cloning, set to nil, enable non-layer personal configuration.")
@@ -41,7 +41,8 @@
 
 (defun dotspacemacs/user-init ()
   "Package independent settings to run before `dotspacemacs/user-config'."
-  (setq custom-file "./elisp/.custom-settings.el"))
+  (setq custom-file
+        "./elisp/.custom-settings.el"))
 
 (defun dotspacemacs/user-config ()
   "Configuration that cannot be delegated to layers."
@@ -213,7 +214,7 @@
      zenburn
      solarized-light
      solarized-dark
-     nord  ; Minimal theme config support
+     nord  ; Minimal theme modifications for nord
      )
 
    dotspacemacs-default-font
@@ -425,6 +426,7 @@
 ;;;; Experiments
 
 (defun dotspacemacs/user-config/experiments ()
+  "Space for trying out configuration updates."
   (setq nord-comment-brightness 15)
   (setq nord-uniform-mode-lines t)
 
