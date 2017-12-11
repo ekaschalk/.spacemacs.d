@@ -96,6 +96,7 @@
     csv
     html
     markdown
+    yaml
 
     (clojure :variables
              clojure-enable-fancify-symbols t)
@@ -117,7 +118,7 @@
     graphviz
     pdf-tools
     ranger
-    treemacs
+    ;; treemacs
 
     (ibuffer :variables
              ibuffer-group-buffers-by 'projects)
@@ -142,7 +143,8 @@
    (list (os-path "~/.spacemacs.d/layers/"))
 
    dotspacemacs-configuration-layers
-   (append
+   (
+    append
     dotspacemacs/layers/local
     dotspacemacs/layers/core
     dotspacemacs/layers/langs
@@ -154,11 +156,11 @@
 
 (defun dotspacemacs/layers/packages ()
   (setq-default
-
    dotspacemacs-additional-packages
    '(
      solarized-theme
      nord-theme
+     faceup
      )
 
    dotspacemacs-excluded-packages
@@ -433,8 +435,8 @@
   (when ERIC-ONLY?
     (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
     (load-file (os-path "~/dev/hy-mode/spacemacs-hy.el"))
-    ;; (load-file (os-path "~/dev/hy-mode/hy-personal.el"))
+    (load-file (os-path "~/dev/hy-mode/hy-personal.el"))
     (require 'hy-mode)
     (require 'spacemacs-hy)
-    ;; (require 'hy-personal)
+    (require 'hy-personal)
     ))

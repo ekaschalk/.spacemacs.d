@@ -17,7 +17,7 @@
         (gnus-config     :location local)
         (ivy-config      :location local)
         (org-config      :location local)
-        (treemacs-config :location local)
+        ;; (treemacs-config :location local)
         ))
 
 ;;; Minor Config
