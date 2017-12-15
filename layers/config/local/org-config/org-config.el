@@ -3,6 +3,7 @@
 (require 'org-bullets)
 (require 'ox-bibtex)
 (require 'ox-extra)
+(require 'bibtex)
 
 (provide 'org-config)
 
@@ -87,11 +88,17 @@
                                  ("fontsize" "\\scriptsize")
                                  ("xleftmargin" "\\parindent")
                                  ("linenos" "")))
-(setq
- org-latex-pdf-process
- '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-   "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-   "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+;; (setq
+;;  org-latex-pdf-process
+;;  '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;    "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+(setq reftex-default-bibliography '("~/dev/pop-synth/docs/paper/references.bib"))
+(setq org-ref-default-bibliography '("~/dev/pop-synth/docs/paper/references.bib"))
+
+(setq org-latex-pdf-process
+      '("latexmk -pdflatex='lualatex -shell-escape -interaction nonstopmode' -pdf -f  %f"))
 
 ;;; Babel
 

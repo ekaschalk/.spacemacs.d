@@ -88,6 +88,7 @@
 
     (clojure :variables
              clojure-enable-fancify-symbols t)
+    ;; haskell
     (haskell :variables
              haskell-completion-backend 'intero)
     (python :variables
@@ -104,6 +105,7 @@
 (defvar dotspacemacs/layers/extra
   '(gnus
     graphviz
+    pdf-tools
     ranger
     treemacs
     (ibuffer :variables
