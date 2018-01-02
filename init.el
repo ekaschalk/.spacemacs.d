@@ -15,6 +15,9 @@
 (defvar linux? (eq system-type 'gnu/linux)
   "Are we on a gnu/linux machine?")
 
+(defvar desktop? (= 1440 (display-pixel-height))
+  "Am I on my desktop? For determining font size.")
+
 (defun os-path (path)
   "Prepend drive label to PATH if on windows machine."
   (if linux?
@@ -221,7 +224,9 @@
    dotspacemacs-default-font
    `(
      "operator mono medium"
-     :size ,(if linux? 34 12)
+     :size ,(cond ((not linux?) 12)
+                  (desktop? 30)
+                  (t 20))
      :powerline-scale 1.5
      )
 
