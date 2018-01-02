@@ -1,5 +1,5 @@
-(require 'dash)
 (require 'ivy)
+(require 'macros)
 (require 'outshine)
 
 (provide 'outline-ivy)
@@ -114,49 +114,6 @@
                           (-> marker marker-position goto-char)
                           (recenter 2))))))
 
-;;; Projectile Integration
+;;; Binding
 
-;; Not working yet, in progress
-
-;; (defun oi--use-file? (FILE)
-;;   "Add outlines in FILE to current prompt?"
-;;   (let ((exts '("el")))
-;;     (or
-;;      (member (file-name-extension FILE) exts)
-;;      (string= FILE ".spacemacs"))))
-
-;; (defun oi-projectile-files ()
-;;   "Collect files for oi-projectile-jump."
-;;   (with-dir (projectile-project-root)
-;;             (-filter 'oi--use-file?
-;;                      (projectile-get-repo-files))))
-
-;; (defun oi-projectile-collect-outlines ()
-;;   "Collect all outlines in repo files."
-;;   ;; (--mapcat
-;;   ;;  (with-temp-buffer
-;;   ;;    (setq oi--current-buffer it)
-;;   ;;    (insert-file-contents it)
-;;   ;;    (emacs-lisp-mode)
-;;   ;;    (oi-collect-outlines)))
-;;   ;;  (oi-projectile-files))
-;;   (save-window-excursion
-;;       (--mapcat
-;;        (progn
-;;          (find-file it)
-;;          (oi-collect-outlines))
-;;        (oi-projectile-files))))
-
-;; (defun oi-projectile-jump ()
-;;   (interactive)
-;;   (let ((ivy-height oi-height))
-;;     (ivy-read "Outline " (oi-projectile-collect-outlines)
-;;               :preselect (oi--preselect)
-;;               :update-fn 'oi--remap-ivy-match-face
-;;               :action (-lambda ((_ . marker))
-;;                         (with-ivy-window
-;;                           (-> marker marker-buffer switch-to-buffer)
-;;                           (goto-char marker)
-;;                           (recenter 2))))))
-
-;; (oi-projectile-jump)
+(global-set-key (kbd "C-j") 'oi-jump)

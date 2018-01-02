@@ -2,7 +2,7 @@
 
 (setq display-packages
       '(
-        ;; Core Display Packages
+        ;; Owned Display Packages
         all-the-icons
         all-the-icons-ivy
         all-the-icons-dired
@@ -11,7 +11,7 @@
         (prettify-utils :location (recipe :fetcher github
                                           :repo "Ilazki/prettify-utils.el"))
 
-        ;; Local packages
+        ;; Owned Local Display Packages
         (pretty-code :location local)
         (pretty-eshell :location local)
         (pretty-fonts :location local)
@@ -25,34 +25,55 @@
 
 (defun display/init-pretty-code ()
   (use-package pretty-code
-    ;; :after hy-mode python
+    :after prettify-utils macros
     :config
     (progn
       (global-prettify-symbols-mode 1)
 
       (setq hy-pretty-pairs
             (pretty-code-get-pairs
-             '(:lambda "fn" :def "defn"
-                       :composition "comp"
-                       :null "None" :true "True" :false "False"
-                       :in "in" :not "not"
-                       :and "and" :or "or"
-                       :some "some"
-                       :tuple "#t"
-                       :pipe "ap-pipe"
-                       )))
+             '(;; Functional
+               :lambda
+               "fn"
+               :def "defn" :composition "comp"
+
+               ;; Types
+               :null "None"
+               :true "True" :false "False"
+
+               ;; Flow
+               :not "not"
+               :in "in" :not-in "not-in"
+               :and "and" :or "or"
+               :some "some"
+
+               ;; Other
+               :tuple "#t"  ; Tag macro for tuple casting
+               )))
 
       (setq python-pretty-pairs
             (pretty-code-get-pairs
-             '(:lambda "lambda" :def "def"
-                       :null "None" :true "True" :false "False"
-                       :int "int" :float "float" :str "str" :bool "bool"
-                       :not "not" :for "for" :in "in" :not-in "not in"
-                       :return "return" :yield "yield"
-                       :and "and" :or "or"
-                       :tuple "Tuple"
-                       :pipe "tz-pipe"
-                       )))
+             '(;; Functional
+               :lambda
+               "lambda"
+               :def "def"
+
+               ;; Types
+               :null "None"
+               :true "True" :false "False"
+               :int "int" :float "float"
+               :str "str" :bool "bool"
+
+               ;; Flow
+               :not "not"
+               :in "in" :not-in "not in"
+               :and "and" :or "or"
+               :for "for"
+               :return "return" :yield "yield"
+
+               ;; Other
+               :tuple "Tuple" :pipe "tz-pipe"
+               )))
 
       (pretty-code-set-pairs `((hy-mode-hook     ,hy-pretty-pairs)
                                (python-mode-hook ,python-pretty-pairs))))))
@@ -61,37 +82,53 @@
 
 (defun display/init-pretty-eshell ()
   (use-package pretty-eshell
+    :after macros
     :config
     (progn
-      (esh-section esh-dir
-                   "\xf07c"  ; 
-                   (abbreviate-file-name (eshell/pwd))
-                   '(:foreground "gold" :bold ultra-bold :underline t))
-      (esh-section esh-git
-                   "\xe907"  ; 
-                   (magit-get-current-branch)
-                   '(:foreground "pink"))
-      (esh-section esh-python
-                   "\xe928"  ; 
-                   pyvenv-virtual-env-name)
-      (esh-section esh-clock
-                   "\xf017"  ; 
-                   (format-time-string "%H:%M" (current-time))
-                   '(:foreground "forest green"))
-      (esh-section esh-num
-                   "\xf0c9"  ; 
-                   (number-to-string esh-prompt-num)
-                   '(:foreground "brown"))
-      (setq eshell-funcs (list esh-dir esh-git esh-python esh-clock esh-num)))))
+      ;; Directory
+      (pretty-eshell-section
+       esh-dir
+       "\xf07c"  ; 
+       (abbreviate-file-name (eshell/pwd))
+       '(:foreground "gold" :bold ultra-bold :underline t))
+
+      ;; Git Branch
+      (pretty-eshell-section
+       esh-git
+       "\xe907"  ; 
+       (magit-get-current-branch)
+       '(:foreground "pink"))
+
+      ;; Python Virtual Environment
+      (pretty-eshell-section
+       esh-python
+       "\xe928"  ; 
+       pyvenv-virtual-env-name)
+
+      ;; Time
+      (pretty-eshell-section
+       esh-clock
+       "\xf017"  ; 
+       (format-time-string "%H:%M" (current-time))
+       '(:foreground "forest green"))
+
+      ;; Prompy Number
+      (pretty-eshell-section
+       esh-num
+       "\xf0c9"  ; 
+       (number-to-string pretty-eshell-prompt-num)
+       '(:foreground "brown"))
+
+      (setq pretty-eshell-funcs
+            (list esh-dir esh-git esh-python esh-clock esh-num)))))
 
 ;;;; Pretty-fonts
 
 (defun display/init-pretty-fonts ()
   (use-package pretty-fonts
     :init
-    (progn
-      (defconst pretty-fonts-hy-mode
-        '(("\\(self\\)"   ?⊙))))
+    (defconst pretty-fonts-hy-mode
+      '(("\\(self\\)"   ?⊙)))
 
     :config
     (progn
@@ -130,38 +167,72 @@
 
 (defun display/init-pretty-magit ()
   (use-package pretty-magit
+    :after ivy magit macros
     :config
     (progn
-      (pretty-magit "Feature" ? (:foreground "slate gray" :height 1.2))
-      (pretty-magit "Add"     ? (:foreground "#375E97" :height 1.2))
-      (pretty-magit "Fix"     ? (:foreground "#FB6542" :height 1.2))
-      (pretty-magit "Clean"   ? (:foreground "#FFBB00" :height 1.2))
-      (pretty-magit "Docs"    ? (:foreground "#3F681C" :height 1.2))
-      (pretty-magit "master"  ? (:box t :height 1.2) t)
-      (pretty-magit "origin"  ? (:box t :height 1.2) t))))
+      (pretty-magit-add-leader
+       "Feature"
+       ?
+       (:foreground "slate gray" :height 1.2))
+
+      (pretty-magit-add-leader
+       "Add"
+       ?
+       (:foreground "#375E97" :height 1.2))
+
+      (pretty-magit-add-leader
+       "Fix"
+       ?
+       (:foreground "#FB6542" :height 1.2))
+
+      (pretty-magit-add-leader
+       "Clean"
+       ?
+       (:foreground "#FFBB00" :height 1.2))
+
+      (pretty-magit-add-leader
+       "Docs"
+       ?
+       (:foreground "#3F681C" :height 1.2))
+
+      (pretty-magit-add-leader
+       "master"
+       ?
+       (:box t :height 1.2)
+       'no-prompt)
+
+      (pretty-magit-add-leader
+       "origin"
+       ?
+       (:box t :height 1.2)
+       'no-prompt))))
 
 ;;;; Pretty-outlines
 
 (defun display/init-pretty-outlines ()
   (use-package pretty-outlines
-    :after outshine
+    :after outshine macros
     :config
     (progn
-      ;; Ellipsis
-      (add-hook 'outline-mode-hook 'pretty-outline-set-display-table)
-      (add-hook 'outline-minor-mode-hook 'pretty-outline-set-display-table)
+      (setq pretty-outlines-bullets-bullet-list
+            '("" "" "" ""))
+      (setq pretty-outlines-ellipsis
+            "")
 
-      ;; Outlines
-      (add-hook 'emacs-lisp-mode-hook 'pretty-outline-add-bullets)
-      (add-hook 'hy-mode-hook 'pretty-outline-add-bullets)
-      (add-hook 'python-mode-hook 'pretty-outline-add-bullets)
-      )))
+      (spacemacs/add-to-hooks 'pretty-outlines-set-display-table
+                              '(outline-mode-hook
+                                outline-minor-mode-hook))
+
+      (spacemacs/add-to-hooks 'pretty-outlines-add-bullets
+                              '(emacs-lisp-mode-hook
+                                hy-mode-hook
+                                python-mode-hook)))))
 
 ;;;; Windows-frame-size-fix
 
 (defun display/init-windows-frame-size-fix ()
   (use-package windows-frame-size-fix
-    :if (not is-linuxp)))
+    :if (not linux?)))
 
 ;;; Core Packages
 ;;;; All-the-icons
@@ -170,22 +241,28 @@
   (use-package all-the-icons
     :config
     (progn
-      ;; hy-mode
-      (add-to-list
-       'all-the-icons-icon-alist
-       '("\\.hy$" all-the-icons-fileicon "lisp" :face all-the-icons-orange))
-      (add-to-list
-       'all-the-icons-mode-icon-alist
-       '(hy-mode all-the-icons-fileicon "lisp" :face all-the-icons-orange))
+      (defconst all-the-icons-icon-hy
+        '("\\.hy$"
+          all-the-icons-fileicon "lisp" :face all-the-icons-orange))
+      (defconst all-the-icons-mode-icon-hy
+        '(hy-mode
+          all-the-icons-fileicon "lisp" :face all-the-icons-orange))
 
-      ;; graphviz-dot-mode
-      (add-to-list
-       'all-the-icons-icon-alist
-       '("\\.dot$" all-the-icons-fileicon "graphviz" :face all-the-icons-pink))
-      (add-to-list
-       'all-the-icons-mode-icon-alist
-       '(graphviz-dot-mode all-the-icons-fileicon "graphviz" :face all-the-icons-pink))
-      )))
+      (defconst all-the-icons-icon-graphviz
+        '("\\.dot$"
+          all-the-icons-fileicon "graphviz" :face all-the-icons-pink))
+      (defconst all-the-icons-mode-icon-graphviz
+        '(graphviz-dot-mode
+          all-the-icons-fileicon "graphviz" :face all-the-icons-pink))
+
+      (add-to-list 'all-the-icons-icon-alist
+                   all-the-icons-icon-hy)
+      (add-to-list 'all-the-icons-icon-alist
+                   all-the-icons-icon-graphviz)
+      (add-to-list 'all-the-icons-mode-icon-alist
+                   all-the-icons-mode-icon-hy)
+      (add-to-list 'all-the-icons-mode-icon-alist
+                   all-the-icons-mode-icon-graphviz))))
 
 ;;;; All-the-icons-ivy
 
@@ -195,15 +272,16 @@
     :config
     (progn
       (all-the-icons-ivy-setup)
-      (advice-add 'all-the-icons-ivy-file-transformer
-                  :override 'ivy-file-transformer-fixed-for-files))))
+      (advice-add 'all-the-icons-ivy-file-transformer :override
+                  'ivy-file-transformer-fixed-for-files))))
 
 ;;;; All-the-icons-dired
 
 (defun display/init-all-the-icons-dired ()
   (use-package all-the-icons-dired
     :config
-    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
+    (add-hook 'dired-mode-hook
+              'all-the-icons-dired-mode)))
 
 ;;;; Pretty-mode
 
@@ -234,21 +312,32 @@
     (progn
       (spaceline-all-the-icons-theme)
 
-      (setq spaceline-highlight-face-func 'spaceline-highlight-face-default)
-      (setq spaceline-all-the-icons-icon-set-modified 'chain)
-      (setq spaceline-all-the-icons-icon-set-window-numbering 'square)
-      (setq spaceline-all-the-icons-separator-type 'none)
-      (setq spaceline-all-the-icons-primary-separator "")
+      (setq
+       spaceline-highlight-face-func
+       'spaceline-highlight-face-default
 
+       spaceline-all-the-icons-icon-set-modified
+       'chain
+
+       spaceline-all-the-icons-icon-set-window-numbering
+       'square
+
+       spaceline-all-the-icons-separator-type
+       'none
+
+       spaceline-all-the-icons-primary-separator
+       "")
+
+      ;; Buffer Segments
       (spaceline-toggle-all-the-icons-buffer-size-off)
       (spaceline-toggle-all-the-icons-buffer-position-off)
+
+      ;; Git Segments
+      (spaceline-toggle-all-the-icons-git-status-off)
       (spaceline-toggle-all-the-icons-vc-icon-off)
       (spaceline-toggle-all-the-icons-vc-status-off)
-      (spaceline-toggle-all-the-icons-git-status-off)
-      (spaceline-toggle-all-the-icons-flycheck-status-off)
-      (spaceline-toggle-all-the-icons-time-off)
-      (spaceline-toggle-all-the-icons-battery-status-off)
-      (spaceline-toggle-hud-off)
 
-      (setq org-clock-current-task nil)  ; bugfix
-      )))
+      ;; Misc Segments
+      (spaceline-toggle-all-the-icons-eyebrowse-workspace-off)
+      (spaceline-toggle-all-the-icons-flycheck-status-off)
+      (spaceline-toggle-all-the-icons-time-off))))

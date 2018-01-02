@@ -76,7 +76,7 @@
 (setq org-contacts-files (list (os-path "~/Dropbox/contacts.org")))
 (setq org-agenda-files (list (os-path "~/Dropbox/schedule.org")))
 
-(when is-linuxp
+(when linux?
   (setq org-file-apps '((auto-mode . emacs)
                         ("\\.mm\\'" . default)
                         ("\\.x?html?\\'" . "/usr/bin/firefox %s")

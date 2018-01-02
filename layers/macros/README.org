@@ -5,17 +5,36 @@
 Macros layer serves as a base layer that all other personal packages declare
 dependence on in their respective ~layers.el~.
 
-Common packages and utilities are defined here.
+It allows:
+
+1. Certain universal packages (dash, dash-functional, s) to be guaranteed by a
+   single ~(require macros)~ in the package and ~(:after macros)~ in the owning
+   layer.
+2. Universally useful functions to also be made available.
+
+It functions by:
+
+1. Taking ownership of the (previously un-owned) packages.
+2. Requiring the local package ~macros~ which declares dependence on each
+   package.
+3. Forcing loading of universal packages via the ~:after~ clause.
+
+Now we have universally useful functions and libraries guaranteed loaded with
+only a single, explicit call to the ~macros~ package, which is made visible to
+other layers by requiring the ~macros~ layer in its ~layers.el~.
+
+This enables the seemingly-but-not-actually simple idea of a core set of
+packages beyond what is defined in ~spacemacs-bootstrap~.
 
 ** Macros and Functions
 
+- ~define-keys~ :: Takes many bindings.
+- ~evil-global-set-keys~ :: Takes many states and bindings.
 - ~with-face~ :: Shorthand for ~propertize s 'face '(props)~
-- ~xi~ :: Anonymous function macro. [[http://www.modernemacs.com/post/xi-macro/][See my blog post on it.]]
 - ~with-dir~ :: Executes forms within a directory.
-- ~evil-global-set-keys~ :: Improved to take possibly many states and
-     keybindings.
 
 ** Packages
 
-~dash-functional~ is the only included package at the moment. ~dash~ and ~s~ are
-both loaded by default in Spacemacs but not the functional fork.
+- ~dash~
+- ~dash-functional~
+- ~s~

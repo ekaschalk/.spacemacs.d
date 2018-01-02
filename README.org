@@ -29,7 +29,8 @@ aesthetic.
 
   ~pretty-fonts~, providing programming ligatures, requires [[https://github.com/tonsky/FiraCode][Fira Code Symbol]]
   ([[https://github.com/tonsky/FiraCode/files/412440/FiraCode-Regular-Symbol.zip][download link]]) font installed. It just uses Fira's ligatures, any font can be
-  used in tandem.
+  used in tandem. Failure to install the ligatures or disable pretty-fonts will
+  yield strange unicode characters all-over.
 
   In the display package's config, I make heavy use of [[https://github.com/domtronn/all-the-icons.el][all-the-icons]] icons.
   So if you use those packages and want the same icons, make sure to install
@@ -42,7 +43,7 @@ aesthetic.
   Cycle through themes with ~SPC T n~. Themes I have config for:
   1. Zenburn
   2. Solarized-light and dark
-  3. Nord
+  3. Nord (mild support)
 
   To install clone to your home directory.
   Set ~ERIC-ONLY?~ at the top of ~init.el~ to nil ([[https://github.com/syl20bnr/spacemacs/issues/4979][see spacemacs issue 4979]]).

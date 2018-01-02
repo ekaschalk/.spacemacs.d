@@ -1,29 +1,35 @@
-(require 'dash)
+;;; -*- lexical-binding: t -*-
+
+
 (require 'prettify-utils)
+(require 'macros)
 
 (provide 'pretty-code)
 
 ;;; Config
 
-(defvar pretty-options
+(defvar pretty-code-choices
   (-flatten
    (prettify-utils-generate
     ;; Functional
-    (:lambda      "λ") (:def         "ƒ")
+    (:lambda      "λ")
+    (:def         "ƒ")
     (:composition "∘")
 
     ;; Types
-    (:null        "∅") (:true        "𝕋") (:false       "𝔽")
+    (:null        "∅")
+    (:true        "𝕋") (:false       "𝔽")
     (:int         "ℤ") (:float       "ℝ")
-    (:str         "𝕊") (:bool        "𝔹")
+    (:str         "𝕊")
+    (:bool        "𝔹")
 
     ;; Flow
-    (:in          "∈") (:not-in      "∉")
-    (:return     "⟼") (:yield      "⟻")
-    (:and         "∧") (:or          "∨")
     (:not         "￢")
+    (:in          "∈") (:not-in      "∉")
+    (:and         "∧") (:or          "∨")
     (:for         "∀")
     (:some        "∃")
+    (:return     "⟼") (:yield      "⟻")
 
     ;; Other
     (:tuple       "⨂")
@@ -34,20 +40,18 @@
 ;;; Core
 
 ;;;###autoload
-(defun pretty-code-get-pairs (KWDS)
+(defun pretty-code-get-pairs (kwds)
   "Build an alist for prettify-symbols-alist from components from KWDS."
   (-non-nil
-   (--map (when-let (major-mode-sym (plist-get KWDS it))
-           `(,major-mode-sym
-             ,(plist-get pretty-options it)))
-         pretty-options)))
+   (--map (when-let (major-mode-symbol (plist-get kwds it))
+           (list major-mode-symbol
+                 (plist-get pretty-code-choices it)))
+         pretty-code-choices)))
 
 ;;;###autoload
-(defun pretty-code-set-pairs (HOOK-PAIRS-ALIST)
+(defun pretty-code-set-pairs (hook-pairs-alist)
   "Add hooks setting `prettify-symbols-alist' for many modes"
-  (mapc (lambda (x)
-          (lexical-let ((pretty-pairs (cadr x)))
-            (add-hook (car x)
-                      (lambda ()
-                        (setq prettify-symbols-alist pretty-pairs)))))
-        HOOK-PAIRS-ALIST))
+  (-each hook-pairs-alist
+    (-lambda ((hook pretty-pairs))
+      (add-hook hook
+                (lambda () (setq prettify-symbols-alist pretty-pairs))))))

@@ -2,184 +2,90 @@
 
 (setq config-packages
       '(
-        ;; Core
-        evil
-        ivy
-
-        ;; Navigation
-        avy
+        ;; Owned packages
         outshine
-        projectile
-        treemacs
 
-        ;; Misc
+        ;; Elsewhere-owned packages with trivial config
         ispell
-        gnus
+        projectile
         yasnippet
 
-        ;; Large config sections
-        (org-config :location local)
+        ;; Elsehwere-owned packages
+        (avy-config      :location local)
+        (eshell-config   :location local)
+        (evil-config     :location local)
+        (gnus-config     :location local)
+        (ivy-config      :location local)
+        (org-config      :location local)
+        (treemacs-config :location local)
         ))
 
-;;; Core
-;;;; Evil
+;;; Minor Config
 
-(defun config/post-init-evil ()
-  (setq evil-escape-key-sequence "jk")
-  (setq evil-escape-unordered-key-sequence "true")
+(defun config/post-init-ispell ()
+  (setq ispell-program-name
+        "aspell"))
 
-  (evil-global-set-key 'normal "H" 'evil-first-non-blank)
-  (evil-global-set-key 'visual "H" 'evil-first-non-blank)
-  (evil-global-set-key 'motion "H" 'evil-first-non-blank)
+(defun config/post-init-projectile ()
+  (setq projectile-indexing-method
+        'native))
 
-  (evil-global-set-key 'normal "L" (lambda () (interactive) (evil-end-of-line)))
-  (evil-global-set-key 'visual "L" (lambda () (interactive) (evil-end-of-line)))
-  (evil-global-set-key 'motion "L" (lambda () (interactive) (evil-end-of-line)))
+(defun config/pre-init-yasnippet ()
+  (global-set-key (kbd "C-SPC") 'hippie-expand))
 
-  (evil-global-set-key 'normal "0" 'evil-jump-item)
-  (evil-global-set-key 'visual "0" 'evil-jump-item)
-  (evil-global-set-key 'motion "0" 'evil-jump-item)
+;;; Local Config
 
-  (advice-add 'evil-ex-search-next :after 'config/scroll-to-center-advice)
-  (advice-add 'evil-ex-search-previous :after 'config/scroll-to-center-advice))
+(defun config/init-avy-config ()
+  (use-package avy-config
+    :after avy macros))
 
-;;;; Ivy
+(defun config/init-eshell-config ()
+  (use-package eshell-config
+    :after evil macros))
 
-(defun config/post-init-ivy ()
-  (setq ivy-format-function 'ivy-format-function-arrow)
-  (setq ivy-height 20)
-  (setq completion-in-region-function 'ivy-completion-in-region)
+(defun config/init-evil-config ()
+  (use-package evil-config
+    :after evil macros))
 
-  ;; Resume last ivy session
-  (spacemacs/set-leader-keys
-    "ai" 'ivy-resume)
+(defun config/init-gnus-config ()
+  (use-package gnus-config
+    :after gnus))
 
-  (let ((kmap ivy-minibuffer-map))
-    ;; Perform default action on avy-selected minibuffer line
-    (define-key kmap (kbd "C-l") 'ivy-avy)
-
-    ;; Evil-like scrolling of ivy minibuffer
-    (define-key kmap (kbd "C-u") 'ivy-scroll-down-command)
-    (define-key kmap (kbd "C-d") 'ivy-scroll-up-command)
-
-    ;; Rebind C-n/C-y/C-p to narrow/yank from buffer/paste into buffer
-    (define-key kmap (kbd "C-n") 'ivy-restrict-to-matches)
-    (define-key kmap (kbd "C-y") 'ivy-yank-word)
-
-    ;; Read-only buffer of candidates with shortcuts to dispatches
-    (define-key kmap (kbd "C-o") 'ivy-occur)
-
-    ;; Non-exiting default action
-    (define-key kmap (kbd "C-<return>") 'ivy-call)
-
-    ;; Dispatch actions
-    (define-key kmap (kbd "C-SPC") 'ivy-dispatching-done)
-    (define-key kmap (kbd "C-S-SPC") 'ivy-dispatching-call)))
-
-;;; Org-config
+(defun config/init-ivy-config ()
+  (use-package ivy-config
+    :after ivy macros))
 
 (defun config/init-org-config ()
   (use-package org-config
-    :after org))
+    :after org macros))
 
-;;; Navigation
-;;;; Avy
+(defun config/init-treemacs-config ()
+  (use-package treemacs-config
+    :after treemacs treemacs-evil macros))
 
-(defun config/post-init-avy ()
-  (setq avy-timeout-seconds 0.35)
-  (evil-global-set-key 'normal (kbd "s") 'avy-goto-char-timer)
-  (global-set-key (kbd "C-h") 'avy-pop-mark)
-  (global-set-key (kbd "C-l") 'evil-avy-goto-line))
-
-;;;; Outshine
+;;; Outshine
 
 (defun config/init-outshine ()
+  (defun advise-outshine-narrow-start-pos ()
+    (unless (outline-on-heading-p t)
+      (outline-previous-visible-heading 1)))
+
   (use-package outshine
+    :after macros
     :init
     (progn
       (spacemacs/set-leader-keys
         "nn" 'outshine-narrow-to-subtree
         "nw" 'widen)
-
-      (let ((kmap outline-minor-mode-map))
-        (define-key kmap (kbd "M-RET") 'outshine-insert-heading)
-        (define-key kmap (kbd "<backtab>") 'outshine-cycle-buffer)))
+      (define-keys outline-minor-mode-map
+        (kbd "M-RET") 'outshine-insert-heading
+        (kbd "<backtab>") 'outshine-cycle-buffer))
 
     :config
     (progn
       ;; Narrowing works within the headline rather than requiring to be on it
       (advice-add 'outshine-narrow-to-subtree :before
-                  (lambda (&rest args) (unless (outline-on-heading-p t)
-                                    (outline-previous-visible-heading 1))))
+                  'advise-outshine-narrow-start-pos)
 
       (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
       (add-hook 'prog-mode-hook 'outline-minor-mode))))
-
-;;;; Treemacs
-
-(defun config/pre-init-treemacs ()
-  (evil-global-set-key 'normal (kbd "M-f") 'treemacs-select-window)
-  (evil-global-set-key 'normal (kbd "M-p") 'treemacs-projectile-toggle))
-
-;;;; Projectile
-
-(defun config/post-init-projectile ()
-  (setq projectile-indexing-method 'native))
-
-;;; Misc
-;;;; Ispell
-
-(defun config/post-init-ispell ()
-  (setq ispell-program-name "aspell"))
-
-;;;; Gnus
-
-(defun config/post-init-gnus ()
-  (setq user-mail-address	"ekaschalk@gmail.com"
-        user-full-name	"Eric Kaschalk"
-
-        ;; Get mail
-        gnus-secondary-select-methods
-        '((nnimap "gmail"
-                  (nnimap-address "imap.gmail.com")
-                  (nnimap-server-port 993)
-                  (nnimap-stream ssl))
-          (nntp "gmane"
-                (nntp-address "news.gmane.org"))
-          (nntp "news.gwene.org"))
-
-        ;; Send mail
-        message-send-mail-function 'smtpmail-send-it
-
-        ;; Archive outgoing email in Sent folder on imap.gmail.com
-        gnus-message-archive-method '(nnimap "imap.gmail.com")
-        gnus-message-archive-group "[Gmail]/Sent Mail"
-
-        ;; Auth
-        smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-        smtpmail-auth-credentials '(("smtp.gmail.com" 587
-                                     "ekaschalk@gmail.com" nil))
-
-        ;; SMPT Server config
-        smtpmail-default-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 587
-
-        ;; set return email address based on incoming email address
-        gnus-posting-styles
-        '(((header "to" "address@outlook.com")
-           (address  "address@outlook.com"))
-          ((header "to" "address@gmail.com")
-           (address "address@gmail.com")))
-
-        ;; store email in ~/gmail directory
-        nnml-directory "~/gmail"
-        message-directory "~/gmail"
-
-        ;; Full size images
-        mm-inline-large-images 'resize))
-
-;;;; Yasnippet
-
-(defun config/pre-init-yasnippet ()
-  (global-set-key (kbd "C-SPC") 'hippie-expand))

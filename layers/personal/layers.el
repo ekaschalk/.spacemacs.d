@@ -1,5 +1,6 @@
 (configuration-layer/declare-layers
  '(
-   config
+   ;; Personal layers
    macros
+   config
    ))

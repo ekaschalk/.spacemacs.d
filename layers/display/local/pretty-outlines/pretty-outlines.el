@@ -1,59 +1,58 @@
-(require 'dash)
 (require 'outshine)
-(require 's)
+(require 'macros)
 
 (provide 'pretty-outlines)
 
 ;;; Config
 
-(defvar pretty-outline-bullets-bullet-list '("" "" "" "")
-  "An implemention of `org-bullets-bullet-list' for outlines")
+(defvar pretty-outlines-bullets-bullet-list '("1" "2" "3" "4")
+  "An implemention of `org-bullets-bullet-list' for outlines.")
 
-(defvar pretty-outline-ellipsis ""
-  "An implementation of `org-ellipsis' for outlines")
+(defvar pretty-outlines-ellipsis "~"
+  "An implementation of `org-ellipsis' for outlines.")
 
 ;;; Outline-ellipsis
 
 ;;;###autoload
-(defun pretty-outline-set-display-table ()
-  (let ((display-table (if buffer-display-table
-                           buffer-display-table
-                         (make-display-table))))
+(defun pretty-outlines-set-display-table ()
+  (-let [display-table
+         (if buffer-display-table buffer-display-table (make-display-table))]
     (unless buffer-display-table
       (setq buffer-display-table display-table))
-    (set-display-table-slot
-     display-table 4
-     (vconcat (mapcar (lambda (c)
-                        (make-glyph-code c 'font-lock-keyword-face))
-                      pretty-outline-ellipsis)))))
+
+    (->> pretty-outlines-ellipsis
+       (-map (lambda (c) (make-glyph-code c 'font-lock-keyword-face)))
+       vconcat
+       (set-display-table-slot display-table 4))))
 
 ;;; Outline-bullets
 
 ;;;###autoload
-(defun pretty-outline--add-font-locks (FONT-LOCK-ALIST)
+(defun pretty-outlines--add-font-locks (font-lock-alist)
   "Put text property for FONT-LOCK-ALIST for var-width replacements."
   (font-lock-add-keywords
-   nil (--map (-let (((rgx uni-point) it))
-             `(,rgx (0 (progn
-                         (put-text-property
-                          (match-beginning 1) (match-end 1)
-                          'display
-                          ,uni-point)
-                         nil))))
-           FONT-LOCK-ALIST)))
+   nil
+   (-map
+    (-lambda ((rgx uni-point))
+      `(,rgx (0 (prog1
+                    nil
+                  (let ((start (match-beginning 1))
+                        (end (match-end 1)))
+                    (put-text-property start end 'display ,uni-point))))))
+    font-lock-alist)))
 
 ;;;###autoload
-(defun pretty-outline--bullets-rgx-at-level (LEVEL)
+(defun pretty-outlines--bullets-rgx-at-level (level)
   "Calculate regex or outline-bullets at LEVEL."
   (concat "\\(^"
-          (->> LEVEL
+          (->> level
              outshine-calc-outline-string-at-level
              s-trim-right
              (s-replace "*" "\\*"))
           "\\) "))
 
 ;;;###autoload
-(defun pretty-outline--propertize-bullet (LEVEL BULLET)
+(defun pretty-outlines--propertize-bullet (LEVEL BULLET)
   "Add LEVEL-dependent face to BULLET."
   (with-face BULLET
              (pcase LEVEL
@@ -64,13 +63,13 @@
                (_ nil))))
 
 ;;;###autoload
-(defun pretty-outline-add-bullets ()
-  "Use with `add-hook' to enable pretty-outline-bullets-bullet-list for mode."
-  (pretty-outline--add-font-locks
+(defun pretty-outlines-add-bullets ()
+  "Use with `add-hook' to enable pretty-outlines-bullets-bullet-list for mode."
+  (pretty-outlines--add-font-locks
    (--map-indexed
     (list
-     (pretty-outline--bullets-rgx-at-level (+ 1 it-index))
+     (pretty-outlines--bullets-rgx-at-level (+ 1 it-index))
      (concat
       (s-repeat it-index " ")
-      (pretty-outline--propertize-bullet it-index it)))
-    (-take 8 (-cycle pretty-outline-bullets-bullet-list)))))
+      (pretty-outlines--propertize-bullet it-index it)))
+    (-take 8 (-cycle pretty-outlines-bullets-bullet-list)))))

@@ -1,63 +1,80 @@
-(require 'dash)
-(require 'ivy)  ; for leader-prompts only
 ;; (require 'evil)  ; Remove evil-insert at end if not using evil
+(require 'ivy)  ; for leader-prompts only
+(require 'magit)
+(require 'macros)
 
 (provide 'pretty-magit)
 
 ;;; Pretty-magit
 
-(setq pretty-magit-alist nil)
-(setq pretty-magit-prompt nil)
+(defvar pretty-magit-alist nil
+  "An alist of regexes, an icon, and face properties to apply to icon.")
+
+(defvar pretty-magit-prompt nil
+  "A list of commit leader prompt candidates.")
 
 ;;;###autoload
-(defmacro pretty-magit (WORD ICON PROPS &optional NO-PROMPT?)
+(defmacro pretty-magit-add-leader (word icon props &optional no-prompt?)
   "Replace sanitized WORD with ICON, PROPS and by default add to prompts."
   `(progn
      (add-to-list 'pretty-magit-alist
-                  (list (rx bow (group ,WORD (eval (if ,NO-PROMPT? "" ":"))))
-                        ,ICON ',PROPS))
-     (unless ,NO-PROMPT?
-       (add-to-list 'pretty-magit-prompt (concat ,WORD ": ")))))
+                  (list (rx bow
+                            (group ,word (eval (if ,no-prompt? "" ":"))))
+                        ,icon
+                        ',props))
+     (unless ,no-prompt?
+       (add-to-list 'pretty-magit-prompt
+                    (concat ,word ": ")))))
 
 ;;;###autoload
-(defun add-magit-faces ()
+(defun pretty-magit-add-magit-faces ()
   "Add face properties and compose symbols for buffer from pretty-magit."
   (interactive)
   (with-silent-modifications
     (--each pretty-magit-alist
-      (-let (((rgx icon props) it))
+      (-let [(rgx icon props) it]
         (save-excursion
           (goto-char (point-min))
           (while (search-forward-regexp rgx nil t)
-            (compose-region
-             (match-beginning 1) (match-end 1) icon)
-            (when props
-              (add-face-text-property
-               (match-beginning 1) (match-end 1) props))))))))
+            (let ((start (match-beginning 1))
+                  (end (match-end 1)))
+              (compose-region start end icon)
+              (when props
+                (add-face-text-property start end props)))))))))
 
 ;;; Leader Prompts
 
-(setq use-magit-commit-prompt-p nil)
-(defun use-magit-commit-prompt (&rest args)
-  (setq use-magit-commit-prompt-p t))
+(defvar pretty-magit--use-magit-commit-prompt? nil
+  "Do we need to use the magit commit prompt?")
+
+(defun pretty-magit-use-magit-commit-prompt (&rest args)
+  (setq pretty-magit--use-magit-commit-prompt? t))
 
 ;;;###autoload
 (defun magit-commit-prompt ()
   "Magit prompt and insert commit header with faces."
-
   (interactive)
-  (when use-magit-commit-prompt-p
-    (setq use-magit-commit-prompt-p nil)
-    (insert (ivy-read "Commit Type " pretty-magit-prompt
-                      :require-match t :sort t :preselect "Add: "))
-    (add-magit-faces)
+  (when pretty-magit--use-magit-commit-prompt?
+    (setq pretty-magit--use-magit-commit-prompt?
+          nil)
+    (insert (ivy-read "Commit Type "
+                      pretty-magit-prompt
+                      :require-match t
+                      :sort t
+                      :preselect "Add: "))
+    (pretty-magit-add-magit-faces)
     (evil-insert 1)))
 
 ;;; Hooks
 
-(remove-hook 'git-commit-setup-hook 'with-editor-usage-message)
-(add-hook 'git-commit-setup-hook 'magit-commit-prompt)
+(remove-hook 'git-commit-setup-hook
+             'with-editor-usage-message)
+(add-hook 'git-commit-setup-hook
+          'magit-commit-prompt)
 
-(advice-add 'magit-status :after 'add-magit-faces)
-(advice-add 'magit-refresh-buffer :after 'add-magit-faces)
-(advice-add 'magit-commit :after 'use-magit-commit-prompt)
+(advice-add 'magit-status :after
+            'pretty-magit-add-magit-faces)
+(advice-add 'magit-refresh-buffer :after
+            'pretty-magit-add-magit-faces)
+(advice-add 'magit-commit :after
+            'pretty-magit-use-magit-commit-prompt)
