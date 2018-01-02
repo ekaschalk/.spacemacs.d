@@ -225,8 +225,8 @@
    `(
      "operator mono medium"
      :size ,(cond ((not linux?) 12)
-                  (desktop? 30)
-                  (t 20))
+                  (desktop? 20)
+                  (t 30))
      :powerline-scale 1.5
      )
 
