@@ -6,6 +6,7 @@
         all-the-icons
         all-the-icons-ivy
         all-the-icons-dired
+        pretty-mode
         spaceline-all-the-icons
         (prettify-utils :location (recipe :fetcher github
                                           :repo "Ilazki/prettify-utils.el"))
@@ -281,6 +282,21 @@
     :config
     (add-hook 'dired-mode-hook
               'all-the-icons-dired-mode)))
+
+;;;; Pretty-mode
+
+(defun display/init-pretty-mode ()
+  (use-package pretty-mode
+    :config
+    (progn
+      (global-pretty-mode t)
+
+      (pretty-deactivate-groups
+       '(:equality :ordering :ordering-double :ordering-triple
+                   :arrows :arrows-twoheaded :punctuation
+                   :logic :sets))
+      (pretty-activate-groups
+       '(:greek :arithmetic-nary)))))
 
 ;;;; Prettify-utils
 

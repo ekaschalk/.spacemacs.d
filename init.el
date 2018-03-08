@@ -3,7 +3,7 @@
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Contact: ekaschalk@gmail.com --
 ;; -- MIT License --
-;; -- Emacs 25.2.1 ~ Spacemacs Dev Branch 0.300.0.x ~ pkgs updated: 12/07/17 --
+;; -- Emacs 25.3.2 ~ Spacemacs Dev Branch 0.300.0.x ~ pkgs updated: 03/08/18 --
 ;; -- http://modernemacs.com --
 ;;
 ;; All configuration is housed in personal layers - see README.
@@ -14,6 +14,9 @@
 
 (defvar linux? (eq system-type 'gnu/linux)
   "Are we on a gnu/linux machine?")
+
+(defvar desktop? (= 1440 (display-pixel-height))
+  "Am I on my desktop? For determining font size.")
 
 (defun os-path (path)
   "Prepend drive label to PATH if on windows machine."
@@ -100,6 +103,7 @@
 
     (clojure :variables
              clojure-enable-fancify-symbols t)
+    ;; haskell
     (haskell :variables
              haskell-completion-backend 'intero)
     (python :variables
@@ -118,7 +122,7 @@
     graphviz
     pdf-tools
     ranger
-    ;; treemacs
+    treemacs
 
     (ibuffer :variables
              ibuffer-group-buffers-by 'projects)
@@ -222,7 +226,9 @@
    dotspacemacs-default-font
    `(
      "operator mono medium"
-     :size ,(if linux? 34 12)
+     :size ,(cond ((not linux?) 12)
+                  (desktop? 20)
+                  (t 34))
      :powerline-scale 1.5
      )
 
@@ -252,6 +258,9 @@
 
    dotspacemacs-icon-title-format
    nil
+
+   dotspacemacs-pretty-docs
+   t
    ))
 
 ;;;; Evil
