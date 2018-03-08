@@ -305,39 +305,34 @@
 
 ;;;; Spaceline-all-the-icons
 
-(defun display/init-spaceline-all-the-icons ()
-  (use-package spaceline-all-the-icons
-    :after spaceline
-    :config
-    (progn
-      (spaceline-all-the-icons-theme)
+(defun display/post-init-spaceline-all-the-icons ()
+  (spaceline-all-the-icons-theme)
 
-      (setq
-       spaceline-highlight-face-func
-       'spaceline-highlight-face-default
+  (setq spaceline-highlight-face-func
+        'spaceline-highlight-face-default)
 
-       spaceline-all-the-icons-icon-set-modified
-       'chain
+  (setq spaceline-all-the-icons-icon-set-modified
+        'chain)
 
-       spaceline-all-the-icons-icon-set-window-numbering
-       'square
+  (setq spaceline-all-the-icons-icon-set-window-numbering
+        'square)
 
-       spaceline-all-the-icons-separator-type
-       'none
+  (setq spaceline-all-the-icons-separator-type
+        'none)
 
-       spaceline-all-the-icons-primary-separator
-       "")
+  (setq spaceline-all-the-icons-primary-separator
+        "")
 
-      ;; Buffer Segments
-      (spaceline-toggle-all-the-icons-buffer-size-off)
-      (spaceline-toggle-all-the-icons-buffer-position-off)
+  ;; Buffer Segments
+  (spaceline-toggle-all-the-icons-buffer-size-off)
+  (spaceline-toggle-all-the-icons-buffer-position-off)
 
-      ;; Git Segments
-      (spaceline-toggle-all-the-icons-git-status-off)
-      (spaceline-toggle-all-the-icons-vc-icon-off)
-      (spaceline-toggle-all-the-icons-vc-status-off)
+  ;; Git Segments
+  (spaceline-toggle-all-the-icons-git-status-off)
+  (spaceline-toggle-all-the-icons-vc-icon-off)
+  (spaceline-toggle-all-the-icons-vc-status-off)
 
-      ;; Misc Segments
-      (spaceline-toggle-all-the-icons-eyebrowse-workspace-off)
-      (spaceline-toggle-all-the-icons-flycheck-status-off)
-      (spaceline-toggle-all-the-icons-time-off))))
+  ;; Misc Segments
+  (spaceline-toggle-all-the-icons-eyebrowse-workspace-off)
+  (spaceline-toggle-all-the-icons-flycheck-status-off)
+  (spaceline-toggle-all-the-icons-time-off))

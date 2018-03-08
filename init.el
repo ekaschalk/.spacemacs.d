@@ -111,6 +111,7 @@
             python-test-runner 'pytest
             :packages
             (not hy-mode)  ; I maintain `hy-mode', using local branch
+            (not importmagic)
             )
     )
   "Programming and markup language layers.")
@@ -171,6 +172,7 @@
    '(
      fringe
      hy-mode
+     importmagic
      )
 
    dotspacemacs-frozen-packages

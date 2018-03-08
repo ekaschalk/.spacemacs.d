@@ -37,7 +37,7 @@
 
 (defun config/init-avy-config ()
   (use-package avy-config
-    :after avy macros))
+    :after macros))
 
 (defun config/init-eshell-config ()
   (use-package eshell-config
@@ -61,7 +61,7 @@
 
 (defun config/init-treemacs-config ()
   (use-package treemacs-config
-    :after treemacs treemacs-evil macros))
+    :after macros))
 
 ;;; Outshine
 
