@@ -75,8 +75,13 @@
                :tuple "Tuple" :pipe "tz-pipe"
                )))
 
-      (pretty-code-set-pairs `((hy-mode-hook     ,hy-pretty-pairs)
-                               (python-mode-hook ,python-pretty-pairs))))))
+      (setq emacs-lisp-pretty-pairs
+            (pretty-code-get-pairs
+             '(:def "defun")))
+
+      (pretty-code-set-pairs `((hy-mode-hook         ,hy-pretty-pairs)
+                               (python-mode-hook     ,python-pretty-pairs)
+                               (emacs-lisp-mode-hook ,emacs-lisp-pretty-pairs))))))
 
 ;;;; Pretty-eshell
 
