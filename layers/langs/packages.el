@@ -27,16 +27,13 @@
 ;;; Python
 
 (defun langs/post-init-python ()
-  ;; Sometimes ipython shells trigger a bad error to popup
-  ;; TODO Check if this is still necessary
-  (defun python-shell-completion-native-try ()
-    "Return non-nil if can trigger native completion."
-    (let ((python-shell-completion-native-enable t)
-          (python-shell-completion-native-output-timeout
-           python-shell-completion-native-try-output-timeout))
-      (python-shell-completion-native-get-completions
-       (get-buffer-process (current-buffer))
-       nil "_")))
+  ;; Executable find ipython isn't working on my machine so I have to
+  ;; either modify executable-find (bad) or override the setup
+  (advice-add 'spacemacs//python-setup-shell
+              :override
+              (lambda (&rest args)
+                (setq python-shell-interpreter "ipython")
+                (setq python-shell-interpreter-args "--simple-prompt -i")))
 
   ;; Enables python shell to print unicode
   (setenv "PYTHONIOENCODING" "utf-8")
@@ -46,9 +43,7 @@
   (add-hook 'python-mode-hook (lambda () (flyspell-mode -1)))
 
   ;; Disable printing logs within pytest
-  ;; TODO Check if this is still necessary
-  ;; (setq pytest-cmd-flags "-x --no-print-logs")
-  )
+  (setq pytest-cmd-flags "-x --no-print-logs"))
 
 ;;; Windows-pytest
 
