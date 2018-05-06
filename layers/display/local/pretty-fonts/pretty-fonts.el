@@ -10,6 +10,7 @@
   (--each CODE-FONT-ALIST
     (-let (((font . codes) it))
       (--each codes
+        (set-fontset-font nil `(,it . ,it) font)
         (set-fontset-font t `(,it . ,it) font)))))
 
 ;;;###autoload

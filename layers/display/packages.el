@@ -35,17 +35,13 @@
              '(;; Functional
                :lambda
                "fn"
-               :def "defn" :composition "comp"
+               :def "defn"
 
                ;; Types
                :null "None"
-               :true "True" :false "False"
 
                ;; Flow
-               :not "not"
-               :in "in" :not-in "not-in"
-               :and "and" :or "or"
-               :some "some"
+               :not "not" :in "in" :not-in "not-in"
 
                ;; Other
                :tuple "#t"  ; Tag macro for tuple casting
@@ -60,7 +56,6 @@
 
                ;; Types
                :null "None"
-               :true "True" :false "False"
                :int "int" :float "float"
                :str "str" :bool "bool"
 
@@ -166,7 +161,11 @@
           ;; 𝕊    ⨂      ∅      ⟻    ⟼     ⊙      𝕋       𝔽
           #x1d54a #x2a02 #x2205 #x27fb #x27fc #x2299 #x1d54b #x1d53d
           ;; 𝔹    𝔇       𝔗
-          #x1d539 #x1d507 #x1d517))))))
+          #x1d539 #x1d507 #x1d517)
+
+         ("Cantarell"
+          ;; ƒ
+          #x192))))))
 
 ;;;; Pretty-magit
 
