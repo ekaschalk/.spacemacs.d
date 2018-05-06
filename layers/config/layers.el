@@ -6,5 +6,4 @@
    ;; Core Config layers
    gnus
    org
-   treemacs
    ))
