@@ -3,6 +3,7 @@
 (require 'org-bullets)
 (require 'ox-bibtex)
 (require 'ox-extra)
+(require 'ox-latex)
 (require 'bibtex)
 
 (provide 'org-config)
@@ -50,6 +51,7 @@
    ("e" "#+BEGIN_SRC emacs-lisp\n\n#+END_SRC")
    ("h" "#+BEGIN_SRC haskell\n\n#+END_SRC")
    ("l" "#+BEGIN_SRC lisp\n\n#+END_SRC")
+   ("la" "#+BEGIN_SRC latex\n\n#+END_SRC")
    ("p" "#+BEGIN_SRC python\n\n#+END_SRC")
 
    ;; Collapse previous header by default in themed html export
@@ -103,10 +105,13 @@
 ;;; Babel
 
 (org-babel-do-load-languages
- 'org-babel-load-languages '((python .  t)
+ 'org-babel-load-languages '(
+                             (latex .   t)
+                             (python .  t)
                              (haskell . t)
                              (clojure . t)
-                             (dot .     t)))
+                             (dot .     t)
+                             ))
 
 (setq org-confirm-babel-evaluate nil)
 (setq org-src-fontify-natively t)
