@@ -292,5 +292,6 @@
 
 (defun dotspacemacs/user-config/experiments ()
   "Space for trying out configuration updates."
-  ;; Nothing at the moment
-  )
+  ;; Allows `describe-function' to work on eg. `parse-partial-sexp'
+  (setq find-function-C-source-directory
+        "~/dev/emacs-dev/src"))
