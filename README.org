@@ -1,6 +1,6 @@
 My personal-layer based Spacemacs configuration.
 
-I focus on customizing Emacs's display.
+I focus on customizing Emacs's display in unique ways.
 
 * Description
 
@@ -33,14 +33,14 @@ I focus on customizing Emacs's display.
   used in tandem. Failure to install the ligatures or disable pretty-fonts will
   yield strange unicode characters all-over.
 
-  In the display package's config, I make heavy use of [[https://github.com/domtronn/all-the-icons.el][all-the-icons]]. If you use
-  those packages and keep the icons, make to install it.
+  In the ~layers/display/packages.el~, I make heavy use of [[https://github.com/domtronn/all-the-icons.el][all-the-icons]]. If you
+  use those packages and keep the icons, make to install it.
 
   Select the font of your choice ~dotspacemacs-default-font~ in ~init.el~. My
   font, ~operator mono~, is a paid one.
 
   Theme updates are in ~layers/display/config.el~. Cycle themes with ~SPC T n~.
-  I support Zenburn and Solarized-light out-the-box.
+  I support Zenburn and Solarized-light atm.
 
   To install clone to your home directory. Set ~ERIC-ONLY?~ at the top of
   ~init.el~ to nil ([[https://github.com/syl20bnr/spacemacs/issues/4979][see spacemacs issue 4979]]).
