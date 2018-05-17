@@ -286,12 +286,13 @@
     (load-file (os-path "~/dev/hy-mode/hy-personal.el"))
     (require 'hy-mode)
     (require 'spacemacs-hy)
-    (require 'hy-personal)))
+    (require 'hy-personal)
+
+    (setq find-function-C-source-directory "~/dev/emacs-dev/src")))
 
 ;;;; Experiments
 
 (defun dotspacemacs/user-config/experiments ()
   "Space for trying out configuration updates."
-  ;; Allows `describe-function' to work on eg. `parse-partial-sexp'
-  (setq find-function-C-source-directory
-        "~/dev/emacs-dev/src"))
+  ;; Nothing atm
+  )

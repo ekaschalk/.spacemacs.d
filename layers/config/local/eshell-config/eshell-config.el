@@ -12,6 +12,6 @@
       (evil-insert 1)
     (evil-escape)))
 
-(evil-global-set-keys
- '(normal insert)
- (kbd "C-e") 'eshell-pop-eshell)
+
+(evil-global-set-keys '(normal insert)
+                      (kbd "C-e") 'eshell-pop-eshell)

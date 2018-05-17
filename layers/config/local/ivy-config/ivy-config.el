@@ -4,16 +4,11 @@
 (provide 'ivy-config)
 
 
-(setq ivy-format-function
-      'ivy-format-function-arrow)
-(setq ivy-height
-      20)
-(setq completion-in-region-function
-      'ivy-completion-in-region)
+(setq ivy-format-function 'ivy-format-function-arrow)
+(setq ivy-height 20)
+(setq completion-in-region-function 'ivy-completion-in-region)
 
-;; Resume last ivy session
-(spacemacs/set-leader-keys
-  "ai" 'ivy-resume)
+(spacemacs/set-leader-keys "ai" 'ivy-resume)
 
 (define-keys
   ivy-minibuffer-map
