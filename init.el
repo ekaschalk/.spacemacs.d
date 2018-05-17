@@ -174,8 +174,7 @@
 (defun dotspacemacs/init/display ()
   (setq-default
    dotspacemacs-themes '(zenburn
-                         solarized-light
-                         solarized-dark)
+                         solarized-light)
    dotspacemacs-default-font `("operator mono medium"  ; Note: Bought this font
                                :size ,(cond ((not linux?) 12)
                                             (desktop? 20)
