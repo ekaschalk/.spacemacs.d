@@ -100,6 +100,7 @@
     ;; Languages
     c-c++
     emacs-lisp
+    hy
     javascript
     rust
 
@@ -111,7 +112,6 @@
             python-sort-imports-on-save t
             python-test-runner 'pytest
             :packages
-            (not hy-mode)  ; I maintain `hy-mode' and use local branch
             (not importmagic)))  ; Broken? Don't need it.
 
   "Programming and markup language layers.")
@@ -150,7 +150,6 @@
                                       nord-theme
                                       faceup)
    dotspacemacs-excluded-packages '(fringe
-                                    hy-mode
                                     importmagic)
    dotspacemacs-frozen-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused))
