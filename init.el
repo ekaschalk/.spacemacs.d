@@ -279,14 +279,12 @@
 (defun dotspacemacs/user-config/eric-only ()
   "Personal configuration updates and experiments."
   (when ERIC-ONLY?
+    (setq find-function-C-source-directory "~/dev/emacs-dev/src")
+
     (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
-    (load-file (os-path "~/dev/hy-mode/spacemacs-hy.el"))
     (load-file (os-path "~/dev/hy-mode/hy-personal.el"))
     (require 'hy-mode)
-    (require 'spacemacs-hy)
-    (require 'hy-personal)
-
-    (setq find-function-C-source-directory "~/dev/emacs-dev/src")))
+    (require 'hy-personal)))
 
 ;;;; Experiments
 
