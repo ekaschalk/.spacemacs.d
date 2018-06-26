@@ -4,5 +4,6 @@
    macros
 
    ;; Spacemacs layers
+   clojure
    python
    ))

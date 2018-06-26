@@ -2,9 +2,18 @@
 
 (setq langs-packages
       '(
+        clojure
         python
         virtualenvwrapper
         ))
+
+;;; Clojure
+
+(defun langs/post-init-clojure ()
+  (spacemacs/set-leader-keys-for-major-mode 'clojure-mode
+    "," 'lisp-state-toggle-lisp-state)
+  (spacemacs/set-leader-keys-for-major-mode 'cider-repl-mode
+    "," 'lisp-state-toggle-lisp-state))
 
 ;;; Virtualenvwrapper
 
@@ -40,4 +49,4 @@
   (add-hook 'python-mode-hook (lambda () (flyspell-mode -1)))
 
   ;; Disable printing logs within pytest
-  (setq pytest-cmd-flags "-x --no-print-logs"))
+  (setq pytest-cmd-flags "-x --no-print-logs -s"))
