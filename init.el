@@ -104,12 +104,10 @@
     javascript
     rust
 
-    (clojure :variables
-             clojure-enable-fancify-symbols t)
+    clojure
     (haskell :variables
              haskell-completion-backend 'intero)
     (python :variables
-            python-sort-imports-on-save t
             python-test-runner 'pytest
             :packages
             (not importmagic)))  ; Broken? Don't need it.
@@ -150,7 +148,8 @@
                                       nord-theme
                                       faceup)
    dotspacemacs-excluded-packages '(fringe
-                                    importmagic)
+                                    importmagic
+                                    scss-mode)
    dotspacemacs-frozen-packages '()
    dotspacemacs-install-packages 'used-but-keep-unused))
 
@@ -267,7 +266,6 @@
 
 (defun dotspacemacs/user-config/toggles ()
   "Spacemacs toggles not intended to be put into layers."
-  (spacemacs/toggle-highlight-long-lines-globally-on)
   (spacemacs/toggle-mode-line-minor-modes-off)
   (spacemacs/toggle-aggressive-indent-globally-on)
   (global-highlight-parentheses-mode 1)
@@ -290,5 +288,25 @@
 
 (defun dotspacemacs/user-config/experiments ()
   "Space for trying out configuration updates."
-  ;; Nothing atm
-  )
+  (spacemacs/set-leader-keys-for-major-mode 'clojure-mode
+    "," 'lisp-state-toggle-lisp-state)
+  (spacemacs/set-leader-keys-for-major-mode 'cider-repl-mode
+    "," 'lisp-state-toggle-lisp-state)
+
+  (spacemacs/set-leader-keys-for-major-mode 'python-mode
+    "," 'lisp-state-toggle-lisp-state)
+  (spacemacs/set-leader-keys-for-major-mode 'inferior-python-mode
+    "," 'lisp-state-toggle-lisp-state)
+
+
+  ;; web-mode stuff
+  (spacemacs/set-leader-keys-for-major-mode 'web-mode
+    "," 'spacemacs/web-mode-transient-state/body)  ; rebound from `. .`
+
+
+  (defun org-sort-entries-priorities ()
+    (interactive) (org-sort-entries nil ?p))
+  (spacemacs/set-leader-keys-for-major-mode 'org-mode
+    "s p" 'org-sort-entries-priorities)
+
+  (add-hook 'web-mode-hook 'spacemacs/toggle-truncate-lines-on))

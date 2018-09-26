@@ -55,19 +55,19 @@
                :def "def"
 
                ;; Types
-               :null "None"
-               :int "int" :float "float"
-               :str "str" :bool "bool"
+               ;; :null "None"
+               ;; :int "int" :float "float"
+               ;; :str "str" :bool "bool"
 
                ;; Flow
-               :not "not"
-               :in "in" :not-in "not in"
-               :and "and" :or "or"
-               :for "for"
-               :return "return" :yield "yield"
+               ;; :not "not"
+               ;; :in "in" :not-in "not in"
+               ;; :and "and" :or "or"
+               ;; :for "for"
+               ;; :return "return" :yield "yield"
 
                ;; Other
-               :tuple "Tuple" :pipe "tz-pipe"
+               ;; :tuple "Tuple" :pipe "tz-pipe"
                )))
 
       (setq emacs-lisp-pretty-pairs
@@ -230,7 +230,8 @@
       (spacemacs/add-to-hooks 'pretty-outlines-add-bullets
                               '(emacs-lisp-mode-hook
                                 hy-mode-hook
-                                python-mode-hook)))))
+                                python-mode-hook
+                                web-mode-hook)))))
 
 ;;;; Windows-frame-size-fix
 
