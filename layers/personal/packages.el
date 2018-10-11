@@ -13,8 +13,8 @@
     :after macros
     :if (executable-find "hugo")
     :init
-    (setq blog-dir (os-path "~/dev/blog"))
-    (setq blog-public-dir (os-path "~/dev/public-blog"))))
+    (setq blog-dir '("~/dev/blog"))
+    (setq blog-public-dir '("~/dev/public-blog"))))
 
 ;;; Outline-ivy
 

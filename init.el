@@ -21,12 +21,6 @@
 (defvar windows? (not (or linux? mac?))          "Are we on a windows machine?")
 (defvar desktop? (= 1440 (display-pixel-height)) "Am I on my desktop?")
 
-(defun os-path (path)
-  "Prepend drive label to PATH if on windows machine."
-  (cond (mac?     path)
-        (linux?   path)
-        (windows? (expand-file-name path "c:"))))
-
 ;;; Layer Declarations
 ;;;; Local
 
@@ -138,7 +132,7 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   "Instantiate Spacemacs layers declarations and package configurations."
   (setq-default
    ;; Layers
-   dotspacemacs-configuration-layer-path (list (os-path "~/.spacemacs.d/layers/"))
+   dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layers/")
    dotspacemacs-configuration-layers     (append dotspacemacs/layers/local
                                                  dotspacemacs/layers/core
                                                  dotspacemacs/layers/langs
@@ -183,8 +177,8 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 (defun dotspacemacs/user-config/eric-only ()
   "Personal configuration updates and experiments."
   ;; (setq find-function-C-source-directory "~/dev/emacs-dev/src")
-  ;; (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
-  ;; (load-file (os-path "~/dev/hy-mode/hy-personal.el"))
+  ;; (load-file "~/dev/hy-mode/hy-mode.el")
+  ;; (load-file "~/dev/hy-mode/hy-personal.el")
   ;; (require 'hy-mode)
   ;; (require 'hy-personal)
   )
