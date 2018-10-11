@@ -13,7 +13,12 @@
         (evil-config   :location local)
         (gnus-config   :location local)
         (ivy-config    :location local)
-        (org-config    :location local)))
+        (org-config    :location local)
+
+        ;; Elsewhere-owned packages for languages
+        (clojure-config :location local)
+        (python-config  :location local)
+        ))
 
 ;;; Owned Packages
 ;;;; Outshine
@@ -80,3 +85,13 @@
 (defun config/init-org-config ()
   (use-package org-config
     :after org macros))
+
+;;; Local Language Packages
+
+(defun config/init-clojure-config ()
+  (use-package clojure-config
+    :after clojure-mode))
+
+(defun config/init-python-config ()
+  (use-package python-config
+    :after python))

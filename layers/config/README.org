@@ -2,9 +2,8 @@
 
 * Description
 
-This layer houses updates to packages typically clumped into
-~dotspacemacs/user-config~. Language configuration is instead done in the
-~langs~ layer and display configuration is done in the ~display~ layer.
+This layer houses updates to (non-display) packages typically clumped into
+~dotspacemacs/user-config~.
 
 Elsewhere-owned packages with non-trivial config are defined as small packages
 in the local subdir, eg. ~local/org-config~ houses org-mode updates.

@@ -9,6 +9,10 @@
 (spacemacs/set-leader-keys "aof" 'org-open-at-point-global)
 (spacemacs/set-leader-keys-for-major-mode 'org-mode "r" 'org-refile)
 
+(defun org-sort-entries-priorities () (interactive) (org-sort-entries nil ?p))
+(spacemacs/set-leader-keys-for-major-mode
+  'org-mode "s p" 'org-sort-entries-priorities)
+
 (evil-define-key '(normal visual motion) org-mode-map
   "gh" 'outline-up-heading
   "gj" 'outline-forward-same-level

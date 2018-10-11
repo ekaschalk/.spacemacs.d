@@ -6,4 +6,8 @@
    ;; Core Config layers
    gnus
    org
+
+   ;; Lang Layers
+   clojure
+   python
    ))

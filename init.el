@@ -34,7 +34,6 @@
   '((macros   :location local)   ; All local layers depend on this layer
     (config   :location local)   ; Org, Avy, Evil, Misc... config
     (display  :location local)   ; Pretty-eshell/code/outlines... pkgs
-    (langs    :location local)   ; Language config
     (personal :location local))  ; Personal pkgs
 
   "Local layers housed in `~/.spacemacs.d/layers'.")
@@ -194,29 +193,4 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 
 (defun dotspacemacs/user-config/experiments ()
   "Space for trying out configuration updates."
-  ;; Lisp states, lisp states everywhere
-  (spacemacs/set-leader-keys-for-major-mode
-    'clojure-mode ","
-    'lisp-state-toggle-lisp-state)
-  (spacemacs/set-leader-keys-for-major-mode
-    'cider-repl-mode ","
-    'lisp-state-toggle-lisp-state)
-  (spacemacs/set-leader-keys-for-major-mode
-    'python-mode ","
-    'lisp-state-toggle-lisp-state)
-  (spacemacs/set-leader-keys-for-major-mode
-    'inferior-python-mode ","
-    'lisp-state-toggle-lisp-state)
-
-  ;; Web mode experiments
-  (spacemacs/set-leader-keys-for-major-mode
-    'web-mode ","
-    'spacemacs/web-mode-transient-state/body)
-  (add-hook 'web-mode-hook 'spacemacs/toggle-truncate-lines-on)
-
-  ;; Misc
-  (defun org-sort-entries-priorities () (interactive) (org-sort-entries nil ?p))
-  (spacemacs/set-leader-keys-for-major-mode
-    'org-mode "s p"
-    'org-sort-entries-priorities)
   )
