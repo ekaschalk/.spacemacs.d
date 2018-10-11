@@ -17,7 +17,7 @@
         (pretty-fonts :location local)
         (pretty-magit :location local)
         (pretty-outlines :location local)
-        (windows-frame-size-fix :location local)
+        ;; (windows-frame-size-fix :location local)
         ))
 
 ;;; Locals
@@ -235,9 +235,9 @@
 
 ;;;; Windows-frame-size-fix
 
-(defun display/init-windows-frame-size-fix ()
-  (use-package windows-frame-size-fix
-    :if (not linux?)))
+;; (defun display/init-windows-frame-size-fix ()
+;;   (use-package windows-frame-size-fix
+;;     :if (not linux?)))
 
 ;;; Core Packages
 ;;;; All-the-icons

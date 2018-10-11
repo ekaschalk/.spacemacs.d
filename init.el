@@ -3,64 +3,38 @@
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Contact: ekaschalk@gmail.com --
 ;; -- MIT License --
-;; -- Emacs 25.3.2 ~ Spacemacs Dev Branch 0.300.0.x ~ pkgs updated: 05/06/18 --
+;; -- Emacs 26.1 ~ Spacemacs Dev Branch 0.300.0.x ~ pkgs updated: 10/09/18 --
 ;; -- http://modernemacs.com --
 ;;
-;; All configuration is housed in personal layers - see README.
-;; `init.el' configures spacemacs, defining required `dotspacemacs/...' functions.
+;; Personal layers host most of my configuration - see README.
+;; Ligatures and icons require installation - see README.
+;;
+;; `init.el' sets-up spacemacs, defining required `dotspacemacs/...' funcs & vars.
+;; `outline-minor-mode' and extension `outshine-mode' will help with navigation.
+
 
 (defvar ERIC-ONLY? t
-  "If cloning, set to nil, enable non-layer personal configuration.")
+  "Set to nil. Calls load-file's on personal files.")
 
-(defvar linux? (eq system-type 'gnu/linux)
-  "Are we on a gnu/linux machine?")
-
-(defvar desktop? (= 1440 (display-pixel-height))
-  "Am I on my desktop? For determining font size.")
+(defvar linux?   (eq system-type 'gnu/linux)     "Are we on a linux machine?")
+(defvar mac?     (eq system-type 'darwin)        "Are we on a macOS machine?")
+(defvar windows? (not (or linux? mac?))          "Are we on a windows machine?")
+(defvar desktop? (= 1440 (display-pixel-height)) "Am I on my desktop?")
 
 (defun os-path (path)
   "Prepend drive label to PATH if on windows machine."
-  (if linux?
-      path
-    (expand-file-name path "c:")))
+  (cond (mac?     path)
+        (linux?   path)
+        (windows? (expand-file-name path "c:"))))
 
-;;; Spacemacs/
-
-(defun dotspacemacs/init ()
-  "Instantiate Spacemacs core settings."
-  (dotspacemacs/init/coding)
-  (dotspacemacs/init/display)
-  (dotspacemacs/init/evil)
-  (dotspacemacs/init/keys)
-  (dotspacemacs/init/layouts)
-  (dotspacemacs/init/misc)
-  (dotspacemacs/init/packages)
-  (dotspacemacs/init/startup))
-
-(defun dotspacemacs/layers ()
-  "Instantiate Spacemacs layers declarations and package configurations."
-  (dotspacemacs/layers/config)
-  (dotspacemacs/layers/packages))
-
-(defun dotspacemacs/user-init ()
-  "Package independent settings to run before `dotspacemacs/user-config'."
-  (setq custom-file "./elisp/.custom-settings.el"))
-
-(defun dotspacemacs/user-config ()
-  "Configuration that cannot be delegated to layers."
-  (dotspacemacs/user-config/toggles)
-  (dotspacemacs/user-config/eric-only)
-  (dotspacemacs/user-config/experiments))
-
-;;; Spacemacs/Layers
+;;; Layer Declarations
 ;;;; Local
 
 (defvar dotspacemacs/layers/local
-  '((macros :location local)    ; All local layers depend on this layer
-
-    (config :location local)    ; Org, Avy, Evil, Misc... config
-    (display :location local)   ; Pretty-eshell/code/outlines... pkgs
-    (langs :location local)     ; Language config
+  '((macros   :location local)   ; All local layers depend on this layer
+    (config   :location local)   ; Org, Avy, Evil, Misc... config
+    (display  :location local)   ; Pretty-eshell/code/outlines... pkgs
+    (langs    :location local)   ; Language config
     (personal :location local))  ; Personal pkgs
 
   "Local layers housed in `~/.spacemacs.d/layers'.")
@@ -99,18 +73,18 @@
 
     ;; Languages
     c-c++
+    clojure
     emacs-lisp
     hy
     javascript
     rust
 
-    clojure
     (haskell :variables
              haskell-completion-backend 'intero)
     (python :variables
             python-test-runner 'pytest
             :packages
-            (not importmagic)))  ; Broken? Don't need it.
+            (not importmagic)))  ; Broken????
 
   "Programming and markup language layers.")
 
@@ -119,7 +93,6 @@
 (defvar dotspacemacs/layers/extra
   '(gnus
     graphviz
-    pdf-tools
     ranger
 
     (ibuffer :variables
@@ -127,142 +100,76 @@
 
   "Miscellaneous layers.")
 
-;;;; Layers/config
+;;; Spacemacs/
+;;;; Spacemacs/init
 
-(defun dotspacemacs/layers/config ()
+(defun dotspacemacs/init ()
+  "Instantiate Spacemacs core settings.
+
+All `dotspacemacs-' variables with values set different than their defaults.
+
+They are all defined in `~/.emacs.d/core/core-dotspacemacs.el'.
+Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   (setq-default
-   dotspacemacs-ask-for-lazy-installation t
-   dotspacemacs-configuration-layer-path `(,(os-path "~/.spacemacs.d/layers/"))
-   dotspacemacs-configuration-layers `(,@dotspacemacs/layers/local
-                                       ,@dotspacemacs/layers/core
-                                       ,@dotspacemacs/layers/langs
-                                       ,@dotspacemacs/layers/extra))
-   dotspacemacs-distribution 'spacemacs
-   dotspacemacs-enable-lazy-installation 'unused)
+   ;; Elpa
+   dotspacemacs-elpa-https        nil
+   dotspacemacs-elpa-subdirectory nil
 
-;;;; Layers/packages
-
-(defun dotspacemacs/layers/packages ()
-  (setq-default
-   dotspacemacs-additional-packages '(solarized-theme
-                                      nord-theme
-                                      faceup)
-   dotspacemacs-excluded-packages '(fringe
-                                    importmagic
-                                    scss-mode)
-   dotspacemacs-frozen-packages '()
-   dotspacemacs-install-packages 'used-but-keep-unused))
-
-;;; Spacemacs/Init
-;;;; Coding
-
-(defun dotspacemacs/init/coding ()
-  (setq-default
-   dotspacemacs-folding-method 'evil
-   dotspacemacs-highlight-delimiters 'all
-   dotspacemacs-line-numbers nil
-   dotspacemacs-smartparens-strict-mode nil
-   dotspacemacs-smart-closing-parenthesis nil
-   dotspacemacs-search-tools '("ag" "rg" "pt" "ack" "grep")
-   dotspacemacs-smooth-scrolling t
-   dotspacemacs-whitespace-cleanup 'trailing))
-
-;;;; Display
-
-(defun dotspacemacs/init/display ()
-  (setq-default
-   dotspacemacs-themes '(zenburn
-                         solarized-light)
-   dotspacemacs-default-font `("operator mono medium"  ; Note: Bought this font
-                               :size ,(cond ((not linux?) 12)
-                                            (desktop? 20)
-                                            (t 34))
+   ;; Display
+   dotspacemacs-themes       '(zenburn
+                               solarized-light)
+   dotspacemacs-default-font `("operator mono medium"
+                               :size ,(cond (mac? 18) (desktop? 20) (t 34))
                                :powerline-scale 1.5)
 
-   dotspacemacs-fullscreen-at-startup (if linux? nil t)
-   dotspacemacs-fullscreen-use-non-native nil
-   dotspacemacs-maximized-at-startup nil
-   dotspacemacs-active-transparency 90
-   dotspacemacs-inactive-transparency 90
-   dotspacemacs-mode-line-unicode-symbols t
-   dotspacemacs-zone-out-when-idle nil
-   dotspacemacs-frame-title-format "%I@%S"
-   dotspacemacs-icon-title-format nil
-   dotspacemacs-pretty-docs t))
+   ;; General
+   dotspacemacs-auto-generate-layout-names  t
+   dotspacemacs-fullscreen-at-startup       t
+   dotspacemacs-large-file-size             5
+   dotspacemacs-pretty-docs                 t
+   dotspacemacs-search-tools                '("ag" "rg" "pt" "ack" "grep")
+   dotspacemacs-scratch-mode                'org-mode
+   dotspacemacs-startup-lists               nil
+   dotspacemacs-whitespace-cleanup          'trailing
+   ))
 
-;;;; Evil
+;;;; Spacemacs/layers
 
-(defun dotspacemacs/init/evil ()
+(defun dotspacemacs/layers ()
+  "Instantiate Spacemacs layers declarations and package configurations."
   (setq-default
-   dotspacemacs-editing-style 'vim
-   dotspacemacs-colorize-cursor-according-to-state t
-   dotspacemacs-remap-Y-to-y$ t
-   dotspacemacs-retain-visual-state-on-shift t
-   dotspacemacs-visual-line-move-text nil
-   dotspacemacs-ex-substitute-global nil
-   dotspacemacs-enable-paste-transient-state nil
-   dotspacemacs-show-transient-state-title t
-   dotspacemacs-show-transient-state-color-guide t))
+   ;; Layers
+   dotspacemacs-configuration-layer-path (list (os-path "~/.spacemacs.d/layers/"))
+   dotspacemacs-configuration-layers     (append dotspacemacs/layers/local
+                                                 dotspacemacs/layers/core
+                                                 dotspacemacs/layers/langs
+                                                 dotspacemacs/layers/extra)
 
-;;;; Keys
+   ;; Packages
+   dotspacemacs-additional-packages '(solarized-theme
+                                      faceup)
+   dotspacemacs-excluded-packages   '(fringe
+                                      importmagic
+                                      scss-mode)
+   dotspacemacs-frozen-packages     '()
+   ))
 
-(defun dotspacemacs/init/keys ()
-  (setq-default
-   dotspacemacs-leader-key "SPC"
-   dotspacemacs-emacs-command-key "SPC"
-   dotspacemacs-ex-command-key ":"
-   dotspacemacs-emacs-leader-key "M-m"
-   dotspacemacs-major-mode-leader-key ","
-   dotspacemacs-major-mode-emacs-leader-key "C-M-m"
-   dotspacemacs-which-key-delay 0.4
-   dotspacemacs-which-key-position 'bottom
-   dotspacemacs-distinguish-gui-tab nil))
+;;;; Spacemacs/user-init
 
-;;;; Layouts
+(defun dotspacemacs/user-init ()
+  "Package independent settings to run before `dotspacemacs/user-config'."
+  (setq custom-file "./elisp/.custom-settings.el"))
 
-(defun dotspacemacs/init/layouts ()
-  (setq-default
-   dotspacemacs-scratch-mode 'org-mode
-   dotspacemacs-default-layout-name "Default"
-   dotspacemacs-display-default-layout nil
-   dotspacemacs-auto-resume-layouts nil
-   dotspacemacs-auto-generate-layout-names t
-   dotspacemacs-switch-to-buffer-prefers-purpose nil))
+;;;; Spacemacs/user-config
+;;;;; Core
 
-;;;; Misc
+(defun dotspacemacs/user-config ()
+  "Configuration that cannot be delegated to layers."
+  (dotspacemacs/user-config/toggles)
+  (dotspacemacs/user-config/eric-only)
+  (when ERIC-ONLY? (dotspacemacs/user-config/experiments)))
 
-(defun dotspacemacs/init/misc ()
-  (setq-default
-   dotspacemacs-large-file-size 5
-   dotspacemacs-auto-save-file-location 'cache
-   dotspacemacs-max-rollback-slots 5
-   dotspacemacs-persistent-server nil
-   dotspacemacs-helm-resize nil
-   dotspacemacs-helm-no-header nil
-   dotspacemacs-helm-position 'bottom))
-
-;;;; Packages
-
-(defun dotspacemacs/init/packages ()
-  (setq-default
-   dotspacemacs-default-package-repository nil
-   dotspacemacs-elpa-https t
-   dotspacemacs-elpa-timeout 5
-   dotspacemacs-check-for-update nil
-   dotspacemacs-elpa-subdirectory nil))
-
-;;;; Startup
-
-(defun dotspacemacs/init/startup ()
-  (setq-default
-   dotspacemacs-verbose-loading nil
-   dotspacemacs-startup-banner 'official
-   dotspacemacs-startup-lists '()
-   dotspacemacs-startup-buffer-responsive t
-   dotspacemacs-loading-progress-bar t))
-
-;;; Spacemacs/User-Config
-;;;; Toggles
+;;;;; Toggles
 
 (defun dotspacemacs/user-config/toggles ()
   "Spacemacs toggles not intended to be put into layers."
@@ -272,41 +179,44 @@
   (rainbow-delimiters-mode-enable)
   (fringe-mode '(0 . 8)))
 
-;;;; Eric Only
+;;;;; Personal
 
 (defun dotspacemacs/user-config/eric-only ()
   "Personal configuration updates and experiments."
-  (when ERIC-ONLY?
-    (setq find-function-C-source-directory "~/dev/emacs-dev/src")
+  ;; (setq find-function-C-source-directory "~/dev/emacs-dev/src")
+  ;; (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
+  ;; (load-file (os-path "~/dev/hy-mode/hy-personal.el"))
+  ;; (require 'hy-mode)
+  ;; (require 'hy-personal)
+  )
 
-    (load-file (os-path "~/dev/hy-mode/hy-mode.el"))
-    (load-file (os-path "~/dev/hy-mode/hy-personal.el"))
-    (require 'hy-mode)
-    (require 'hy-personal)))
-
-;;;; Experiments
+;;;;; Experiments
 
 (defun dotspacemacs/user-config/experiments ()
   "Space for trying out configuration updates."
-  (spacemacs/set-leader-keys-for-major-mode 'clojure-mode
-    "," 'lisp-state-toggle-lisp-state)
-  (spacemacs/set-leader-keys-for-major-mode 'cider-repl-mode
-    "," 'lisp-state-toggle-lisp-state)
+  ;; Lisp states, lisp states everywhere
+  (spacemacs/set-leader-keys-for-major-mode
+    'clojure-mode ","
+    'lisp-state-toggle-lisp-state)
+  (spacemacs/set-leader-keys-for-major-mode
+    'cider-repl-mode ","
+    'lisp-state-toggle-lisp-state)
+  (spacemacs/set-leader-keys-for-major-mode
+    'python-mode ","
+    'lisp-state-toggle-lisp-state)
+  (spacemacs/set-leader-keys-for-major-mode
+    'inferior-python-mode ","
+    'lisp-state-toggle-lisp-state)
 
-  (spacemacs/set-leader-keys-for-major-mode 'python-mode
-    "," 'lisp-state-toggle-lisp-state)
-  (spacemacs/set-leader-keys-for-major-mode 'inferior-python-mode
-    "," 'lisp-state-toggle-lisp-state)
+  ;; Web mode experiments
+  (spacemacs/set-leader-keys-for-major-mode
+    'web-mode ","
+    'spacemacs/web-mode-transient-state/body)
+  (add-hook 'web-mode-hook 'spacemacs/toggle-truncate-lines-on)
 
-
-  ;; web-mode stuff
-  (spacemacs/set-leader-keys-for-major-mode 'web-mode
-    "," 'spacemacs/web-mode-transient-state/body)  ; rebound from `. .`
-
-
-  (defun org-sort-entries-priorities ()
-    (interactive) (org-sort-entries nil ?p))
-  (spacemacs/set-leader-keys-for-major-mode 'org-mode
-    "s p" 'org-sort-entries-priorities)
-
-  (add-hook 'web-mode-hook 'spacemacs/toggle-truncate-lines-on))
+  ;; Misc
+  (defun org-sort-entries-priorities () (interactive) (org-sort-entries nil ?p))
+  (spacemacs/set-leader-keys-for-major-mode
+    'org-mode "s p"
+    'org-sort-entries-priorities)
+  )

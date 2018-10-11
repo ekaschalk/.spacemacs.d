@@ -21,8 +21,9 @@
 ;;; Minor Config
 
 (defun config/post-init-ispell ()
-  (setq ispell-program-name
-        "aspell"))
+  ;; (setq ispell-program-name
+  ;;       "aspell")
+  )
 
 (defun config/post-init-projectile ()
   (setq projectile-indexing-method
