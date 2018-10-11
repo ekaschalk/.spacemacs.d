@@ -4,7 +4,11 @@
 (provide 'avy-config)
 
 
+;;; Configuration
+
 (setq avy-timeout-seconds 0.35)
+
+;;; Bindings
 
 (evil-global-set-key 'normal "s" 'avy-goto-char-timer)
 (global-set-keys (kbd "C-h") 'avy-pop-mark

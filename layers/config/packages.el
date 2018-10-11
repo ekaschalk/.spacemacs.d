@@ -1,38 +1,61 @@
 ;;; Config Layer
 
 (setq config-packages
-      '(
-        ;; Owned packages
+      '(;; Owned packages
         outshine
 
         ;; Elsewhere-owned packages with trivial config
-        ispell
-        projectile
         yasnippet
 
         ;; Elsehwere-owned packages
-        (avy-config      :location local)
-        (eshell-config   :location local)
-        (evil-config     :location local)
-        (gnus-config     :location local)
-        (ivy-config      :location local)
-        (org-config      :location local)))
+        (avy-config    :location local)
+        (eshell-config :location local)
+        (evil-config   :location local)
+        (gnus-config   :location local)
+        (ivy-config    :location local)
+        (org-config    :location local)))
 
-;;; Minor Config
+;;; Owned Packages
+;;;; Outshine
 
-(defun config/post-init-ispell ()
-  ;; (setq ispell-program-name
-  ;;       "aspell")
-  )
+(defun config/init-outshine ()
 
-(defun config/post-init-projectile ()
-  (setq projectile-indexing-method
-        'native))
+  (defun advise-outshine-narrow-start-pos ()
+    "Narrowing works within the headline rather than requiring to be on it."
+    (unless (outline-on-heading-p t)
+      (outline-previous-visible-heading 1)))
+
+  (use-package outshine
+    :after macros
+
+    :init (progn
+            ;; Narrowing global keybindings
+            (spacemacs/set-leader-keys
+              "nn" 'outshine-narrow-to-subtree
+              "nw" 'widen)
+
+            ;; Make <backtab> globally cycle like in org-mode buffers
+            (define-keys outline-minor-mode-map
+              (kbd "<backtab>") 'outshine-cycle-buffer))
+
+    :config (progn
+              ;; So *all* prog-modes have `outline-minor-mode' enabled
+              (add-hook 'prog-mode-hook 'outline-minor-mode)
+
+              ;; So *all* prog-modes have `outshine-mode' enabled
+              (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+
+              ;; Fix outshine narrowing
+              (advice-add 'outshine-narrow-to-subtree :before
+                          'advise-outshine-narrow-start-pos))))
+
+;;; Unowned Packages
+;;;; Yasnippet
 
 (defun config/pre-init-yasnippet ()
   (global-set-key (kbd "C-SPC") 'hippie-expand))
 
-;;; Local Config
+;;; Local Packages
 
 (defun config/init-avy-config ()
   (use-package avy-config
@@ -57,30 +80,3 @@
 (defun config/init-org-config ()
   (use-package org-config
     :after org macros))
-
-;;; Outshine
-
-(defun config/init-outshine ()
-  (defun advise-outshine-narrow-start-pos ()
-    (unless (outline-on-heading-p t)
-      (outline-previous-visible-heading 1)))
-
-  (use-package outshine
-    :after macros
-    :init
-    (progn
-      (spacemacs/set-leader-keys
-        "nn" 'outshine-narrow-to-subtree
-        "nw" 'widen)
-      (define-keys outline-minor-mode-map
-        (kbd "M-RET") 'outshine-insert-heading
-        (kbd "<backtab>") 'outshine-cycle-buffer))
-
-    :config
-    (progn
-      ;; Narrowing works within the headline rather than requiring to be on it
-      (advice-add 'outshine-narrow-to-subtree :before
-                  'advise-outshine-narrow-start-pos)
-
-      (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-      (add-hook 'prog-mode-hook 'outline-minor-mode))))

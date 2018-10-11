@@ -4,6 +4,8 @@
 (provide 'eshell-config)
 
 
+;;; Utils
+
 (defun eshell-pop-eshell ()
   "Eshell popup straight to insert mode."
   (interactive)
@@ -12,6 +14,6 @@
       (evil-insert 1)
     (evil-escape)))
 
+;;; Bindings
 
-(evil-global-set-keys '(normal insert)
-                      (kbd "C-e") 'eshell-pop-eshell)
+(evil-global-set-keys '(normal insert) (kbd "C-e") 'eshell-pop-eshell)

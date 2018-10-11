@@ -4,30 +4,31 @@
 (provide 'ivy-config)
 
 
+;;; Variables
+
 (setq ivy-format-function 'ivy-format-function-arrow)
 (setq ivy-height 20)
 (setq completion-in-region-function 'ivy-completion-in-region)
+
+;;; Bindings
 
 (spacemacs/set-leader-keys "ai" 'ivy-resume)
 
 (define-keys
   ivy-minibuffer-map
 
-  ;; Perform default action on avy-selected minibuffer line
+  ;; Select prompt with avy line motion
   (kbd "C-l") 'ivy-avy
 
   ;; Evil-like scrolling of ivy minibuffer
   (kbd "C-u") 'ivy-scroll-down-command
   (kbd "C-d") 'ivy-scroll-up-command
 
-  ;; Rebind C-n/C-y/C-p to narrow/yank from buffer/paste into buffer
+  ;; Narrowing prompt and yanking into prompt
   (kbd "C-n") 'ivy-restrict-to-matches
   (kbd "C-y") 'ivy-yank-word
 
-  ;; Read-only buffer of candidates with shortcuts to dispatches
-  (kbd "C-o") 'ivy-occur
-
-  ;; Non-exiting default action
+  ;; Call default action without exiting prompt
   (kbd "C-<return>") 'ivy-call
 
   ;; Dispatch actions

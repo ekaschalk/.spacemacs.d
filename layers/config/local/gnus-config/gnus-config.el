@@ -3,6 +3,8 @@
 (provide 'gnus-config)
 
 
+;;; Configuration
+
 (setq user-mail-address "ekaschalk@gmail.com")
 (setq user-full-name "Eric Kaschalk")
 
