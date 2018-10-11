@@ -3,24 +3,27 @@
 ;;; Solarized-light
 ;;;; Outlines
 
-(setq display/solarized-light-theming/org
+(setq display/solarized-light-theming/outlines
       `((outline-1 :height 1.25
                    :foreground "#C3A29E"
                    :weight ,(if linux? 'normal 'ultra-bold)
                    :italic nil
-                   :underline t)
+                   :underline t
+                   :inherit nil)
 
         (outline-2 :height 1.15
                    :foreground "#8D6B94"
                    :weight ,(if linux? 'normal 'ultra-bold)
                    :italic nil
-                   :underline t)
+                   :underline t
+                   :inherit nil)
 
         (outline-3 :height 1.15
                    :foreground "#8C5F66"
                    :weight ,(if linux? 'normal 'ultra-bold)
                    :italic nil
-                   :underline t)
+                   :underline t
+                   :inherit nil)
 
         (org-level-1 :height 1.25
                      :inherit nil
@@ -66,7 +69,7 @@
 
 (setq display/solarized-light-theming
       `(solarized-light
-        ,@display/solarized-light-theming/org
+        ,@display/solarized-light-theming/outlines
         ,@display/solarized-light-theming/mode-line
 
         (company-tooltip-common
@@ -90,7 +93,8 @@
                    :foreground "#DFAF8F"
                    :weight ,(if linux? 'normal 'ultra-bold)
                    :italic nil
-                   :underline t)
+                   :underline t
+                   :inherit nil)
 
         (outline-2 :height 1.25
                    :foreground "#BFEBBF"
@@ -185,5 +189,6 @@
 
 ;;; Set Theme Changes
 
-(setq theming-modifications (list display/zenburn
-                                  display/solarized-light-theming))
+(setq theming-modifications
+      (list display/zenburn
+            display/solarized-light-theming))
