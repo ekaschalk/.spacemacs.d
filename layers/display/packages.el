@@ -264,21 +264,35 @@
 ;;;; All-the-icons-ivy
 
 (defun display/init-all-the-icons-ivy ()
+  (defun all-the-icons-ivy-file-transformer-stdized (s)
+    "Fix `all-the-icons-ivy-file-transformer' to have stdized height/offset."
+    (format "%s\t%s"
+            (propertize "\t" 'display
+                        (all-the-icons-icon-for-file s :height 1 :v-adjust 0))
+            s))
+
   (use-package all-the-icons-ivy
     :after all-the-icons
-    :config
-    (progn
-      (all-the-icons-ivy-setup)
-      (advice-add 'all-the-icons-ivy-file-transformer :override
-                  'ivy-file-transformer-fixed-for-files))))
+
+    :config (progn
+              ;; I have no idea why the default behavior for this pkg
+              ;; doesn't standardize the vertical offset and height
+              (advice-add 'all-the-icons-ivy-file-transformer :override
+                          'all-the-icons-ivy-file-transformer-stdized)
+
+              ;; Counsel defines a partiluar file transformer for just
+              ;; projectile. Replacing it with the all-the-icons-ivy one
+              ;; enables icons on projectile-find once-again. Yay.
+              (advice-add 'counsel-projectile-find-file-transformer :override
+                          'all-the-icons-ivy-file-transformer-stdized)
+
+              (all-the-icons-ivy-setup))))
 
 ;;;; All-the-icons-dired
 
 (defun display/init-all-the-icons-dired ()
   (use-package all-the-icons-dired
-    :config
-    (add-hook 'dired-mode-hook
-              'all-the-icons-dired-mode)))
+    :config (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
 
 ;;;; Pretty-mode
 
