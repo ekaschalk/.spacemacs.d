@@ -12,7 +12,6 @@
 ;; `init.el' sets-up spacemacs, defining required `dotspacemacs/...' funcs & vars.
 ;; `outline-minor-mode' and extension `outshine-mode' will help with navigation.
 
-
 (defvar ERIC-ONLY? t
   "Set to nil. Calls load-file's on personal files.")
 

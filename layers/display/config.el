@@ -1,55 +1,61 @@
-;; Display mofidications for `solarized-light' and `zenburn' applied here
+;;; -*- lexical-binding: t -*-
+
+;; Display mofidications for `solarized-light' and `zenburn' applied here.
+
+;; Try out changes with `spacemacs/update-theme' to see theme updates
+;; or alternatively run `spacemacs/cycle-spacemacs-theme' with 'SPC T n'.
+
+;; Notes:
+;; 1. I do not style outlines level 4 or greater because I never go that deep.
+;; 2. I use dash/dash-functional basically everywhere *but* this file
+;;    as we cannot access it yet without brittle advice hacks
+
+;;; Configuration
+
+(setq display/outline-styling/common '(:italic nil :underline t :inherit nil))
+(setq display/outline-heights/common '(1.35 1.25 1.15))
+
+(setq display/outline-palette/zenburn         '("#DFAF8F" "#BFEBBF" "#7CB8BB"))
+(setq display/outline-palette/solarized-light '("#C3A29E" "#8D6B94" "#8C5F66"))
+
+(setq display/org-blocks/common '(:italic nil :underline nil :box t))
+(setq display/org-blocks        `((org-block-begin-line
+                                   ,@display/org-blocks/common)
+                                  (org-block-end-line
+                                   ,@display/org-blocks/common)))
+
+(setq display/company/common '(:weight bold :underline nil))
+(setq display/company        `((company-tooltip-common
+                                ,@display/company/common
+                                :inherit company-tooltip)
+                               (company-tooltip-common-selection
+                                ,@display/company/common
+                                :inherit company-tooltip-selection)))
+
+;;; Utils
+
+(defun display/style-outline (level height foreground)
+  "Return 2 alists of outline/org faces for `level' and their styling."
+  (let* ((level (number-to-string level))
+         (outline-face (concat "outline-" level))
+         (org-face (concat "org-level-" level)))
+    (mapcar (lambda (face)
+              `(,(intern face)
+                :height ,height
+                :foreground ,foreground
+                ,@display/outline-styling/common))
+            (list org-face outline-face))))
+
+(defun display/style-outlines (foregrounds)
+  "Execute `display/style-outline' for each of FOREGROUNDS."
+  (let ((levels '(1 2 3)))
+    (apply 'append
+           (mapcar* 'display/style-outline
+                    levels
+                    display/outline-heights/common
+                    foregrounds))))
 
 ;;; Solarized-light
-;;;; Outlines
-
-(setq display/solarized-light-theming/outlines
-      `((outline-1 :height 1.25
-                   :foreground "#C3A29E"
-                   :weight ,(if linux? 'normal 'ultra-bold)
-                   :italic nil
-                   :underline t
-                   :inherit nil)
-
-        (outline-2 :height 1.15
-                   :foreground "#8D6B94"
-                   :weight ,(if linux? 'normal 'ultra-bold)
-                   :italic nil
-                   :underline t
-                   :inherit nil)
-
-        (outline-3 :height 1.15
-                   :foreground "#8C5F66"
-                   :weight ,(if linux? 'normal 'ultra-bold)
-                   :italic nil
-                   :underline t
-                   :inherit nil)
-
-        (org-level-1 :height 1.25
-                     :inherit nil
-                     :foreground "#C3A29E"
-                     :weight ,(if linux? 'normal 'ultra-bold)
-                     :italic nil
-                     :underline t)
-
-        (org-level-2 :height 1.15
-                     :inherit nil
-                     :foreground "#8D6B94"
-                     :weight ,(if linux? 'normal 'ultra-bold)
-                     :italic nil
-                     :underline t)
-
-        (org-level-3 :height 1.15
-                     :inherit nil
-                     :foreground "#8C5F66"
-                     :weight ,(if linux? 'normal 'ultra-bold)
-                     :italic nil)
-
-        (org-block-begin-line :height 1.05 :foreground "#576e75"
-                              :box t :weight bold)
-        (org-block-end-line :height 1.05 :foreground "#576e75"
-                            :box t :weight bold)))
-
 ;;;; Mode-line
 
 (setq display/solarized-light-theming/mode-line
@@ -69,13 +75,11 @@
 
 (setq display/solarized-light-theming
       `(solarized-light
-        ,@display/solarized-light-theming/outlines
-        ,@display/solarized-light-theming/mode-line
+        ,@(display/style-outlines display/outline-palette/solarized-light)
 
-        (company-tooltip-common
-         :inherit company-tooltip :weight bold :underline nil)
-        (company-tooltip-common-selection
-         :inherit company-tooltip-selection :weight bold :underline nil)
+        ,@display/solarized-light-theming/mode-line
+        ,@display/org-blocks
+        ,@display/company
 
         (font-lock-comment-face :foreground "#586e75" :italic t :weight normal)
         (avy-background-face :foreground "#586e75" :italic nil)
@@ -89,54 +93,8 @@
 ;;;; Outlines
 
 (setq display/zenburn/outlines
-      `((outline-1 :height 1.35
-                   :foreground "#DFAF8F"
-                   :weight ,(if linux? 'normal 'ultra-bold)
-                   :italic nil
-                   :underline t
-                   :inherit nil)
-
-        (outline-2 :height 1.25
-                   :foreground "#BFEBBF"
-                   :weight ,(if linux? 'normal 'ultra-bold)
-                   :italic nil
-                   :underline t
-                   :inherit nil)
-
-        (outline-3 :height 1.15
-                   :foreground "#7CB8BB"
-                   :weight ,(if linux? 'normal 'ultra-bold)
-                   :italic nil
-                   :underline t
-                   :inherit nil)
-
-        (org-level-1 :height 1.35
-                     :inherit nil
-                     :foreground "#DFAF8F"
-                     :weight ,(if linux? 'normal 'ultra-bold)
-                     :italic nil
-                     :underline t
-                     :inherit nil)
-
-        (org-level-2 :height 1.25
-                     :inherit nil
-                     :foreground "#BFEBBF"
-                     :weight ,(if linux? 'normal 'ultra-bold)
-                     :italic nil
-                     :underline t
-                     :inherit nil)
-
-        (org-level-3 :height 1.15
-                     :inherit nil
-                     :foreground "#7CB8BB"
-                     :weight ,(if linux? 'normal 'ultra-bold)
-                     :italic nil
-                     :inherit nil)
-
-        (org-block-begin-line :height 1.05 :foreground "#576e75"
-                              :box t :weight bold)
-        (org-block-end-line :height 1.05 :foreground "#576e75"
-                            :box t :weight bold)
+      `(
+        ,@(display/style-outlines display/outline-palette/zenburn)
 
         ;; zenburn specific changes
         (oi-face-1 :inherit outline-1)
@@ -175,10 +133,8 @@
         ,@display/zenburn/mode-line
         ,@display/zenburn/font-lock-faces
 
-        (company-tooltip-common
-         :inherit company-tooltip :weight bold :underline nil)
-        (company-tooltip-common-selection
-         :inherit company-tooltip-selection :weight bold :underline nil)
+        ,@display/org-blocks
+        ,@display/company
 
         (avy-background-face :foreground "#586e75" :italic nil)
 
