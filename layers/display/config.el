@@ -16,11 +16,11 @@
                              (outline-3 org-level-3)
 
                              ;; Modeline
-                             (powerline-active1 mode-line)
-                             (powerline-active2 mode-line)
-                             (powerline-inactive1 mode-line-inactive)
-                             (powerline-inactive2 mode-line-inactive)
-                             (spaceline-highlight-face mode-line)))
+                             (powerline-active1        mode-line)
+                             (powerline-active2        mode-line)
+                             (spaceline-highlight-face mode-line)
+                             (powerline-inactive1      mode-line-inactive)
+                             (powerline-inactive2      mode-line-inactive)))
 
 ;;;; Styling
 ;;;;; Headers
@@ -75,55 +75,76 @@
 
 ;;;;; Mode-line
 
-(setq display/mode-line `((mode-line :background nil :box nil :underline nil)
-                          (mode-line-inactive :box nil :underline nil)))
+(setq display/mode-line/common '(:box nil :underline nil))
+(setq display/mode-line
+      `((mode-line
+         ,@display/mode-line/common
+         :background nil)
+        (mode-line-inactive
+         ,@display/mode-line/common)))
 
-;;; Solarized-light
-;;;; Grouped
+;;;;; Font-locks
+
+(setq display/font-locks
+      `((font-lock-comment-face
+         :italic t
+         :weight normal)
+        (font-lock-doc-face
+         :italic t
+         :weight normal)))
+
+;;; Theming
+;;;; Common
+
+(setq display/common-theming
+      `(,@display/company
+        ,@display/mode-line
+        ,@display/org-blocks
+
+        (avy-background-face :italic nil)
+        (font-lock-comment-face :italic t :weight normal)
+        (fringe :background nil)))
+
+;;;; Themes
 
 (setq display/solarized-light-theming
-      `(solarized-light
+      `(,@display/headers/solarized-light
 
-        ,@display/headers/solarized-light
-        ,@display/org-blocks
-        ,@display/company
-        ,@display/mode-line
+        ;; Overwrites
+        (mode-line-inactive :background "#eee8d5"
+                            ,@(alist-get 'mode-line-inactive
+                                         display/mode-line))
 
-        (font-lock-comment-face :foreground "#586e75" :italic t :weight normal)
-        (avy-background-face :foreground "#586e75" :italic nil)
-        (font-lock-doc-face :foreground "#2aa198" :italic t :weight normal)
+        (font-lock-comment-face :foreground "#586e75"
+                                ,@(alist-get 'font-lock-comment-face
+                                             display/font-locks))
+        (font-lock-doc-face :foreground "#2aa198"
+                            ,@(alist-get 'font-lock-doc-face
+                                         display/font-locks))
 
-        ;; Makes matching parens obvious
-        (sp-show-pair-match-face :inherit sp-show-pair-match-face
-                                 :background "#586e75")))
+        ;; Extra
+        (sp-show-pair-match-face :background  "CadetBlue3")))
 
-;;; Zenburn
+(setq display/zenburn-theming
+      `(,@display/headers/zenburn
 
-(setq display/zenburn
-      `(zenburn
+        ;; Overwrites
+        (font-lock-comment-face :foreground "gray50"
+                                ,@(alist-get 'font-lock-comment-face
+                                             display/font-locks))
+        (font-lock-doc-face :foreground "gray65"
+                            ,@(alist-get 'font-lock-doc-face
+                                         display/font-locks))
 
-        ,@display/headers/zenburn
-        ,@display/org-blocks
-        ,@display/company
-        ,@display/mode-line
-
-        (avy-background-face :foreground "#586e75" :italic nil)
-
-        ;; Makes matching parens obvious
-        (sp-show-pair-match-face :underline t)
-
-        (fringe :background nil)
-
-        (font-lock-type-face :foreground "LightCoral")
-        (font-lock-function-name-face :foreground "CadetBlue2")
-
+        ;; Extra
         (font-lock-comment-delimiter-face :foreground "gray35")
-        (font-lock-comment-face :italic t :weight normal :foreground "gray50")
-        (font-lock-doc-face :italic t :weight normal :foreground "gray65")
-        ))
+        (font-lock-function-name-face     :foreground "CadetBlue2")
+        (font-lock-type-face              :foreground "LightCoral")))
 
-;;; Set Theme Changes
+;;;; Set Modifications
 
 (setq theming-modifications
-      (list display/zenburn
-            display/solarized-light-theming))
+      `((zenburn         ,@display/common-theming
+                         ,@display/zenburn-theming)
+        (solarized-light ,@display/common-theming
+                         ,@display/solarized-light-theming)))
