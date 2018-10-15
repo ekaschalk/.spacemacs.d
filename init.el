@@ -103,6 +103,12 @@ All `dotspacemacs-' variables with values set different than their defaults.
 They are all defined in `~/.emacs.d/core/core-dotspacemacs.el'.
 Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   (setq-default
+   ;; Editing settings
+   dotspacemacs-editing-style '(vim :variables
+                                    vim-style-visual-feedback t
+                                    vim-style-remap-Y-to-y$ t
+                                    vim-style-retain-visual-state-on-shift t)
+
    ;; Elpa
    dotspacemacs-elpa-https        nil
    dotspacemacs-elpa-subdirectory nil
