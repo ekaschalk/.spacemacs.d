@@ -9,12 +9,15 @@
 (defvar oi-height 20
   "Number of outlines to display, overrides ivy-height.")
 
+(defvar oi-prepend-header-char "."
+  "Prepend this char 'level' times to each header prompted.")
+
 (defface oi-match-face
   '((t :height 1.10 :foreground "light gray"))
   "Match face for ivy outline prompt.")
 
 (defface oi-face-1
-  '((t :foreground "#C3A29E" :height 1.25 :underline t :weight ultra-bold))
+  '((t :foreground "#DFAF8F" :height 1.25 :underline t :weight ultra-bold))
   "Ivy outline face for level 1")
 
 (defface oi-face-2
@@ -22,7 +25,7 @@
   "Ivy outline face for level 2")
 
 (defface oi-face-3
-  '((t :foreground "#8C5f66"))
+  '((t :foreground "#268bd2"))
   "Ivy outline face for level 3")
 
 ;;; Utils
@@ -35,7 +38,7 @@
 ;;;###autoload
 (defun oi-format-name (str level)
   "Format STR at LEVEL for ivy."
-  (concat (s-repeat (1- level) " ")
+  (concat (s-repeat (1- level) oi-prepend-header-char)
           str))
 
 ;;;###autoload
