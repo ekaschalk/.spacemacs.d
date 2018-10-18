@@ -33,22 +33,20 @@
   (cadar outshine-imenu-preliminary-generic-expression))
 
 ;;;###autoload
-(defun oi-format-name (STR LEVEL)
+(defun oi-format-name (str level)
   "Format STR at LEVEL for ivy."
-  (pcase LEVEL
-    (2 (format " %s" STR))
-    (3 (format "  %s" STR))
-    (_ STR)))
+  (concat (s-repeat (1- level) " ")
+          str))
 
 ;;;###autoload
-(defun oi-format-name-pretty (STR PARENTS LEVEL)
+(defun oi-format-name-pretty (str parents level)
   "Prepend invisible PARENTS to propertized STR at LEVEL."
   (concat (propertize
-           (concat (when LEVEL (number-to-string LEVEL))
-                   (apply 'concat PARENTS))
+           (concat (when level (number-to-string level))
+                   (apply 'concat parents))
            'invisible t)
-          (propertize (oi-format-name STR LEVEL)
-                      'face (pcase LEVEL
+          (propertize (oi-format-name str level)
+                      'face (pcase level
                               (1 'oi-face-1)
                               (2 'oi-face-2)
                               (3 'oi-face-3)))))
@@ -76,11 +74,15 @@
   (setq oi--parents-plist nil)
   (save-excursion
     (goto-char (point-min))
-    (-snoc (--unfold
-            (when (search-forward-regexp (oi-rgx) nil t)
-              (cons it (oi--collect-outline)))
-            nil)
-           (oi--collect-outline))))
+    ;; Not quite sure where the initial nil is coming from
+    ;; Was --unfold changed? Anyway this cdr fixes the regression of
+    ;; a nil being introduced at the head of the list of fontified outlines
+    (cdr
+     (-snoc (--unfold
+             (when (search-forward-regexp (oi-rgx) nil t)
+               (cons it (oi--collect-outline)))
+             nil)
+            (oi--collect-outline)))))
 
 ;;; Outline Jump
 
@@ -113,7 +115,3 @@
                         (with-ivy-window
                           (-> marker marker-position goto-char)
                           (recenter 2))))))
-
-;;; Binding
-
-(global-set-key (kbd "C-j") 'oi-jump)

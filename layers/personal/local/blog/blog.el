@@ -53,10 +53,3 @@
   (interactive)
   (--when-let (get-process blog-hugo-process)
     (delete-process it)))
-
-;;; Bindings
-
-(spacemacs/set-leader-keys
-  "ab" 'blog-deploy
-  "aa" 'blog-start-server
-  "ae" 'blog-end-server)
