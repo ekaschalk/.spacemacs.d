@@ -18,13 +18,11 @@
   "Replace sanitized WORD with ICON, PROPS and by default add to prompts."
   `(progn
      (add-to-list 'pretty-magit-alist
-                  (list (rx bow
-                            (group ,word (eval (if ,no-prompt? "" ":"))))
+                  (list (rx bow (group ,word (eval (if ,no-prompt? "" ":"))))
                         ,icon
                         ',props))
      (unless ,no-prompt?
-       (add-to-list 'pretty-magit-prompt
-                    (concat ,word ": ")))))
+       (add-to-list 'pretty-magit-prompt (concat ,word ": ")))))
 
 ;;;###autoload
 (defun pretty-magit-add-magit-faces ()
@@ -55,10 +53,8 @@
   "Magit prompt and insert commit header with faces."
   (interactive)
   (when pretty-magit--use-magit-commit-prompt?
-    (setq pretty-magit--use-magit-commit-prompt?
-          nil)
-    (insert (ivy-read "Commit Type "
-                      pretty-magit-prompt
+    (setq pretty-magit--use-magit-commit-prompt? nil)
+    (insert (ivy-read "Commit Type " pretty-magit-prompt
                       :require-match t
                       :sort t
                       :preselect "Add: "))
@@ -67,14 +63,9 @@
 
 ;;; Hooks
 
-(remove-hook 'git-commit-setup-hook
-             'with-editor-usage-message)
-(add-hook 'git-commit-setup-hook
-          'magit-commit-prompt)
+(remove-hook 'git-commit-setup-hook 'with-editor-usage-message)
+(add-hook    'git-commit-setup-hook 'magit-commit-prompt)
 
-(advice-add 'magit-status :after
-            'pretty-magit-add-magit-faces)
-(advice-add 'magit-refresh-buffer :after
-            'pretty-magit-add-magit-faces)
-(advice-add 'magit-commit :after
-            'pretty-magit-use-magit-commit-prompt)
+(advice-add 'magit-status         :after 'pretty-magit-add-magit-faces)
+(advice-add 'magit-refresh-buffer :after 'pretty-magit-add-magit-faces)
+(advice-add 'magit-commit         :after 'pretty-magit-use-magit-commit-prompt)

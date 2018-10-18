@@ -52,11 +52,11 @@
 ;;;###autoload
 (defun pretty-code-get-pairs (kwds)
   "Build an alist for prettify-symbols-alist from components from KWDS."
-  (-non-nil
-   (--map (when-let (major-mode-symbol (plist-get kwds it))
-           (list major-mode-symbol
-                 (plist-get pretty-code-choices it)))
-         pretty-code-choices)))
+  (->> pretty-code-choices
+     (--map (when-let (major-mode-symbol (plist-get kwds it))
+             (list major-mode-symbol
+                   (plist-get pretty-code-choices it))))
+     -non-nil))
 
 ;;;###autoload
 (defun pretty-code-set-pairs (hook-pairs-alist)
