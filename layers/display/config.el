@@ -4,18 +4,25 @@
 
 ;; Try out changes with `spacemacs/update-theme' to see theme updates
 ;; or alternatively run `spacemacs/cycle-spacemacs-theme' with 'SPC T n'.
-;; I do not style outlines level 4 or greater because I never go that deep.
+
+;; Theming updates are structured and modularized where possible.
+
+;; Changes of note:
+;; 1. All outline/org-level heading styling
+;; 2. Comments/strings are italicized
+;; 3. Transparent active and monochrome inactive modelines
+;; 4. Various small gradient changes to core font-lock-faces
 
 ;;; Configuration
 ;;;; Core
 
 (setq solarized-use-variable-pitch nil)
-(setq face-remapping-alist '(;; Headers
+(setq face-remapping-alist '(;; Headers - outlines match org
                              (outline-1 org-level-1)
                              (outline-2 org-level-2)
                              (outline-3 org-level-3)
 
-                             ;; Modeline
+                             ;; Modeline - invis. active, monochrome inactive
                              (powerline-active1        mode-line)
                              (powerline-active2        mode-line)
                              (spaceline-highlight-face mode-line)
@@ -102,15 +109,12 @@
         ,@display/org-blocks
 
         (avy-background-face :italic nil)
-        (font-lock-comment-face :italic t :weight normal)
         (fringe :background nil)))
 
 ;;;; Themes
 
 (setq display/solarized-light-theming
-      `(,@display/headers/solarized-light
-
-        ;; Overwrites
+      `(;; Overwrites
         (mode-line-inactive :background "#eee8d5"
                             ,@(alist-get 'mode-line-inactive
                                          display/mode-line))
@@ -126,9 +130,7 @@
         (sp-show-pair-match-face :background  "CadetBlue3")))
 
 (setq display/zenburn-theming
-      `(,@display/headers/zenburn
-
-        ;; Overwrites
+      `(;; Overwrites
         (font-lock-comment-face :foreground "gray50"
                                 ,@(alist-get 'font-lock-comment-face
                                              display/font-locks))
@@ -143,8 +145,12 @@
 
 ;;;; Set Modifications
 
+;; This variable is the only `theming' layer requirement to enable our theming
+
 (setq theming-modifications
       `((zenburn         ,@display/common-theming
+                         ,@display/headers/zenburn
                          ,@display/zenburn-theming)
         (solarized-light ,@display/common-theming
+                         ,@display/headers/solarized-light
                          ,@display/solarized-light-theming)))
