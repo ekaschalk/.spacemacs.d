@@ -112,7 +112,9 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
    ;; Display
    dotspacemacs-themes       '(zenburn
                                solarized-light)
-   dotspacemacs-default-font `("operator mono medium"
+   dotspacemacs-default-font `(,(if (x-list-fonts "Operator Mono")
+                                    "operator mono medium"
+                                  "Source Code Pro")
                                :size ,(cond (mac? 18) (desktop? 20) (t 34))
                                :powerline-scale 1.5)
 
