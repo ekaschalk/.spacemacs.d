@@ -12,9 +12,6 @@
 ;; `init.el' sets-up spacemacs, defining required `dotspacemacs/...' funcs & vars.
 ;; `outline-minor-mode' and extension `outshine-mode' will help with navigation.
 
-(defvar ERIC-ONLY? t
-  "Set to nil. Calls load-file's on personal files.")
-
 (defvar linux?   (eq system-type 'gnu/linux)     "Are we on a linux machine?")
 (defvar mac?     (eq system-type 'darwin)        "Are we on a macOS machine?")
 (defvar windows? (not (or linux? mac?))          "Are we on a windows machine?")
@@ -164,7 +161,8 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   "Configuration that cannot be delegated to layers."
   (dotspacemacs/user-config/toggles)
   (dotspacemacs/user-config/eric-only)
-  (when ERIC-ONLY? (dotspacemacs/user-config/experiments)))
+  (when (string= "Eric Kaschalk" (user-full-name))
+    (dotspacemacs/user-config/experiments)))
 
 ;;;;; Toggles
 
