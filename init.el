@@ -12,10 +12,18 @@
 ;; `init.el' sets-up spacemacs, defining required `dotspacemacs/...' funcs & vars.
 ;; `outline-minor-mode' and extension `outshine-mode' will help with navigation.
 
+(defvar eric?    (string= "Eric Kaschalk" (user-full-name)) "Am I me?")
 (defvar linux?   (eq system-type 'gnu/linux)     "Are we on a linux machine?")
 (defvar mac?     (eq system-type 'darwin)        "Are we on a macOS machine?")
 (defvar windows? (not (or linux? mac?))          "Are we on a windows machine?")
 (defvar desktop? (= 1440 (display-pixel-height)) "Am I on my desktop?")
+
+(defvar dotspacemacs/font
+  (if (x-list-fonts "Operator Mono")
+      "operator mono medium"  ; Personally used but a paid font
+    "Source Code Pro")
+
+  "Font name to use, defaulting to Source Code Pro.")
 
 ;;; Layer Declarations
 ;;;; Local
@@ -66,14 +74,13 @@
     emacs-lisp
     hy
     javascript
-    rust
 
     (haskell :variables
              haskell-completion-backend 'intero)
     (python :variables
             python-test-runner 'pytest
             :packages
-            (not importmagic)))  ; Broken????
+            (not importmagic)))
 
   "Programming and markup language layers.")
 
@@ -100,6 +107,13 @@ All `dotspacemacs-' variables with values set different than their defaults.
 They are all defined in `~/.emacs.d/core/core-dotspacemacs.el'.
 Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   (setq-default
+   ;; Display
+   dotspacemacs-default-font `(,dotspacemacs/font
+                               :size ,(cond (mac? 18) (desktop? 20) (t 34))
+                               :powerline-scale 1.5)
+   dotspacemacs-themes       '(solarized-light
+                               zenburn)
+
    ;; Editing settings
    dotspacemacs-editing-style '(vim :variables
                                     vim-style-visual-feedback t
@@ -108,15 +122,6 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
    ;; Elpa
    dotspacemacs-elpa-https        nil
    dotspacemacs-elpa-subdirectory nil
-
-   ;; Display
-   dotspacemacs-themes       '(zenburn
-                               solarized-light)
-   dotspacemacs-default-font `(,(if (x-list-fonts "Operator Mono")
-                                    "operator mono medium"
-                                  "Source Code Pro")
-                               :size ,(cond (mac? 18) (desktop? 20) (t 34))
-                               :powerline-scale 1.5)
 
    ;; General
    dotspacemacs-auto-generate-layout-names  t
@@ -144,9 +149,30 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
    ;; Packages
    dotspacemacs-additional-packages '(solarized-theme
                                       faceup)
-   dotspacemacs-excluded-packages   '(fringe
-                                      importmagic
-                                      scss-mode)
+   dotspacemacs-excluded-packages   '(;; Must Exclude
+                                      fringe      ; For styling reasons
+                                      importmagic ; Python pkg was broken for me
+                                      scss-mode   ; We overwrite this mode
+
+                                      ;; Packages I don't use
+                                      anzu
+                                      centered-cursor-mode
+                                      column-enforce-mode
+                                      company-statistics
+                                      doom-modeline
+                                      eshell-prompt-extras
+                                      evil-anzu
+                                      evil-mc
+                                      evil-tutor
+                                      fancy-battery
+                                      fill-column-indicator
+                                      gnuplot
+                                      golden-ratio
+                                      indent-guide
+                                      live-py-mode
+                                      multiple-cursors
+                                      mwim
+                                      neotree)
    dotspacemacs-frozen-packages     '()
    ))
 
@@ -163,8 +189,7 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   "Configuration that cannot be delegated to layers."
   (dotspacemacs/user-config/toggles)
   (dotspacemacs/user-config/eric-only)
-  (when (string= "Eric Kaschalk" (user-full-name))
-    (dotspacemacs/user-config/experiments)))
+  (when eric? (dotspacemacs/user-config/experiments)))
 
 ;;;;; Toggles
 
