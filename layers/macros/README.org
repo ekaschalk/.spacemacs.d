@@ -5,6 +5,9 @@
 Macros layer serves as a base layer that all other personal packages declare
 dependence on in their respective ~layers.el~.
 
+I try to be reasonable with defining a minimal amount of macros to make
+copy-pasting components of my config easier.
+
 It allows:
 
 1. Certain universal packages (dash, dash-functional, s) to be guaranteed by a
@@ -12,19 +15,11 @@ It allows:
    layer.
 2. Universally useful functions to also be made available.
 
-It functions by:
-
-1. Taking ownership of the (previously un-owned) packages.
-2. Requiring the local package ~macros~ which declares dependence on each
-   package.
-3. Forcing loading of universal packages via the ~:after~ clause.
-
-Now we have universally useful functions and libraries guaranteed loaded with
-only a single, explicit call to the ~macros~ package, which is made visible to
-other layers by requiring the ~macros~ layer in its ~layers.el~.
-
 This enables the seemingly-but-not-actually simple idea of a core set of
 packages beyond what is defined in ~spacemacs-bootstrap~.
+
+Note that in-fact ~dash~ actually is available always as its loaded in
+~.emacs.d/core/core-documentation~.
 
 ** Macros and Functions
 

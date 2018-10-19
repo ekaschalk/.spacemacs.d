@@ -2,22 +2,12 @@
 
 * Description
 
-Display houses all theming configuration and my ~pretty~ packages.
+~config.el~ hosts my many theming updates, atm to ~zenburn~ and ~solarized-light~.
 
-- ~pretty-code~ :: Program with custom ligatures and symbols, see
-                   [[http://www.modernemacs.com/post/prettify-mode/][mathematical notation in emacs]].
-- ~pretty-eshell~ :: Customize eshell information and faces, see
-                     [[http://www.modernemacs.com/post/custom-eshell/][making eshell your own]].
-- ~pretty-fonts~ :: All the icons and Fira Code ligature integration.
-- ~pretty-magit~ :: Commit leaders integration and stylizing, see
-                    [[http://www.modernemacs.com/post/pretty-magit/][pretty magit - integrating commit leaders]].
-- ~pretty-outlines~ :: Fancy outline bullets and ellispis, see
-                       [[http://www.modernemacs.com/post/outline-bullets/][fancy outline bullets]].
+~packages.el~ configures my ~pretty~ packages and other display-related pkgs.
 
-I currently use the ~solarized~ theme. All theme updates are found ~config.el~.
-
-~packages.el~ contains all pretty package configuration, the local packages just
-define the functions.
+See the project root README for short descriptions of each pretty package and
+associated blog posts.
 
 * Screenshots
 ** Pretty-code/Pretty-fonts
