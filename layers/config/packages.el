@@ -5,6 +5,7 @@
         outshine
 
         ;; Elsewhere-owned packages with trivial config
+        aggressive-indent
         yasnippet
 
         ;; Elsehwere-owned packages
@@ -59,6 +60,13 @@
 
 (defun config/pre-init-yasnippet ()
   (global-set-key (kbd "C-SPC") 'hippie-expand))
+
+;;;; Aggressive Indent
+
+(defun config/post-init-aggressive-indent ()
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+  (add-hook 'clojure-mode-hook    #'aggressive-indent-mode)
+  (add-hook 'hy-mode-hook         #'aggressive-indent-mode))
 
 ;;; Local Packages
 

@@ -79,8 +79,7 @@
              haskell-completion-backend 'intero)
     (python :variables
             python-test-runner 'pytest
-            :packages
-            (not importmagic)))
+            python-spacemacs-indent-guess nil))
 
   "Programming and markup language layers.")
 
@@ -196,7 +195,6 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 (defun dotspacemacs/user-config/toggles ()
   "Spacemacs toggles not intended to be put into layers."
   (spacemacs/toggle-mode-line-minor-modes-off)
-  (spacemacs/toggle-aggressive-indent-globally-on)
   (global-highlight-parentheses-mode 1)
   (rainbow-delimiters-mode-enable)
   (fringe-mode '(0 . 8)))
