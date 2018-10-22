@@ -231,11 +231,13 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
     ;; layer loading or Emacs will break. So right now dumping this here.
     ;; This just enables pretty-fonts to effect the initial frame.
     ;; All future frames are handled via `after-make-frame-functions'.
-    (display/init-pretty-fonts/kwds     'noframe)
-    (display/init-pretty-fonts/fontsets 'noframe)
+    (when (configuration-layer/package-used-p 'pretty-fonts)
+      (display/init-pretty-fonts/kwds     'noframe)
+      (display/init-pretty-fonts/fontsets 'noframe))
 
     ;; While toggling with `toggle-frame-fullscreen' works, I could not get
     ;; it to work as a hook attached to the frame-make or window-setup.
     ;; Depending on your OS, you may need a different/not-at-all need this.
-    (add-to-list 'default-frame-alist '(fullscreen . fullboth)))
+    (when mac?
+      (add-to-list 'default-frame-alist '(fullscreen . fullboth))))
   )
