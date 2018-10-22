@@ -226,7 +226,7 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 
 (defun dotspacemacs/user-config/experiments ()
   "Space for trying out configuration updates."
-  (when (and server? mac?)
+  (when server?
     ;; The set-fontset has to be done later in the process than the
     ;; layer loading or Emacs will break. So right now dumping this here.
     ;; This just enables pretty-fonts to effect the initial frame.
