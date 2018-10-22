@@ -123,14 +123,14 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
    dotspacemacs-elpa-subdirectory nil
 
    ;; General
-   dotspacemacs-auto-generate-layout-names  t
-   dotspacemacs-fullscreen-at-startup       t
-   dotspacemacs-large-file-size             5
-   dotspacemacs-pretty-docs                 t
-   dotspacemacs-search-tools                '("ag" "rg" "pt" "ack" "grep")
-   dotspacemacs-scratch-mode                'org-mode
-   dotspacemacs-startup-lists               nil
-   dotspacemacs-whitespace-cleanup          'trailing
+   dotspacemacs-auto-generate-layout-names t
+   dotspacemacs-fullscreen-at-startup      t
+   dotspacemacs-large-file-size            5
+   dotspacemacs-pretty-docs                t
+   dotspacemacs-search-tools               '("ag" "rg" "pt" "ack" "grep")
+   dotspacemacs-scratch-mode               'org-mode
+   dotspacemacs-startup-lists              nil
+   dotspacemacs-whitespace-cleanup         'trailing
    ))
 
 ;;;; Spacemacs/layers

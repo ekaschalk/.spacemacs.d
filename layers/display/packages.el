@@ -230,14 +230,20 @@
 (defun display/init-pretty-mode ()
   (use-package pretty-mode
     :config (progn
+              ;; I *only* use greek letter replacements at the moment
               (global-pretty-mode t)
 
               (pretty-deactivate-groups
                '(:equality :ordering :ordering-double :ordering-triple
                            :arrows :arrows-twoheaded :punctuation
-                           :logic :sets))
+                           :logic :sets
+
+                           ;; This is the only one I go back and forth on
+                           ;; It uses the empty-set for nil, None, etc.
+                           ;; :nil
+                           ))
               (pretty-activate-groups
-               '(:greek :arithmetic-nary)))))
+               '(:greek)))))
 
 ;;;; Prettify-utils
 
