@@ -87,36 +87,39 @@
 (defun display/init-pretty-fonts ()
   (use-package pretty-fonts
     :config (progn
-              (setq pretty-fonts-hy-font '(("\\(self\\)" ?⊙)))
+              (defun display/init-pretty-fonts/kwds (frame)
+                (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+                (pretty-fonts-set-kwds
+                 '((pretty-fonts-fira-font prog-mode-hook org-mode-hook))))
 
-              (pretty-fonts-set-kwds
-               '(;; Fira Code Ligatures
-                 (pretty-fonts-fira-font prog-mode-hook org-mode-hook)
+              (defun display/init-pretty-fonts/fontsets (frame)
+                (pretty-fonts-set-fontsets
+                 '(
+                   ;; All-the-icons fontsets
+                   ("fontawesome"
+                    ;;                         
+                    #xf07c #xf0c9 #xf0c4 #xf0cb #xf017 #xf101)
 
-                 ;; Other ligatures that are easier to define as simple
-                 ;; regexes so as to avoid `prettify-symbols-compose-predicate'
-                 (pretty-fonts-hy-font hy-mode-hook)))
+                   ("all-the-icons"
+                    ;;    
+                    #xe907 #xe928)
 
-              (pretty-fonts-set-fontsets
-               '(
-                 ;; All-the-icons fontsets
-                 ("fontawesome"
-                  ;;                         
-                  #xf07c #xf0c9 #xf0c4 #xf0cb #xf017 #xf101)
+                   ("github-octicons"
+                    ;;                          
+                    #xf091 #xf059 #xf076 #xf075 #xe192  #xf016)
 
-                 ("all-the-icons"
-                  ;;    
-                  #xe907 #xe928)
+                   ("material icons"
+                    ;;        
+                    #xe871 #xe918 #xe3e7
+                    ;;              
+                    #xe3d0 #xe3d1 #xe3d2 #xe3d4))))
 
-                 ("github-octicons"
-                  ;;                          
-                  #xf091 #xf059 #xf076 #xf075 #xe192  #xf016)
-
-                 ("material icons"
-                  ;;        
-                  #xe871 #xe918 #xe3e7
-                  ;;              
-                  #xe3d0 #xe3d1 #xe3d2 #xe3d4))))))
+              (if server?
+                  (spacemacs/add-to-hook 'after-make-frame-functions
+                                         '(display/init-pretty-fonts/kwds
+                                           display/init-pretty-fonts/fontsets))
+                (display/init-pretty-fonts/kwds     'noframe)
+                (display/init-pretty-fonts/fontsets 'noframe)))))
 
 ;;;; Pretty-magit
 

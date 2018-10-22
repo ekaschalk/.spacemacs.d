@@ -8,9 +8,11 @@
 ;;
 ;; Personal layers host most of my configuration - see README.
 ;; Ligatures and icons require installation - see README.
+;; Configure `server?' to true if you use emacs as a daemon.
 ;;
-;; `init.el' sets-up spacemacs, defining required `dotspacemacs/...' funcs & vars.
+;; `init.el' sets spacemacs up, defining required `dotspacemacs/..' funcs & vars.
 ;; `outline-minor-mode' and extension `outshine-mode' will help with navigation.
+
 
 (defvar eric?    (string= "Eric Kaschalk" (user-full-name)) "Am I me?")
 (defvar linux?   (eq system-type 'gnu/linux)     "Are we on a linux machine?")
@@ -18,12 +20,14 @@
 (defvar windows? (not (or linux? mac?))          "Are we on a windows machine?")
 (defvar desktop? (= 1440 (display-pixel-height)) "Am I on my desktop?")
 
+(defvar server? (if eric? t nil)
+  "Alias for `dotspacemacs-enable-server', defaults to nil for non-eric users.")
+
 (defvar dotspacemacs/font
   (if (x-list-fonts "Operator Mono")
       "operator mono medium"  ; Personally used but a paid font
     "Source Code Pro")
-
-  "Font name to use, defaulting to Source Code Pro.")
+  "Font name to use, defaulting to Source Code Pro for non-eric users.")
 
 ;;; Layer Declarations
 ;;;; Local
@@ -112,6 +116,10 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
                                :powerline-scale 1.5)
    dotspacemacs-themes       '(solarized-light
                                zenburn)
+
+   ;; Server
+   dotspacemacs-enable-server     server?
+   dotspacemacs-persistent-server server?
 
    ;; Editing settings
    dotspacemacs-editing-style '(vim :variables
@@ -203,15 +211,31 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 
 (defun dotspacemacs/user-config/eric-only ()
   "Personal configuration updates and experiments."
+  ;; Hy-mode stuff
   ;; (setq find-function-C-source-directory "~/dev/emacs-dev/src")
   ;; (load-file "~/dev/hy-mode/hy-mode.el")
   ;; (load-file "~/dev/hy-mode/hy-personal.el")
   ;; (require 'hy-mode)
   ;; (require 'hy-personal)
+
+  ;; Emacs-anywhere defaults to org-mode rather than markdown-mode
+  (add-hook 'ea-popup-hook (lambda (&rest args) (org-mode)))
   )
 
 ;;;;; Experiments
 
 (defun dotspacemacs/user-config/experiments ()
   "Space for trying out configuration updates."
+  (when (and server? mac?)
+    ;; The set-fontset has to be done later in the process than the
+    ;; layer loading or Emacs will break. So right now dumping this here.
+    ;; This just enables pretty-fonts to effect the initial frame.
+    ;; All future frames are handled via `after-make-frame-functions'.
+    (display/init-pretty-fonts/kwds     'noframe)
+    (display/init-pretty-fonts/fontsets 'noframe)
+
+    ;; While toggling with `toggle-frame-fullscreen' works, I could not get
+    ;; it to work as a hook attached to the frame-make or window-setup.
+    ;; Depending on your OS, you may need a different/not-at-all need this.
+    (add-to-list 'default-frame-alist '(fullscreen . fullboth)))
   )

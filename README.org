@@ -44,6 +44,11 @@ I focus on customizing Emacs's display in unique ways.
     The easiest way to install it is running ~M-x all-the-icons-install-fonts~.
     In that file you can customize which icons to include and change.
 
+*** Server
+
+    If you use Emacs as a daemon, have ~server?~ true in the leading lines of
+    ~init.el~. It is nil by default for users other than myself.
+
 *** Personalization
 
     Style your font in ~dotspacemacs-default-font~ in ~init.el~ as normal.

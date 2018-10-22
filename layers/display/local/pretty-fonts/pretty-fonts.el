@@ -123,5 +123,3 @@
     ("[^:=]\\(:\\)[^:=]"           #Xe16c)
     ("\\(<=\\)"                    #Xe157))
   "Fira font ligatures and their regexes")
-
-(set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
