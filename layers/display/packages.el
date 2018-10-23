@@ -45,19 +45,28 @@
     :after macros
 
     :config (progn
+              ;; Change default banner message
+              (setq eshell-banner-message
+                    (s-concat (s-repeat 20 "---") "\n" (s-repeat 20 "---")))
+
+              ;; More prompt styling
+              (setq pretty-eshell-header "\n︳")
+              (setq pretty-eshell-prompt-string " ")
+
+              ;; ~ Sections ~
               ;; Directory
               (pretty-eshell-section
                esh-dir
                "\xf07c"  ; 
                (abbreviate-file-name (eshell/pwd))
-               '(:foreground "gold" :bold ultra-bold :underline t))
+               '(:foreground "#268bd2" :bold bold :underline t))
 
               ;; Git Branch
               (pretty-eshell-section
                esh-git
                "\xe907"  ; 
                (magit-get-current-branch)
-               '(:foreground "pink"))
+               '(:foreground "#8D6B94"))
 
               ;; Python Virtual Environment
               (pretty-eshell-section
@@ -109,8 +118,8 @@
                     #xf091 #xf059 #xf076 #xf075 #xe192  #xf016)
 
                    ("material icons"
-                    ;;        
-                    #xe871 #xe918 #xe3e7
+                    ;;              
+                    #xe871 #xe918 #xe3e7  #xe5da
                     ;;              
                     #xe3d0 #xe3d1 #xe3d2 #xe3d4))))
 
