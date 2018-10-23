@@ -195,8 +195,8 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 (defun dotspacemacs/user-config ()
   "Configuration that cannot be delegated to layers."
   (dotspacemacs/user-config/toggles)
-  (dotspacemacs/user-config/eric-only)
-  (when eric? (dotspacemacs/user-config/experiments)))
+  (when eric? (dotspacemacs/user-config/eric-only))
+  (dotspacemacs/user-config/experiments))
 
 ;;;;; Toggles
 
