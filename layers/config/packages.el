@@ -20,7 +20,7 @@
         (clojure-config :location local)
         (python-config  :location local)
 
-        ;; Special Package
+        ;; Special Packages
         (undo-spacemacs :location local)))
 
 ;;; Owned Packages
@@ -111,11 +111,14 @@
 (defun config/init-undo-spacemacs ()
   (use-package undo-spacemacs
     :after macros
-    :config (setq undo-spacemacs-bindings-alist
-                  '(;; A - applications
-                    ("ad" deer)
-                    ("ak" spacemacs/paradox-list-packages)
+    :config
+    ;; The `undo-spacemacs-bindings' is performed in `init.el' in
+    ;; user-config section: `dotspacemacs/user-config/post-layer-load-config'
+    (setq undo-spacemacs-bindings-alist
+          '(;; A - applications
+            ("ad" deer)
+            ("ak" spacemacs/paradox-list-packages)
 
-                    ;; C - capture/colors
-                    ("Cc" org-capture)
-                    ))))
+            ;; C - capture/colors
+            ("Cc" org-capture)
+            ))))

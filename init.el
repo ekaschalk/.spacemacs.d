@@ -10,7 +10,7 @@
 ;; Ligatures and icons require installation - see README.
 ;;
 ;; Configure `server?' to true if you use emacs as a daemon.
-;; Configure `undo-bindings?' to true if you want my binding trimmings.
+;; Configure `undo-bindings?' to true if you want my trimmed leader keybindings.
 ;;
 ;; `init.el' sets spacemacs up, defining required `dotspacemacs/..' funcs & vars.
 ;; `outline-minor-mode' and extension `outshine-mode' will help with navigation.
@@ -26,14 +26,14 @@
   "Undo bindings in `undo-spacemacs-bindings-alist' in `config/packges.el'?")
 
 (defvar server? (if eric? t nil)
-  "Alias for `dotspacemacs-enable-server', ligatures require server-dep config.
+  "Alias for `dotspacemacs-enable-server' and friends.
 
-Defaults to nil for non-eric users.")
+Defaults to nil for non-eric users. Ligatures require server-dependent config.")
 
 (defvar dotspacemacs/font (if (x-list-fonts "Operator Mono")
                               "operator mono medium"
                             "Source Code Pro")
-  "Font name to use.
+  "Font name to use in `dotspacemacs-default-font'.
 
 Defaults to Source Code Pro for non-eric users. My font is a paid font.")
 

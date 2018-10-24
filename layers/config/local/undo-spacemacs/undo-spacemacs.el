@@ -1,5 +1,5 @@
-;; A pkg for wrapping undoing spacemacs bindings with warnings for
-;; when things change
+;; A pkg for wrapping undoing spacemacs leader bindings with warnings for
+;; when keybindings change. The alist is configured in the config/packages.el.
 
 (require 'dash)
 (require 'dash-functional)
@@ -16,14 +16,7 @@
   (let* ((full-prefix (concat dotspacemacs-leader-key " " key))
          (full-emacs-prefix (concat dotspacemacs-emacs-leader-key " " key))
          (cur-def (lookup-key (current-global-map) (kbd full-emacs-prefix)))
-
-         (def-changed? (not (eq cur-def old-def)))
-
-         ;; (def-changed? (and (not (null cur-def))
-         ;;                    (symbolp cur-def)
-         ;;                    (not (string= (symbol-name cur-def)
-         ;;                                  (symbol-name old-def)))))
-         )
+         (def-changed? (not (eq cur-def old-def))))
     (cond ((not cur-def) (display-warning
                           :warning
                           (format
