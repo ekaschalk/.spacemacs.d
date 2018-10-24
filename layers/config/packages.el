@@ -19,7 +19,9 @@
         ;; Elsewhere-owned packages for languages
         (clojure-config :location local)
         (python-config  :location local)
-        ))
+
+        ;; Special Package
+        (undo-spacemacs :location local)))
 
 ;;; Owned Packages
 ;;;; Outshine
@@ -103,3 +105,17 @@
 (defun config/init-python-config ()
   (use-package python-config
     :after python))
+
+;;; Special Packages
+
+(defun config/init-undo-spacemacs ()
+  (use-package undo-spacemacs
+    :after macros
+    :config (setq undo-spacemacs-bindings-alist
+                  '(;; A - applications
+                    ("ad" deer)
+                    ("ak" spacemacs/paradox-list-packages)
+
+                    ;; C - capture/colors
+                    ("Cc" org-capture)
+                    ))))

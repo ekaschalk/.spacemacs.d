@@ -1,5 +1,6 @@
 # Person-person files
 .spacemacs.env
+.custom-settings.el
 
 # Transitory
 .#*

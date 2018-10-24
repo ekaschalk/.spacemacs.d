@@ -8,7 +8,9 @@
 ;;
 ;; Personal layers host most of my configuration - see README.
 ;; Ligatures and icons require installation - see README.
+;;
 ;; Configure `server?' to true if you use emacs as a daemon.
+;; Configure `undo-bindings?' to true if you want my binding trimmings.
 ;;
 ;; `init.el' sets spacemacs up, defining required `dotspacemacs/..' funcs & vars.
 ;; `outline-minor-mode' and extension `outshine-mode' will help with navigation.
@@ -20,14 +22,20 @@
 (defvar windows? (not (or linux? mac?))          "Are we on a windows machine?")
 (defvar desktop? (= 1440 (display-pixel-height)) "Am I on my desktop?")
 
-(defvar server? (if eric? t nil)
-  "Alias for `dotspacemacs-enable-server', defaults to nil for non-eric users.")
+(defvar undo-bindings? (if eric? t nil)
+  "Undo bindings in `undo-spacemacs-bindings-alist' in `config/packges.el'?")
 
-(defvar dotspacemacs/font
-  (if (x-list-fonts "Operator Mono")
-      "operator mono medium"  ; Personally used but a paid font
-    "Source Code Pro")
-  "Font name to use, defaulting to Source Code Pro for non-eric users.")
+(defvar server? (if eric? t nil)
+  "Alias for `dotspacemacs-enable-server', ligatures require server-dep config.
+
+Defaults to nil for non-eric users.")
+
+(defvar dotspacemacs/font (if (x-list-fonts "Operator Mono")
+                              "operator mono medium"
+                            "Source Code Pro")
+  "Font name to use.
+
+Defaults to Source Code Pro for non-eric users. My font is a paid font.")
 
 ;;; Layer Declarations
 ;;;; Local
@@ -139,6 +147,12 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
    dotspacemacs-scratch-mode               'org-mode
    dotspacemacs-startup-lists              nil
    dotspacemacs-whitespace-cleanup         'trailing
+
+   ;; Defs required for 'SPC f e R' `dotspacemacs/sync-configuration-layers'
+   dotspacemacs-mode-line-theme   'all-the-icons
+   dotspacemacs-leader-key        "SPC"
+   dotspacemacs-emacs-leader-key  "M-m"
+   dotspacemacs-emacs-command-key "SPC"
    ))
 
 ;;;; Spacemacs/layers
@@ -187,7 +201,7 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 
 (defun dotspacemacs/user-init ()
   "Package independent settings to run before `dotspacemacs/user-config'."
-  (setq custom-file "./elisp/.custom-settings.el"))
+  (setq custom-file "~/.spacemacs.d/.custom-settings.el"))
 
 ;;;; Spacemacs/user-config
 ;;;;; Core
@@ -195,37 +209,27 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 (defun dotspacemacs/user-config ()
   "Configuration that cannot be delegated to layers."
   (dotspacemacs/user-config/toggles)
-  (when eric? (dotspacemacs/user-config/eric-only))
+  (dotspacemacs/user-config/post-layer-load-config)
+  (dotspacemacs/user-config/eric-only)
   (dotspacemacs/user-config/experiments))
 
 ;;;;; Toggles
 
 (defun dotspacemacs/user-config/toggles ()
-  "Spacemacs toggles not intended to be put into layers."
+  "Spacemacs toggles should not be put into layers, per Spacemacs docs."
   (spacemacs/toggle-mode-line-minor-modes-off)
   (global-highlight-parentheses-mode 1)
   (rainbow-delimiters-mode-enable)
   (fringe-mode '(0 . 8)))
 
-;;;;; Personal
+;;;;; Post Layer Load
 
-(defun dotspacemacs/user-config/eric-only ()
-  "Personal configuration updates and experiments."
-  ;; Hy-mode stuff
-  ;; (setq find-function-C-source-directory "~/dev/emacs-dev/src")
-  ;; (load-file "~/dev/hy-mode/hy-mode.el")
-  ;; (load-file "~/dev/hy-mode/hy-personal.el")
-  ;; (require 'hy-mode)
-  ;; (require 'hy-personal)
+(defun dotspacemacs/user-config/post-layer-load-config ()
+  "Configuration that must take place *after all* layers/pkgs are instantiated."
+  (when (and undo-bindings?
+             (configuration-layer/package-used-p 'undo-spacemacs))
+    (undo-spacemacs-bindings))
 
-  ;; Emacs-anywhere defaults to org-mode rather than markdown-mode
-  (add-hook 'ea-popup-hook (lambda (&rest args) (org-mode)))
-  )
-
-;;;;; Experiments
-
-(defun dotspacemacs/user-config/experiments ()
-  "Space for trying out configuration updates."
   (when server?
     ;; The set-fontset has to be done later in the process than the
     ;; layer loading or Emacs will break. So right now dumping this here.
@@ -239,5 +243,28 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
     ;; it to work as a hook attached to the frame-make or window-setup.
     ;; Depending on your OS, you may need a different/not-at-all need this.
     (when mac?
-      (add-to-list 'default-frame-alist '(fullscreen . fullboth))))
+      (add-to-list 'default-frame-alist '(fullscreen . fullboth)))))
+
+;;;;; Personal
+
+(defun dotspacemacs/user-config/eric-only ()
+  "Personal configuration updates and experiments."
+  (when eric?
+    ;; Emacs-anywhere defaults to org-mode rather than markdown-mode
+    (add-hook 'ea-popup-hook (lambda (&rest args) (org-mode)))
+
+    ;; Hy-mode development
+    ;; (load-file "~/dev/hy-mode/hy-mode.el")
+    ;; (load-file "~/dev/hy-mode/hy-personal.el")
+    ;; (require 'hy-mode)
+    ;; (require 'hy-personal)
+
+    ;; Emacs-core development
+    ;; (setq find-function-C-source-directory "~/dev/emacs-dev/src")
+    ))
+
+;;;;; Experiments
+
+(defun dotspacemacs/user-config/experiments ()
+  "Space for trying out configuration updates."
   )
