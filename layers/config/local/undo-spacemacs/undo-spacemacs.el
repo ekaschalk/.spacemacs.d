@@ -9,9 +9,11 @@
 ;;; Undo-spacemacs
 
 (defvar undo-spacemacs-bindings-alist nil
-  "An alist of key/old-def to execute `undo-spacemacs/set-leader-keys' over.")
+  "An alist of key/old-def to execute `undo-spacemacs/set-leader-keys' over.
 
-(defun undo-spacemacs-set-leader-keys (key old-def)
+Optionally, a new-def can be included in any ele to indicate a new binding.")
+
+(defun undo-spacemacs-set-leader-keys (key old-def &optional new-def)
   "Undo leader binding KEY, warning if OLD-DEF has changed or isn't bound."
   (let* ((full-prefix (concat dotspacemacs-leader-key " " key))
          (full-emacs-prefix (concat dotspacemacs-emacs-leader-key " " key))
@@ -30,7 +32,7 @@
                                   "has changed from previous `%s' to `%s'. "
                                   "Not undoing the binding.")
                           full-prefix old-def cur-def)))
-          (t (spacemacs/set-leader-keys key nil)))))
+          (t (spacemacs/set-leader-keys key new-def)))))
 
 (defun undo-spacemacs-bindings ()
   "Run `undo-spacemacs-set-leader-keys' over `undo-spacemacs-bindings-alist'."
