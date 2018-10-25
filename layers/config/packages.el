@@ -115,10 +115,38 @@
     ;; The `undo-spacemacs-bindings' is performed in `init.el' in
     ;; user-config section: `dotspacemacs/user-config/post-layer-load-config'
     (setq undo-spacemacs-bindings-alist
-          '(;; A - applications
+          '(;; Top-level
+            ("!" shell-command)
+            ("'" spacemacs/default-pop-shell)
+            ("0" neotree-show)
+            ("?" counsel-descbinds)
+            ("`" winum-select-window-by-number)
+
+            ;; A - applications
             ("ad" deer)
             ("ak" spacemacs/paradox-list-packages)
 
+            ;; B - buffers
+            ("bB" spacemacs-layouts/non-restricted-buffer-list-ivy)
+            ("bh" spacemacs/home)
+            ("be" spacemacs/safe-erase-buffer)
+            ("bn" next-buffer)
+            ("bp" previous-buffer)
+            ("bR" spacemacs/safe-revert-buffer)
+            ("bw" read-only-mode)
+            ("bY" spacemacs/copy-whole-buffer-to-clipboard)
+            ("b C-d"   spacemacs/kill-other-buffers)
+            ("b C-S-d" spacemacs/kill-matching-buffers-rudely)
+
             ;; C - capture/colors
             ("Cc" org-capture)
-            ))))
+            ))
+
+    ;; Additional bindings behind another prefix to remove:
+    ;; ("ase" spacemacs/shell-pop-eshell)
+    ;; ("asi" spacemacs/shell-pop-shell)
+    ;; ("asm" spacemacs/shell-pop-multiterm)
+    ;; ("asT" spacemacs/shell-pop-term)
+    ;; ("ast" spacemacs/shell-pop-ansi-term)
+    ;; bN
+    ))

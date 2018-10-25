@@ -23,7 +23,7 @@
 (defvar desktop? (= 1440 (display-pixel-height)) "Am I on my desktop?")
 
 (defvar undo-bindings? (if eric? t nil)
-  "Undo bindings in `undo-spacemacs-bindings-alist' in `config/packges.el'?")
+  "Undo bindings in `undo-spacemacs-bindings-alist' in `config/packages.el'?")
 
 (defvar server? (if eric? t nil)
   "Alias for `dotspacemacs-enable-server' and friends.
