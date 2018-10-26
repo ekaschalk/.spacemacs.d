@@ -114,91 +114,109 @@
     :config
     ;; The `undo-spacemacs-bindings' is performed in `init.el' in
     ;; user-config section: `dotspacemacs/user-config/post-layer-load-config'
-    (setq undo-spacemacs-bindings-alist
-          '(;; Top-level
-            ("!" shell-command)
-            ("'" spacemacs/default-pop-shell)
-            ("0" neotree-show)
-            ("?" counsel-descbinds)
-            ("`" winum-select-window-by-number)
+    (progn
+      (setq undo-spacemacs-prefixes-list
+            '("C"   ; capture/colors
+              "a s"  ; shells
+              "b N"  ; new buffers
+              "f v"  ; file/dir-local-variables
+              "f C"  ; files/convert
+              ))
+      (setq undo-spacemacs-bindings-alist
+            '(;; Top-level
+              ("!" shell-command)
+              ("'" spacemacs/default-pop-shell)
+              ("0" neotree-show)
+              ("?" counsel-descbinds)
+              ("`" winum-select-window-by-number)
 
-            ;; A - applications
-            ("ad" deer)
-            ("ak" spacemacs/paradox-list-packages)
+              ;; A - applications
+              ("ad" deer)
+              ("ak" spacemacs/paradox-list-packages)
 
-            ;; B - buffers
-            ("b." spacemacs/buffer-transient-state/body)
-            ("bB" spacemacs-layouts/non-restricted-buffer-list-ivy)
-            ("bD" spacemacs/ace-kill-this-buffer)
-            ("bh" spacemacs/home
-             spacemacs/switch-to-help-buffer)
-            ("bH" spacemacs/switch-to-help-buffer)
-            ("be" spacemacs/safe-erase-buffer)
-            ("bb" ivy-switch-buffer
-             ibuffer)
-            ("bI" ibuffer)
-            ("bn" next-buffer)
-            ("bp" previous-buffer)
-            ("bP" spacemacs/copy-clipboard-to-whole-buffer)
-            ("bR" spacemacs/safe-revert-buffer)
-            ("bw" read-only-mode)
-            ("bW" spacemacs/goto-buffer-workspace)
-            ("bY" spacemacs/copy-whole-buffer-to-clipboard)
-            ("b C-d"   spacemacs/kill-other-buffers)
-            ("b C-S-d" spacemacs/kill-matching-buffers-rudely)
+              ;; B - buffers
+              ("b." spacemacs/buffer-transient-state/body)
+              ("bB" spacemacs-layouts/non-restricted-buffer-list-ivy)
+              ("bD" spacemacs/ace-kill-this-buffer)
+              ("bh" spacemacs/home
+               spacemacs/switch-to-help-buffer)
+              ("bH" spacemacs/switch-to-help-buffer)
+              ("be" spacemacs/safe-erase-buffer)
+              ("bb" ivy-switch-buffer
+               ibuffer)
+              ("bI" ibuffer)
+              ("bn" next-buffer)
+              ("bp" previous-buffer)
+              ("bP" spacemacs/copy-clipboard-to-whole-buffer)
+              ("bR" spacemacs/safe-revert-buffer)
+              ("bw" read-only-mode)
+              ("bW" spacemacs/goto-buffer-workspace)
+              ("bY" spacemacs/copy-whole-buffer-to-clipboard)
+              ("b C-d"   spacemacs/kill-other-buffers)
+              ("b C-S-d" spacemacs/kill-matching-buffers-rudely)
 
-            ;; C - capture/colors
-            ("Cc" org-capture)
+              ;; C - capture/colors
+              ;; ("Cc" org-capture)
 
-            ;; c - compile/comments
-            ("cl" spacemacs/comment-or-uncomment-lines)
-            ("cL" spacemacs/comment-or-uncomment-lines-inverse)
-            ("cP" spacemacs/comment-or-uncomment-paragraphs-inverse)
-            ("cT" spacemacs/quick-comment-or-uncomment-to-the-line-inverse)
-            ("cY" spacemacs/copy-and-comment-lines-inverse)
+              ;; c - compile/comments
+              ("cl" spacemacs/comment-or-uncomment-lines)
+              ("cL" spacemacs/comment-or-uncomment-lines-inverse)
+              ("cP" spacemacs/comment-or-uncomment-paragraphs-inverse)
+              ("cT" spacemacs/quick-comment-or-uncomment-to-the-line-inverse)
+              ("cY" spacemacs/copy-and-comment-lines-inverse)
 
-            ;; e - errors
+              ;; e - errors
+              ;; ... Don't use checkers much ...
 
-            ;; F - frames
+              ;; F - frames
+              ("Fb" spacemacs/switch-to-buffer-other-frame)
+              ("FB" spacemacs/display-buffer-other-frame)
+              ("FD" delete-other-frames)
+              ("Ff" spacemacs/find-file-other-frame)
+              ("Fn" make-frame)
+              ("FO" spacemacs/dired-other-frame)
 
-            ;; f - files
+              ;; f - files
+              ("fA" spacemacs/find-file-and-replace-buffer)
+              ("fb" counsel-bookmark)
+              ("fE" spacemacs/sudo-edit)
+              ("fg" rgrep)
+              ("fh" hexl-find-file)
+              ("fi" spacemacs/insert-file)
+              ("fJ" spacemacs/open-junk-file)
+              ("fj" dired-jump)
+              ("fl" find-file-literally)
+              ("fL" counsel-locate)
 
-            ;; g - git/version-control
+              ;; g - git/version-control
 
-            ;; h - help
+              ;; h - help
 
-            ;; i - insertion
+              ;; i - insertion
 
-            ;; j - jump/join/split
+              ;; j - jump/join/split
 
-            ;; k - lisp
+              ;; k - lisp
 
-            ;; N - navigation
+              ;; N - navigation
 
-            ;; n - narrow/numbers
+              ;; n - narrow/numbers
 
-            ;; p - projects
+              ;; p - projects
 
-            ;; q - quit
+              ;; q - quit
 
-            ;; r - registers/rings/resume
+              ;; r - registers/rings/resume
 
-            ;; s - search/symbol
+              ;; s - search/symbol
 
-            ;; T - UI toggles/themes
+              ;; T - UI toggles/themes
 
-            ;; t - toggles
+              ;; t - toggles
 
-            ;; w - windows
+              ;; w - windows
 
-            ;; x - text
+              ;; x - text
 
-            ;; z - zoom
-            ))
-
-    ;; Prefixes to remove:
-    ;; as - shells
-    ;; bN - new buffers
-    ;; fv - file/dir-local-variables
-    ;; fC - files/convert
-    ))
+              ;; z - zoom
+              )))))

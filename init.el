@@ -252,6 +252,9 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 (defun dotspacemacs/user-config/eric-only ()
   "Personal configuration updates and experiments."
   (when eric?
+    (setq which-key-separator " ")
+    (setq which-key-prefix-prefix " ")
+
     ;; Emacs-anywhere defaults to org-mode rather than markdown-mode
     (add-hook 'ea-popup-hook (lambda (&rest args) (org-mode)))
 

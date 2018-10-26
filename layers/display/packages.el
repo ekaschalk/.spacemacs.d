@@ -115,7 +115,9 @@
 
                    ("github-octicons"
                     ;;                          
-                    #xf091 #xf059 #xf076 #xf075 #xe192  #xf016)
+                    #xf091 #xf059 #xf076 #xf075 #xe192  #xf016
+                    #xf071
+                    )
 
                    ("material icons"
                     ;;              
