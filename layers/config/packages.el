@@ -127,26 +127,78 @@
             ("ak" spacemacs/paradox-list-packages)
 
             ;; B - buffers
+            ("b." spacemacs/buffer-transient-state/body)
             ("bB" spacemacs-layouts/non-restricted-buffer-list-ivy)
-            ("bh" spacemacs/home)
+            ("bD" spacemacs/ace-kill-this-buffer)
+            ("bh" spacemacs/home
+             spacemacs/switch-to-help-buffer)
+            ("bH" spacemacs/switch-to-help-buffer)
             ("be" spacemacs/safe-erase-buffer)
+            ("bb" ivy-switch-buffer
+             ibuffer)
+            ("bI" ibuffer)
             ("bn" next-buffer)
             ("bp" previous-buffer)
+            ("bP" spacemacs/copy-clipboard-to-whole-buffer)
             ("bR" spacemacs/safe-revert-buffer)
             ("bw" read-only-mode)
+            ("bW" spacemacs/goto-buffer-workspace)
             ("bY" spacemacs/copy-whole-buffer-to-clipboard)
             ("b C-d"   spacemacs/kill-other-buffers)
             ("b C-S-d" spacemacs/kill-matching-buffers-rudely)
 
             ;; C - capture/colors
             ("Cc" org-capture)
+
+            ;; c - compile/comments
+            ("cl" spacemacs/comment-or-uncomment-lines)
+            ("cL" spacemacs/comment-or-uncomment-lines-inverse)
+            ("cP" spacemacs/comment-or-uncomment-paragraphs-inverse)
+            ("cT" spacemacs/quick-comment-or-uncomment-to-the-line-inverse)
+            ("cY" spacemacs/copy-and-comment-lines-inverse)
+
+            ;; e - errors
+
+            ;; F - frames
+
+            ;; f - files
+
+            ;; g - git/version-control
+
+            ;; h - help
+
+            ;; i - insertion
+
+            ;; j - jump/join/split
+
+            ;; k - lisp
+
+            ;; N - navigation
+
+            ;; n - narrow/numbers
+
+            ;; p - projects
+
+            ;; q - quit
+
+            ;; r - registers/rings/resume
+
+            ;; s - search/symbol
+
+            ;; T - UI toggles/themes
+
+            ;; t - toggles
+
+            ;; w - windows
+
+            ;; x - text
+
+            ;; z - zoom
             ))
 
-    ;; Additional bindings behind another prefix to remove:
-    ;; ("ase" spacemacs/shell-pop-eshell)
-    ;; ("asi" spacemacs/shell-pop-shell)
-    ;; ("asm" spacemacs/shell-pop-multiterm)
-    ;; ("asT" spacemacs/shell-pop-term)
-    ;; ("ast" spacemacs/shell-pop-ansi-term)
-    ;; bN
+    ;; Prefixes to remove:
+    ;; as - shells
+    ;; bN - new buffers
+    ;; fv - file/dir-local-variables
+    ;; fC - files/convert
     ))
