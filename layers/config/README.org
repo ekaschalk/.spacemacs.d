@@ -12,6 +12,17 @@ Keybindings are encapsulated in the appropriate local package or sometimes in
 ~packages.el~. Emacs-core-pkg keybindings (eg. outline navigation & eshell) are
 in ~keybindings.el~.
 
+* Undone Keybindings
+
+The end of ~packages.el~ configures ~undo-spacemacs~, a personal package for
+undoing spacemacs bindings for trimming down which-key options.
+
+I undo *many* core spacemacs leader-key prefixes and keybindings that I either
+use via other bindings/means or have not made the cut into my workflow.
+
+Undoing the bindings is disabled by default. Have ~undo-bindings?~ at the top of
+~init.el~ set true to enable this feature.
+
 * Keybindings
 ** Evil and Core
 

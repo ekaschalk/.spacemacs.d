@@ -22,15 +22,20 @@
 (defvar windows? (not (or linux? mac?))          "Are we on a windows machine?")
 (defvar desktop? (= 1440 (display-pixel-height)) "Am I on my desktop?")
 
-(defvar undo-bindings? (if eric? t nil)
-  "Undo bindings in `undo-spacemacs-bindings-alist' in `config/packages.el'?
-
-Defaults to nil for non-eric users.")
-
 (defvar server? (if eric? t nil)
   "Alias for `dotspacemacs-enable-server' and friends.
 
 Defaults to nil for non-eric users. Ligatures require server-dependent config.")
+
+(defvar undo-bindings? (if eric? t nil)
+  "Undo bindings in `undo-spacemacs-bindings-alist' in `config/packages.el'?
+
+Defaults to nil for non-eric users.
+
+Also removes prefixes/bindings contained within `undo-spacemacs-prefixes-list'.
+
+Check out the full list of commands removed/modified before enabling.
+Numerous and aggressive rebindings are performed.")
 
 (defvar dotspacemacs/font (if (x-list-fonts "Operator Mono")
                               "operator mono medium"
