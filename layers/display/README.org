@@ -10,27 +10,20 @@ See the project root README for short descriptions of each pretty package and
 associated blog posts.
 
 * Screenshots
-** Pretty-code/Pretty-fonts
+** Pretty-code
 
-[[file:./imgs/python-code.png]]
-[[file:./imgs/hy-code.png]]
+[[file:./imgs/pretty-code.png]]
 
 ** Pretty-eshell
 
-[[file:./imgs/esh-ex.png]]
+[[file:./imgs/pretty-eshell.png]]
 
 ** Pretty-magit
 
-| Magit Commits                 | The actual commits        |
-|-------------------------------+---------------------------|
-| [[file:./imgs/magit-symbols.png]] | [[file:./imgs/magit-raw.png]] |
-
-Commit Prompt
-
-[[file:./imgs/magit-prompt.png]]
+[[file:./imgs/pretty-magit.png]]
 
 ** Pretty-outlines
 
-| Fancy Outlines                        | Real Example                           |
-|---------------------------------------+----------------------------------------|
-| [[file:./imgs/outline-bullets-fancy.png]] | [[file:./imgs/outline-bullets-config.png]] |
+| Pretty Outlines                 | Jumping to an outline       |
+|---------------------------------+-----------------------------|
+| [[file:./imgs/pretty-outlines.png]] | [[file:./imgs/outline-ivy.png]] |
