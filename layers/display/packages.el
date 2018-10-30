@@ -116,8 +116,8 @@
                    ("github-octicons"
                     ;;                          
                     #xf091 #xf059 #xf076 #xf075 #xe192  #xf016
-                    #xf071
-                    )
+                    ;; 
+                    #xf071)
 
                    ("material icons"
                     ;;              
@@ -213,7 +213,7 @@
     "Fix `all-the-icons-ivy-file-transformer' to have stdized height/offset."
     (format "%s\t%s"
             (propertize "\t" 'display
-                        (all-the-icons-icon-for-file s :height 1 :v-adjust 0))
+                        (all-the-icons-icon-for-file s :height 0.9 :v-adjust 0))
             s))
 
   (use-package all-the-icons-ivy
@@ -229,6 +229,8 @@
               ;; projectile (works on virtual files). Lets tack on the
               ;; all-the-icons-ivy transformer for projectile icons once-again.
               (advice-add 'counsel-projectile-find-file-transformer :filter-return
+                          'all-the-icons-ivy-file-transformer-stdized)
+              (advice-add 'counsel-projectile-transformer :filter-return
                           'all-the-icons-ivy-file-transformer-stdized)
 
               (all-the-icons-ivy-setup))))
