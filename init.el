@@ -96,10 +96,10 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
                                            (display  :location local)
                                            (personal :location local))
    dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layers/")
-   dotspacemacs-additional-packages      '(solarized-theme)
+   dotspacemacs-additional-packages      '()
    dotspacemacs-frozen-packages          '()
    dotspacemacs-excluded-packages
-   '(;; Must Exclude (for styling and functionality reasons)
+   '(;; Must Exclude (for styling, functionality, bug-fixing reasons)
      fringe importmagic scss-mode vi-tilde-fringe
 
      ;; Packages I don't use

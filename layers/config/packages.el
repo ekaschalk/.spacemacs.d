@@ -139,7 +139,8 @@
 
   (use-package redo-spacemacs
     :if redo-bindings?
-    :after macros
+    ;; Throw all the pkgs we modify keymaps of here
+    :after magit macros
     :config
     (progn
       (setq redo-spacemacs-prefixes-list
@@ -344,6 +345,18 @@
               ("fr" counsel-recentf)
               ))
 
+      (setq redo-spacemacs--magit-maps
+            '(
+              magit-commit-message-section-map magit-commit-section-map
+              magit-diff-mode-map magit-file-mode-map magit-file-section-map
+              magit-log-mode-map magit-mode-map magit-mode-menu magit-process-mode-map
+              magit-reflog-mode-map magit-refs-mode-map magit-repolist-mode-map
+              magit-status-mode-map magit-tag-section-map magit-unmerged-section-map
+              magit-unpulled-section-map magit-unpushed-section-map
+              magit-unstaged-section-map magit-untracked-section-map
+              magit-worktree-section-map magit-status-mode-map))
+      (setq redo-spacemacs-maps-to-overwrite `(,@redo-spacemacs--magit-maps))
+
       (setq redo-spacemacs-new-bindings-alist
             '(;; Windows, Layouts Management
               ("M-w"   spacemacs/toggle-maximize-buffer)
@@ -362,11 +375,18 @@
               ("M-f" counsel-find-file)
               ("M-r" counsel-recentf)
 
+              ;; Force below defaults for `redo-spacemacs-maps-to-overwrite'
+              ("M-1" winum-select-window-1)
+              ("M-2" winum-select-window-2)
+              ("M-3" winum-select-window-3)
+              ("M-4" winum-select-window-4)
+              ("M-5" winum-select-window-5)
+
               ;; Rebindings todo
               ;; spacemacs/kill-this-buffer
               ;; winner-undo
               ;; winner-redo
 
               ;; Free chords to look at
-              ;; M-u
+              ;; M-u, M-i
               )))))
