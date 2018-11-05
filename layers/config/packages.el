@@ -2,18 +2,19 @@
 
 (setq config-packages
       '(;; Owned packages
-        outshine
+        auto-dim-other-buffers
+        faceup
+        outshine  ; also configures `outline-mode'
 
-        ;; Elsewhere-owned packages with trivial config
+        ;; Elsewhere-owned packages with trivial or no config
         aggressive-indent
-        yasnippet
 
         ;; Elsehwere-owned packages
         (avy-config    :location local)
         (eshell-config :location local)
         (evil-config   :location local)
-        (gnus-config   :location local)
         (ivy-config    :location local)
+        (mu4e-config   :location local)
         (org-config    :location local)
 
         ;; Elsewhere-owned packages for languages
@@ -21,13 +22,23 @@
         (python-config  :location local)
 
         ;; Special Packages
-        (undo-spacemacs :location local)))
+        (redo-spacemacs :location local)))
 
 ;;; Owned Packages
+;;;; Auto Dim Other Buffers
+
+(defun config/init-auto-dim-other-buffers ()
+  (use-package auto-dim-other-buffers
+    :config (auto-dim-other-buffers-mode)))
+
+;;;; Faceup
+
+(defun config/init-faceup ()
+  (use-package faceup))
+
 ;;;; Outshine
 
 (defun config/init-outshine ()
-
   (defun advise-outshine-narrow-start-pos ()
     "Narrowing works within the headline rather than requiring to be on it."
     (unless (outline-on-heading-p t)
@@ -37,10 +48,24 @@
     :after macros
 
     :init (progn
-            ;; Narrowing global keybindings
+            (evil-define-key '(normal visual motion)
+              outline-minor-mode-map
+              "gh" 'outline-up-heading
+              "gj" 'outline-forward-same-level
+              "gk" 'outline-backward-same-level
+              "gl" 'outline-next-visible-heading
+              "gu" 'outline-previous-visible-heading)
+
             (spacemacs/set-leader-keys
+              ;; narrowing
               "nn" 'outshine-narrow-to-subtree
-              "nw" 'widen)
+              "nw" 'widen
+
+              ;; navigation
+              "nj" 'outline-move-subtree-down
+              "nk" 'outline-move-subtree-up
+              "nh" 'outline-promote
+              "nl" 'outline-demote)
 
             ;; Make <backtab> globally cycle like in org-mode buffers
             (define-keys outline-minor-mode-map
@@ -57,13 +82,7 @@
               (advice-add 'outshine-narrow-to-subtree :before
                           'advise-outshine-narrow-start-pos))))
 
-;;; Unowned Packages
-;;;; Yasnippet
-
-(defun config/pre-init-yasnippet ()
-  (global-set-key (kbd "C-SPC") 'hippie-expand))
-
-;;;; Aggressive Indent
+;;; Trivial Config
 
 (defun config/post-init-aggressive-indent ()
   (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
@@ -71,6 +90,7 @@
   (add-hook 'hy-mode-hook         #'aggressive-indent-mode))
 
 ;;; Local Packages
+;;;; Configurations
 
 (defun config/init-avy-config ()
   (use-package avy-config
@@ -84,19 +104,19 @@
   (use-package evil-config
     :after evil macros))
 
-(defun config/init-gnus-config ()
-  (use-package gnus-config
-    :after gnus))
-
 (defun config/init-ivy-config ()
   (use-package ivy-config
     :after ivy macros))
+
+(defun config/init-mu4e-config ()
+  (use-package mu4e-config
+    :after mu4e macros))
 
 (defun config/init-org-config ()
   (use-package org-config
     :after org macros))
 
-;;; Local Language Packages
+;;;; Languages
 
 (defun config/init-clojure-config ()
   (use-package clojure-config
@@ -106,21 +126,27 @@
   (use-package python-config
     :after python))
 
-;;; Special Packages
+;;; Redo-spacemacs
 
-(defun config/init-undo-spacemacs ()
-  (use-package undo-spacemacs
+(defun config/init-redo-spacemacs ()
+  ;; `redo-spacemacs-bindings' is executed in user-config in `init.el'
+  ;; with the `dotspacemacs/user-config/post-layer-load-config' function
+
+  ;; If any removed bindings make you scratch your head, check out
+  ;; the ending `redo-spacemacs-new-bindings-alist' to see what I rebound it
+  ;; to (for example, `spacemacs/delete-window' from 'SPC w d' to 'M-d')
+  ;; They are unbound to force muscle-memory development.
+
+  (use-package redo-spacemacs
+    :if redo-bindings?
     :after macros
     :config
-    ;; The `undo-spacemacs-bindings' is performed in `init.el' in
-    ;; user-config section: `dotspacemacs/user-config/post-layer-load-config'
     (progn
-      (setq undo-spacemacs-prefixes-list
+      (setq redo-spacemacs-prefixes-list
             '(;; Primary prefixes
               "C"    ; capture/colors
               "i"    ; insertion
               "j"    ; jump/join/split
-              "k"    ; lisp-state (access via `lisp-state-toggle-lisp-state')
               "N"    ; navigation
               "r"    ; registers/rings/resume
               "t"    ; toggles
@@ -143,17 +169,25 @@
               "x w"  ; text/words
               ))
 
-      (setq undo-spacemacs-bindings-alist
+      (setq redo-spacemacs-undo-bindings-alist
             '(;; Top-level
               ("!" shell-command)
               ("'" spacemacs/default-pop-shell)
               ("0" neotree-show)
               ("?" counsel-descbinds)
               ("`" winum-select-window-by-number)
+              ("1" winum-select-window-1)
+              ("2" winum-select-window-2)
+              ("3" winum-select-window-3)
+              ("4" winum-select-window-4)
+              ("5" winum-select-window-5)
+              ("6" winum-select-window-6)
+              ("7" winum-select-window-7)
+              ("8" winum-select-window-8)
+              ("9" winum-select-window-9)
 
               ;; A - applications
               ("ad" deer)
-              ("ak" spacemacs/paradox-list-packages)
 
               ;; B - buffers
               ("b." spacemacs/buffer-transient-state/body)
@@ -247,8 +281,6 @@
               ;; s - search/symbol
               ("sf" spacemacs/search-auto)
               ("sF" spacemacs/search-auto-region-or-symbol)
-              ("sh" spacemacs/symbol-highlight)
-              ("sH" spacemacs/goto-last-searched-ahs-symbol)
               ("sj" spacemacs/counsel-jump-in-buffer)
               ("sp" spacemacs/search-project-auto)
               ("sP" spacemacs/search-project-auto-region-or-symbol)
@@ -282,10 +314,10 @@
               ("wx" kill-buffer-and-window)
               ("wW" ace-window)
               ("w|" spacemacs/maximize-vertically)
-              ("w <down>"  evil-window-down)
-              ("w <up>"    evil-window-up)
-              ("w <left>"  evil-window-left)
-              ("w <right>" evil-window-right)
+              ("w <down>"    evil-window-down)
+              ("w <up>"      evil-window-up)
+              ("w <left>"    evil-window-left)
+              ("w <right>"   evil-window-right)
               ("w <S-down>"  evil-window-move-very-bottom)
               ("w <S-up>"    evil-window-move-very-top)
               ("w <S-left>"  evil-window-move-far-left)
@@ -300,4 +332,41 @@
 
               ;; z - zoom
               ;; Removed entire leader
+
+              ;; Important bindings that I use chords for now.
+              ;; They are removed to force muscle-memory.
+              ("v" er/expand-region)
+              ("wm" spacemacs/toggle-maximize-buffer)
+              ("wd" spacemacs/delete-window)
+              ("w/" split-window-right)
+              ("w-" split-window-below)
+              ("ff" counsel-find-file)
+              ("fr" counsel-recentf)
+              ))
+
+      (setq redo-spacemacs-new-bindings-alist
+            '(;; Windows, Layouts Management
+              ("M-w"   spacemacs/toggle-maximize-buffer)
+              ("M-d"   spacemacs/delete-window)
+              ("M-/"   split-window-right)
+              ("C-M-/" split-window-right-and-focus)
+              ("M--"   split-window-below)
+              ("C-M--" split-window-below-and-focus)
+
+              ;; Editing, Searching, Movement
+              ("C-,"   lisp-state-toggle-lisp-state)
+              ("C-SPC" er/expand-region)
+              ("C-S-s" spacemacs/swiper-region-or-symbol)
+
+              ;; Files, Buffers
+              ("M-f" counsel-find-file)
+              ("M-r" counsel-recentf)
+
+              ;; Rebindings todo
+              ;; spacemacs/kill-this-buffer
+              ;; winner-undo
+              ;; winner-redo
+
+              ;; Free chords to look at
+              ;; M-u
               )))))

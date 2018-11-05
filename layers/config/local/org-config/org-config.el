@@ -6,12 +6,7 @@
 
 ;;; Bindings
 
-(spacemacs/set-leader-keys "aof" 'org-open-at-point-global)
-(spacemacs/set-leader-keys-for-major-mode 'org-mode "r" 'org-refile)
-
 (defun org-sort-entries-priorities () (interactive) (org-sort-entries nil ?p))
-(spacemacs/set-leader-keys-for-major-mode
-  'org-mode "s p" 'org-sort-entries-priorities)
 
 (evil-define-key '(normal visual motion) org-mode-map
   "gh" 'outline-up-heading
@@ -19,6 +14,12 @@
   "gk" 'outline-backward-same-level
   "gl" 'outline-next-visible-heading
   "gu" 'outline-previous-visible-heading)
+
+(spacemacs/set-leader-keys "aof" 'org-open-at-point-global)
+(spacemacs/set-leader-keys-for-major-mode 'org-mode
+  "r" 'org-refile
+  "s p" 'org-sort-entries-priorities)
+(org-defkey org-mode-map [(meta return)] 'org-meta-return)
 
 ;;; Hooks
 
@@ -78,5 +79,11 @@
                       ("\\.x?html?\\'" . "/usr/bin/firefox %s")
                       ("\\.pdf\\'" . default)))
 
-(setq org-contacts-files '("~/Dropbox/contacts.org"))
-(setq org-agenda-files   '("~/Dropbox/schedule.org"))
+(setq org-contacts-files
+      nil
+      ;; '("~/Dropbox/contacts.org")
+      )
+(setq org-agenda-files
+      nil
+      ;; '("~/Dropbox/schedule.org")
+      )

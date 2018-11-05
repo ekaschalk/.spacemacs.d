@@ -26,8 +26,16 @@
                              (powerline-active1        mode-line)
                              (powerline-active2        mode-line)
                              (spaceline-highlight-face mode-line)
-                             (powerline-inactive1      mode-line-inactive)
-                             (powerline-inactive2      mode-line-inactive)))
+
+                             (powerline-active0        mode-line)
+                             (mode-line-active         mode-line)
+                             (mode-line-inactive       mode-line)
+                             (powerline-inactive0      mode-line)
+                             (powerline-inactive1      mode-line)
+                             (powerline-inactive2      mode-line)
+                             ;; (powerline-inactive1      mode-line-inactive)
+                             ;; (powerline-inactive2      mode-line-inactive)
+                             ))
 
 ;;;; Styling
 ;;;;; Headers
@@ -126,7 +134,11 @@
                                          display/font-locks))
 
         ;; Extra
-        (sp-show-pair-match-face :background  "CadetBlue3")))
+        (sp-show-pair-match-face :background  "CadetBlue3")
+        (auto-dim-other-buffers-face :background "#fcf4df")
+
+        ;; ... Experiments ...
+        ))
 
 (setq display/zenburn-theming
       `(;; Overwrites
@@ -140,7 +152,11 @@
         ;; Extra
         (font-lock-comment-delimiter-face :foreground "gray35")
         (font-lock-function-name-face     :foreground "CadetBlue2")
-        (font-lock-type-face              :foreground "LightCoral")))
+        (font-lock-type-face              :foreground "LightCoral")
+        (auto-dim-other-buffers-face      :background "gray22")
+
+        ;; ... Experiments ...
+        ))
 
 ;;;; Set Modifications
 

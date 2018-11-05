@@ -1,4 +1,5 @@
 ;;; Setup
+;;;; Commentary
 
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Contact: ekaschalk@gmail.com --
@@ -9,110 +10,38 @@
 ;; Personal layers host most of my configuration - see README.
 ;; Ligatures and icons require installation - see README.
 ;;
-;; Configure `server?' to true if you use emacs as a daemon.
-;; Configure `undo-bindings?' to true if you want my trimmed leader keybindings.
+;; Layers are declared in `layers/config/layers.el'.
+;;
+;; Configure `server?'        to true if you - use emacs as a daemon.
+;; Configure `redo-bindings?' to true if you - want my aggressive rebindings.
 ;;
 ;; `init.el' sets spacemacs up, defining required `dotspacemacs/..' funcs & vars.
 ;; `outline-minor-mode' and extension `outshine-mode' will help with navigation.
 
+;;;; Constants
 
 (defvar eric?    (string= "Eric Kaschalk" (user-full-name)) "Am I me?")
 (defvar linux?   (eq system-type 'gnu/linux)     "Are we on a linux machine?")
 (defvar mac?     (eq system-type 'darwin)        "Are we on a macOS machine?")
 (defvar windows? (not (or linux? mac?))          "Are we on a windows machine?")
-(defvar desktop? (= 1440 (display-pixel-height)) "Am I on my desktop?")
+
+;;;; Configuration
 
 (defvar server? (if eric? t nil)
-  "Alias for `dotspacemacs-enable-server' and friends.
+  "Alias `dotspacemacs-enable-server'. Defaults to nil for non-eric users.")
 
-Defaults to nil for non-eric users. Ligatures require server-dependent config.")
+(defvar redo-bindings? (if eric? t nil)
+  "Redo spacemacs bindings? Defaults to nil for non-eric users.
 
-(defvar undo-bindings? (if eric? t nil)
-  "Undo bindings in `undo-spacemacs-bindings-alist' in `config/packages.el'?
+I aggressively re-bind and un-bind spacemacs defaults.
 
-Defaults to nil for non-eric users.
+This indicator:
+1. Removes prefixes/bindings contained within `redo-spacemacs-prefixes-list'.
+2. Removes bindings in `redo-spacemacs-undo-bindings-alist'.
+3. Adds bindings in `redo-spacemacs-new-bindings-alist'.
 
-Also removes prefixes/bindings contained within `undo-spacemacs-prefixes-list'.
-
-Check out the full list of commands removed/modified before enabling.
-Numerous and aggressive rebindings are performed.")
-
-(defvar dotspacemacs/font (if (x-list-fonts "Operator Mono")
-                              "operator mono medium"
-                            "Source Code Pro")
-  "Font name to use in `dotspacemacs-default-font'.
-
-Defaults to Source Code Pro for non-eric users. My font is a paid font.")
-
-;;; Layer Declarations
-;;;; Local
-
-(defvar dotspacemacs/layers/local
-  '((macros   :location local)   ; All local layers depend on this layer
-    (config   :location local)   ; Org, Avy, Evil, Misc... config
-    (display  :location local)   ; Pretty-eshell/code/outlines... pkgs
-    (personal :location local))  ; Personal pkgs
-
-  "Local layers housed in `~/.spacemacs.d/layers'.")
-
-;;;; Core
-
-(defvar dotspacemacs/layers/core
-  '(better-defaults
-    git
-    syntax-checking
-
-    (auto-completion :variables
-                     auto-completion-return-key-behavior 'complete
-                     auto-completion-tab-key-behavior 'complete
-                     auto-completion-enable-snippets-in-popup t)
-    (ivy :variables
-         ivy-extra-directories nil)
-    (org :variables
-         org-want-todo-bindings t)
-    (shell :variables
-           shell-default-shell 'eshell)
-    (version-control :variables
-                     version-control-global-margin t
-                     version-control-diff-tool 'git-gutter+))
-
-  "Layers I consider core to Spacemacs.")
-
-;;;; Langs
-
-(defvar dotspacemacs/layers/langs
-  '(;; Markups
-    csv
-    html
-    markdown
-    yaml
-
-    ;; Languages
-    c-c++
-    clojure
-    emacs-lisp
-    hy
-    javascript
-
-    (haskell :variables
-             haskell-completion-backend 'intero)
-    (python :variables
-            python-test-runner 'pytest
-            python-spacemacs-indent-guess nil))
-
-  "Programming and markup language layers.")
-
-;;;; Extra
-
-(defvar dotspacemacs/layers/extra
-  '(gnus
-    graphviz
-    ranger
-
-    (ibuffer :variables
-             ibuffer-group-buffers-by 'projects))
-
-  "Miscellaneous layers.")
+It is highly recommend to look through the above 3 variables before enabling,
+defined at end of `layers/config/packages.el' in `config/init-redo-spacemacs'.")
 
 ;;; Spacemacs/
 ;;;; Spacemacs/init
@@ -126,83 +55,59 @@ They are all defined in `~/.emacs.d/core/core-dotspacemacs.el'.
 Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   (setq-default
    ;; Display
-   dotspacemacs-default-font `(,dotspacemacs/font
-                               :size ,(cond (mac? 18) (desktop? 20) (t 34))
-                               :powerline-scale 1.5)
+   dotspacemacs-default-font `(,(if (x-list-fonts "Operator Mono")
+                                    "operator mono medium"
+                                  "Source Code Pro")
+                               :size ,(if (= 1440 (display-pixel-height)) 20 18))
    dotspacemacs-themes       '(solarized-light
                                zenburn)
 
-   ;; Server
-   dotspacemacs-enable-server     server?
-   dotspacemacs-persistent-server server?
-
-   ;; Editing settings
-   dotspacemacs-editing-style '(vim :variables
-                                    vim-style-visual-feedback t
-                                    vim-style-remap-Y-to-y$ t)
-
-   ;; Elpa
-   dotspacemacs-elpa-https        nil
-   dotspacemacs-elpa-subdirectory nil
-
    ;; General
    dotspacemacs-auto-generate-layout-names t
+   dotspacemacs-editing-style              '(vim :variables
+                                                 vim-style-visual-feedback t
+                                                 vim-style-remap-Y-to-y$ t)
+   dotspacemacs-elpa-https                 nil
+   dotspacemacs-elpa-subdirectory          nil
+   dotspacemacs-enable-server              server?
    dotspacemacs-fullscreen-at-startup      t
    dotspacemacs-large-file-size            5
+   dotspacemacs-persistent-server          server?
    dotspacemacs-pretty-docs                t
    dotspacemacs-search-tools               '("ag" "rg" "pt" "ack" "grep")
    dotspacemacs-scratch-mode               'org-mode
    dotspacemacs-startup-lists              nil
    dotspacemacs-whitespace-cleanup         'trailing
 
-   ;; Defs required for 'SPC f e R' `dotspacemacs/sync-configuration-layers'
-   dotspacemacs-mode-line-theme   'all-the-icons
-   dotspacemacs-leader-key        "SPC"
+   ;; The following are unchanged but are still required for reloading via
+   ;; 'SPC f e R' `dotspacemacs/sync-configuration-layers' to not throw warnings
    dotspacemacs-emacs-leader-key  "M-m"
    dotspacemacs-emacs-command-key "SPC"
-   ))
+   dotspacemacs-leader-key        "SPC"
+   dotspacemacs-mode-line-theme   'all-the-icons))
 
 ;;;; Spacemacs/layers
 
 (defun dotspacemacs/layers ()
   "Instantiate Spacemacs layers declarations and package configurations."
   (setq-default
-   ;; Layers
+   dotspacemacs-configuration-layers     '((macros   :location local)
+                                           (config   :location local)
+                                           (display  :location local)
+                                           (personal :location local))
    dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layers/")
-   dotspacemacs-configuration-layers     (append dotspacemacs/layers/local
-                                                 dotspacemacs/layers/core
-                                                 dotspacemacs/layers/langs
-                                                 dotspacemacs/layers/extra)
+   dotspacemacs-additional-packages      '(solarized-theme)
+   dotspacemacs-frozen-packages          '()
+   dotspacemacs-excluded-packages
+   '(;; Must Exclude (for styling and functionality reasons)
+     fringe importmagic scss-mode vi-tilde-fringe
 
-   ;; Packages
-   dotspacemacs-additional-packages '(solarized-theme
-                                      faceup)
-   dotspacemacs-excluded-packages   '(;; Must Exclude
-                                      fringe      ; For styling reasons
-                                      importmagic ; Python pkg was broken for me
-                                      scss-mode   ; We overwrite this mode
-
-                                      ;; Packages I don't use
-                                      anzu
-                                      centered-cursor-mode
-                                      column-enforce-mode
-                                      company-statistics
-                                      doom-modeline
-                                      eshell-prompt-extras
-                                      evil-anzu
-                                      evil-mc
-                                      evil-tutor
-                                      fancy-battery
-                                      fill-column-indicator
-                                      gnuplot
-                                      golden-ratio
-                                      indent-guide
-                                      live-py-mode
-                                      multiple-cursors
-                                      mwim
-                                      neotree)
-   dotspacemacs-frozen-packages     '()
-   ))
+     ;; Packages I don't use
+     anzu centered-cursor-mode column-enforce-mode company-statistics
+     doom-modeline eshell-prompt-extras evil-anzu evil-mc evil-tutor
+     fancy-battery fill-column-indicator gnuplot golden-ratio indent-guide
+     live-py-mode multi-term multiple-cursors mwim neotree paradox py-isort
+     yapfify)))
 
 ;;;; Spacemacs/user-init
 
@@ -227,15 +132,14 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   (spacemacs/toggle-mode-line-minor-modes-off)
   (global-highlight-parentheses-mode 1)
   (rainbow-delimiters-mode-enable)
-  (fringe-mode '(0 . 8)))
+  (fringe-mode '(0 . 0)))
 
 ;;;;; Post Layer Load
 
 (defun dotspacemacs/user-config/post-layer-load-config ()
   "Configuration that must take place *after all* layers/pkgs are instantiated."
-  (when (and undo-bindings?
-             (configuration-layer/package-used-p 'undo-spacemacs))
-    (undo-spacemacs-bindings))
+  (when (configuration-layer/package-used-p 'redo-spacemacs)
+    (redo-spacemacs-bindings))
 
   (when server?
     ;; The set-fontset has to be done later in the process than the
@@ -274,7 +178,4 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 
 (defun dotspacemacs/user-config/experiments ()
   "Space for trying out configuration updates."
-  (when (configuration-layer/package-used-p 'pretty-fonts)
-    (setq which-key-separator " ")
-    (setq which-key-prefix-prefix " "))
   )

@@ -4,6 +4,8 @@
 
 (provide 'outline-ivy)
 
+;; FIXME an outline not at the BOL is not an outline, but it breaks oi-jump
+
 ;;; Config
 
 (defvar oi-height 20
