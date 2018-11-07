@@ -355,7 +355,8 @@
               magit-unpulled-section-map magit-unpushed-section-map
               magit-unstaged-section-map magit-untracked-section-map
               magit-worktree-section-map magit-status-mode-map))
-      (setq redo-spacemacs-maps-to-overwrite `(,@redo-spacemacs--magit-maps))
+      (setq redo-spacemacs-maps-to-overwrite `(,@redo-spacemacs--magit-maps
+                                               ranger-mode-map))
 
       (setq redo-spacemacs-new-bindings-alist
             '(;; Windows, Layouts Management
