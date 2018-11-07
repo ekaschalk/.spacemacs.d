@@ -16,6 +16,7 @@
         (ivy-config    :location local)
         (mu4e-config   :location local)
         (org-config    :location local)
+        (ranger-config :location local)
 
         ;; Elsewhere-owned packages for languages
         (clojure-config :location local)
@@ -116,6 +117,10 @@
   (use-package org-config
     :after org macros))
 
+(defun config/init-ranger-config ()
+  (use-package ranger-config
+    :after ranger macros))
+
 ;;;; Languages
 
 (defun config/init-clojure-config ()
@@ -189,6 +194,7 @@
 
               ;; A - applications
               ("ad" deer)
+              ("ar" ranger)
 
               ;; B - buffers
               ("b." spacemacs/buffer-transient-state/body)

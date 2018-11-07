@@ -30,13 +30,14 @@ Redone bindings are disabled by default. Turn on with ~redo-bindings?~ in
 
 ** Evil and Core
 
-| Key Binding | Function               |
-|-------------+------------------------|
-| ~Q~         | config/execute-q-macro |
-| ~H~         | evil-first-non-blank   |
-| ~L~         | evil-end-of-line       |
-| ~0~         | evil-jump-item         |
-| ~s~         | avy-goto-char-timer    |
+| Key Binding | Function             |
+|-------------+----------------------|
+| ~Q~         | evil-execute-q-macro |
+| ~H~         | evil-first-non-blank |
+| ~L~         | evil-end-of-line     |
+| ~0~         | evil-jump-item       |
+| ~s~         | avy-goto-char-timer  |
+| ~_~         | ranger               |
 
 ** Navigation and Windows
 
@@ -76,3 +77,12 @@ Redone bindings are disabled by default. Turn on with ~redo-bindings?~ in
 | ~C-RET~     | ivy-call                |
 | ~C-SPC~     | ivy-dispatching-done    |
 | ~C-S-SPC~   | ivy-dispatching-call    |
+
+** Ranger
+
+| Key Binding | Function                     |
+|-------------+------------------------------|
+| ~n~         | dired-create-directory       |
+| ~E~         | wdired-change-to-wdired-mode |
+| ~C-j~       | ranger-travel                |
+| ~C-e~       | ranger-pop-eshell            |
