@@ -384,8 +384,6 @@
 
               ;; Rebindings todo
               ;; spacemacs/kill-this-buffer
-              ;; winner-undo
-              ;; winner-redo
 
               ;; Free chords to look at
               ;; M-u, M-i

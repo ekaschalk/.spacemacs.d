@@ -16,7 +16,6 @@
 ;; Configure `redo-bindings?' to true if you - want my aggressive rebindings.
 ;;
 ;; `init.el' sets spacemacs up, defining required `dotspacemacs/..' funcs & vars.
-;; `outline-minor-mode' and extension `outshine-mode' will help with navigation.
 
 ;;;; Constants
 
@@ -122,7 +121,6 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   "Configuration that cannot be delegated to layers."
   (dotspacemacs/user-config/toggles)
   (dotspacemacs/user-config/post-layer-load-config)
-  (dotspacemacs/user-config/eric-only)
   (dotspacemacs/user-config/experiments))
 
 ;;;;; Toggles
@@ -155,24 +153,6 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
     ;; Depending on your OS, you may need a different/not-at-all need this.
     (when mac?
       (add-to-list 'default-frame-alist '(fullscreen . fullboth)))))
-
-;;;;; Personal
-
-(defun dotspacemacs/user-config/eric-only ()
-  "Personal configuration updates and experiments."
-  (when eric?
-    ;; Emacs-anywhere defaults to org-mode rather than markdown-mode
-    (add-hook 'ea-popup-hook (lambda (&rest args) (org-mode)))
-
-    ;; Hy-mode development
-    ;; (load-file "~/dev/hy-mode/hy-mode.el")
-    ;; (load-file "~/dev/hy-mode/hy-personal.el")
-    ;; (require 'hy-mode)
-    ;; (require 'hy-personal)
-
-    ;; Emacs-core development
-    ;; (setq find-function-C-source-directory "~/dev/emacs-dev/src")
-    ))
 
 ;;;;; Experiments
 

@@ -1,8 +1,9 @@
 ;;; Personal Layer
 
 (setq personal-packages
-      '((blog :location local)
-        (outline-ivy :location local)))
+      '((blog        :location local)
+        (outline-ivy :location local)
+        (personal    :location local)))
 
 ;;; Blog
 
@@ -11,7 +12,7 @@
     :after macros
     :if (executable-find "hugo")
     :init (progn
-            (setq blog-dir '("~/dev/blog"))
+            (setq blog-dir        '("~/dev/blog"))
             (setq blog-public-dir '("~/dev/public-blog"))
             (spacemacs/set-leader-keys
               "ab" 'blog-deploy
@@ -24,3 +25,9 @@
   (use-package outline-ivy
     :after ivy outshine macros
     :init (global-set-key (kbd "C-j") 'oi-jump)))
+
+;;; Personal
+
+(defun personal/init-personal ()
+  (use-package personal
+    :if eric?))
