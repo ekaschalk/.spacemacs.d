@@ -5,8 +5,9 @@
 (provide 'personal)
 
 
-;; Emacs-anywhere defaults to org-mode rather than markdown-mode
-(add-hook 'ea-popup-hook (lambda (&rest args) (org-mode)))
+;; Emacs-anywhere defaults to org-mode with maximized window
+(add-hook 'ea-popup-hook
+          (lambda (&rest args) (org-mode) (spacemacs/toggle-maximize-buffer)))
 
 ;; Hy-mode development
 ;; (load-file "~/dev/hy-mode/hy-mode.el")

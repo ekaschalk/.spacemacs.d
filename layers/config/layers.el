@@ -42,7 +42,9 @@
            python-test-runner 'pytest
            python-spacemacs-indent-guess nil)
 
-   ;; Experimental
+
+
+   ;; Experimental/in-flux
    (mu4e :variables
          mu4e-installation-path       "/usr/local/share/emacs/site-lisp"
          mu4e-use-maildirs-extension  t

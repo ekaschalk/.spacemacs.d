@@ -1,3 +1,5 @@
+;;; redo-spacemacs.el --- Redoing spacemacs leader bindings safely -*- lexical-binding: t; -*-
+
 (require 'dash)
 (require 'dash-functional)
 

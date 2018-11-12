@@ -123,20 +123,11 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   (when (configuration-layer/package-used-p 'redo-spacemacs)
     (redo-spacemacs-bindings))
 
-  (when server?
-    ;; The set-fontset has to be done later in the process than the
-    ;; layer loading or Emacs will break. So right now dumping this here.
-    ;; This just enables pretty-fonts to effect the initial frame.
-    ;; All future frames are handled via `after-make-frame-functions'.
-    (when (configuration-layer/package-used-p 'pretty-fonts)
-      (display/init-pretty-fonts/kwds     'noframe)
-      (display/init-pretty-fonts/fontsets 'noframe))
-
-    ;; While toggling with `toggle-frame-fullscreen' works, I could not get
-    ;; it to work as a hook attached to the frame-make or window-setup.
-    ;; Depending on your OS, you may need a different/not-at-all need this.
-    (when mac?
-      (add-to-list 'default-frame-alist '(fullscreen . fullboth)))))
+  ;; While toggling with `toggle-frame-fullscreen' works, I could not get
+  ;; it to work as a hook attached to the frame-make or window-setup.
+  ;; Depending on your OS, you may need a different/not-at-all need this.
+  (when (and mac? server?)
+    (add-to-list 'default-frame-alist '(fullscreen . fullboth))))
 
 ;;;;; Core
 
@@ -144,5 +135,5 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   "Configuration that cannot be delegated to layers."
   (dotspacemacs/user-config/post-layer-load-config)
 
-  ;; Experiments, other-users can drop in config here
+  ;; Drop-in more config here without needing layer stuff
   )

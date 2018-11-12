@@ -224,42 +224,33 @@
 
 (defun display/init-pretty-fonts ()
   (use-package pretty-fonts
-    :config (progn
-              (defun display/init-pretty-fonts/kwds (frame)
-                (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-                (pretty-fonts-set-kwds
-                 '((pretty-fonts-fira-font prog-mode-hook org-mode-hook))))
+    :config
+    ;; This is required to avoid segfault when using emacs as daemon
+    (spacemacs|do-after-display-system-init
+     (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
+     (pretty-fonts-set-kwds '((pretty-fonts-fira-font
+                               prog-mode-hook
+                               org-mode-hook)))
 
-              (defun display/init-pretty-fonts/fontsets (frame)
-                (pretty-fonts-set-fontsets
-                 '(
-                   ;; All-the-icons fontsets
-                   ("fontawesome"
-                    ;;                         
-                    #xf07c #xf0c9 #xf0c4 #xf0cb #xf017 #xf101)
+     (pretty-fonts-set-fontsets
+      '(;; All-the-icons fontsets
+        ("fontawesome"
+         ;;                         
+         #xf07c #xf0c9 #xf0c4 #xf0cb #xf017 #xf101)
 
-                   ("all-the-icons"
-                    ;;    
-                    #xe907 #xe928)
+        ("all-the-icons"
+         ;;    
+         #xe907 #xe928)
 
-                   ("github-octicons"
-                    ;;                          
-                    #xf091 #xf059 #xf076 #xf075 #xe192  #xf016
-                    ;; 
-                    #xf071)
+        ("github-octicons"
+         ;;                               
+         #xf091 #xf059 #xf076 #xf075 #xe192  #xf016 #xf071)
 
-                   ("material icons"
-                    ;;              
-                    #xe871 #xe918 #xe3e7  #xe5da
-                    ;;              
-                    #xe3d0 #xe3d1 #xe3d2 #xe3d4))))
-
-              (if server?
-                  (spacemacs/add-to-hook 'after-make-frame-functions
-                                         '(display/init-pretty-fonts/kwds
-                                           display/init-pretty-fonts/fontsets))
-                (display/init-pretty-fonts/kwds     'noframe)
-                (display/init-pretty-fonts/fontsets 'noframe)))))
+        ("material icons"
+         ;;              
+         #xe871 #xe918 #xe3e7  #xe5da
+         ;;              
+         #xe3d0 #xe3d1 #xe3d2 #xe3d4))))))
 
 ;;;; Pretty-magit
 
