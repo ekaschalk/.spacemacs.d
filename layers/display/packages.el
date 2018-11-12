@@ -131,6 +131,9 @@
   (setq spaceline-all-the-icons-separator-type            'none)
   (setq spaceline-all-the-icons-primary-separator         "")
 
+  ;; Mode Segments
+  (spaceline-toggle-all-the-icons-minor-modes-off)
+
   ;; Buffer Segments
   (spaceline-toggle-all-the-icons-buffer-size-off)
   (spaceline-toggle-all-the-icons-buffer-position-off)

@@ -1,4 +1,5 @@
-(require 'macros)
+(require 'dash)
+(require 'dash-functional)
 
 (provide 'redo-spacemacs)
 
@@ -12,9 +13,6 @@ Optionally, a new-def can be included in any ele to indicate a new binding.")
 
 (defvar redo-spacemacs-new-bindings-alist nil
   "Simple alist of key-def to apply `global-set-key' over.")
-
-(defvar redo-spacemacs-maps-to-overwrite nil
-  "List of keymap symbols to include by default in `redo-spacemacs-new-bindings.'")
 
 (defvar redo-spacemacs-prefixes-list nil
   "A list of keys to remove as leader prefixes, along with their bindings.")
@@ -58,12 +56,9 @@ Optionally, a new-def can be included in any ele to indicate a new binding.")
        (format "Attempting to unbind non-existant prefix `%s'." key)))))
 
 (defun redo-spacemacs-new-bindings (key def &rest maps)
-  "Wrap `bind-key' for MAPS and `redo-spacemacs-maps-to-overwrite'."
+  "Wrap `bind-key' for MAPS."
   (bind-key key def)
-  (--each redo-spacemacs-maps-to-overwrite
-    (bind-key key def (symbol-value it)))
-  (--each maps
-    (bind-key key def (symbol-value it))))
+  (--each maps (bind-key key def (symbol-value it))))
 
 (defun redo-spacemacs-bindings ()
   "Remove unused prefixes and bindings and apply new bindings."

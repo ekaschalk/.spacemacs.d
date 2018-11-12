@@ -1,36 +1,238 @@
 ;;; Config Layer
 
 (setq config-packages
-      '(;; Owned packages
+      '(;; Unowned Packages
+        aggressive-indent
+        avy
+        eshell
+        evil
+        ivy
+        magit
+        mu4e
+        ob org org-bullets
+        ranger
+
+        ;; Owned Packages
         auto-dim-other-buffers
         faceup
         outshine  ; also configures `outline-mode'
 
-        ;; Elsewhere-owned packages with trivial or no config
-        aggressive-indent
-
-        ;; Elsehwere-owned packages
-        (avy-config    :location local)
-        (eshell-config :location local)
-        (evil-config   :location local)
-        (ivy-config    :location local)
-        (mu4e-config   :location local)
-        (org-config    :location local)
-        (ranger-config :location local)
-
-        ;; Elsewhere-owned packages for languages
-        (clojure-config :location local)
-        (python-config  :location local)
-
-        ;; Special Packages
+        ;; Local Packages
         (redo-spacemacs :location local)))
+
+;;; Unowned Packages
+;;;; Aggressive indent
+
+(defun config/pre-init-aggressive-indent ()
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+  (add-hook 'clojure-mode-hook    #'aggressive-indent-mode)
+  (add-hook 'hy-mode-hook         #'aggressive-indent-mode))
+
+;;;; Avy
+
+(defun config/pre-init-avy ()
+  (setq avy-timeout-seconds 0.35)
+
+  (evil-global-set-key 'normal "s" 'avy-goto-char-timer)
+  (bind-keys ("C-l" . evil-avy-goto-line)
+             ("C-h" . avy-pop-mark)))
+
+;;;; Eshell
+
+(defun config/pre-init-eshell ()
+  (defun eshell-pop-eshell ()
+    "Eshell popup straight to insert mode."
+    (interactive)
+    (spacemacs/shell-pop-eshell nil)
+    (if (string= major-mode "eshell-mode")
+        (evil-insert 1)
+      (evil-escape)))
+
+  (spacemacs|use-package-add-hook eshell
+    :post-init
+    (evil-define-key '(normal insert) 'global (kbd "C-e") 'eshell-pop-eshell)))
+
+;;;; Evil
+
+(defun config/post-init-evil ()
+  (defun evil-execute-q-macro ()
+    "Execute macro stores in q-register, ie. run `@q'."
+    (interactive)
+    (evil-execute-macro 1 "@q"))
+
+  (defun evil-scroll-to-center-advice (&rest args)
+    "Scroll line to center, for advising functions."
+    (evil-scroll-line-to-center (line-number-at-pos)))
+
+  (defun evil-end-of-line-interactive ()
+    "Wrap `evil-end-of-line' in interactive, fix point being 1+ in vis state."
+    (interactive)
+    (evil-end-of-line))
+
+  (setq evil-escape-key-sequence "jk")
+  (setq evil-escape-unordered-key-sequence "true")
+
+  (evil-global-set-key 'normal "Q" 'evil-execute-q-macro)
+  (evil-define-key '(normal visual motion) 'global
+    "H" 'evil-first-non-blank
+    "L" 'evil-end-of-line-interactive
+    "0" 'evil-jump-item)
+
+  (advice-add 'evil-ex-search-next     :after 'evil-scroll-to-center-advice)
+  (advice-add 'evil-ex-search-previous :after 'evil-scroll-to-center-advice))
+
+;;;; Ivy
+
+(defun config/pre-init-ivy ()
+  (setq ivy-format-function 'ivy-format-function-arrow)
+  (setq completion-in-region-function 'ivy-completion-in-region))
+
+(defun config/post-init-ivy ()
+  (setq ivy-height 20)
+
+  (spacemacs/set-leader-keys "ai" 'ivy-resume)
+
+  (bind-keys :map ivy-minibuffer-map
+             ("C-l"        . ivy-avy)
+             ("C-u"        . ivy-scroll-down-command)
+             ("C-d"        . ivy-scroll-up-command)
+             ("C-n"        . ivy-restrict-to-matches)
+             ("C-y"        . ivy-yank-word)
+             ("C-<return>" . ivy-call)
+             ("C-SPC"      . ivy-dispatching-done)
+             ("C-S-SPC"    . ivy-dispatching-call)))
+
+;;;; Magit
+
+(defun config/post-init-magit ()
+  (bind-keys :map magit-mode-map
+             ("M-1" . winum-select-window-1)
+             ("M-2" . winum-select-window-2)
+             ("M-3" . winum-select-window-3)
+             ("M-4" . winum-select-window-4)))
+
+;;;; Mu4e
+
+(defun config/post-init-mu4e ()
+  ;; message.el
+  (setq message-directory "~/mail")
+  (setq message-send-mail-function 'smtpmail-send-it)
+
+  ;; smptmail.el
+  (setq smtpmail-smtp-server "smtp.gmail.com")
+  (setq smtpmail-smtp-service 587)
+  (setq smtpmail-default-smtp-server "smtp.gmail.com")
+  (setq smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil)))
+  (setq smtpmail-auth-credentials '(("smtp.gmail.com" 587
+                                     "ekaschalk@gmail.com" nil)))
+
+  ;; mu4e
+  ;; solid
+  (setq mu4e-get-mail-command "offlineimap")
+  (setq mu4e-maildir "~/mail")
+  (setq mu4e-sent-messages-behavior 'delete)
+  (setq user-mail-address "ekaschalk@gmail.com")
+  (setq mu4e-user-mail-address-list (list user-mail-address))
+
+  ;; experiment
+  (setq mu4e-drafts-folder "/[Gmail].Drafts")
+  (setq mu4e-sent-folder   "/[Gmail].Sent Mail")
+  (setq mu4e-maildir-shortcuts '(("/INBOX"               . ?i)
+                                 ("/[Gmail].Sent Mail"   . ?s)))
+
+  ;; mu4e-vars.el go through this
+
+  (setq mu4e-hide-index-messages t)
+  ;; mu4e-use-fancy-chars  ; true by default
+  ;; mu4e-marks            ; all the unicode stuff setup here
+  ;; configure through `mu4e-headers-..-mark' and `mu4e-headers..-prefix'
+  ;; mu4e-enable-async-operations
+  ;; (setq mu4e-update-interval 600)
+  ;; (setq mu4e-index-cleanup nil)      ;; don't do a full cleanup check
+  ;; (setq mu4e-index-lazy-check t)    ;; don't consider up-to-date dir
+  ;; w3m -dump -T text/html
+  )
+
+;;;; Org
+
+(defun config/pre-init-org-bullets ()
+  (setq org-bullets-bullet-list '("" "" "" "")))
+
+(defun config/pre-init-ob ()
+  (setq org-confirm-babel-evaluate   nil)
+  (setq org-src-fontify-natively     t)
+  (setq org-src-tab-acts-natively    t)
+  (setq org-src-preserve-indentation t)
+  (setq org-src-window-setup         'current-window)
+
+  (spacemacs|use-package-add-hook org
+    :post-config (add-to-list 'org-babel-load-languages '(dot . t))))
+
+(defun config/pre-init-org ()
+  (spacemacs/set-leader-keys "aof" 'org-open-at-point-global)
+
+  (setq org-ellipsis "")
+  (setq org-priority-faces
+        '((65 :inherit org-priority :foreground "red")
+          (66 :inherit org-priority :foreground "brown")
+          (67 :inherit org-priority :foreground "blue")))
+  (setq org-structure-template-alist
+        '(("n" "#+NAME: ?")
+          ("L" "#+LaTeX: ")
+          ("h" "#+HTML: ")
+          ("q" "#+BEGIN_QUOTE\n\n#+END_QUOTE")
+          ("s" "#+BEGIN_SRC ?\n\n#+END_SRC")
+          ("se" "#+BEGIN_SRC emacs-lisp\n\n#+END_SRC")
+          ("sp" "#+BEGIN_SRC python\n\n#+END_SRC")))
+
+  (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1)))
+  (add-hook 'org-mode-hook 'flyspell-mode))
+
+(defun config/post-init-org ()
+  (defun org-sort-entries-priorities ()
+    (interactive)
+    (org-sort-entries nil ?p))
+
+  (evil-define-key '(normal visual motion) org-mode-map
+    "gh" 'outline-up-heading
+    "gj" 'outline-forward-same-level
+    "gk" 'outline-backward-same-level
+    "gl" 'outline-next-visible-heading
+    "gu" 'outline-previous-visible-heading)
+
+  (spacemacs/set-leader-keys-for-major-mode 'org-mode
+    "r" 'org-refile
+    "s p" 'org-sort-entries-priorities)
+  (org-defkey org-mode-map [(meta return)] 'org-meta-return))
+
+;;;; Ranger
+
+(defun config/pre-init-ranger ()
+  (setq ranger-deer-show-details nil)
+
+  (evil-global-set-key 'normal "_" 'ranger)
+
+  ;; To get around `ranger/post-init-dired' overwriting keybindings
+  (spacemacs|use-package-add-hook ranger
+    :post-config
+    (bind-keys :map ranger-mode-map
+               ("n"   . dired-create-directory)
+               ("E"   . wdired-change-to-wdired-mode)
+               ("C-j" . ranger-travel)
+               ("C-e" . ranger-pop-eshell)
+               ("M-1" . winum-select-window-1)
+               ("M-2" . winum-select-window-2)
+               ("M-3" . winum-select-window-3)
+               ("M-4" . winum-select-window-4)
+               ("M-5" . winum-select-window-5))))
 
 ;;; Owned Packages
 ;;;; Auto Dim Other Buffers
 
 (defun config/init-auto-dim-other-buffers ()
   (use-package auto-dim-other-buffers
-    :config (auto-dim-other-buffers-mode)))
+    :config
+    (auto-dim-other-buffers-mode)))
 
 ;;;; Faceup
 
@@ -46,107 +248,46 @@
       (outline-previous-visible-heading 1)))
 
   (use-package outshine
-    :after macros
+    :init
+    (progn
+      (evil-define-key '(normal visual motion) outline-minor-mode-map
+        "gh" 'outline-up-heading
+        "gj" 'outline-forward-same-level
+        "gk" 'outline-backward-same-level
+        "gl" 'outline-next-visible-heading
+        "gu" 'outline-previous-visible-heading)
 
-    :init (progn
-            (evil-define-key '(normal visual motion)
-              outline-minor-mode-map
-              "gh" 'outline-up-heading
-              "gj" 'outline-forward-same-level
-              "gk" 'outline-backward-same-level
-              "gl" 'outline-next-visible-heading
-              "gu" 'outline-previous-visible-heading)
+      (bind-key "<backtab>" 'outshine-cycle-buffer outline-minor-mode-map)
 
-            (spacemacs/set-leader-keys
-              ;; narrowing
-              "nn" 'outshine-narrow-to-subtree
-              "nw" 'widen
+      (spacemacs/set-leader-keys
+        "nn" 'outshine-narrow-to-subtree
+        "nw" 'widen
+        "nj" 'outline-move-subtree-down
+        "nk" 'outline-move-subtree-up
+        "nh" 'outline-promote
+        "nl" 'outline-demote)
 
-              ;; navigation
-              "nj" 'outline-move-subtree-down
-              "nk" 'outline-move-subtree-up
-              "nh" 'outline-promote
-              "nl" 'outline-demote)
+      (add-hook 'prog-mode-hook          'outline-minor-mode)
+      (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
 
-            ;; Make <backtab> globally cycle like in org-mode buffers
-            (define-keys outline-minor-mode-map
-              (kbd "<backtab>") 'outshine-cycle-buffer))
-
-    :config (progn
-              ;; So *all* prog-modes have `outline-minor-mode' enabled
-              (add-hook 'prog-mode-hook 'outline-minor-mode)
-
-              ;; So *all* prog-modes have `outshine-mode' enabled
-              (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-
-              ;; Fix outshine narrowing
-              (advice-add 'outshine-narrow-to-subtree :before
-                          'advise-outshine-narrow-start-pos))))
-
-;;; Trivial Config
-
-(defun config/post-init-aggressive-indent ()
-  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
-  (add-hook 'clojure-mode-hook    #'aggressive-indent-mode)
-  (add-hook 'hy-mode-hook         #'aggressive-indent-mode))
-
-;;; Local Packages
-;;;; Configurations
-
-(defun config/init-avy-config ()
-  (use-package avy-config
-    :after macros))
-
-(defun config/init-eshell-config ()
-  (use-package eshell-config
-    :after evil macros))
-
-(defun config/init-evil-config ()
-  (use-package evil-config
-    :after evil macros))
-
-(defun config/init-ivy-config ()
-  (use-package ivy-config
-    :after ivy macros))
-
-(defun config/init-mu4e-config ()
-  (use-package mu4e-config
-    :after mu4e macros))
-
-(defun config/init-org-config ()
-  (use-package org-config
-    :after org macros))
-
-(defun config/init-ranger-config ()
-  (use-package ranger-config
-    :after ranger macros))
-
-;;;; Languages
-
-(defun config/init-clojure-config ()
-  (use-package clojure-config
-    :after clojure-mode))
-
-(defun config/init-python-config ()
-  (use-package python-config
-    :after python))
+      (advice-add 'outshine-narrow-to-subtree :before
+                  'advise-outshine-narrow-start-pos))))
 
 ;;; Redo-spacemacs
 
+;; `redo-spacemacs-bindings' is executed in user-config in `init.el'
+;; with the `dotspacemacs/user-config/post-layer-load-config' function
+
+;; If any removed bindings make you scratch your head, check out
+;; the ending `redo-spacemacs-new-bindings-alist' to see what I rebound it
+;; to (for example, `spacemacs/delete-window' from 'SPC w d' to 'M-d')
+;; They are unbound to force muscle-memory development.
+
 (defun config/init-redo-spacemacs ()
-  ;; `redo-spacemacs-bindings' is executed in user-config in `init.el'
-  ;; with the `dotspacemacs/user-config/post-layer-load-config' function
-
-  ;; If any removed bindings make you scratch your head, check out
-  ;; the ending `redo-spacemacs-new-bindings-alist' to see what I rebound it
-  ;; to (for example, `spacemacs/delete-window' from 'SPC w d' to 'M-d')
-  ;; They are unbound to force muscle-memory development.
-
   (use-package redo-spacemacs
     :if redo-bindings?
-    ;; Throw all the pkgs we modify keymaps of here
-    :after magit macros
-    :config
+    :after dash dash-functional
+    :init
     (progn
       (setq redo-spacemacs-prefixes-list
             '(;; Primary prefixes
@@ -351,19 +492,6 @@
               ("fr" counsel-recentf)
               ))
 
-      (setq redo-spacemacs--magit-maps
-            '(
-              magit-commit-message-section-map magit-commit-section-map
-              magit-diff-mode-map magit-file-mode-map magit-file-section-map
-              magit-log-mode-map magit-mode-map magit-mode-menu magit-process-mode-map
-              magit-reflog-mode-map magit-refs-mode-map magit-repolist-mode-map
-              magit-status-mode-map magit-tag-section-map magit-unmerged-section-map
-              magit-unpulled-section-map magit-unpushed-section-map
-              magit-unstaged-section-map magit-untracked-section-map
-              magit-worktree-section-map magit-status-mode-map))
-      (setq redo-spacemacs-maps-to-overwrite `(,@redo-spacemacs--magit-maps
-                                               ranger-mode-map))
-
       (setq redo-spacemacs-new-bindings-alist
             '(;; Windows, Layouts Management
               ("M-w"   spacemacs/toggle-maximize-buffer)
@@ -372,6 +500,11 @@
               ("C-M-/" split-window-right-and-focus)
               ("M--"   split-window-below)
               ("C-M--" split-window-below-and-focus)
+              ("M-1" winum-select-window-1)
+              ("M-2" winum-select-window-2)
+              ("M-3" winum-select-window-3)
+              ("M-4" winum-select-window-4)
+              ("M-5" winum-select-window-5)
 
               ;; Editing, Searching, Movement
               ("C-,"   lisp-state-toggle-lisp-state)
@@ -382,16 +515,7 @@
               ("M-f" counsel-find-file)
               ("M-r" counsel-recentf)
 
-              ;; Force below defaults for `redo-spacemacs-maps-to-overwrite'
-              ("M-1" winum-select-window-1)
-              ("M-2" winum-select-window-2)
-              ("M-3" winum-select-window-3)
-              ("M-4" winum-select-window-4)
-              ("M-5" winum-select-window-5)
-
-              ;; Rebindings todo
+              ;; Rebindings to look at
               ;; spacemacs/kill-this-buffer
-
-              ;; Free chords to look at
               ;; M-u, M-i
               )))))

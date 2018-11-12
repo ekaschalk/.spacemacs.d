@@ -2,23 +2,22 @@
 
 * Description
 
-This layer houses updates to (non-display) packages typically clumped into
-~dotspacemacs/user-config~ and declares all layers, like ~git~ and ~python~.
+This layer houses configuration updates typically clumped into
+~dotspacemacs/user-config~.
 
-Elsewhere-owned packages with non-trivial config are defined as small packages
-in the local subdir, eg. ~local/org-config~ houses org-mode updates.
-
-Keybindings are encapsulated in the appropriate local package or sometimes in
-~packages.el~. Emacs-core-pkg keybindings (eg. outline navigation & eshell) are
-in ~keybindings.el~.
+1. Declares all layers, like ~git~ and ~python~.
+2. Declares all non-display packages.
+3. Redo bindings, see next section.
 
 * Redone Spacemacs Bindings
 
-The end of ~packages.el~ configures ~redo-spacemacs~, a personal package for
-redoing Spacemacs bindings.
+~redo-spacemacs~ wraps Spacemacs leader re/un-bindings to warn when their
+definitions change, to not get caught by surprise by changes to Spacemacs.
 
 I undo *many* core spacemacs leader-key prefixes and keybindings that I either
 use via other bindings/means or have not made the cut into my workflow.
+Un-binding is useful to: keep which key options smaller and facilitate changes
+to muscle memory.
 
 Redone bindings are disabled by default. Turn on with ~redo-bindings?~ in
 ~init.el~.

@@ -12,8 +12,8 @@
 ;;
 ;; Layers are declared in `layers/config/layers.el'.
 ;;
-;; Configure `server?'        to true if you - use emacs as a daemon.
 ;; Configure `redo-bindings?' to true if you - want my aggressive rebindings.
+;; Configure `server?'        to true if you - use emacs as a daemon.
 ;;
 ;; `init.el' sets spacemacs up, defining required `dotspacemacs/..' funcs & vars.
 
@@ -101,7 +101,7 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
    '(;; Must Exclude (for styling, functionality, bug-fixing reasons)
      fringe importmagic scss-mode vi-tilde-fringe
 
-     ;; Packages I don't use
+     ;; Packages I don't use (non-exhaustive)
      anzu centered-cursor-mode column-enforce-mode company-statistics
      doom-modeline eshell-prompt-extras evil-anzu evil-mc evil-tutor
      fancy-battery fill-column-indicator gnuplot golden-ratio indent-guide
@@ -112,30 +112,14 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 
 (defun dotspacemacs/user-init ()
   "Package independent settings to run before `dotspacemacs/user-config'."
+  (fringe-mode 0)
   (setq custom-file "~/.spacemacs.d/.custom-settings.el"))
 
 ;;;; Spacemacs/user-config
-;;;;; Core
-
-(defun dotspacemacs/user-config ()
-  "Configuration that cannot be delegated to layers."
-  (dotspacemacs/user-config/toggles)
-  (dotspacemacs/user-config/post-layer-load-config)
-  (dotspacemacs/user-config/experiments))
-
-;;;;; Toggles
-
-(defun dotspacemacs/user-config/toggles ()
-  "Spacemacs toggles should not be put into layers, per Spacemacs docs."
-  (spacemacs/toggle-mode-line-minor-modes-off)
-  (global-highlight-parentheses-mode 1)
-  (rainbow-delimiters-mode-enable)
-  (fringe-mode '(0 . 0)))
-
 ;;;;; Post Layer Load
 
 (defun dotspacemacs/user-config/post-layer-load-config ()
-  "Configuration that must take place *after all* layers/pkgs are instantiated."
+  "Configuration to take place *after all* layers/pkgs are instantiated."
   (when (configuration-layer/package-used-p 'redo-spacemacs)
     (redo-spacemacs-bindings))
 
@@ -154,8 +138,11 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
     (when mac?
       (add-to-list 'default-frame-alist '(fullscreen . fullboth)))))
 
-;;;;; Experiments
+;;;;; Core
 
-(defun dotspacemacs/user-config/experiments ()
-  "Space for trying out configuration updates."
+(defun dotspacemacs/user-config ()
+  "Configuration that cannot be delegated to layers."
+  (dotspacemacs/user-config/post-layer-load-config)
+
+  ;; Experiments, other-users can drop in config here
   )
