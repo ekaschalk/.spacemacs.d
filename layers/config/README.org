@@ -7,7 +7,7 @@ This layer houses configuration updates typically clumped into
 
 1. Declares all layers, like ~git~ and ~python~.
 2. Declares all non-display packages.
-3. Redo bindings, see next section.
+3. Redos bindings, see next section.
 
 * Redone Spacemacs Bindings
 

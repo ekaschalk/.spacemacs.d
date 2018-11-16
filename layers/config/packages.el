@@ -41,14 +41,6 @@
 ;;;; Eshell
 
 (defun config/pre-init-eshell ()
-  (defun eshell-pop-eshell ()
-    "Eshell popup straight to insert mode."
-    (interactive)
-    (spacemacs/shell-pop-eshell nil)
-    (if (string= major-mode "eshell-mode")
-        (evil-insert 1)
-      (evil-escape)))
-
   (spacemacs|use-package-add-hook eshell
     :post-init
     (evil-define-key '(normal insert) 'global (kbd "C-e") 'eshell-pop-eshell)))
@@ -56,20 +48,6 @@
 ;;;; Evil
 
 (defun config/post-init-evil ()
-  (defun evil-execute-q-macro ()
-    "Execute macro stores in q-register, ie. run `@q'."
-    (interactive)
-    (evil-execute-macro 1 "@q"))
-
-  (defun evil-scroll-to-center-advice (&rest args)
-    "Scroll line to center, for advising functions."
-    (evil-scroll-line-to-center (line-number-at-pos)))
-
-  (defun evil-end-of-line-interactive ()
-    "Wrap `evil-end-of-line' in interactive, fix point being 1+ in vis state."
-    (interactive)
-    (evil-end-of-line))
-
   (setq evil-escape-key-sequence "jk")
   (setq evil-escape-unordered-key-sequence "true")
 
@@ -146,10 +124,6 @@
   (add-hook 'org-mode-hook 'flyspell-mode))
 
 (defun config/post-init-org ()
-  (defun org-sort-entries-priorities ()
-    (interactive)
-    (org-sort-entries nil ?p))
-
   (evil-define-key '(normal visual motion) org-mode-map
     "gh" 'outline-up-heading
     "gj" 'outline-forward-same-level
@@ -208,11 +182,6 @@
 ;;;; Outshine
 
 (defun config/init-outshine ()
-  (defun advise-outshine-narrow-start-pos ()
-    "Narrowing works within the headline rather than requiring to be on it."
-    (unless (outline-on-heading-p t)
-      (outline-previous-visible-heading 1)))
-
   (use-package outshine
     :hook ((prog-mode          . outline-minor-mode)
            (outline-minor-mode . outshine-hook-function))
@@ -238,7 +207,7 @@
         "nl" 'outline-demote)
 
       (advice-add 'outshine-narrow-to-subtree :before
-                  'advise-outshine-narrow-start-pos))))
+                  'outshine-advise-narrow-start-pos))))
 
 ;;;; Strings
 

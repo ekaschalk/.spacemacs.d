@@ -1,6 +1,7 @@
 My personal-layer based Spacemacs configuration.
 
-I focus on customizing Emacs's display in unique ways.
+I focus on customizing Emacs's display in unique ways and making the most of
+Spacemacs's configuration facilities.
 
 * Description
 

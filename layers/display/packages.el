@@ -43,24 +43,18 @@
 ;;;; All-the-icons-ivy
 
 (defun display/init-all-the-icons-ivy ()
-  (defun all-the-icons-ivy-file-transformer-stdized (s)
-    "Fix `all-the-icons-ivy-file-transformer' to have stdized height/offset."
-    (format "%s\t%s"
-            (propertize "\t" 'display
-                        (all-the-icons-icon-for-file s :height 0.9 :v-adjust 0))
-            s))
-
   (use-package all-the-icons-ivy
     :config
     (progn
-      ;; I have no idea why the default behavior for this pkg
-      ;; doesn't standardize the vertical offset and height
+      ;; I have no idea why the default behavior for this pkg doesn't
+      ;; standardize the vertical offset and height. Have the height <= 1 or ivy
+      ;; prompt's alignment will be wrong.
       (advice-add 'all-the-icons-ivy-file-transformer :override
                   'all-the-icons-ivy-file-transformer-stdized)
 
-      ;; Counsel defines a particular file transformer for just
-      ;; projectile (works on virtual files). Lets tack on the
-      ;; all-the-icons-ivy transformer for projectile icons once-again.
+      ;; Counsel defines a particular file transformer for just projectile
+      ;; (works on virtual files). Lets tack on the all-the-icons-ivy
+      ;; transformer for projectile icons once-again.
       (advice-add 'counsel-projectile-find-file-transformer :filter-return
                   'all-the-icons-ivy-file-transformer-stdized)
       (advice-add 'counsel-projectile-transformer :filter-return
