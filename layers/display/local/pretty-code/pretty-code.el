@@ -10,7 +10,9 @@
 ;; a comprehensive solution.
 
 (require 'prettify-utils)
-(require 'macros)
+(require 'dash)
+(require 'dash-functional)
+(require 's)
 
 (provide 'pretty-code)
 

@@ -1,4 +1,6 @@
 (require 'dash)
+(require 'dash-functional)
+(require 's)
 
 (provide 'pretty-fonts)
 

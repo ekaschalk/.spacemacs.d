@@ -1,4 +1,6 @@
-(require 'macros)
+(require 'dash)
+(require 'dash-functional)
+(require 's)
 
 (provide 'pretty-eshell)
 
@@ -30,6 +32,10 @@
             (lambda (&rest args) (incf pretty-eshell-prompt-num)))
 
 ;;; Core
+
+(defmacro with-face (STR &rest PROPS)
+  "Return STR propertized with PROPS."
+  `(propertize ,STR 'face (list ,@PROPS)))
 
 ;;;###autoload
 (defmacro pretty-eshell-section (name icon form &rest props)

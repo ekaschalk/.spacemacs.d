@@ -8,14 +8,15 @@
         evil
         ivy
         magit
-        mu4e
         ob org org-bullets
         ranger
 
         ;; Owned Packages
         auto-dim-other-buffers
+        dash-functional
         faceup
         outshine  ; also configures `outline-mode'
+        s
 
         ;; Local Packages
         (redo-spacemacs :location local)))
@@ -111,48 +112,6 @@
              ("M-3" . winum-select-window-3)
              ("M-4" . winum-select-window-4)))
 
-;;;; Mu4e
-
-(defun config/post-init-mu4e ()
-  ;; message.el
-  (setq message-directory "~/mail")
-  (setq message-send-mail-function 'smtpmail-send-it)
-
-  ;; smptmail.el
-  (setq smtpmail-smtp-server "smtp.gmail.com")
-  (setq smtpmail-smtp-service 587)
-  (setq smtpmail-default-smtp-server "smtp.gmail.com")
-  (setq smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil)))
-  (setq smtpmail-auth-credentials '(("smtp.gmail.com" 587
-                                     "ekaschalk@gmail.com" nil)))
-
-  ;; mu4e
-  ;; solid
-  (setq mu4e-get-mail-command "offlineimap")
-  (setq mu4e-maildir "~/mail")
-  (setq mu4e-sent-messages-behavior 'delete)
-  (setq user-mail-address "ekaschalk@gmail.com")
-  (setq mu4e-user-mail-address-list (list user-mail-address))
-
-  ;; experiment
-  (setq mu4e-drafts-folder "/[Gmail].Drafts")
-  (setq mu4e-sent-folder   "/[Gmail].Sent Mail")
-  (setq mu4e-maildir-shortcuts '(("/INBOX"               . ?i)
-                                 ("/[Gmail].Sent Mail"   . ?s)))
-
-  ;; mu4e-vars.el go through this
-
-  (setq mu4e-hide-index-messages t)
-  ;; mu4e-use-fancy-chars  ; true by default
-  ;; mu4e-marks            ; all the unicode stuff setup here
-  ;; configure through `mu4e-headers-..-mark' and `mu4e-headers..-prefix'
-  ;; mu4e-enable-async-operations
-  ;; (setq mu4e-update-interval 600)
-  ;; (setq mu4e-index-cleanup nil)      ;; don't do a full cleanup check
-  ;; (setq mu4e-index-lazy-check t)    ;; don't consider up-to-date dir
-  ;; w3m -dump -T text/html
-  )
-
 ;;;; Org
 
 (defun config/pre-init-org-bullets ()
@@ -233,6 +192,13 @@
     :config
     (auto-dim-other-buffers-mode)))
 
+;;;; Dash functional
+
+(defun config/init-dash-functional ()
+  ;; The spacemacs core file `core-documentation' requires dash.
+  ;; So we only have to use-pkg dash-functional to have all of dash around.
+  (use-package dash-functional))
+
 ;;;; Faceup
 
 (defun config/init-faceup ()
@@ -274,7 +240,13 @@
       (advice-add 'outshine-narrow-to-subtree :before
                   'advise-outshine-narrow-start-pos))))
 
-;;; Redo-spacemacs
+;;;; Strings
+
+(defun config/init-s ()
+  (use-package s))
+
+;;; Local Packages
+;;;; Redo-spacemacs
 
 ;; `redo-spacemacs-bindings' is executed in user-config in `init.el'
 ;; with the `dotspacemacs/user-config/post-layer-load-config' function
@@ -287,7 +259,6 @@
 (defun config/init-redo-spacemacs ()
   (use-package redo-spacemacs
     :if redo-bindings?
-    :after dash dash-functional
     :init
     (progn
       (setq redo-spacemacs-prefixes-list

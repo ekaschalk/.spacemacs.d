@@ -1,7 +1,10 @@
 ;; (require 'evil)  ; Remove evil-insert at end if not using evil
 (require 'ivy)  ; for leader-prompts only
 (require 'magit)
-(require 'macros)
+
+(require 'dash)
+(require 'dash-functional)
+(require 's)
 
 (provide 'pretty-magit)
 

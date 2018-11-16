@@ -1,5 +1,8 @@
+(require 'dash)
+(require 'dash-functional)
+(require 's)
+
 (require 'outshine)
-(require 'macros)
 
 (provide 'pretty-outlines)
 
@@ -10,6 +13,12 @@
 
 (defvar pretty-outlines-ellipsis "~"
   "An implementation of `org-ellipsis' for outlines.")
+
+;;; Utils
+
+(defmacro with-face (STR &rest PROPS)
+  "Return STR propertized with PROPS."
+  `(propertize ,STR 'face (list ,@PROPS)))
 
 ;;; Outline-ellipsis
 

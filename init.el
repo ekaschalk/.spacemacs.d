@@ -90,8 +90,7 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
 (defun dotspacemacs/layers ()
   "Instantiate Spacemacs layers declarations and package configurations."
   (setq-default
-   dotspacemacs-configuration-layers     '((macros   :location local)
-                                           (config   :location local)
+   dotspacemacs-configuration-layers     '((config   :location local)
                                            (display  :location local)
                                            (personal :location local))
    dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layers/")
@@ -135,5 +134,5 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   "Configuration that cannot be delegated to layers."
   (dotspacemacs/user-config/post-layer-load-config)
 
-  ;; Drop-in more config here without needing layer stuff
+  ;; Drop-in whatever config here without having to worry about good practices
   )
