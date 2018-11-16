@@ -140,26 +140,14 @@
 ;;;; Pretty-code
 
 (defun display/init-pretty-code ()
-  ;; Note: I'm not using many of the symbols I've defined
-  ;; in the past like ones for "in", "for", and so on.
-  ;; Full commentary on why in `pretty-code.el'.
-
   (use-package pretty-code
     :config
     (progn
-      (global-prettify-symbols-mode 1)
-
-      ;; note: refactor pretty-code set/get someday
-      (pretty-code-set-pairs
-       `((hy-mode-hook
-          ,(pretty-code-get-pairs
-            '(:lambda "fn" :def "defn")))
-         (python-mode-hook
-          ,(pretty-code-get-pairs
-            '(:lambda "lambda" :def "def")))
-         (emacs-lisp-mode-hook
-          ,(pretty-code-get-pairs
-            '(:def "defun"))))))))
+      (pretty-code-add-hook 'emacs-lisp-mode-hook '((:def "defun")))
+      (pretty-code-add-hook 'hy-mode-hook         '((:lambda "fn")
+                                                    (:def "defn")))
+      (pretty-code-add-hook 'python-mode-hook     '((:lambda "lambda")
+                                                    (:def "def"))))))
 
 ;;;; Pretty-eshell
 

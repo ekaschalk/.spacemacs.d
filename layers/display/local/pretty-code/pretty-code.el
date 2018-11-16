@@ -1,67 +1,52 @@
 ;;; pretty-code.el --- Utils for prettify-symbols -*- lexical-binding: t; -*-
 
-;; Note: I'm not using many of the symbols I've defined
-;; in the past like ones for "in", "for", and so on.
-;; This is because I got annoyed with indentation and that
-;; they aren't proportional.
-;; I love ligatures but only these remain in my workflow.
-;; It is a mammoth effort to fix both the above issues
-;; which I have explorered various times but do not have
-;; a comprehensive solution.
+;;; Commentary:
 
-(require 'prettify-utils)
+;; Utility to centralize prettify-symbol replacements.
+
+;; I'm not using many of the symbols I showed off in my blog or that are in
+;; `pretty-code-options-alist'. The indentation/alignment issues got to me. I
+;; want to solve this however it is a significant project so no ETA on when all
+;; languages can be turned into agda...
+
+;;; Code:
+;;;; Utils
+
 (require 'dash)
-(require 'dash-functional)
-(require 's)
+(require 'prettify-utils)
 
-(provide 'pretty-code)
+;;;; Configuration
 
-;;; Config
-
-(defvar pretty-code-choices
-  (-flatten
-   (prettify-utils-generate
-    ;; Functional
-    (:lambda      "λ")
-    (:def         "ƒ")
-    (:composition "∘")
+(defvar pretty-code-options-alist
+  ;; Functions
+  '((:lambda "λ") (:def "ƒ")
 
     ;; Types
-    (:null        "∅")
-    (:true        "𝕋") (:false       "𝔽")
-    (:int         "ℤ") (:float       "ℝ")
-    (:str         "𝕊")
-    (:bool        "𝔹")
+    (:true "𝕋") (:false "𝔽") (:int "ℤ") (:float "ℝ") (:str "𝕊") (:bool "𝔹")
+
+    ;; Seqs
+    (:for "∀") (:in "∈") (:not-in "∉")
 
     ;; Flow
-    (:not         "￢")
-    (:in          "∈") (:not-in      "∉")
-    (:and         "∧") (:or          "∨")
-    (:for         "∀")
-    (:some        "∃")
-    (:return     "⟼") (:yield      "⟻")
+    (:not "￢") (:and "∧") (:or "∨")
 
-    ;; Other
-    (:tuple       "⨂")
-    (:pipe        "")
-    ))
-  "Options plist for `pretty-code-get-pairs'.")
+    ;; Misc
+    (:return "⟼") (:yield "⟻") (:some "∃") (:composition "∘") (:tuple "⨂"))
+  "kwd and composition-str alist.")
 
-;;; Core
+;;;; Core
 
 ;;;###autoload
-(defun pretty-code-get-pairs (kwds)
-  "Build an alist for prettify-symbols-alist from components from KWDS."
-  (->> pretty-code-choices
-     (--map (when-let (major-mode-symbol (plist-get kwds it))
-             (list major-mode-symbol
-                   (plist-get pretty-code-choices it))))
-     -non-nil))
+(defun pretty-code-add-hook (hook kwd-name-alist)
+  "Set `prettify-symbols-alist' for HOOK with choices in KWD-NAME-ALIST."
+  (add-hook hook
+            (lambda ()
+              (setq prettify-symbols-alist
+                    (->> kwd-name-alist
+                       (-map (-lambda ((kwd name))
+                               (cons name
+                                     (alist-get kwd pretty-code-options-alist))))
+                       (apply #'prettify-utils-generate-f)))
+              (prettify-symbols-mode 1))))
 
-;;;###autoload
-(defun pretty-code-set-pairs (hook-pairs-alist)
-  "Add hooks setting `prettify-symbols-alist' for many modes"
-  (-each hook-pairs-alist
-    (-lambda ((hook pretty-pairs))
-      (add-hook hook
-                (lambda () (setq prettify-symbols-alist pretty-pairs))))))
+(provide 'pretty-code)
