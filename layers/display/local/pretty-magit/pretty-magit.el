@@ -73,4 +73,4 @@
 
 (advice-add 'magit-status         :after 'pretty-magit-add-magit-faces)
 (advice-add 'magit-refresh-buffer :after 'pretty-magit-add-magit-faces)
-(advice-add 'magit-commit         :after 'pretty-magit-use-magit-commit-prompt)
+(advice-add 'magit-commit-create  :after 'pretty-magit-use-magit-commit-prompt)
