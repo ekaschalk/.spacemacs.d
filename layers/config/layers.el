@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (configuration-layer/declare-layers
  '(;; Core
    (auto-completion :variables

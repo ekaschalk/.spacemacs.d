@@ -1,3 +1,5 @@
+;;; pretty-fonts.el --- Ligature and fontset setters -*- lexical-binding: t; -*-
+
 (require 'dash)
 (require 'dash-functional)
 (require 's)

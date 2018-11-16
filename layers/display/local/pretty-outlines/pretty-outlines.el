@@ -1,3 +1,5 @@
+;;; pretty-outlines.el --- Org-bullets styling for outline-mode -*- lexical-binding: t; -*-
+
 (require 'dash)
 (require 'dash-functional)
 (require 's)

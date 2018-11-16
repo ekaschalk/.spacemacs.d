@@ -1,4 +1,4 @@
-;;; Display Layer
+;;; Display Layer -*- lexical-binding: t; -*-
 
 (setq display-packages
       '(;; Owned packages

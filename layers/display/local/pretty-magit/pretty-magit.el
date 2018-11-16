@@ -1,3 +1,5 @@
+;;; pretty-magit.el --- Magit commit leader completion and styling -*- lexical-binding: t; -*-
+
 ;; (require 'evil)  ; Remove evil-insert at end if not using evil
 (require 'ivy)  ; for leader-prompts only
 (require 'magit)

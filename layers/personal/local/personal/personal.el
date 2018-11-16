@@ -1,10 +1,11 @@
-;; Dumping ground for stuff only relevant to me
-;; not that interesting i promise
+;;; personal.el --- The random config dumping ground -*- lexical-binding: t; -*-
 
 (require 'mu4e)
 
 (provide 'personal)
 
+
+;;; Personal
 
 ;; Emacs-anywhere defaults to org-mode with maximized window
 (add-hook 'ea-popup-hook

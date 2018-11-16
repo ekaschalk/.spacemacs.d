@@ -1,3 +1,5 @@
+;;; outline-ivy.el --- Jumping to rich outlines with ivy -*- lexical-binding: t; -*-
+
 (require 'ivy)
 (require 'outshine)
 (require 'dash)

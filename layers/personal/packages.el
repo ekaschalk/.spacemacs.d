@@ -1,4 +1,4 @@
-;;; Personal Layer
+;;; Personal Layer -*- lexical-binding: t; -*-
 
 (setq personal-packages
       '((blog        :location local)

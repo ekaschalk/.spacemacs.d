@@ -1,4 +1,4 @@
-;;; Setup
+;;; Setup -*- lexical-binding: t; -*-
 ;;;; Commentary
 
 ;; -- Eric Kaschalk's Spacemacs Configuration --

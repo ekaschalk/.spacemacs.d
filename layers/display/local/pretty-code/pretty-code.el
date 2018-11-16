@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t -*-
+;;; pretty-code.el --- Utils for prettify-symbols -*- lexical-binding: t; -*-
 
 ;; Note: I'm not using many of the symbols I've defined
 ;; in the past like ones for "in", "for", and so on.

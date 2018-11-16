@@ -1,4 +1,4 @@
-;;; Config Layer
+;;; Config Layer -*- lexical-binding: t; -*-
 
 (setq config-packages
       '(;; Unowned Packages

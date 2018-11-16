@@ -1,3 +1,5 @@
+;;; blog.el --- Hugo server manager -*- lexical-binding: t; -*-
+
 (require 'dash)
 (require 'dash-functional)
 (require 's)
