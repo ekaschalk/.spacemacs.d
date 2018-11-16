@@ -34,7 +34,7 @@
    clojure
    emacs-lisp
    haskell
-   hy
+   hy  ; I wrote this mode/layer, yay
    (python :variables
            python-test-runner 'pytest
            python-spacemacs-indent-guess nil)

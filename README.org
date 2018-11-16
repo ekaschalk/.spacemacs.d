@@ -19,11 +19,12 @@ I focus on customizing Emacs's display in unique ways.
       [[http://www.modernemacs.com/post/pretty-magit/][pretty magit - integrating commit leaders]].
     - /pretty-outlines/ : Fancy outline bullets and ellipsis, see [[http://www.modernemacs.com/post/outline-bullets/][fancy outline bullets.]]
   - [[./layers/personal][personal]] :: Personal non-display packages.
-    - /blog/ : Hugo integration, see [[http://www.modernemacs.com/post/org-mode-blogging/][an Emacs blogging workflow]].
+    - /blog/ : Hugo utilities, see [[http://www.modernemacs.com/post/org-mode-blogging/][an Emacs blogging workflow]].
     - /outline-ivy/ : Jump to outlines with ivy, see [[http://www.modernemacs.com/post/outline-ivy/][managing code with outlines]].
     - /personal/ : Configuration that isn't generally applicable, like email.
 
-  See [[http://www.modernemacs.com/post/migrate-layers/][Migrating to Spacemacs Layers]] to understand this configuration in better depth.
+  See [[http://www.modernemacs.com/post/migrate-layers/][Migrating to Spacemacs Layers]] for further material on Spacemacs's
+  configuration system.
 
 * Install
 
@@ -59,7 +60,6 @@ I focus on customizing Emacs's display in unique ways.
 
     Style your font in ~dotspacemacs-default-font~ in ~init.el~ as normal.
 
-    I've ~Zenburn~ and ~Solarized-light~ themes enabled and configured by
-    default. Cycle themes with ~SPC T n~.
-
-    Check out and modify theming changes in ~layers/display/config.el~.
+    Check out and modify theming changes in ~layers/display/config.el~. I have
+    ~Zenburn~ and ~Solarized-light~ themes enabled and configured already. Cycle
+    themes with ~SPC T n~.

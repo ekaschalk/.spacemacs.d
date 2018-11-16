@@ -4,7 +4,7 @@
 ;; -- Eric Kaschalk's Spacemacs Configuration --
 ;; -- Contact: ekaschalk@gmail.com --
 ;; -- MIT License --
-;; -- Emacs 26.1 ~ Spacemacs Dev Branch 0.300.0.x ~ pkgs updated: 10/09/18 --
+;; -- Emacs 26.1 ~ Spacemacs Dev Branch 0.300.0.x ~ pkgs updated: 11/16/18 --
 ;; -- http://modernemacs.com --
 ;;
 ;; Personal layers host most of my configuration - see README.
@@ -12,17 +12,17 @@
 ;;
 ;; Layers are declared in `layers/config/layers.el'.
 ;;
-;; Configure `redo-bindings?' to true if you - want my aggressive rebindings.
-;; Configure `server?'        to true if you - use emacs as a daemon.
+;; Set `redo-bindings?' to true if you - want my aggressive rebindings.
+;; Set `server?'        to true if you - use emacs as a daemon.
 ;;
 ;; `init.el' sets spacemacs up, defining required `dotspacemacs/..' funcs & vars.
 
 ;;;; Constants
 
-(defvar eric?    (string= "Eric Kaschalk" (user-full-name)) "Am I me?")
-(defvar linux?   (eq system-type 'gnu/linux)     "Are we on a linux machine?")
-(defvar mac?     (eq system-type 'darwin)        "Are we on a macOS machine?")
-(defvar windows? (not (or linux? mac?))          "Are we on a windows machine?")
+(defconst eric?    (string= "Eric Kaschalk" (user-full-name)) "Am I me?")
+(defconst linux?   (eq system-type 'gnu/linux) "Are we on a linux machine?")
+(defconst mac?     (eq system-type 'darwin)    "Are we on a macOS machine?")
+(defconst windows? (not (or linux? mac?))      "Are we on windows machine?")
 
 ;;;; Configuration
 
