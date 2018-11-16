@@ -33,8 +33,6 @@
                              (powerline-inactive0      mode-line)
                              (powerline-inactive1      mode-line)
                              (powerline-inactive2      mode-line)
-                             ;; (powerline-inactive1      mode-line-inactive)
-                             ;; (powerline-inactive2      mode-line-inactive)
                              ))
 
 ;;;; Styling

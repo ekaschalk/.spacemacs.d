@@ -236,7 +236,8 @@
 ;;;; Faceup
 
 (defun config/init-faceup ()
-  (use-package faceup))
+  (use-package faceup
+    :defer t))
 
 ;;;; Outshine
 
@@ -247,6 +248,12 @@
       (outline-previous-visible-heading 1)))
 
   (use-package outshine
+    :hook ((prog-mode          . outline-minor-mode)
+           (outline-minor-mode . outshine-hook-function))
+
+    :bind (("<backtab>" . outshine-cycle-buffer)
+           :map outline-minor-mode-map)
+
     :init
     (progn
       (evil-define-key '(normal visual motion) outline-minor-mode-map
@@ -256,8 +263,6 @@
         "gl" 'outline-next-visible-heading
         "gu" 'outline-previous-visible-heading)
 
-      (bind-key "<backtab>" 'outshine-cycle-buffer outline-minor-mode-map)
-
       (spacemacs/set-leader-keys
         "nn" 'outshine-narrow-to-subtree
         "nw" 'widen
@@ -265,9 +270,6 @@
         "nk" 'outline-move-subtree-up
         "nh" 'outline-promote
         "nl" 'outline-demote)
-
-      (add-hook 'prog-mode-hook          'outline-minor-mode)
-      (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
 
       (advice-add 'outshine-narrow-to-subtree :before
                   'advise-outshine-narrow-start-pos))))
@@ -447,6 +449,7 @@
               ("w3" spacemacs/window-split-triple-columns)
               ("w_" spacemacs/maximize-horizontally)
               ("wC" spacemacs/toggle-centered-buffer-mode-frame)
+              ("wc" spacemacs/toggle-centered-buffer-mode)
               ("wF" make-frame)
               ("wh" evil-window-left)
               ("wj" evil-window-down)
@@ -495,6 +498,7 @@
             '(;; Windows, Layouts Management
               ("M-w"   spacemacs/toggle-maximize-buffer)
               ("M-d"   spacemacs/delete-window)
+              ("M-c"   spacemacs/toggle-centered-buffer-mode)
               ("M-/"   split-window-right)
               ("C-M-/" split-window-right-and-focus)
               ("M--"   split-window-below)

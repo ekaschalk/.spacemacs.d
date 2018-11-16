@@ -14,8 +14,6 @@
 
 (provide 'pretty-code)
 
-(global-prettify-symbols-mode 1)
-
 ;;; Config
 
 (defvar pretty-code-choices

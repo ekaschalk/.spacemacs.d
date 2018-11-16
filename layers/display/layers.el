@@ -1,6 +1,6 @@
 (configuration-layer/declare-layers
  '(;; Common
-   config
+   ;; config
    macros
 
    ;; Extra
