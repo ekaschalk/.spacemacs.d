@@ -1,8 +1,5 @@
 (configuration-layer/declare-layers
- '(;; Common
-   macros
-
-   ;; Core
+ '(;; Core
    (auto-completion :variables
                     auto-completion-return-key-behavior 'complete
                     auto-completion-tab-key-behavior 'complete

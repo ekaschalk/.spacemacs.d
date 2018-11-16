@@ -169,8 +169,6 @@
     :post-config (add-to-list 'org-babel-load-languages '(dot . t))))
 
 (defun config/pre-init-org ()
-  (spacemacs/set-leader-keys "aof" 'org-open-at-point-global)
-
   (setq org-ellipsis "")
   (setq org-priority-faces
         '((65 :inherit org-priority :foreground "red")
@@ -200,6 +198,7 @@
     "gl" 'outline-next-visible-heading
     "gu" 'outline-previous-visible-heading)
 
+  (spacemacs/set-leader-keys "aof" 'org-open-at-point-global)
   (spacemacs/set-leader-keys-for-major-mode 'org-mode
     "r" 'org-refile
     "s p" 'org-sort-entries-priorities)
