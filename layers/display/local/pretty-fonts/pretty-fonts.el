@@ -1,46 +1,21 @@
 ;;; pretty-fonts.el --- Ligature and fontset setters -*- lexical-binding: t; -*-
 
+;;; Commentary:
+
+;; A heavily annotated, cleaned-up version of ligature implementations for Emacs
+;; floating around on the web. If you ever looked at the snippets online and
+;; thought wtf is going on, this implementation should clear things up.
+
+;;; Code:
+;;;; Requires
+
 (require 'dash)
 (require 'dash-functional)
-(require 's)
 
-(provide 'pretty-fonts)
+;;;; Configuration
+;;;;; Fira-code Ligatures
 
-;;; API
-
-;;;###autoload
-(defun pretty-fonts-set-fontsets (code-font-alist)
-  "Utility to associate many unicode points with specified fonts."
-  (--each code-font-alist
-    (-let (((font . codes) it))
-      (--each codes
-        (set-fontset-font nil `(,it . ,it) font)
-        (set-fontset-font t `(,it . ,it) font)))))
-
-;;;###autoload
-(defun pretty-fonts--add-kwds (font-lock-alist)
-  "Exploits `font-lock-add-keywords' to apply regex-unicode replacements."
-  (font-lock-add-keywords
-   nil (--map (-let (((rgx uni-point) it))
-               `(,rgx (0 (progn
-                           (compose-region
-                            (match-beginning 1) (match-end 1)
-                            ,(concat "\t" (list uni-point)))
-                           nil))))
-             font-lock-alist)))
-
-;;;###autoload
-(defmacro pretty-fonts-set-kwds (font-lock-hooks-alist)
-  "Set regex-unicode replacements to many modes."
-  `(--each ,font-lock-hooks-alist
-     (-let (((font-locks . mode-hooks) it))
-       (--each mode-hooks
-         (add-hook it (-partial 'pretty-fonts--add-kwds
-                                (symbol-value font-locks)))))))
-
-;;; Fira Font
-
-(defconst pretty-fonts-fira-font
+(defconst pretty-fonts-fira-code-alist
   '(;; OPERATORS
     ;; Pipes
     ("\\(<|\\)" #Xe14d) ("\\(<>\\)" #Xe15b) ("\\(<|>\\)" #Xe14e) ("\\(|>\\)" #Xe135)
@@ -127,3 +102,71 @@
     ("[^:=]\\(:\\)[^:=]"           #Xe16c)
     ("\\(<=\\)"                    #Xe157))
   "Fira font ligatures and their regexes")
+
+;;;; Fontsetters
+
+;;;###autoload
+(defun pretty-fonts-set-fontsets (font-codepoints-alist)
+  "Set CODEPOINTS to use FONT in FONT-CODEPOINTS-ALIST in all situations."
+  (-each font-codepoints-alist
+    (-lambda ((font . codepoints))
+      (-each codepoints
+        (lambda (codepoint)
+          (set-fontset-font nil `(,codepoint . ,codepoint) font)
+          (set-fontset-font t `(,codepoint . ,codepoint) font))))))
+
+;;;; Ligatures
+
+;;;###autoload
+(defun pretty-fonts--pad-codepoint (codepoint)
+  "Converts CODEPOINT to a string that `compose-region' will know to leftpad.
+
+A snippet from it's documentation:
+
+  If it is a string, the elements are alternate characters. In this case, TAB
+  element has a special meaning. If the first character is TAB, the glyphs are
+  displayed with left padding space so that no pixel overlaps with the previous
+  column. If the last character is TAB, the glyphs are displayed with right
+  padding space so that no pixel overlaps with the following column.
+
+Also note that prior implementations use `list' instead of `char-to-string',
+they do the same thing here but `char-to-string' is obviously more descriptive."
+  (concat "\t" (char-to-string codepoint)))
+
+;;;###autoload
+(defun pretty-fonts--build-keyword (rgx codepoint)
+  "Builds the font-lock-keyword for RGX to be composed to CODEPOINT.
+
+This function may seem obtuse. It can be translated into the spec
+defined in `font-lock-add-keywords' as follows:
+
+  (MATCHER . HIGHLIGHT=MATCH-HIGHLIGHT=(SUBEXP=0 FACENAME=expression))
+
+The FACENAME is a form that should evaluate to a face. In the case it returns
+nil, which we do here, it won't modify the face. If instead it was `(prog1
+font-lock-function-name-face compose...)', the composition would still be applied
+but now all ligatures would be highlighted as functions, for example."
+  `(,rgx (0 (prog1 nil
+              (compose-region (match-beginning 1)
+                              (match-end 1)
+                              ,(pretty-fonts--pad-codepoint codepoint))))))
+
+;;;###autoload
+(defun pretty-fonts-add-kwds (rgx-codepoint-alist)
+  "Exploits `font-lock-add-keywords' to transform RGXs into CODEPOINTs."
+  (->> rgx-codepoint-alist
+     (-map (-applify #'pretty-fonts--build-keyword))
+     (font-lock-add-keywords nil)))
+
+;;;###autoload
+(defun pretty-fonts-add-hook (hook rgx-codepoint-alist)
+  "Add `pretty-fonts-add-kwds' as a hook."
+  (add-hook hook
+            (lambda () (pretty-fonts-add-kwds rgx-codepoint-alist))))
+
+;;;###autoload
+(defun pretty-fonts-set-fontsets-for-fira-code ()
+  "Tell Emacs to render Fira Code codepoints using Fira Code Symbol font."
+  (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol"))
+
+(provide 'pretty-fonts)

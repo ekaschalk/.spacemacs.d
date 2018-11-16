@@ -144,10 +144,10 @@
     :config
     (progn
       (pretty-code-add-hook 'emacs-lisp-mode-hook '((:def "defun")))
-      (pretty-code-add-hook 'hy-mode-hook         '((:lambda "fn")
-                                                    (:def "defn")))
-      (pretty-code-add-hook 'python-mode-hook     '((:lambda "lambda")
-                                                    (:def "def"))))))
+      (pretty-code-add-hook 'hy-mode-hook         '((:def "defn")
+                                                    (:lambda "fn")))
+      (pretty-code-add-hook 'python-mode-hook     '((:def "def")
+                                                    (:lambda "lambda"))))))
 
 ;;;; Pretty-eshell
 
@@ -208,11 +208,10 @@
     :config
     ;; !! This is required to avoid segfault when using emacs as daemon !!
     (spacemacs|do-after-display-system-init
-     (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-     (pretty-fonts-set-kwds '((pretty-fonts-fira-font
-                               prog-mode-hook
-                               org-mode-hook)))
+     (pretty-fonts-add-hook 'prog-mode-hook pretty-fonts-fira-code-alist)
+     (pretty-fonts-add-hook 'org-mode-hook  pretty-fonts-fira-code-alist)
 
+     (pretty-fonts-set-fontsets-for-fira-code)
      (pretty-fonts-set-fontsets
       '(;; All-the-icons fontsets
         ("fontawesome"
