@@ -1,6 +1,5 @@
 ;; Dumping ground for stuff only relevant to me
-
-(require 'macros)
+;; not that interesting i promise
 
 (provide 'personal)
 
