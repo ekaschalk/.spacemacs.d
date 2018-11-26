@@ -62,6 +62,8 @@ Redone bindings are disabled by default. Turn on with ~redo-bindings?~ in
 | ~SPC n n~   | outshine-narrow-to-subtree       |
 | ~SPC n w~   | widen                            |
 | ~<backtab>~ | outshine-cycle-buffer            |
+| ~<M-RET>~   | outshine-insert-heading          |
+| ~<M-S-RET>~ | outshine-insert-subheading       |
 
 ** Ivy
 

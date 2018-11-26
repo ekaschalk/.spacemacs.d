@@ -186,7 +186,8 @@
            (outline-minor-mode . outshine-hook-function))
 
     :bind (("<backtab>"     . outshine-cycle-buffer)
-           ([(meta return)] . outshine-insert-heading)
+           ([(meta return)]       . outshine-insert-heading)
+           ([(meta shift return)] . outshine-insert-subheading)
            :map outline-minor-mode-map)
 
     :init
@@ -206,13 +207,23 @@
         "nh" 'outline-promote
         "nl" 'outline-demote)
 
-      (advice-add 'outshine-narrow-to-subtree :before
-                  'outshine-advise-narrow-start-pos)
+      (advice-add 'outshine-narrow-to-subtree :before 'outshine-fix-narrow-pos)
 
-      ;; So `org-meta-return' used in `org-mode' not `outshine-insert-heading'
+      (advice-add 'outshine-insert-heading    :before 'outshine-fix-insert-pos)
+      (advice-add 'outshine-insert-heading    :after 'evil-insert-advice)
+      (advice-add 'outshine-insert-subheading :after 'evil-insert-advice)
+
+      ;; Fix the new bindings in outline-minor-mode overwriting org-mode-map
+      ;; I also add advice here because it mirrors outshine modifications
       (spacemacs|use-package-add-hook org
-        :post-config (bind-keys :map org-mode-map
-                                ([(meta return)] . org-meta-return))))))
+        :post-config
+        (progn
+          (bind-keys :map org-mode-map
+                     ([(meta return)]       . org-meta-return)
+                     ([(meta shift return)] . org-insert-subheading))
+          (advice-add 'org-insert-heading    :before 'org-fix-heading-pos)
+          (advice-add 'org-insert-heading    :after 'evil-insert-advice)
+          (advice-add 'org-insert-subheading :after 'evil-insert-advice))))))
 
 ;;;; Strings
 
