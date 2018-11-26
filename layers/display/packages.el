@@ -267,16 +267,13 @@
 
 (defun display/init-pretty-outlines ()
   (use-package pretty-outlines
+    :hook ((outline-mode       . pretty-outlines-set-display-table)
+           (outline-minor-mode . pretty-outlines-set-display-table)
+           (emacs-lisp-mode . pretty-outlines-add-bullets)
+           (hy-mode         . pretty-outlines-add-bullets)
+           (python-mode     . pretty-outlines-add-bullets))
+
     :init
     (progn
       (setq pretty-outlines-ellipsis            "")
-      (setq pretty-outlines-bullets-bullet-list '("" "" "" ""))
-
-      (spacemacs/add-to-hooks 'pretty-outlines-set-display-table
-                              '(outline-mode-hook
-                                outline-minor-mode-hook))
-
-      (spacemacs/add-to-hooks 'pretty-outlines-add-bullets
-                              '(emacs-lisp-mode-hook
-                                hy-mode-hook
-                                python-mode-hook)))))
+      (setq pretty-outlines-bullets-bullet-list '("" "" "" "")))))

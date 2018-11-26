@@ -134,8 +134,7 @@
   (spacemacs/set-leader-keys "aof" 'org-open-at-point-global)
   (spacemacs/set-leader-keys-for-major-mode 'org-mode
     "r" 'org-refile
-    "s p" 'org-sort-entries-priorities)
-  (org-defkey org-mode-map [(meta return)] 'org-meta-return))
+    "s p" 'org-sort-entries-priorities))
 
 ;;;; Ranger
 
@@ -186,7 +185,8 @@
     :hook ((prog-mode          . outline-minor-mode)
            (outline-minor-mode . outshine-hook-function))
 
-    :bind (("<backtab>" . outshine-cycle-buffer)
+    :bind (("<backtab>"     . outshine-cycle-buffer)
+           ([(meta return)] . outshine-insert-heading)
            :map outline-minor-mode-map)
 
     :init
@@ -207,7 +207,12 @@
         "nl" 'outline-demote)
 
       (advice-add 'outshine-narrow-to-subtree :before
-                  'outshine-advise-narrow-start-pos))))
+                  'outshine-advise-narrow-start-pos)
+
+      ;; So `org-meta-return' used in `org-mode' not `outshine-insert-heading'
+      (spacemacs|use-package-add-hook org
+        :post-config (bind-keys :map org-mode-map
+                                ([(meta return)] . org-meta-return))))))
 
 ;;;; Strings
 
