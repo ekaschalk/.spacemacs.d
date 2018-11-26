@@ -27,18 +27,12 @@
 (defun display/init-all-the-icons ()
   (use-package all-the-icons
     :config
-    (let ((hy-face '(:face all-the-icons-orange))
-          (dt-face '(:face all-the-icons-pink)))
-      (mapcar*
-       #'add-to-list
-       '(all-the-icons-icon-alist
-         all-the-icons-icon-alist
-         all-the-icons-mode-icon-alist
-         all-the-icons-mode-icon-alist)
-       `(("\\.hy$"          all-the-icons-fileicon "hy"       ,@hy-face)
-         ("\\.dot$"         all-the-icons-fileicon "graphviz" ,@dt-face)
-         (hy-mode           all-the-icons-fileicon "hy"       ,@hy-face)
-         (graphviz-dot-mode all-the-icons-fileicon "graphviz" ,@dt-face))))))
+    (let ((hy-icon '(all-the-icons-fileicon "hy" :face all-the-icons-orange))
+          (dt-icon '(all-the-icons-fileicon "graphviz" :face all-the-icons-pink)))
+      (add-to-list 'all-the-icons-icon-alist      ("\\.hy$"          ,@hy-icon))
+      (add-to-list 'all-the-icons-icon-alist      ("\\.dot$"         ,@dt-icon))
+      (add-to-list 'all-the-icons-mode-icon-alist (hy-mode           ,@hy-icon))
+      (add-to-list 'all-the-icons-mode-icon-alist (graphviz-dot-mode ,@dt-icon)))))
 
 ;;;; All-the-icons-ivy
 
@@ -46,15 +40,11 @@
   (use-package all-the-icons-ivy
     :config
     (progn
-      ;; I have no idea why the default behavior for this pkg doesn't
-      ;; standardize the vertical offset and height. Have the height <= 1 or ivy
-      ;; prompt's alignment will be wrong.
+      ;; Fix icon prompt alignment in ivy prompts
       (advice-add 'all-the-icons-ivy-file-transformer :override
                   'all-the-icons-ivy-file-transformer-stdized)
 
-      ;; Counsel defines a particular file transformer for just projectile
-      ;; (works on virtual files). Lets tack on the all-the-icons-ivy
-      ;; transformer for projectile icons once-again.
+      ;; Add behavior to counsel projectile funcs too
       (advice-add 'counsel-projectile-find-file-transformer :filter-return
                   'all-the-icons-ivy-file-transformer-stdized)
       (advice-add 'counsel-projectile-transformer :filter-return
@@ -238,30 +228,14 @@
   (use-package pretty-magit
     :config
     (progn
-      (pretty-magit-add-leader
-       "Feature"
-       ?
-       (:foreground "slate gray" :height 1.2))
+      (pretty-magit-add-leaders
+       '("Feature" ? (:foreground "slate gray" :height 1.2))
+       '("Add"     ? (:foreground "#375E97" :height 1.2))
+       '("Fix"     ? (:foreground "#FB6542" :height 1.2))
+       '("Clean"   ? (:foreground "#FFBB00" :height 1.2))
+       '("Docs"    ? (:foreground "#3F681C" :height 1.2)))
 
-      (pretty-magit-add-leader
-       "Add"
-       ?
-       (:foreground "#375E97" :height 1.2))
-
-      (pretty-magit-add-leader
-       "Fix"
-       ?
-       (:foreground "#FB6542" :height 1.2))
-
-      (pretty-magit-add-leader
-       "Clean"
-       ?
-       (:foreground "#FFBB00" :height 1.2))
-
-      (pretty-magit-add-leader
-       "Docs"
-       ?
-       (:foreground "#3F681C" :height 1.2)))))
+      (pretty-magit-setup))))
 
 ;;;; Pretty-outlines
 
