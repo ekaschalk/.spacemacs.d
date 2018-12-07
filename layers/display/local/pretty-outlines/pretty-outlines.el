@@ -18,17 +18,18 @@
 
 ;;;; Config
 
-(defvar pretty-outlines-bullets-bullet-list '(#x25c9 #x25cb #x2738 #x273f)
+(defvar pretty-outlines-all-the-icons? (package-installed-p 'all-the-icons)
+  "Do we use `all-the-icons' chars for bullet/ellipsis defaults?")
+
+(defvar pretty-outlines-bullets-bullet-list (if pretty-outlines-all-the-icons?
+                                                '(#Xe3d0 #Xe3d1 #Xe3d2 #Xe3d4)
+                                              '(#x25c9 #x25cb #x2738 #x273f))
   "An implemention of `org-bullets-bullet-list' for outlines.
 
 The headers wrap around for further levels than elements in this
-list, just like for org-bullets.
+list, just like for org-bullets.")
 
-Defaults to org-bullet's defaults. I use all-the-icons
-border-boxed numbers, as used in eg. all-the-icons version of
-spaceline.")
-
-(defvar pretty-outlines-ellipsis "~"
+(defvar pretty-outlines-ellipsis (if pretty-outlines-all-the-icons? "" "~")
   "An implementation of `org-ellipsis' for outlines.")
 
 (defvar pretty-outlines--max-outline-depth 8
@@ -37,14 +38,10 @@ spaceline.")
 (defvar pretty-outlines--common-face-props '(:underline nil)
   "Common face properties/overwrites to apply to each bullet.
 
-These properties are applied to only the *bullet* part of the
-outline. The bullet will inherit the outline-face appropriately
-and rarely would you modify this. I add :underline nil so my
-underlining starts at title text.")
+These properties are applied to only the *bullet* part of the outline.")
 
 ;;;; Outline-ellipsis
 
-;;;###autoload
 (defun pretty-outlines-set-display-table ()
   (-let [display-table (if buffer-display-table
                            buffer-display-table
@@ -59,7 +56,6 @@ underlining starts at title text.")
 
 ;;;; Outline-bullets
 
-;;;###autoload
 (defun pretty-outlines--bullets-rgx-at-level (level)
   "Modify outline regex with group matches at LEVEL."
   (let* ((outline-str
@@ -70,21 +66,18 @@ underlining starts at title text.")
               " ")))
     (rx-to-string outline-rx 'no-group)))
 
-;;;###autoload
 (defun pretty-outlines--level->face-props (level)
   "Get face properties for LEVEL."
   `(:inherit ,(intern (s-concat "outline-"
                                 (number-to-string level)))
              ,@pretty-outlines--common-face-props))
 
-;;;###autoload
 (defun pretty-outlines--propertize-bullet (level bullet)
   "Add LEVEL-dependent face to BULLET."
   (->> level
      pretty-outlines--level->face-props
      (propertize bullet 'face)))
 
-;;;###autoload
 (defun pretty-outlines--glue-bullet (level bullet)
   "Impute composition rules gluing leading spaces LEVEL times to BULLET."
   (-> level 1-
@@ -92,7 +85,6 @@ underlining starts at title text.")
      (s-concat (char-to-string bullet))
      prettify-utils-string))
 
-;;;###autoload
 (defun pretty-outlines--build-keyword (rgx composition face-props)
   "Build font-lock-keyword to compose RGX into COMPOSITION with FACE-PROPS."
   `(,rgx (0 (prog1 nil
@@ -101,7 +93,6 @@ underlining starts at title text.")
               (put-text-property (match-beginning 1) (match-end 1) 'face
                                  ',face-props)))))
 
-;;;###autoload
 (defun pretty-outlines--build-rgx-composition-face-alist (codepoints)
   "Given CODEPOINTS construct keyword alist."
   (-map-indexed (-lambda (level bullet)
@@ -111,7 +102,6 @@ underlining starts at title text.")
                         (pretty-outlines--level->face-props    level)))
                 codepoints))
 
-;;;###autoload
 (defun pretty-outlines-add-bullets ()
   "Add as hook to any major mode with outline syntax to enable pretty-outlines."
   (->> pretty-outlines-bullets-bullet-list

@@ -245,9 +245,4 @@
            (outline-minor-mode . pretty-outlines-set-display-table)
            (emacs-lisp-mode . pretty-outlines-add-bullets)
            (hy-mode         . pretty-outlines-add-bullets)
-           (python-mode     . pretty-outlines-add-bullets))
-
-    :init
-    (progn
-      (setq pretty-outlines-ellipsis            "")
-      (setq pretty-outlines-bullets-bullet-list '(#Xe3d0 #Xe3d1 #Xe3d2 #Xe3d4)))))
+           (python-mode     . pretty-outlines-add-bullets))))
