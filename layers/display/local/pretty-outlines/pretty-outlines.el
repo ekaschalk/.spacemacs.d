@@ -11,25 +11,29 @@
 
 (require 'dash)
 (require 'dash-functional)
-(require 's)
-
 (require 'outshine)
-(require 'prettify-utils)
+(require 's)
 
 ;;;; Config
 
 (defvar pretty-outlines-all-the-icons? (package-installed-p 'all-the-icons)
   "Do we use `all-the-icons' chars for bullet/ellipsis defaults?")
 
-(defvar pretty-outlines-bullets-bullet-list (if pretty-outlines-all-the-icons?
-                                                '(#Xe3d0 #Xe3d1 #Xe3d2 #Xe3d4)
-                                              '(#x25c9 #x25cb #x2738 #x273f))
+(defvar pretty-outlines-bullets-bullet-list
+  (if pretty-outlines-all-the-icons?
+      '(#Xe3d0 #Xe3d1 #Xe3d2 #Xe3d4)
+    '(#x25c9 #x25cb #x2738 #x273f))
+
   "An implemention of `org-bullets-bullet-list' for outlines.
 
 The headers wrap around for further levels than elements in this
 list, just like for org-bullets.")
 
-(defvar pretty-outlines-ellipsis (if pretty-outlines-all-the-icons? "" "~")
+(defvar pretty-outlines-ellipsis
+  (if pretty-outlines-all-the-icons?
+      ""
+    "~")
+
   "An implementation of `org-ellipsis' for outlines.")
 
 (defvar pretty-outlines--max-outline-depth 8
@@ -79,11 +83,12 @@ These properties are applied to only the *bullet* part of the outline.")
      (propertize bullet 'face)))
 
 (defun pretty-outlines--glue-bullet (level bullet)
-  "Impute composition rules gluing leading spaces LEVEL times to BULLET."
-  (-> level 1-
-     (s-repeat " ")
-     (s-concat (char-to-string bullet))
-     prettify-utils-string))
+  "Impute composition rules gluing leading spaces LEVEL-1 times to BULLET."
+  (let ((glue '(32 (Br . Bl))))
+    (-> level 1-
+       (-repeat glue)
+       -flatten
+       (-snoc bullet))))
 
 (defun pretty-outlines--build-keyword (rgx composition face-props)
   "Build font-lock-keyword to compose RGX into COMPOSITION with FACE-PROPS."
