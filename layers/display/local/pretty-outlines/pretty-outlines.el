@@ -24,7 +24,7 @@
       '(#Xe3d0 #Xe3d1 #Xe3d2 #Xe3d4)
     '(#x25c9 #x25cb #x2738 #x273f))
 
-  "An implemention of `org-bullets-bullet-list' for outlines.
+  "Implemention of `org-bullets-bullet-list' for outlines, provide codepoints.
 
 The headers wrap around for further levels than elements in this
 list, just like for org-bullets.")
@@ -34,7 +34,7 @@ list, just like for org-bullets.")
       ""
     "~")
 
-  "An implementation of `org-ellipsis' for outlines.")
+  "An implementation of `org-ellipsis' for outlines, provide a string.")
 
 (defvar pretty-outlines--max-outline-depth 8
   "The max outline depth to apply `pretty-outlines' over.")

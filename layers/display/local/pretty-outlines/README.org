@@ -1,0 +1,19 @@
+Adds ~org-bullets~ and ~org-ellipsis~ to Emac's ~outline-mode~.
+
+[[file:../../imgs/pretty-code.png]]
+
+* Usage
+
+Pretty-outlines is enabled by adding the appropriate hooks:
+
+#+BEGIN_SRC emacs-lisp
+(use-package pretty-outlines
+  :hook ((outline-mode       . pretty-outlines-set-display-table)
+         (outline-minor-mode . pretty-outlines-set-display-table)
+         (emacs-lisp-mode . pretty-outlines-add-bullets)
+         (python-mode     . pretty-outlines-add-bullets)))
+#+END_SRC
+
+Configure ~pretty-outlines-ellipsis~ and ~pretty-outlines-bullets-bullet-list~
+to set your characters. Defaults to Org's defaults unless ~all-the-icons~ is
+installed, then defaults to the screenshot.
