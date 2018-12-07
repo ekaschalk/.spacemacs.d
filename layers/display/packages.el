@@ -29,10 +29,10 @@
     :config
     (let ((hy-icon '(all-the-icons-fileicon "hy" :face all-the-icons-orange))
           (dt-icon '(all-the-icons-fileicon "graphviz" :face all-the-icons-pink)))
-      (add-to-list 'all-the-icons-icon-alist      ("\\.hy$"          ,@hy-icon))
-      (add-to-list 'all-the-icons-icon-alist      ("\\.dot$"         ,@dt-icon))
-      (add-to-list 'all-the-icons-mode-icon-alist (hy-mode           ,@hy-icon))
-      (add-to-list 'all-the-icons-mode-icon-alist (graphviz-dot-mode ,@dt-icon)))))
+      (add-to-list 'all-the-icons-icon-alist      `("\\.hy$"          ,@hy-icon))
+      (add-to-list 'all-the-icons-icon-alist      `("\\.dot$"         ,@dt-icon))
+      (add-to-list 'all-the-icons-mode-icon-alist `(hy-mode           ,@hy-icon))
+      (add-to-list 'all-the-icons-mode-icon-alist `(graphviz-dot-mode ,@dt-icon)))))
 
 ;;;; All-the-icons-ivy
 
@@ -229,11 +229,11 @@
     :config
     (progn
       (pretty-magit-add-leaders
-       '("Feature" ? (:foreground "slate gray" :height 1.2))
-       '("Add"     ? (:foreground "#375E97" :height 1.2))
-       '("Fix"     ? (:foreground "#FB6542" :height 1.2))
-       '("Clean"   ? (:foreground "#FFBB00" :height 1.2))
-       '("Docs"    ? (:foreground "#3F681C" :height 1.2)))
+       '(("Feature" ? (:foreground "slate gray" :height 1.2))
+         ("Add"     ? (:foreground "#375E97" :height 1.2))
+         ("Fix"     ? (:foreground "#FB6542" :height 1.2))
+         ("Clean"   ? (:foreground "#FFBB00" :height 1.2))
+         ("Docs"    ? (:foreground "#3F681C" :height 1.2))))
 
       (pretty-magit-setup))))
 
@@ -250,4 +250,4 @@
     :init
     (progn
       (setq pretty-outlines-ellipsis            "")
-      (setq pretty-outlines-bullets-bullet-list '("" "" "" "")))))
+      (setq pretty-outlines-bullets-bullet-list '(#Xe3d0 #Xe3d1 #Xe3d2 #Xe3d4)))))

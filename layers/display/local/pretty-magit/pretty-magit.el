@@ -53,7 +53,7 @@
                (concat word ": ")))
 
 ;;;###autoload
-(defun pretty-magit-add-leaders (&rest leaders)
+(defun pretty-magit-add-leaders (leaders)
   "Map `pretty-magit-add-leader' over LEADERS."
   (-each leaders
     (-applify #'pretty-magit-add-leader)))
