@@ -76,12 +76,6 @@ These properties are applied to only the *bullet* part of the outline.")
                                 (number-to-string level)))
              ,@pretty-outlines--common-face-props))
 
-(defun pretty-outlines--propertize-bullet (level bullet)
-  "Add LEVEL-dependent face to BULLET."
-  (->> level
-     pretty-outlines--level->face-props
-     (propertize bullet 'face)))
-
 (defun pretty-outlines--glue-bullet (level bullet)
   "Impute composition rules gluing leading spaces LEVEL-1 times to BULLET."
   (let ((glue '(32 (Br . Bl))))
