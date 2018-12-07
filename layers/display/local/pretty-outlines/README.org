@@ -18,3 +18,6 @@ Pretty-outlines is enabled by adding the appropriate hooks:
 Configure ~pretty-outlines-ellipsis~ and ~pretty-outlines-bullets-bullet-list~
 to set your characters. Defaults to Org's defaults unless ~all-the-icons~ is
 installed, then defaults to the screenshot.
+
+This package is not yet uploaded to melpa. I intend to upload it along with my
+other pretty packages soon.
