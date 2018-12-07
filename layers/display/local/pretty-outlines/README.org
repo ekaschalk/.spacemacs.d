@@ -15,6 +15,14 @@ Pretty-outlines is enabled by adding the appropriate hooks:
          (python-mode     . pretty-outlines-add-bullets)))
 #+END_SRC
 
+Requires ~outshine~, which is available on Melpa and can be setup with:
+
+#+BEGIN_SRC emacs-lisp
+(use-package outshine
+  :hook ((prog-mode          . outline-minor-mode)
+         (outline-minor-mode . outshine-hook-function)))
+#+END_SRC
+
 Configure ~pretty-outlines-ellipsis~ and ~pretty-outlines-bullets-bullet-list~
 to set your characters. Defaults to Org's defaults unless ~all-the-icons~ is
 installed, then defaults to the screenshot.
