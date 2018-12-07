@@ -1,4 +1,5 @@
-Adds ~org-bullets~ and ~org-ellipsis~ to Emac's ~outline-mode~.
+Adds similar functionality as ~org-bullets~ and ~org-ellipsis~ to Emac's
+~outline-mode~.
 
 [[file:../../imgs/pretty-outlines.png]]
 
