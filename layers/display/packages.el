@@ -56,7 +56,7 @@
 
 (defun display/init-all-the-icons-dired ()
   (use-package all-the-icons-dired
-    :init (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
+    :hook (dired-mode . all-the-icons-dired-mode)))
 
 ;;;; Pretty-mode
 

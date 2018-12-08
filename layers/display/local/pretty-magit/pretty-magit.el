@@ -27,7 +27,6 @@
 
 ;;;; Compositions
 
-;;;###autoload
 (defun pretty-magit--add-magit-faces ()
   "Add face properties and compose symbols for buffer from pretty-magit."
   (interactive)
@@ -42,7 +41,6 @@
               (when face-props
                 (add-face-text-property start end face-props)))))))))
 
-;;;###autoload
 (defun pretty-magit-add-leader (word char face-props)
   "Replace sanitized WORD with CHAR having FACE-PROPS and add to prompts."
   (add-to-list 'pretty-magit--alist
@@ -52,7 +50,6 @@
   (add-to-list 'pretty-magit--prompt
                (concat word ": ")))
 
-;;;###autoload
 (defun pretty-magit-add-leaders (leaders)
   "Map `pretty-magit-add-leader' over LEADERS."
   (-each leaders
@@ -60,11 +57,9 @@
 
 ;;;; Prompts
 
-;;;###autoload
 (defun pretty-magit--use-commit-prompt (&rest args)
   (setq pretty-magit--use-commit-prompt? t))
 
-;;;###autoload
 (defun pretty-magit-commit-prompt ()
   "Magit prompt and insert commit header with faces."
   (interactive)

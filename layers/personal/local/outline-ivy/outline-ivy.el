@@ -36,18 +36,15 @@
 
 ;;; Utils
 
-;;;###autoload
 (defun oi-rgx ()
   "Regex to match outlines with first group as its text."
   (cadar outshine-imenu-preliminary-generic-expression))
 
-;;;###autoload
 (defun oi-format-name (str level)
   "Format STR at LEVEL for ivy."
   (concat (s-repeat (1- level) oi-prepend-header-char)
           str))
 
-;;;###autoload
 (defun oi-format-name-pretty (str parents level)
   "Prepend invisible PARENTS to propertized STR at LEVEL."
   (concat (propertize
@@ -60,7 +57,6 @@
                               (2 'oi-face-2)
                               (3 'oi-face-3)))))
 
-;;;###autoload
 (defun oi--collect-outline ()
   "Collect outline-ivy formatted outline string and marker for line at point."
   (save-excursion
@@ -77,7 +73,6 @@
          (cons name)
          (when level)))))
 
-;;;###autoload
 (defun oi-collect-outlines ()
   "Collect fontified outline strings and their markers for ivy-read."
   (setq oi--parents-plist nil)
@@ -95,7 +90,6 @@
 
 ;;; Outline Jump
 
-;;;###autoload
 (defun oi--preselect ()
   "Get parent outline at point for ivy :preselect."
   (save-excursion
@@ -106,7 +100,6 @@
     (-> (match-string-no-properties 1)
        (oi-format-name (outshine-calc-outline-level)))))
 
-;;;###autoload
 (defun oi--remap-ivy-match-face ()
   "Overwrite ivy-current-match face in outline-ivy prompt."
   (set (make-local-variable 'face-remapping-alist)

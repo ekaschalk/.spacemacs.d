@@ -62,6 +62,7 @@ Optionally, a new-def can be included in any ele to indicate a new binding.")
   (bind-key key def)
   (--each maps (bind-key key def (symbol-value it))))
 
+;;;###autoload
 (defun redo-spacemacs-bindings ()
   "Remove unused prefixes and bindings and apply new bindings."
   (-each redo-spacemacs-prefixes-list

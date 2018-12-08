@@ -39,7 +39,6 @@
   "Return STR propertized with PROPS."
   `(propertize ,STR 'face (list ,@PROPS)))
 
-;;;###autoload
 (defmacro pretty-eshell-section (name icon form &rest props)
   "Build eshell section NAME with ICON prepended to evaled FORM with PROPS."
   ;; Roundabout way to handle case that
@@ -56,7 +55,6 @@
                 (concat pretty-eshell-section-delim ,form)
                 (with-face ,@props))))))
 
-;;;###autoload
 (defun pretty-eshell--acc (acc x)
   "Accumulator for evaluating and concatenating pretty-eshell-sections."
   (--if-let (funcall x)
@@ -65,7 +63,6 @@
         (s-concat acc pretty-eshell-sep it))
     acc))
 
-;;;###autoload
 (defun pretty-eshell-prompt-func ()
   "Value for `eshell-prompt-function'."
   (concat pretty-eshell-header

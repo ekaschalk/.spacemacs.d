@@ -105,7 +105,6 @@
 
 ;;;; Fontsetters
 
-;;;###autoload
 (defun pretty-fonts-set-fontsets (font-codepoints-alist)
   "Set CODEPOINTS to use FONT in FONT-CODEPOINTS-ALIST in all situations."
   (-each font-codepoints-alist
@@ -117,7 +116,6 @@
 
 ;;;; Ligatures
 
-;;;###autoload
 (defun pretty-fonts--pad-codepoint (codepoint)
   "Converts CODEPOINT to a string that `compose-region' will know to leftpad.
 
@@ -133,7 +131,6 @@ Also note that prior implementations use `list' instead of `char-to-string',
 they do the same thing here but `char-to-string' is obviously more descriptive."
   (concat "\t" (char-to-string codepoint)))
 
-;;;###autoload
 (defun pretty-fonts--build-keyword (rgx codepoint)
   "Builds the font-lock-keyword for RGX to be composed to CODEPOINT.
 
@@ -151,20 +148,17 @@ but now all ligatures would be highlighted as functions, for example."
                               (match-end 1)
                               ,(pretty-fonts--pad-codepoint codepoint))))))
 
-;;;###autoload
 (defun pretty-fonts-add-kwds (rgx-codepoint-alist)
   "Exploits `font-lock-add-keywords' to transform RGXs into CODEPOINTs."
   (->> rgx-codepoint-alist
      (-map (-applify #'pretty-fonts--build-keyword))
      (font-lock-add-keywords nil)))
 
-;;;###autoload
 (defun pretty-fonts-add-hook (hook rgx-codepoint-alist)
   "Add `pretty-fonts-add-kwds' as a hook."
   (add-hook hook
             (lambda () (pretty-fonts-add-kwds rgx-codepoint-alist))))
 
-;;;###autoload
 (defun pretty-fonts-set-fontsets-for-fira-code ()
   "Tell Emacs to render Fira Code codepoints using Fira Code Symbol font."
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol"))
