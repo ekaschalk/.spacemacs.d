@@ -183,7 +183,7 @@
 (defun config/init-outshine ()
   (use-package outshine
     :hook ((prog-mode          . outline-minor-mode)
-           (outline-minor-mode . outshine-hook-function))
+           (outline-minor-mode . outshine-mode))
 
     :bind (("<backtab>"     . outshine-cycle-buffer)
            ([(meta return)]       . outshine-insert-heading)
