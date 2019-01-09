@@ -9,6 +9,7 @@
 ;;; Code:
 ;;;; Requires
 
+(require 'cl)
 (require 'dash)
 (require 'dash-functional)
 (require 'outshine)
