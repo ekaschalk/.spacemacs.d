@@ -33,6 +33,11 @@
 ;;; Blog Commands
 
 ;;;###autoload
+(defun blog-goto-working-file ()
+  (interactive)
+  (find-file blog-working-file))
+
+;;;###autoload
 (defun blog-deploy ()
   "Run hugo and push changes upstream."
   (interactive)

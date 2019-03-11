@@ -12,14 +12,16 @@
     :if (executable-find "hugo")
     :init
     (progn
-      (setq blog-dir        '("~/dev/blog"))
-      (setq blog-public-dir '("~/dev/public-blog")))
+      (setq blog-dir          "~/dev/blog")
+      (setq blog-public-dir   "~/dev/public-blog")
+      (setq blog-working-file "~/dev/blog/content/post/notate-part-1.org"))
 
     :config
     (spacemacs/set-leader-keys
       "ab" 'blog-deploy
       "aa" 'blog-start-server
-      "ae" 'blog-end-server)))
+      "ae" 'blog-end-server
+      "af" 'blog-goto-working-file)))
 
 ;;; Outline-ivy
 
