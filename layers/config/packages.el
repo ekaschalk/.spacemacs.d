@@ -15,6 +15,7 @@
         auto-dim-other-buffers
         dash-functional
         faceup
+        hierarchy
         outshine  ; also configures `outline-mode'
         s
 
@@ -121,7 +122,13 @@
           ("sp" "#+BEGIN_SRC python\n\n#+END_SRC")))
 
   (add-hook 'org-mode-hook (lambda () (auto-fill-mode 1)))
-  (add-hook 'org-mode-hook 'flyspell-mode))
+  (add-hook 'org-mode-hook 'flyspell-mode)
+
+  ;; Experimenting with the following indentation vars:
+  (setq org-startup-indented nil)
+  (setq org-hide-leading-stars t)
+  (setq org-hide-emphasis-markers nil)
+  (setq org-indent-indentation-per-level 1))
 
 (defun config/post-init-org ()
   (evil-define-key '(normal visual motion) org-mode-map
@@ -132,8 +139,10 @@
     "gu" 'outline-previous-visible-heading)
 
   (spacemacs/set-leader-keys "aof" 'org-open-at-point-global)
+
   (spacemacs/set-leader-keys-for-major-mode 'org-mode
     "r" 'org-refile
+    "h" 'org-metaleft  ; Because of MacOS's damned, indestructable M-h binding...
     "s p" 'org-sort-entries-priorities))
 
 ;;;; Ranger
@@ -176,6 +185,12 @@
 
 (defun config/init-faceup ()
   (use-package faceup
+    :defer t))
+
+;;;; Hierarchy
+
+(defun config/init-hierarchy ()
+  (use-package hierarchy
     :defer t))
 
 ;;;; Outshine
