@@ -51,12 +51,6 @@ Spacemacs's config framework.
     If you use Emacs as a daemon, have ~server?~ true in the leading lines of
     ~init.el~. It is nil by default for users other than myself.
 
-*** Redone Spacemacs Bindings
-
-    I aggressively un/re-bind Spacemacs's defaults. These changes are /off/ by
-    default. See the variable ~redo-bindings?~ and the config layer for further
-    details.
-
 *** Personalization
 
     Style your font in ~dotspacemacs-default-font~ in ~init.el~ as normal.

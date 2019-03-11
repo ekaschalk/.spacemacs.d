@@ -5,6 +5,18 @@
 
 (provide 'redo-spacemacs)
 
+;;; Commentary:
+
+;; I aggressively re-bind and un-bind spacemacs defaults.
+
+;; If `redo-bindings' is non-nil:
+;; 1. Removes prefixes/bindings contained within `redo-spacemacs-prefixes-list'.
+;; 2. Removes bindings in `redo-spacemacs-undo-bindings-alist'.
+;; 3. Adds bindings in `redo-spacemacs-new-bindings-alist'.
+
+;; It is highly recommend to look through the above 3 variables before enabling,
+;; defined at end of `layers/config/packages.el' in `config/init-redo-spacemacs'.
+
 ;;; Redo-spacemacs
 ;;;; Config
 

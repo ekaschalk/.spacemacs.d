@@ -30,17 +30,9 @@
   "Alias `dotspacemacs-enable-server'. Defaults to nil for non-eric users.")
 
 (defvar redo-bindings? (if eric? t nil)
-  "Redo spacemacs bindings? Defaults to nil for non-eric users.
+  "Redo spacemacs bindings? Defaults to, and I recommend, nil to non-eric users.
 
-I aggressively re-bind and un-bind spacemacs defaults.
-
-This indicator:
-1. Removes prefixes/bindings contained within `redo-spacemacs-prefixes-list'.
-2. Removes bindings in `redo-spacemacs-undo-bindings-alist'.
-3. Adds bindings in `redo-spacemacs-new-bindings-alist'.
-
-It is highly recommend to look through the above 3 variables before enabling,
-defined at end of `layers/config/packages.el' in `config/init-redo-spacemacs'.")
+See the commentary in the config layer's local pkg `redo-spacemacs'.")
 
 ;;; Spacemacs/
 ;;;; Spacemacs/init
@@ -134,5 +126,5 @@ Check `dotspacemacs/get-variable-string-list' for all vars you can configure."
   "Configuration that cannot be delegated to layers."
   (dotspacemacs/user-config/post-layer-load-config)
 
-  ;; Drop-in whatever config here without having to worry about good practices
+  ;; Drop-in whatever config here, experiment!
   )
