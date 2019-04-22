@@ -258,7 +258,7 @@
 
 (defun config/init-redo-spacemacs ()
   (use-package redo-spacemacs
-    :if redo-bindings?
+    :if (and (boundp 'redo-bindings?) redo-bindings?)
     :init
     (progn
       (setq redo-spacemacs-prefixes-list
