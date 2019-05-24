@@ -15,7 +15,6 @@
         auto-dim-other-buffers
         dash-functional
         faceup
-        hierarchy
         outshine  ; also configures `outline-mode'
         s
 
@@ -185,12 +184,6 @@
 
 (defun config/init-faceup ()
   (use-package faceup
-    :defer t))
-
-;;;; Hierarchy
-
-(defun config/init-hierarchy ()
-  (use-package hierarchy
     :defer t))
 
 ;;;; Outshine

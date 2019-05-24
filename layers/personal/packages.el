@@ -21,7 +21,7 @@
       "ab" 'blog-deploy
       "aa" 'blog-start-server
       "ae" 'blog-end-server
-      "af" 'blog-goto-working-file)))
+      "aj" 'blog-goto-working-file)))
 
 ;;; Outline-ivy
 
