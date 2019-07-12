@@ -32,12 +32,19 @@
    yaml
 
    ;; Languages
+   lsp
    c-c++
    clojure
    emacs-lisp
    haskell
    hy  ; I wrote this mode/layer, yay
    (python :variables
+
+           python-backend 'lsp
+           python-lsp-server 'pyls
+           ;; python-lsp-server 'mspyls
+           python-pipenv-activate t
+
            python-test-runner 'pytest
            python-spacemacs-indent-guess nil)
 
