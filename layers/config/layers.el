@@ -33,11 +33,17 @@
 
    ;; Languages
    lsp
-   c-c++
    clojure
    emacs-lisp
    haskell
-   hy  ; I wrote this mode/layer, yay
+   hy  ; I wrote this mode/layer
+
+   (c-c++ :variables
+          ;; c-c++-backend 'lsp-ccls
+          c-c++-backend 'lsp-cquery
+          c-c++-enable-google-style t
+          c-c++-enable-google-newline t)
+
    (python :variables
 
            python-backend 'lsp
